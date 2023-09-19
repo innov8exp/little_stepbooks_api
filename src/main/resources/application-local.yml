@@ -1,0 +1,15 @@
+# DataSource Config
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:65432/novlnovl
+    username: novlnovl_user
+    password: novlnovl
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+
+aws:
+  s3:
+    bucket: novlnovl-static.stage
+  cdn: https://ds2rcorotrbeb.cloudfront.net

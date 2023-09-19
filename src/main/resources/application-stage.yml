@@ -1,0 +1,18 @@
+# DataSource Config
+spring:
+  datasource:
+    url: jdbc:postgresql://novlnovl.c6p4vkkcrnqa.us-east-2.rds.amazonaws.com:5432/novlnovl
+    username: postgres
+    password: postgres
+
+server:
+  forward-headers-strategy: framework
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+
+aws:
+  s3:
+    bucket: novlnovl.stage
+  cdn: https://d1wf51uw2ybdc9.cloudfront.net

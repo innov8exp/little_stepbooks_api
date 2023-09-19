@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: novlnovl_user
+      POSTGRES_PASSWORD: novlnovl
+      POSTGRES_DB: novlnovl
+    ports:
+      - "65432:5432"

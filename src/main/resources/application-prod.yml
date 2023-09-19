@@ -1,0 +1,23 @@
+# DataSource Config
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/novlnovl
+    username: novl_user
+    password: novl_ps
+
+server:
+  forward-headers-strategy: framework
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+
+aws:
+  s3:
+    bucket: novlshared
+  cdn: https://novlshared.s3.ap-northeast-1.amazonaws.com
+
+in-app-purchase:
+  verify-host:
+    ios: https://buy.itunes.apple.com
+    android: https://androidpublisher.googleapis.com

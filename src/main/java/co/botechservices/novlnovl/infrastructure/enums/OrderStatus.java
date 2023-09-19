@@ -1,0 +1,16 @@
+package co.botechservices.novlnovl.infrastructure.enums;
+
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import lombok.Getter;
+
+public enum OrderStatus {
+    UNPAID("UNPAID"), PAID("PAID");
+
+    @EnumValue
+    @Getter
+    private final String value;
+
+    OrderStatus(String value) {
+        this.value = value;
+    }
+}

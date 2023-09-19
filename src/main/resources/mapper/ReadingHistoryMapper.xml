@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="co.botechservices.novlnovl.infrastructure.mapper.ReadingHistoryMapper">
+    <select id="findBookLastChapterRecordByUser"
+            resultType="co.botechservices.novlnovl.domain.book.dto.ChapterWithHistoryDto">
+        select c.*, h.paragraph_number from NOVL_CHAPTER c
+        inner join NOVL_READING_HISTORY h
+        on c.id = h.chapter_id
+        where h.book_id = #{bookId}
+        and h.user_id = #{userId}
+    </select>
+    <select id="findUserReadBooks" resultType="co.botechservices.novlnovl.domain.book.dto.BookDetailDto">
+        select b.*, avg(r.rating) rating from NOVL_READING_HISTORY h inner join NOVL_BOOK b
+        on h.book_id = b.id
+        left join novl_rating r on b.id = r.book_id
+        where h.user_id = #{userId}
+        group by b.id, h.created_at
+        order by h.created_at desc
+    </select>
+</mapper>

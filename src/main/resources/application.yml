@@ -1,0 +1,112 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    tomcat:
+      test-on-borrow: true
+      validation-query: SELECT 1
+      test-while-idle: true
+  #      time-between-eviction-runs-millis: 3600000
+
+  mail:
+    host: email-smtp.us-east-2.amazonaws.com
+    username: AKIA22ZPJOKKECLHBZWF
+    password: BAPkKsFk9nJFPM5QevslyNjPzqJ1lXtLnAv1rcvrqV5e
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          port: 587
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    type-enums-package: co.botechservices.novlnovl.infrastructure.enums
+    #    cache-enabled: false
+    map-underscore-to-camel-case: true
+    #  #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    #    global-config:
+    #    id-type: 0
+    #    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    #    field-strategy: 2
+    #驼峰下划线转换
+    #      db-column-underline: true
+    #    #刷新mapper 调试神器
+    #    refresh-mapper: true
+    #数据库大写下划线转换
+    #      capital-mode: true
+    #逻辑删除配置（下面3个配置）
+#      sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+#      logic-delete-value: 1
+#      logic-not-delete-value: 0
+
+
+
+logging:
+  level:
+    co.botechservices.novlnovl: debug
+
+springdoc:
+  show-actuator: true
+  swagger-ui:
+    path: /swagger-ui.html
+
+jwt:
+  header: Authorization
+  issuer: Novlnovl
+  token-type: Bearer
+  access-token:
+    secret: 61AI@Ce$S9Mu
+    expiration: 7200
+  refresh-token:
+    secret: 7SsukB!2NG$i
+    expiration: 604800
+
+facebook:
+  host: https://graph.facebook.com
+  client-id: 2504602559669637
+  client-secret: 4edc95ef36190ecf66fa19bac6f9da53
+
+google:
+  host: https://oauth2.googleapis.com
+
+admin:
+  jwt:
+    header: Authorization
+    issuer: NovlnovlAdmin
+    token-type: Bearer
+    access-token:
+      cookie-name: access_token
+      secret: 5310l8Mz5v&B
+      expiration: 3600
+    refresh-token:
+      cookie-name: refresh_token
+      secret: jCqdfD13l#tT
+      expiration: 36000
+
+
+aws:
+  region: ap-northeast-1
+  s3:
+    pre-signed-url-expire-time: 7200  # 2 hours
+
+
+in-app-purchase:
+  shared-secret:
+    ios: bd2825cb86a7444c8643d317260a8c51
+  verify-host:
+    ios: https://sandbox.itunes.apple.com
+    android: https://androidpublisher.googleapis.com
+
+bundle-id:
+  ios: com.novlnovl.ios.app
+  android: com.novlnovl.android.app

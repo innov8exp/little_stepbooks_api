@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="co.botechservices.novlnovl.infrastructure.mapper.CategoryMapper">
+    <select id="findCategoriesByBookId"
+            resultType="co.botechservices.novlnovl.domain.dict.entity.CategoryEntity">
+        select c.* from NOVL_CATEGORY c
+        inner join NOVL_BOOK_CATEGORY_REF cf
+        on c.ID = cf.CATEGORY_ID
+        WHERE cf.BOOK_ID = #{bookId}
+    </select>
+</mapper>
