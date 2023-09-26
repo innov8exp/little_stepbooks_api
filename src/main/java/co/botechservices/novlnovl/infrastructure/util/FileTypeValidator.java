@@ -1,9 +1,9 @@
 package co.botechservices.novlnovl.infrastructure.util;
 
+import jakarta.validation.ValidationException;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.ValidationException;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;

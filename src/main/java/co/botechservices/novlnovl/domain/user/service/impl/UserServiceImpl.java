@@ -5,6 +5,8 @@ import co.botechservices.novlnovl.domain.email.service.EmailService;
 import co.botechservices.novlnovl.domain.email.service.impl.EmailServiceImpl;
 import co.botechservices.novlnovl.domain.file.service.FileService;
 import co.botechservices.novlnovl.domain.user.assembler.AuthAssembler;
+import co.botechservices.novlnovl.domain.user.client.FacebookClient;
+import co.botechservices.novlnovl.domain.user.client.GoogleClient;
 import co.botechservices.novlnovl.domain.user.dto.*;
 import co.botechservices.novlnovl.domain.user.entity.AuthHistoryEntity;
 import co.botechservices.novlnovl.domain.user.entity.UserEntity;
@@ -15,7 +17,6 @@ import co.botechservices.novlnovl.infrastructure.enums.EmailType;
 import co.botechservices.novlnovl.infrastructure.enums.RoleEnum;
 import co.botechservices.novlnovl.infrastructure.exception.BusinessException;
 import co.botechservices.novlnovl.infrastructure.exception.ErrorCode;
-import co.botechservices.novlnovl.infrastructure.manager.webclient.WebClientBlockManager;
 import co.botechservices.novlnovl.infrastructure.mapper.AuthHistoryMapper;
 import co.botechservices.novlnovl.infrastructure.mapper.UserMapper;
 import co.botechservices.novlnovl.infrastructure.mapper.UserTagRefMapper;
@@ -33,10 +34,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -50,16 +53,15 @@ public class UserServiceImpl implements UserService {
     private final AuthHistoryMapper authHistoryMapper;
     private final UserTagRefMapper userTagRefMapper;
     private final FileService fileService;
+    private final FacebookClient facebookClient;
+    private final GoogleClient googleClient;
+
     @Value("${aws.cdn}")
     private String cdnUrl;
     @Value("${facebook.client-id}")
     private String facebookClientId;
     @Value("${facebook.client-secret}")
     private String facebookClientSecret;
-    @Value("${facebook.host}")
-    private String facebookHost;
-    @Value("${google.host}")
-    private String googleHost;
 
     @SuppressWarnings("checkstyle:MagicNumber")
     private static String generateVerifyCode() {
@@ -68,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean existsUserByEmail(String email) {
-        Integer count = userMapper.selectCount(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getEmail, email));
+        Long count = userMapper.selectCount(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getEmail, email));
         return count > 0;
     }
 
@@ -142,7 +144,7 @@ public class UserServiceImpl implements UserService {
         if (!valid) {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "auth failed, please input the correct password");
         }
-        Integer authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
+        Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
                 .eq(AuthHistoryEntity::getEmail, email));
         return getTokenDto(authCount, userEntity, AuthType.EMAIL);
     }
@@ -165,10 +167,10 @@ public class UserServiceImpl implements UserService {
                 throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
             }
         }
-        return getTokenDto(0, userEntity, AuthType.GUEST);
+        return getTokenDto(0L, userEntity, AuthType.GUEST);
     }
 
-    private TokenDto getTokenDto(int authCount, UserEntity userEntity, AuthType authType) {
+    private TokenDto getTokenDto(Long authCount, UserEntity userEntity, AuthType authType) {
         JwtUserDetails jwtUserDetails = AuthAssembler.userEntityToJwtUserDetails(userEntity);
         TokenDto tokenDto = jwtTokenProvider.generateToken(jwtUserDetails, authType);
         // First time to login
@@ -197,7 +199,7 @@ public class UserServiceImpl implements UserService {
                 String facebookId = facebookAuthResDto.getData().getUserId();
                 UserEntity userEntity = this.findUserByFacebookId(facebookId);
                 if (userEntity != null) {
-                    Integer authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
+                    Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
                             .eq(AuthHistoryEntity::getFacebookId, facebookId));
                     return getTokenDto(authCount, userEntity, AuthType.FACEBOOK);
                 } else {
@@ -216,7 +218,7 @@ public class UserServiceImpl implements UserService {
                 String googleId = googleUserDto.getSub();
                 UserEntity userEntity = this.findUserByGoogleId(googleId);
                 if (userEntity != null) {
-                    Integer authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
+                    Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
                             .eq(AuthHistoryEntity::getGoogleId, googleId));
                     return getTokenDto(authCount, userEntity, AuthType.GOOGLE);
                 } else {
@@ -277,35 +279,19 @@ public class UserServiceImpl implements UserService {
     }
 
     private GoogleUserDto introspectGoogle(String idToken) {
-        WebClientBlockManager webClientBlockManager = WebClientBlockManager.build(googleHost);
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath("/tokeninfo");
-        uriComponentsBuilder.queryParam("id_token", idToken);
-        return webClientBlockManager.get(uriComponentsBuilder.toUriString(), GoogleUserDto.class);
+        return googleClient.introspectGoogle(idToken);
     }
 
     private SocialTokenDto authToFacebook() {
-        WebClientBlockManager webClientBlockManager = WebClientBlockManager.build(facebookHost);
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath("/v12.0/oauth/access_token");
-        uriComponentsBuilder.queryParam("client_id", facebookClientId);
-        uriComponentsBuilder.queryParam("client_secret", facebookClientSecret);
-        uriComponentsBuilder.queryParam("grant_type", "client_credentials");
-        return webClientBlockManager.get(uriComponentsBuilder.toUriString(), SocialTokenDto.class);
+        return facebookClient.authToFacebook(facebookClientId, facebookClientSecret, "client_credentials");
     }
 
     private FacebookAuthResDto introspectFacebook(String inputToken, String accessToken) {
-        WebClientBlockManager webClientBlockManager = WebClientBlockManager.build(facebookHost);
-        UriComponentsBuilder introspectUri = UriComponentsBuilder.fromPath("/debug_token");
-        introspectUri.queryParam("input_token", inputToken);
-        introspectUri.queryParam("access_token", accessToken);
-        return webClientBlockManager.get(introspectUri.toUriString(), FacebookAuthResDto.class);
+        return facebookClient.introspectFacebook(inputToken, accessToken);
     }
 
     private FacebookUserDto getFacebookUserInfo(String facebookId, String accessToken) {
-        WebClientBlockManager webClientBlockManager = WebClientBlockManager.build(facebookHost);
-        UriComponentsBuilder userInfoUri = UriComponentsBuilder.fromPath("/v12.0/" + facebookId);
-        userInfoUri.queryParam("fields", String.join(",", Arrays.asList("id", "name", "email", "picture")));
-        userInfoUri.queryParam("access_token", accessToken);
-        return webClientBlockManager.get(userInfoUri.toUriString(), FacebookUserDto.class);
+        return facebookClient.getFacebookUserInfo(facebookId, "id,name,email,picture", accessToken);
     }
 
     @Override

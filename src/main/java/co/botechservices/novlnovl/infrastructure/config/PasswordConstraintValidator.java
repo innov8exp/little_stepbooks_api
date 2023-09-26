@@ -1,19 +1,15 @@
 package co.botechservices.novlnovl.infrastructure.config;
 
 import co.botechservices.novlnovl.infrastructure.model.ValidPassword;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.passay.*;
 import org.springframework.util.ObjectUtils;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 import java.util.List;
 
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
-    @Override
-    public void initialize(ValidPassword constraintAnnotation) {
-
-    }
 
     @SuppressWarnings("checkstyle:MagicNumber")
     @Override

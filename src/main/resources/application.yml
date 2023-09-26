@@ -110,3 +110,9 @@ in-app-purchase:
 bundle-id:
   ios: com.novlnovl.ios.app
   android: com.novlnovl.android.app
+
+feign:
+  facebook:
+    host: https://graph.facebook.com
+  google:
+    host: https://oauth2.googleapis.com
