@@ -10,6 +10,7 @@ import co.botechservices.novlnovl.infrastructure.exception.BusinessException;
 import co.botechservices.novlnovl.infrastructure.exception.ErrorCode;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.validation.constraints.NotNull;
 import net.sf.jmimemagic.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
@@ -20,7 +21,6 @@ import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 

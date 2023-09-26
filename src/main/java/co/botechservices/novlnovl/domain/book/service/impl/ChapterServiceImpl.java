@@ -12,7 +12,6 @@ import co.botechservices.novlnovl.domain.order.entity.ConsumptionEntity;
 import co.botechservices.novlnovl.domain.order.service.ConsumptionService;
 import co.botechservices.novlnovl.infrastructure.assembler.BaseAssembler;
 import co.botechservices.novlnovl.infrastructure.enums.UploadType;
-import co.botechservices.novlnovl.infrastructure.manager.webclient.WebClientBlockManager;
 import co.botechservices.novlnovl.infrastructure.mapper.ChapterMapper;
 import co.botechservices.novlnovl.infrastructure.model.BaseEntity;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -26,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -174,10 +174,10 @@ public class ChapterServiceImpl implements ChapterService {
     public String readChapter(String id) {
         ChapterEntity chapter = findChapterById(id);
         String contentLink = chapter.getContentLink();
-        WebClientBlockManager webClientBlockManager = WebClientBlockManager.build(contentLink);
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath("");
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromPath(contentLink);
         uriComponentsBuilder.queryParam("random", RandomUtils.nextLong());
-        return webClientBlockManager.get(uriComponentsBuilder.toUriString(), String.class);
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(uriComponentsBuilder.toUriString(), String.class);
     }
 
     @Override

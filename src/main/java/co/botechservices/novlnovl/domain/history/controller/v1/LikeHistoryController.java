@@ -3,7 +3,7 @@ package co.botechservices.novlnovl.domain.history.controller.v1;
 import co.botechservices.novlnovl.domain.book.dto.BookDto;
 import co.botechservices.novlnovl.domain.history.service.LikeHistoryService;
 import co.botechservices.novlnovl.domain.user.entity.UserEntity;
-import co.botechservices.novlnovl.infrastructure.manager.ContextManager;
+import co.botechservices.novlnovl.infrastructure.util.ContextManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

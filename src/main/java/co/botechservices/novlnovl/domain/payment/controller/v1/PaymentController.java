@@ -8,7 +8,7 @@ import co.botechservices.novlnovl.domain.product.service.ProductService;
 import co.botechservices.novlnovl.domain.user.entity.UserEntity;
 import co.botechservices.novlnovl.domain.user.service.UserAccountService;
 import co.botechservices.novlnovl.infrastructure.enums.ClientPlatform;
-import co.botechservices.novlnovl.infrastructure.manager.ContextManager;
+import co.botechservices.novlnovl.infrastructure.util.ContextManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -4,7 +4,7 @@ import co.botechservices.novlnovl.domain.feedback.dto.FeedbackDto;
 import co.botechservices.novlnovl.domain.feedback.entity.FeedbackEntity;
 import co.botechservices.novlnovl.domain.feedback.service.FeedbackService;
 import co.botechservices.novlnovl.domain.user.entity.UserEntity;
-import co.botechservices.novlnovl.infrastructure.manager.ContextManager;
+import co.botechservices.novlnovl.infrastructure.util.ContextManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

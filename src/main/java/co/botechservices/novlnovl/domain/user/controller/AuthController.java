@@ -8,9 +8,11 @@ import co.botechservices.novlnovl.infrastructure.assembler.BaseAssembler;
 import co.botechservices.novlnovl.infrastructure.enums.EmailType;
 import co.botechservices.novlnovl.infrastructure.exception.BusinessException;
 import co.botechservices.novlnovl.infrastructure.exception.ErrorCode;
-import co.botechservices.novlnovl.infrastructure.manager.ContextManager;
 import co.botechservices.novlnovl.infrastructure.model.JwtUserDetails;
+import co.botechservices.novlnovl.infrastructure.util.ContextManager;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -19,8 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController

@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableWebSecurity
 @SpringBootApplication
 @EnableTransactionManagement
-public class NovlnovlAPIApplication {
+public class StepBooksAPIApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NovlnovlAPIApplication.class, args);
+        SpringApplication.run(StepBooksAPIApplication.class, args);
     }
 
 }

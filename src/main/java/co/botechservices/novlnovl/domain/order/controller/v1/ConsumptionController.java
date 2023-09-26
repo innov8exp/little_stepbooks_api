@@ -2,7 +2,7 @@ package co.botechservices.novlnovl.domain.order.controller.v1;
 
 import co.botechservices.novlnovl.domain.admin.order.dto.ConsumptionInfoDto;
 import co.botechservices.novlnovl.domain.order.service.ConsumptionService;
-import co.botechservices.novlnovl.infrastructure.manager.ContextManager;
+import co.botechservices.novlnovl.infrastructure.util.ContextManager;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;

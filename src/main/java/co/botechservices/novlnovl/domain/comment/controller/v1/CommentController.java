@@ -2,7 +2,7 @@ package co.botechservices.novlnovl.domain.comment.controller.v1;
 
 import co.botechservices.novlnovl.domain.comment.dto.CommentDetailDto;
 import co.botechservices.novlnovl.domain.comment.service.CommentService;
-import co.botechservices.novlnovl.infrastructure.manager.ContextManager;
+import co.botechservices.novlnovl.infrastructure.util.ContextManager;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.http.ResponseEntity;

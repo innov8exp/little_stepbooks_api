@@ -4,7 +4,7 @@ import co.botechservices.novlnovl.domain.book.dto.BookDto;
 import co.botechservices.novlnovl.domain.book.entity.BookEntity;
 import co.botechservices.novlnovl.domain.library.service.FavoriteService;
 import co.botechservices.novlnovl.infrastructure.assembler.BaseAssembler;
-import co.botechservices.novlnovl.infrastructure.manager.ContextManager;
+import co.botechservices.novlnovl.infrastructure.util.ContextManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

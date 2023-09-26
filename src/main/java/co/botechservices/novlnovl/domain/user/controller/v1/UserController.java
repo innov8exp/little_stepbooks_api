@@ -13,15 +13,15 @@ import co.botechservices.novlnovl.infrastructure.assembler.BaseAssembler;
 import co.botechservices.novlnovl.infrastructure.enums.EmailType;
 import co.botechservices.novlnovl.infrastructure.exception.BusinessException;
 import co.botechservices.novlnovl.infrastructure.exception.ErrorCode;
-import co.botechservices.novlnovl.infrastructure.manager.ContextManager;
+import co.botechservices.novlnovl.infrastructure.util.ContextManager;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 

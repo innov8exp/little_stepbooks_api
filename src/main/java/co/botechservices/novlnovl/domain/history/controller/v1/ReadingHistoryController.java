@@ -7,14 +7,14 @@ import co.botechservices.novlnovl.domain.history.entity.ReadingHistoryEntity;
 import co.botechservices.novlnovl.domain.history.service.ReadingHistoryService;
 import co.botechservices.novlnovl.domain.user.entity.UserEntity;
 import co.botechservices.novlnovl.infrastructure.assembler.BaseAssembler;
-import co.botechservices.novlnovl.infrastructure.manager.ContextManager;
+import co.botechservices.novlnovl.infrastructure.util.ContextManager;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController

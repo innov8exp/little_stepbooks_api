@@ -34,6 +34,7 @@ public class UserSecurityConfig {
     private final EntryPointUnauthorizedHandler entryPointUnauthorizedHandler;
     private final RestAccessDeniedHandler restAccessDeniedHandler;
 
+    // CHECKSTYLE:OFF
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))

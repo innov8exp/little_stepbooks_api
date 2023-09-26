@@ -5,7 +5,7 @@ import co.botechservices.novlnovl.domain.book.entity.ChapterEntity;
 import co.botechservices.novlnovl.domain.book.service.ChapterService;
 import co.botechservices.novlnovl.domain.history.service.ReadingHistoryService;
 import co.botechservices.novlnovl.infrastructure.assembler.BaseAssembler;
-import co.botechservices.novlnovl.infrastructure.manager.ContextManager;
+import co.botechservices.novlnovl.infrastructure.util.ContextManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
