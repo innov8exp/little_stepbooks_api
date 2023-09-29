@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="co.botechservices.novlnovl.infrastructure.mapper.ConsumptionMapper">
+<mapper namespace="com.stepbook.infrastructure.mapper.ConsumptionMapper">
     <select id="findByCriteria"
-            resultType="co.botechservices.novlnovl.domain.admin.order.dto.ConsumptionInfoDto">
+            resultType="com.stepbook.domain.admin.order.dto.ConsumptionInfoDto">
         select o.*, b.book_name, c.chapter_name, u.username, u.nickname
         from novl_consumption o
         left join novl_book b
@@ -24,7 +24,7 @@
         </if>
     </select>
     <select id="findPageByUser"
-            resultType="co.botechservices.novlnovl.domain.admin.order.dto.ConsumptionInfoDto">
+            resultType="com.stepbook.domain.admin.order.dto.ConsumptionInfoDto">
         select o.*, b.book_name, c.chapter_name, c.chapter_number, u.username
         from novl_consumption o
         left join novl_book b

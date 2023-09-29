@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="co.botechservices.novlnovl.infrastructure.mapper.CommentMapper">
+<mapper namespace="com.stepbook.infrastructure.mapper.CommentMapper">
     <select id="findCommentsByCriteria"
-            resultType="co.botechservices.novlnovl.domain.comment.dto.CommentDetailDto">
+            resultType="com.stepbook.domain.comment.dto.CommentDetailDto">
         select c.*, b.book_name, u.username, u.nickname, u.avatar_img from novl_comment c
         inner join novl_book b
         on c.book_id = b.id
@@ -18,7 +18,7 @@
         order by c.created_at desc
     </select>
     <select id="searchCommentsByCriteria"
-            resultType="co.botechservices.novlnovl.domain.comment.dto.CommentDetailDto">
+            resultType="com.stepbook.domain.comment.dto.CommentDetailDto">
         select c.*, b.book_name, u.username, u.nickname, u.avatar_img from novl_comment c
         inner join novl_book b
         on c.book_id = b.id
@@ -36,7 +36,7 @@
         order by c.created_at desc
     </select>
     <select id="findCommentsByUser"
-            resultType="co.botechservices.novlnovl.domain.comment.dto.CommentDetailDto">
+            resultType="com.stepbook.domain.comment.dto.CommentDetailDto">
         select c.*, b.book_name, u.username, u.nickname, u.avatar_img from novl_comment c
         inner join novl_book b
         on c.book_id = b.id

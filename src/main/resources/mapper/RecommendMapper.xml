@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="co.botechservices.novlnovl.infrastructure.mapper.RecommendMapper">
+<mapper namespace="com.stepbook.infrastructure.mapper.RecommendMapper">
     <select id="findDefaultRecommendBooks"
-            resultType="co.botechservices.novlnovl.domain.book.entity.BookEntity">
+            resultType="com.stepbook.domain.book.entity.BookEntity">
         select distinct b.* from novl_book b
-        inner join NOVL_RECOMMEND r
+        inner join STEP_RECOMMEND r
         on b.id = r.book_id
         order by r.sort_index ASC
     </select>
-    <select id="listRecommendBooks" resultType="co.botechservices.novlnovl.domain.ads.dto.RecommendBookDto">
+    <select id="listRecommendBooks" resultType="com.stepbook.domain.ads.dto.RecommendBookDto">
         select b.book_name, b.author, b.cover_img, b.introduction, b.is_serialized, b.has_ending,
             r.id, r.recommend_type, r.sort_index 
         from novl_book b
-        inner join NOVL_RECOMMEND r
+        inner join STEP_RECOMMEND r
         on b.id = r.book_id
         order by r.sort_index ASC
     </select>

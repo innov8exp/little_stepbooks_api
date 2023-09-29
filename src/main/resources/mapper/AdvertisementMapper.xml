@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="co.botechservices.novlnovl.infrastructure.mapper.AdvertisementMapper">
+<mapper namespace="com.stepbook.infrastructure.mapper.AdvertisementMapper">
 
-    <select id="findAdsDtos" resultType="co.botechservices.novlnovl.domain.ads.dto.AdvertisementDto">
+    <select id="findAdsDtos" resultType="com.stepbook.domain.ads.dto.AdvertisementDto">
         select a.*, b.book_name, b.cover_img book_img, b.introduction book_introduction, b.author book_author
         from novl_advertisement a
         inner join novl_book b
@@ -12,7 +12,7 @@
             and a.ads_type = #{adsType}
         </if>
     </select>
-    <select id="findAdsDtoById" resultType="co.botechservices.novlnovl.domain.ads.dto.AdvertisementDto">
+    <select id="findAdsDtoById" resultType="com.stepbook.domain.ads.dto.AdvertisementDto">
         select a.*, b.book_name, b.cover_img book_img, b.introduction book_introduction, b.author book_author
         from novl_advertisement a
         inner join novl_book b

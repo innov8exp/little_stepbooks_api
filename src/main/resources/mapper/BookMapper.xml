@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="co.botechservices.novlnovl.infrastructure.mapper.BookMapper">
+<mapper namespace="com.stepbook.infrastructure.mapper.BookMapper">
     <select id="searchAllByBookNameAndKeywords"
-            resultType="co.botechservices.novlnovl.domain.book.dto.BookDetailDto">
-        SELECT b.*, avg(r.rating) rating FROM NOVL_BOOK b
+            resultType="com.stepbook.domain.book.dto.BookDetailDto">
+        SELECT b.*, avg(r.rating) rating FROM STEP_BOOK b
         left join novl_rating r on b.id = r.book_id
         WHERE 1=1
         <if test="keyword != null">
@@ -14,9 +14,9 @@
         and b.status = 'ONLINE'
         group by b.id
     </select>
-    <select id="findTopDefaultBooks" resultType="co.botechservices.novlnovl.domain.book.dto.BookDetailDto">
-        SELECT b.*, avg(r.rating) rating FROM NOVL_BOOK b
-        inner join NOVL_BOOK_CATEGORY_REF c
+    <select id="findTopDefaultBooks" resultType="com.stepbook.domain.book.dto.BookDetailDto">
+        SELECT b.*, avg(r.rating) rating FROM STEP_BOOK b
+        inner join STEP_BOOK_CATEGORY_REF c
         on b.id = c.book_id
         left join novl_rating r on b.id = r.book_id
         WHERE c.category_id = #{categoryID}
@@ -24,23 +24,23 @@
         group by b.id
         ORDER BY b.created_at DESC
     </select>
-    <select id="findTopHighRatedBooks" resultType="co.botechservices.novlnovl.domain.book.dto.BookDetailDto">
+    <select id="findTopHighRatedBooks" resultType="com.stepbook.domain.book.dto.BookDetailDto">
         SELECT b.*, AVG(r.rating) rating FROM
-        NOVL_BOOK b inner join NOVL_RATING r
+        STEP_BOOK b inner join STEP_RATING r
         on b.id = r.book_id
-        inner join NOVL_BOOK_CATEGORY_REF c
+        inner join STEP_BOOK_CATEGORY_REF c
         on b.id = c.book_id
         WHERE c.category_id = #{categoryID}
         and b.status = 'ONLINE'
         group by b.id
         order by rating desc
     </select>
-    <select id="findTopHighViewedBooks" resultType="co.botechservices.novlnovl.domain.book.dto.BookDetailDto">
+    <select id="findTopHighViewedBooks" resultType="com.stepbook.domain.book.dto.BookDetailDto">
         SELECT b.*, count(1) count_num, AVG(r.rating) rating FROM
-        NOVL_BOOK b inner join
-        NOVL_VIEW_HISTORY v
+        STEP_BOOK b inner join
+        STEP_VIEW_HISTORY v
         on b.id = v.book_id
-        inner join NOVL_BOOK_CATEGORY_REF c
+        inner join STEP_BOOK_CATEGORY_REF c
         on b.id = c.book_id
         left join novl_rating r on b.id = r.book_id
         WHERE c.category_id = #{categoryID}
@@ -48,8 +48,8 @@
         group by b.id
         order by count_num desc
     </select>
-    <select id="findTopLatestBooks" resultType="co.botechservices.novlnovl.domain.book.dto.BookDetailDto">
-        SELECT b.*, AVG(r.rating) rating FROM NOVL_BOOK b inner join NOVL_BOOK_CATEGORY_REF c
+    <select id="findTopLatestBooks" resultType="com.stepbook.domain.book.dto.BookDetailDto">
+        SELECT b.*, AVG(r.rating) rating FROM STEP_BOOK b inner join STEP_BOOK_CATEGORY_REF c
         on b.id = c.book_id
         left join novl_rating r on b.id = r.book_id
         WHERE c.category_id = #{categoryID}
@@ -57,8 +57,8 @@
         group by b.id
         ORDER BY b.CREATED_AT DESC
     </select>
-    <select id="findAllByCriteria" resultType="co.botechservices.novlnovl.domain.book.entity.BookEntity">
-        SELECT * FROM NOVL_BOOK b WHERE 1 = 1
+    <select id="findAllByCriteria" resultType="com.stepbook.domain.book.entity.BookEntity">
+        SELECT * FROM STEP_BOOK b WHERE 1 = 1
         <if test="bookName != null">
             <bind name="pattern" value="'%' + bookName + '%'"/>
             AND b.BOOK_NAME ILIKE #{pattern}
@@ -68,14 +68,14 @@
             AND b.AUTHOR ILIKE #{pattern}
         </if>
     </select>
-    <resultMap id="bookResultMap" type="co.botechservices.novlnovl.domain.book.entity.BookEntity">
+    <resultMap id="bookResultMap" type="com.stepbook.domain.book.entity.BookEntity">
         <result column="keywords" property="keywords" typeHandler="org.apache.ibatis.type.ArrayTypeHandler"/>
     </resultMap>
     <select id="findBookById" resultMap="bookResultMap">
-        SELECT * FROM NOVL_BOOK WHERE ID = #{id}
+        SELECT * FROM STEP_BOOK WHERE ID = #{id}
     </select>
-    <select id="searchBookDetails" resultType="co.botechservices.novlnovl.domain.book.dto.BookDetailDto">
-        SELECT b.*, p.price, p.charge_type FROM NOVL_BOOK b
+    <select id="searchBookDetails" resultType="com.stepbook.domain.book.dto.BookDetailDto">
+        SELECT b.*, p.price, p.charge_type FROM STEP_BOOK b
         left join novl_price p on b.id = p.book_id
         WHERE 1 = 1
         <if test="bookName != null">
@@ -87,16 +87,16 @@
             AND b.AUTHOR ILIKE #{pattern}
         </if>
     </select>
-    <select id="findBookDetail" resultType="co.botechservices.novlnovl.domain.book.dto.BookDetailDto">
+    <select id="findBookDetail" resultType="com.stepbook.domain.book.dto.BookDetailDto">
         select b.*, avg(r.rating) rating,
         (select count(r.id) from novl_rating r where r.book_id = b.id) rating_count,
         (select count(c.id) from novl_comment c where c.book_id = b.id) comment_count,
         (select count(h.id) from novl_reading_history h where h.book_id = b.id) read_count,
         (select count(l.id) from novl_like_history l where l.book_id = b.id) favorites_count,
         (select count(p.id) from novl_chapter p where p.book_id = b.id) chapter_count,
-        (select exists(select 1 from NOVL_BOOKSHELF sf where sf.book_id = b.id and sf.user_id = #{userId}))
+        (select exists(select 1 from STEP_BOOKSHELF sf where sf.book_id = b.id and sf.user_id = #{userId}))
         in_bookshelf,
-        (select exists(select 1 from NOVL_FAVORITE fa where fa.book_id = b.id and fa.user_id = #{userId}))
+        (select exists(select 1 from STEP_FAVORITE fa where fa.book_id = b.id and fa.user_id = #{userId}))
         in_favorite,
         (select count(ur.id) from novl_rating ur where ur.book_id = b.id and ur.user_id = #{userId})
         rate_time

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="co.botechservices.novlnovl.infrastructure.mapper.OrderMapper">
-    <select id="findByCriteria" resultType="co.botechservices.novlnovl.domain.admin.order.dto.OrderInfoDto">
+<mapper namespace="com.stepbook.infrastructure.mapper.OrderMapper">
+    <select id="findByCriteria" resultType="com.stepbook.domain.admin.order.dto.OrderInfoDto">
         select o.*, u.username, u.nickname from novl_order o
         left join novl_user u
         on o.user_id = u.id
@@ -13,7 +13,7 @@
             and exists (select 1 from novl_user u1 where u1.username = #{username} and o.user_id = u1.id)
         </if>
     </select>
-    <select id="findPageByUser" resultType="co.botechservices.novlnovl.domain.admin.order.dto.OrderInfoDto">
+    <select id="findPageByUser" resultType="com.stepbook.domain.admin.order.dto.OrderInfoDto">
         select o.* from novl_order o
         where o.user_id = #{userId}
         order by o.created_at desc

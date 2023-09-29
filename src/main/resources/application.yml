@@ -30,7 +30,7 @@ spring:
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:
-    type-enums-package: co.botechservices.novlnovl.infrastructure.enums
+    type-enums-package: com.stepbook.infrastructure.enums
     #    cache-enabled: false
     map-underscore-to-camel-case: true
     #  #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
@@ -53,7 +53,7 @@ mybatis-plus:
 
 logging:
   level:
-    co.botechservices.novlnovl: debug
+    com.stepbook: debug
 
 springdoc:
   show-actuator: true
@@ -95,7 +95,7 @@ admin:
 
 
 aws:
-  region: ap-northeast-1
+  region: cn-north-1
   s3:
     pre-signed-url-expire-time: 7200  # 2 hours
 

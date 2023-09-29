@@ -1,7 +1,7 @@
 # DataSource Config
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/novlnovl
+    url: jdbc:postgresql://localhost:5432/stepbook
     username: novl_user
     password: novl_ps
 
@@ -14,7 +14,7 @@ logging:
 
 aws:
   s3:
-    bucket: novlshared
+    bucket: stepbook.production
   cdn: https://novlshared.s3.ap-northeast-1.amazonaws.com
 
 in-app-purchase:

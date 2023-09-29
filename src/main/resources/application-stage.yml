@@ -1,7 +1,7 @@
 # DataSource Config
 spring:
   datasource:
-    url: jdbc:postgresql://novlnovl.c6p4vkkcrnqa.us-east-2.rds.amazonaws.com:5432/novlnovl
+    url: jdbc:postgresql://non-prod-db.czvfgexghsct.rds.cn-north-1.amazonaws.com.cn:5432/stepbook
     username: postgres
     password: postgres
 
@@ -14,5 +14,5 @@ logging:
 
 aws:
   s3:
-    bucket: novlnovl.stage
+    bucket: stepbook.stage
   cdn: https://d1wf51uw2ybdc9.cloudfront.net

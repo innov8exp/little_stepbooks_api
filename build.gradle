@@ -6,7 +6,7 @@ plugins {
     id 'checkstyle'
 }
 
-group = 'com.stepbooks'
+group = 'com.stepbook'
 version = '0.0.1-SNAPSHOT'
 java {
     sourceCompatibility = '17'

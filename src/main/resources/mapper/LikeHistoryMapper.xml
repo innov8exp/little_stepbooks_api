@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="co.botechservices.novlnovl.infrastructure.mapper.LikeHistoryMapper">
-    <select id="findLikeBooksByUser" resultType="co.botechservices.novlnovl.domain.book.dto.BookDto">
+<mapper namespace="com.stepbook.infrastructure.mapper.LikeHistoryMapper">
+    <select id="findLikeBooksByUser" resultType="com.stepbook.domain.book.dto.BookDto">
         select b.* from novl_like_history l inner join novl_book b
         on l.book_id = b.id
         where l.user_id = #{userId}
