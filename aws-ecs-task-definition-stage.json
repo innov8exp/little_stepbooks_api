@@ -1,5 +1,5 @@
 {
-  "taskDefinitionArn": "arn:aws-cn:ecs:cn-north-1:855070278401:task-definition/nonprod-api-deployment:1",
+  "taskDefinitionArn": "arn:aws-cn:ecs:cn-north-1:855070278401:task-definition/nonprod-api-deployment:2",
   "containerDefinitions": [
     {
       "name": "stepbook-api",
