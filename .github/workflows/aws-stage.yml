@@ -35,7 +35,7 @@ env:
   ECR_REPOSITORY: stepbook_api_nonprod           # set this to your Amazon ECR repository name
   ECS_SERVICE: stepbook_api                 # set this to your Amazon ECS service name
   ECS_CLUSTER: nonprod-cluster                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: aws-ecs-task-definition-stage.json # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION: nonprod-api-deployment # set this to the path to your Amazon ECS task definition
   # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: stepbook_api           # set this to the name of the container in the
   # containerDefinitions section of your task definition
