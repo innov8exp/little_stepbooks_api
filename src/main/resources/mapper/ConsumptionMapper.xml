@@ -4,34 +4,34 @@
     <select id="findByCriteria"
             resultType="com.stepbook.domain.admin.order.dto.ConsumptionInfoDto">
         select o.*, b.book_name, c.chapter_name, u.username, u.nickname
-        from novl_consumption o
-        left join novl_book b
+        from step_consumption o
+        left join step_book b
         on o.book_id = b.id
-        left join novl_chapter c
+        left join step_chapter c
         on o.chapter_id = c.id
-        left join novl_user u
+        left join step_user u
         on o.user_id = u.id
         where 1 = 1
         <if test="consumeOrderNo != null">
             and o.consume_order_no = #{consumeOrderNo}
         </if>
         <if test="username != null">
-            and exists (select 1 from novl_user u1 where u1.username = #{username} and o.user_id = u1.id)
+            and exists (select 1 from step_user u1 where u1.username = #{username} and o.user_id = u1.id)
         </if>
         <if test="bookName != null">
             <bind name="pattern" value="'%' + bookName + '%'"/>
-            and exists (select 1 from novl_book b1 where b1.book_name ILIKE #{pattern} and o.book_id = b1.id)
+            and exists (select 1 from step_book b1 where b1.book_name ILIKE #{pattern} and o.book_id = b1.id)
         </if>
     </select>
     <select id="findPageByUser"
             resultType="com.stepbook.domain.admin.order.dto.ConsumptionInfoDto">
         select o.*, b.book_name, c.chapter_name, c.chapter_number, u.username
-        from novl_consumption o
-        left join novl_book b
+        from step_consumption o
+        left join step_book b
         on o.book_id = b.id
-        left join novl_chapter c
+        left join step_chapter c
         on o.chapter_id = c.id
-        left join novl_user u
+        left join step_user u
         on o.user_id = u.id
         where o.user_id = #{userId}
         order by o.created_at desc

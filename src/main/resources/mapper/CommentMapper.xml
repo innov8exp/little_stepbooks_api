@@ -3,10 +3,10 @@
 <mapper namespace="com.stepbook.infrastructure.mapper.CommentMapper">
     <select id="findCommentsByCriteria"
             resultType="com.stepbook.domain.comment.dto.CommentDetailDto">
-        select c.*, b.book_name, u.username, u.nickname, u.avatar_img from novl_comment c
-        inner join novl_book b
+        select c.*, b.book_name, u.username, u.nickname, u.avatar_img from step_comment c
+        inner join step_book b
         on c.book_id = b.id
-        inner join novl_user u
+        inner join step_user u
         on c.user_id = u.id
         where 1 = 1
         <if test="bookId != null">
@@ -19,28 +19,28 @@
     </select>
     <select id="searchCommentsByCriteria"
             resultType="com.stepbook.domain.comment.dto.CommentDetailDto">
-        select c.*, b.book_name, u.username, u.nickname, u.avatar_img from novl_comment c
-        inner join novl_book b
+        select c.*, b.book_name, u.username, u.nickname, u.avatar_img from step_comment c
+        inner join step_book b
         on c.book_id = b.id
-        inner join novl_user u
+        inner join step_user u
         on c.user_id = u.id
         where 1 = 1
         <if test="bookName != null">
             <bind name="bookPattern" value="'%' + bookName + '%'"/>
-            and exists (select 1 from novl_book b1 where b1.book_name ILIKE #{bookPattern} and c.book_id = b1.id)
+            and exists (select 1 from step_book b1 where b1.book_name ILIKE #{bookPattern} and c.book_id = b1.id)
         </if>
         <if test="nickname != null">
             <bind name="userPattern" value="'%' + nickname + '%'"/>
-            and exists (select 1 from novl_user u1 where u1.nickname ILIKE #{userPattern} and c.user_id = u1.id)
+            and exists (select 1 from step_user u1 where u1.nickname ILIKE #{userPattern} and c.user_id = u1.id)
         </if>
         order by c.created_at desc
     </select>
     <select id="findCommentsByUser"
             resultType="com.stepbook.domain.comment.dto.CommentDetailDto">
-        select c.*, b.book_name, u.username, u.nickname, u.avatar_img from novl_comment c
-        inner join novl_book b
+        select c.*, b.book_name, u.username, u.nickname, u.avatar_img from step_comment c
+        inner join step_book b
         on c.book_id = b.id
-        inner join novl_user u
+        inner join step_user u
         on c.user_id = u.id
         where u.id = #{userId}
         order by c.created_at desc

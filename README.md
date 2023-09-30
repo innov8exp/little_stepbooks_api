@@ -11,10 +11,10 @@
 
 ```shell script
 docker run -p 5432:5432 -d \
-  --name novlnovl_db \
-  -e POSTGRES_DB=novlnovl \
-  -e POSTGRES_USER=novlnovl_user \
-  -e POSTGRES_PASSWORD=novlnovl \
+  --name stepbook_db \
+  -e POSTGRES_DB=stepbook \
+  -e POSTGRES_USER=stepbook_user \
+  -e POSTGRES_PASSWORD=stepbook \
   -e PGDATA=/var/lib/postgresql/data/pgdata \
   postgres:13.1-alpine
 ``` 

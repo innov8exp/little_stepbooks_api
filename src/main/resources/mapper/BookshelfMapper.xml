@@ -3,7 +3,7 @@
 <mapper namespace="com.stepbook.infrastructure.mapper.BookshelfMapper">
     <select id="findBooksInBookshelfByUser"
             resultType="com.stepbook.domain.book.entity.BookEntity">
-        select b.* from novl_book b
+        select b.* from step_book b
         inner join STEP_BOOKSHELF s
         on b.id = s.book_id
         where s.user_id = #{userId}

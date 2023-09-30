@@ -385,9 +385,9 @@ CREATE TABLE STEP_AUTH_HISTORY (
 );
 
 
-CREATE INDEX novl_book_name_index ON STEP_BOOK (book_name);
-CREATE INDEX novl_keywords_index ON STEP_BOOK (keywords);
-CREATE INDEX novl_author_index ON STEP_BOOK (author);
+CREATE INDEX step_book_name_index ON STEP_BOOK (book_name);
+CREATE INDEX step_keywords_index ON STEP_BOOK (keywords);
+CREATE INDEX step_author_index ON STEP_BOOK (author);
 
 alter table STEP_BOOKSHELF add constraint uk_bookshelf_book_user unique (book_id, user_id);
 alter table STEP_FAVORITE add constraint uk_favorite_book_user unique (book_id, user_id);

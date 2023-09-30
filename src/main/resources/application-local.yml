@@ -1,9 +1,9 @@
 # DataSource Config
 spring:
   datasource:
-    url: jdbc:postgresql://non-prod-db.czvfgexghsct.rds.cn-north-1.amazonaws.com.cn:5432/stepbook
-    username: novlnovl_user
-    password: novlnovl
+    url: jdbc:postgresql://localhost:65432/stepbook
+    username: stepbook_user
+    password: stepbook
 
 logging:
   level:

@@ -5,8 +5,8 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: novlnovl_user
-      POSTGRES_PASSWORD: novlnovl
-      POSTGRES_DB: novlnovl
+      POSTGRES_USER: stepbook_user
+      POSTGRES_PASSWORD: stepbook
+      POSTGRES_DB: stepbook
     ports:
       - "65432:5432"

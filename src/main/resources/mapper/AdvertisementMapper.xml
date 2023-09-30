@@ -4,8 +4,8 @@
 
     <select id="findAdsDtos" resultType="com.stepbook.domain.ads.dto.AdvertisementDto">
         select a.*, b.book_name, b.cover_img book_img, b.introduction book_introduction, b.author book_author
-        from novl_advertisement a
-        inner join novl_book b
+        from step_advertisement a
+        inner join step_book b
         on a.book_id = b.id
         where 1 = 1
         <if test="adsType != null">
@@ -14,8 +14,8 @@
     </select>
     <select id="findAdsDtoById" resultType="com.stepbook.domain.ads.dto.AdvertisementDto">
         select a.*, b.book_name, b.cover_img book_img, b.introduction book_introduction, b.author book_author
-        from novl_advertisement a
-        inner join novl_book b
+        from step_advertisement a
+        inner join step_book b
         on a.book_id = b.id
         where a.id = #{id}
     </select>

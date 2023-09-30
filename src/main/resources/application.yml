@@ -62,7 +62,7 @@ springdoc:
 
 jwt:
   header: Authorization
-  issuer: Novlnovl
+  issuer: Stepbook
   token-type: Bearer
   access-token:
     secret: 61AI@Ce$S9Mu
@@ -82,7 +82,7 @@ google:
 admin:
   jwt:
     header: Authorization
-    issuer: NovlnovlAdmin
+    issuer: Stepbook
     token-type: Bearer
     access-token:
       cookie-name: access_token
@@ -108,6 +108,6 @@ in-app-purchase:
     android: https://androidpublisher.googleapis.com
 
 bundle-id:
-  ios: com.novlnovl.ios.app
-  android: com.novlnovl.android.app
+  ios: com.stepbook.ios.app
+  android: com.stepbook.android.app
 

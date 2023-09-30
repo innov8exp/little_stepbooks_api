@@ -3,7 +3,7 @@
 <mapper namespace="com.stepbook.infrastructure.mapper.FavoriteMapper">
     <select id="findBooksFromFavoriteByUserId"
             resultType="com.stepbook.domain.book.entity.BookEntity">
-        select b.* from novl_book b
+        select b.* from step_book b
         inner join STEP_FAVORITE f
         on b.id = f.book_id
         where f.user_id = #{userId}

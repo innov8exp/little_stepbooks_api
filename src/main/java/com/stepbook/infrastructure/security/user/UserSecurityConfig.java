@@ -1,35 +1,26 @@
 package com.stepbook.infrastructure.security.user;
 
-import com.stepbook.domain.user.assembler.AuthAssembler;
-import com.stepbook.domain.user.entity.UserEntity;
-import com.stepbook.domain.user.service.UserService;
 import com.stepbook.infrastructure.security.EntryPointUnauthorizedHandler;
 import com.stepbook.infrastructure.security.RestAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.util.ObjectUtils;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Order(1)
 @Configuration
 @RequiredArgsConstructor
 public class UserSecurityConfig {
 
-    private final UserService userService;
+    private final MvcRequestMatcher.Builder mvc;
     private final UserAuthenticationTokenFilter userAuthenticationTokenFilter;
     private final EntryPointUnauthorizedHandler entryPointUnauthorizedHandler;
     private final RestAccessDeniedHandler restAccessDeniedHandler;
@@ -38,20 +29,12 @@ public class UserSecurityConfig {
     @Bean
     public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .authorizeHttpRequests((authz) -> authz.requestMatchers("/auth/login",
-                                "/auth/social-login",
-                                "/auth/guest-login",
-                                "/auth/refresh-token",
-                                "/auth/logout",
-                                "/auth/register",
-                                "/auth/reset-password",
-                                "/auth/validation",
-                                "/auth/verification",
-                                "/admin/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/actuator/**")
+                .authorizeHttpRequests((authz) -> authz.requestMatchers(mvc.pattern("/auth/*"),
+                                mvc.pattern("/admin/**"),
+                                antMatcher("/v3/api-docs/**"),
+                                antMatcher("/swagger-ui/**"),
+                                antMatcher("/swagger-ui.html"),
+                                mvc.pattern("/actuator/**"))
                         .permitAll()
                         .anyRequest().authenticated()
                 )
@@ -62,33 +45,5 @@ public class UserSecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> {
-            UserEntity userEntity = userService.findUserByUsername(username);
-            if (ObjectUtils.isEmpty(userEntity)) {
-                throw new UsernameNotFoundException("Cannot found the user with username: " + username);
-            }
-            return AuthAssembler.userEntityToJwtUserDetails(userEntity);
-        };
-    }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
 }

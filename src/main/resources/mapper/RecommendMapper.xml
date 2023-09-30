@@ -3,7 +3,7 @@
 <mapper namespace="com.stepbook.infrastructure.mapper.RecommendMapper">
     <select id="findDefaultRecommendBooks"
             resultType="com.stepbook.domain.book.entity.BookEntity">
-        select distinct b.* from novl_book b
+        select distinct b.* from step_book b
         inner join STEP_RECOMMEND r
         on b.id = r.book_id
         order by r.sort_index ASC
@@ -11,7 +11,7 @@
     <select id="listRecommendBooks" resultType="com.stepbook.domain.ads.dto.RecommendBookDto">
         select b.book_name, b.author, b.cover_img, b.introduction, b.is_serialized, b.has_ending,
             r.id, r.recommend_type, r.sort_index 
-        from novl_book b
+        from step_book b
         inner join STEP_RECOMMEND r
         on b.id = r.book_id
         order by r.sort_index ASC

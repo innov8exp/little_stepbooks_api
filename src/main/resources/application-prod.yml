@@ -2,8 +2,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/stepbook
-    username: novl_user
-    password: novl_ps
+    username: step_user
+    password: step_ps
 
 server:
   forward-headers-strategy: framework

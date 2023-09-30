@@ -3,7 +3,7 @@
 <mapper namespace="com.stepbook.infrastructure.mapper.FinishHistoryMapper">
     <select id="findFinishBooksByUser"
             resultType="com.stepbook.domain.book.dto.BookDto">
-        select DISTINCT b.* from novl_finish_history f inner join novl_book b
+        select DISTINCT b.* from step_finish_history f inner join step_book b
         on f.book_id = b.id
         where f.user_id = #{userId}
     </select>

@@ -12,7 +12,7 @@
     <select id="findUserReadBooks" resultType="com.stepbook.domain.book.dto.BookDetailDto">
         select b.*, avg(r.rating) rating from STEP_READING_HISTORY h inner join STEP_BOOK b
         on h.book_id = b.id
-        left join novl_rating r on b.id = r.book_id
+        left join step_rating r on b.id = r.book_id
         where h.user_id = #{userId}
         group by b.id, h.created_at
         order by h.created_at desc

@@ -23,7 +23,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class UserAuthenticationTokenFilter extends OncePerRequestFilter {
 
-    private final UserDetailsService userDetailService;
+    private final UserDetailsService endUserDetailsService;
     private final UserJwtTokenProvider jwtTokenProvider;
     @Value("${jwt.header}")
     private String authHeader;
@@ -34,7 +34,10 @@ public class UserAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        if (request.getServletPath().contains("/auth")) {
+        if (request.getServletPath().contains("/auth")
+                || request.getServletPath().contains("/swagger-ui")
+                || request.getServletPath().contains("/api-docs")
+                || request.getServletPath().contains("/actuator")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -71,7 +74,7 @@ public class UserAuthenticationTokenFilter extends OncePerRequestFilter {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails;
             try {
-                userDetails = userDetailService.loadUserByUsername(username);
+                userDetails = endUserDetailsService.loadUserByUsername(username);
             } catch (UsernameNotFoundException e) {
                 filterChain.doFilter(request, response);
                 return;

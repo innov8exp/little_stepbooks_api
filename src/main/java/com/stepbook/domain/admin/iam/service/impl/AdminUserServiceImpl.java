@@ -1,5 +1,7 @@
 package com.stepbook.domain.admin.iam.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.stepbook.domain.admin.iam.assembler.AdminAuthAssembler;
 import com.stepbook.domain.admin.iam.entity.AdminUserEntity;
 import com.stepbook.domain.admin.iam.service.AdminUserService;
@@ -9,8 +11,7 @@ import com.stepbook.infrastructure.exception.ErrorCode;
 import com.stepbook.infrastructure.mapper.AdminUserMapper;
 import com.stepbook.infrastructure.model.JwtUserDetails;
 import com.stepbook.infrastructure.security.admin.AdminJwtTokenProvider;
-import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -18,15 +19,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AdminUserServiceImpl implements AdminUserService {
 
     private final AdminUserMapper adminUserMapper;
     private final AdminJwtTokenProvider adminJwtTokenProvider;
-
-    public AdminUserServiceImpl(AdminUserMapper adminUserMapper, AdminJwtTokenProvider adminJwtTokenProvider) {
-        this.adminUserMapper = adminUserMapper;
-        this.adminJwtTokenProvider = adminJwtTokenProvider;
-    }
 
     @Override
     public AdminUserEntity findUserByEmail(String email) {

@@ -4,18 +4,18 @@
 
     <select id="findPromotions" resultType="com.stepbook.domain.price.dto.PromotionDto">
         select p.*, b.book_name, c.price original_coin_amount
-        from novl_promotion p
-        inner join novl_book b
+        from step_promotion p
+        inner join step_book b
         on p.book_id = b.id
-        left join novl_price c
+        left join step_price c
         on p.book_id = c.book_id
     </select>
     <select id="findPromotion" resultType="com.stepbook.domain.price.dto.PromotionDto">
         select p.*, b.book_name, c.price original_coin_amount
-        from novl_promotion p
-        inner join novl_book b
+        from step_promotion p
+        inner join step_book b
         on p.book_id = b.id
-        left join novl_price c
+        left join step_price c
         on p.book_id = c.book_id
         where p.id = #{id}
     </select>
