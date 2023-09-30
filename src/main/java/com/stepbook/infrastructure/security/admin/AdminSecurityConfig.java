@@ -57,7 +57,7 @@ public class AdminSecurityConfig  {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService adminUserDetailsService() {
         return username -> {
             AdminUserEntity adminUserEntity = adminUserService.findUserByUsername(username);
             if (ObjectUtils.isEmpty(adminUserEntity)) {
@@ -68,20 +68,20 @@ public class AdminSecurityConfig  {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider adminAuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setUserDetailsService(adminUserDetailsService());
+        authProvider.setPasswordEncoder(adminPasswordEncoder());
         return authProvider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager adminAuthenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder adminPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
