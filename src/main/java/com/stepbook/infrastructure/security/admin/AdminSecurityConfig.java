@@ -36,7 +36,7 @@ public class AdminSecurityConfig  {
 
     // CHECKSTYLE:OFF
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests((authz) -> authz.requestMatchers("/admin/auth/login",
                                 "/admin/auth/refresh-token",
