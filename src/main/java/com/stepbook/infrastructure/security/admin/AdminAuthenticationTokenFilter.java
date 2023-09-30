@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor
 public class AdminAuthenticationTokenFilter extends OncePerRequestFilter {
 
-    private final UserDetailsService userDetailServices;
+    private final UserDetailsService adminUserDetailsService;
     private final AdminJwtTokenProvider adminJwtTokenProvider;
     @Value("${admin.jwt.access-token.cookie-name}")
     private String accessTokenCookieName;
@@ -32,31 +34,30 @@ public class AdminAuthenticationTokenFilter extends OncePerRequestFilter {
     @Value("${admin.jwt.token-type}")
     private String tokenType;
 
-    public AdminAuthenticationTokenFilter(@Qualifier("adminDetailsServiceImpl") UserDetailsService userDetailServices,
-                                          AdminJwtTokenProvider adminJwtTokenProvider) {
-        this.userDetailServices = userDetailServices;
-        this.adminJwtTokenProvider = adminJwtTokenProvider;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        if (request.getServletPath().contains("/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-        if (!request.getRequestURI().startsWith("/admin")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        if (request.getRequestURI().startsWith("/admin/auth/login")
-                || request.getRequestURI().startsWith("/admin/auth/register")
-                || request.getRequestURI().startsWith("/admin/auth/logout")
-                || request.getRequestURI().startsWith("/admin/auth/refresh-token")
-                || request.getRequestURI().startsWith("/v3/api-docs")
-                || request.getRequestURI().startsWith("/swagger-ui")
-                || request.getRequestURI().startsWith("/actuator")
-        ) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+//        if (!request.getRequestURI().startsWith("/admin")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//        if (request.getRequestURI().startsWith("/admin/auth/login")
+//                || request.getRequestURI().startsWith("/admin/auth/register")
+//                || request.getRequestURI().startsWith("/admin/auth/logout")
+//                || request.getRequestURI().startsWith("/admin/auth/refresh-token")
+//                || request.getRequestURI().startsWith("/v3/api-docs")
+//                || request.getRequestURI().startsWith("/swagger-ui")
+//                || request.getRequestURI().startsWith("/actuator")
+//        ) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
         if (ObjectUtils.isEmpty(cookies)) {
@@ -84,7 +85,7 @@ public class AdminAuthenticationTokenFilter extends OncePerRequestFilter {
         }
         UserDetails userDetails;
         try {
-            userDetails = userDetailServices.loadUserByUsername(username);
+            userDetails = adminUserDetailsService.loadUserByUsername(username);
         } catch (UsernameNotFoundException e) {
             filterChain.doFilter(request, response);
             return;
