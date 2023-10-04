@@ -1,9 +1,9 @@
 # DataSource Config
 spring:
   datasource:
-    url: jdbc:postgresql://non-prod-db.czvfgexghsct.rds.cn-north-1.amazonaws.com.cn:5432/stepbook
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://non-prod-db.czvfgexghsct.rds.cn-north-1.amazonaws.com.cn:5432/stepbook_stage?ssl=true&sslrootcert=/app/rds-cert.pem
+    username: stepbook_user
+    password: 17@6WI4zcA
 
 server:
   forward-headers-strategy: framework
