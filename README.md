@@ -25,3 +25,11 @@ docker run -p 5432:5432 -d \
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 ```
+
+
+```postgres-sql
+CREATE USER stepbook_user WITH PASSWORD '17@6WI4zcA';
+GRANT ALL PRIVILEGES ON DATABASE stepbook_stage TO stepbook_user;
+GRANT ALL PRIVILEGES ON all tables in schema public TO stepbook_user;
+GRANT ALL ON SCHEMA public TO stepbook_user;
+```

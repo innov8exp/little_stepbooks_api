@@ -13,36 +13,34 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
 @Order(2)
 @Configuration
 @RequiredArgsConstructor
-public class AdminSecurityConfig  {
+public class AdminSecurityConfig {
 
-    private final MvcRequestMatcher.Builder mvc;
-    private final AdminAuthenticationTokenFilter adminAuthenticationTokenFilter;
     private final EntryPointUnauthorizedHandler entryPointUnauthorizedHandler;
     private final RestAccessDeniedHandler restAccessDeniedHandler;
-
+    private final MvcRequestMatcher.Builder mvc;
+    private final AdminAuthFilter adminAuthFilter;
 
     // CHECKSTYLE:OFF
     @Bean
     public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .authorizeHttpRequests((authz) -> authz.requestMatchers(mvc.pattern("/admin/auth/*"),
-                                antMatcher("/v3/api-docs/**"),
-                                antMatcher("/swagger-ui/**"),
-                                antMatcher("/swagger-ui.html"),
-                                mvc.pattern("/actuator/**"))
+        http
+                .securityMatcher("/admin/**")
+                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(adminAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling((exceptions) -> exceptions
+                        .authenticationEntryPoint(entryPointUnauthorizedHandler)
+                        .accessDeniedHandler(restAccessDeniedHandler))
+                .authorizeHttpRequests((requests) -> requests.requestMatchers(
+                                mvc.pattern("/admin/auth/login"),
+                                mvc.pattern("/admin/auth/refresh"),
+                                mvc.pattern("/admin/auth/logout"))
                         .permitAll()
                         .anyRequest().authenticated()
-                )
-                .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(adminAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(entryPointUnauthorizedHandler).accessDeniedHandler(restAccessDeniedHandler));
+                );
         return http.build();
     }
-
-
 }
