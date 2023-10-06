@@ -85,13 +85,11 @@ public class MAuthController {
     }
 
     @GetMapping("/user-info")
-    public ResponseEntity<String> userInfo() {
+    public ResponseEntity<AdminUserDto> userInfo() {
         JwtUserDetails details = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AdminUserEntity adminUserEntity = adminUserService.findUserByUsername(details.getUsername());
         AdminUserDto userDto = BaseAssembler.convert(adminUserEntity, AdminUserDto.class);
-        byte[] encode = Base64.getEncoder().encode(JsonUtils.toJson(userDto).getBytes());
-        String userInfoStr = new String(encode, StandardCharsets.UTF_8);
-        return ResponseEntity.ok(userInfoStr);
+        return ResponseEntity.ok(userDto);
     }
 
     @PostMapping("/logout")
