@@ -10,7 +10,6 @@ import com.stepbook.infrastructure.exception.BusinessException;
 import com.stepbook.infrastructure.exception.ErrorCode;
 import com.stepbook.infrastructure.model.JwtUserDetails;
 import com.stepbook.infrastructure.security.admin.AdminJwtTokenProvider;
-import com.stepbook.infrastructure.util.JsonUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -20,9 +19,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 @RestController
 @RequestMapping("/admin/auth")
