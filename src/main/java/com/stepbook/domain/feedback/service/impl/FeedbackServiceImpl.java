@@ -2,7 +2,7 @@ package com.stepbook.domain.feedback.service.impl;
 
 import com.stepbook.domain.feedback.entity.FeedbackEntity;
 import com.stepbook.domain.feedback.service.FeedbackService;
-import com.stepbook.infrastructure.mapper.FeedbackMapper;
+import com.stepbook.domain.feedback.mapper.FeedbackMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

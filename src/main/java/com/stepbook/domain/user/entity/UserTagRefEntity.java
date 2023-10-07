@@ -9,7 +9,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("NVOL_USER_TAG_REF")
+@TableName("STEP_USER_TAG_REF")
 public class UserTagRefEntity extends BaseEntity {
     private String userId;
     private String tagId;

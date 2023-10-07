@@ -18,9 +18,9 @@ public class OpenAPIConfig {
     }
 
     @Bean
-    public GroupedOpenApi publicApi() {
+    public GroupedOpenApi clientApi() {
         return GroupedOpenApi.builder()
-                .group("stepbook-public")
+                .group("stepbook-client")
                 .pathsToMatch("/**")
                 .pathsToExclude("/admin/**")
                 .build();

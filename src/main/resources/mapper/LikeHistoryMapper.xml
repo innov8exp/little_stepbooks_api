@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.stepbook.infrastructure.mapper.LikeHistoryMapper">
-    <select id="findLikeBooksByUser" resultType="com.stepbook.domain.book.dto.BookDto">
+<mapper namespace="com.stepbook.domain.history.mapper.LikeHistoryMapper">
+    <select id="findLikeBooksByUser" resultType="com.stepbook.interfaces.client.dto.BookDto">
         select b.* from step_like_history l inner join step_book b
         on l.book_id = b.id
         where l.user_id = #{userId}

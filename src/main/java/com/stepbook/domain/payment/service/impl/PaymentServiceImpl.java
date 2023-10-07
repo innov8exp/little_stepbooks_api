@@ -1,11 +1,11 @@
 package com.stepbook.domain.payment.service.impl;
 
-import com.stepbook.domain.payment.client.AndroidClient;
-import com.stepbook.domain.payment.client.IOSClient;
-import com.stepbook.domain.payment.dto.AndroidVerifyReceiptRequest;
-import com.stepbook.domain.payment.dto.AndroidVerifyReceiptResponse;
-import com.stepbook.domain.payment.dto.IOSVerifyReceiptRequest;
-import com.stepbook.domain.payment.dto.IOSVerifyReceiptResponse;
+import com.stepbook.application.client.AndroidClient;
+import com.stepbook.application.client.IOSClient;
+import com.stepbook.domain.payment.vo.AndroidVerifyReceiptRequest;
+import com.stepbook.domain.payment.vo.AndroidVerifyReceiptResponse;
+import com.stepbook.domain.payment.vo.IOSVerifyReceiptRequest;
+import com.stepbook.domain.payment.vo.IOSVerifyReceiptResponse;
 import com.stepbook.domain.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

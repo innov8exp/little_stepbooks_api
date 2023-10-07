@@ -1,13 +1,13 @@
 package com.stepbook.domain.history.service.impl;
 
-import com.stepbook.domain.book.dto.BookDetailDto;
-import com.stepbook.domain.book.dto.ChapterDto;
-import com.stepbook.domain.book.dto.ChapterWithHistoryDto;
+import com.stepbook.interfaces.client.dto.BookDetailDto;
+import com.stepbook.interfaces.client.dto.ChapterDto;
+import com.stepbook.interfaces.client.dto.ChapterWithHistoryDto;
 import com.stepbook.domain.book.service.ChapterService;
 import com.stepbook.domain.history.entity.ReadingHistoryEntity;
 import com.stepbook.domain.history.service.ReadingHistoryService;
 import com.stepbook.domain.order.service.ConsumptionService;
-import com.stepbook.infrastructure.mapper.ReadingHistoryMapper;
+import com.stepbook.domain.history.mapper.ReadingHistoryMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

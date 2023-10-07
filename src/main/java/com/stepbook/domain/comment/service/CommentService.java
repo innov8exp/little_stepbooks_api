@@ -1,6 +1,6 @@
 package com.stepbook.domain.comment.service;
 
-import com.stepbook.domain.comment.dto.CommentDetailDto;
+import com.stepbook.interfaces.client.dto.CommentDetailDto;
 import com.stepbook.domain.comment.entity.CommentEntity;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.stepbook.infrastructure.mapper.ChapterMapper">
+<mapper namespace="com.stepbook.domain.book.mapper.ChapterMapper">
     <select id="findChaptersInPaging" resultType="com.stepbook.domain.book.entity.ChapterEntity">
         SELECT * FROM STEP_CHAPTER WHERE BOOK_ID = #{bookId}
     </select>
     <select id="findChapterCountByBooks"
-            resultType="com.stepbook.domain.book.dto.ChapterCountDto">
+            resultType="com.stepbook.interfaces.client.dto.ChapterCountDto">
         select c.BOOK_ID, count(1) as CHAPTER_COUNT from STEP_CHAPTER c WHERE BOOK_ID in
         <foreach item="bookId" index="index" collection="bookIds" open="(" separator="," close=")">
             #{bookId}

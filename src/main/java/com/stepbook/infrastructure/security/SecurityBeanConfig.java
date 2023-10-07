@@ -1,9 +1,9 @@
 package com.stepbook.infrastructure.security;
 
-import com.stepbook.domain.admin.iam.assembler.AdminAuthAssembler;
-import com.stepbook.domain.admin.iam.entity.AdminUserEntity;
-import com.stepbook.domain.admin.iam.service.AdminUserService;
-import com.stepbook.domain.user.assembler.AuthAssembler;
+import com.stepbook.interfaces.admin.assembler.AdminAuthAssembler;
+import com.stepbook.domain.admin.entity.AdminUserEntity;
+import com.stepbook.domain.admin.service.AdminUserService;
+import com.stepbook.interfaces.client.assembler.AuthAssembler;
 import com.stepbook.domain.user.entity.UserEntity;
 import com.stepbook.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;

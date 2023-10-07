@@ -31,7 +31,7 @@ spring:
             required: true
 
 mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath*:mapper/*.xml
   configuration:
     type-enums-package: com.stepbook.infrastructure.enums
     #    cache-enabled: false

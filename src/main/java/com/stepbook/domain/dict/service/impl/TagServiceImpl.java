@@ -2,7 +2,7 @@ package com.stepbook.domain.dict.service.impl;
 
 import com.stepbook.domain.dict.entity.TagEntity;
 import com.stepbook.domain.dict.service.TagService;
-import com.stepbook.infrastructure.mapper.TagMapper;
+import com.stepbook.domain.dict.mapper.TagMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

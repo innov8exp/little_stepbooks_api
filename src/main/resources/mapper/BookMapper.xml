@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.stepbook.infrastructure.mapper.BookMapper">
+<mapper namespace="com.stepbook.domain.book.mapper.BookMapper">
     <select id="searchAllByBookNameAndKeywords"
-            resultType="com.stepbook.domain.book.dto.BookDetailDto">
+            resultType="com.stepbook.interfaces.client.dto.BookDetailDto">
         SELECT b.*, avg(r.rating) rating FROM STEP_BOOK b
         left join step_rating r on b.id = r.book_id
         WHERE 1=1
@@ -14,7 +14,7 @@
         and b.status = 'ONLINE'
         group by b.id
     </select>
-    <select id="findTopDefaultBooks" resultType="com.stepbook.domain.book.dto.BookDetailDto">
+    <select id="findTopDefaultBooks" resultType="com.stepbook.interfaces.client.dto.BookDetailDto">
         SELECT b.*, avg(r.rating) rating FROM STEP_BOOK b
         inner join STEP_BOOK_CATEGORY_REF c
         on b.id = c.book_id
@@ -24,7 +24,7 @@
         group by b.id
         ORDER BY b.created_at DESC
     </select>
-    <select id="findTopHighRatedBooks" resultType="com.stepbook.domain.book.dto.BookDetailDto">
+    <select id="findTopHighRatedBooks" resultType="com.stepbook.interfaces.client.dto.BookDetailDto">
         SELECT b.*, AVG(r.rating) rating FROM
         STEP_BOOK b inner join STEP_RATING r
         on b.id = r.book_id
@@ -35,7 +35,7 @@
         group by b.id
         order by rating desc
     </select>
-    <select id="findTopHighViewedBooks" resultType="com.stepbook.domain.book.dto.BookDetailDto">
+    <select id="findTopHighViewedBooks" resultType="com.stepbook.interfaces.client.dto.BookDetailDto">
         SELECT b.*, count(1) count_num, AVG(r.rating) rating FROM
         STEP_BOOK b inner join
         STEP_VIEW_HISTORY v
@@ -48,7 +48,7 @@
         group by b.id
         order by count_num desc
     </select>
-    <select id="findTopLatestBooks" resultType="com.stepbook.domain.book.dto.BookDetailDto">
+    <select id="findTopLatestBooks" resultType="com.stepbook.interfaces.client.dto.BookDetailDto">
         SELECT b.*, AVG(r.rating) rating FROM STEP_BOOK b inner join STEP_BOOK_CATEGORY_REF c
         on b.id = c.book_id
         left join step_rating r on b.id = r.book_id
@@ -74,7 +74,7 @@
     <select id="findBookById" resultMap="bookResultMap">
         SELECT * FROM STEP_BOOK WHERE ID = #{id}
     </select>
-    <select id="searchBookDetails" resultType="com.stepbook.domain.book.dto.BookDetailDto">
+    <select id="searchBookDetails" resultType="com.stepbook.interfaces.client.dto.BookDetailDto">
         SELECT b.*, p.price, p.charge_type FROM STEP_BOOK b
         left join step_price p on b.id = p.book_id
         WHERE 1 = 1
@@ -87,7 +87,7 @@
             AND b.AUTHOR ILIKE #{pattern}
         </if>
     </select>
-    <select id="findBookDetail" resultType="com.stepbook.domain.book.dto.BookDetailDto">
+    <select id="findBookDetail" resultType="com.stepbook.interfaces.client.dto.BookDetailDto">
         select b.*, avg(r.rating) rating,
         (select count(r.id) from step_rating r where r.book_id = b.id) rating_count,
         (select count(c.id) from step_comment c where c.book_id = b.id) comment_count,

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan("com.stepbook.infrastructure.mapper")
+@MapperScan("com.stepbook.**.mapper")
 public class MybatisConfig {
 
     @Bean

@@ -1,18 +1,18 @@
 package com.stepbook.domain.book.service.impl;
 
-import com.stepbook.domain.book.dto.ChapterCountDto;
-import com.stepbook.domain.book.dto.ChapterDto;
-import com.stepbook.domain.book.dto.ChapterNameAndKeyDto;
+import com.stepbook.interfaces.client.dto.ChapterCountDto;
+import com.stepbook.interfaces.client.dto.ChapterDto;
+import com.stepbook.interfaces.client.dto.ChapterNameAndKeyDto;
 import com.stepbook.domain.book.entity.BookEntity;
 import com.stepbook.domain.book.entity.ChapterEntity;
 import com.stepbook.domain.book.service.BookService;
 import com.stepbook.domain.book.service.ChapterService;
-import com.stepbook.domain.file.service.FileService;
+import com.stepbook.domain.common.service.FileService;
 import com.stepbook.domain.order.entity.ConsumptionEntity;
 import com.stepbook.domain.order.service.ConsumptionService;
 import com.stepbook.infrastructure.assembler.BaseAssembler;
 import com.stepbook.infrastructure.enums.UploadType;
-import com.stepbook.infrastructure.mapper.ChapterMapper;
+import com.stepbook.domain.book.mapper.ChapterMapper;
 import com.stepbook.infrastructure.model.BaseEntity;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;

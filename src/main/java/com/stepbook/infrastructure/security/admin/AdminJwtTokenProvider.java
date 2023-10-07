@@ -1,6 +1,6 @@
 package com.stepbook.infrastructure.security.admin;
 
-import com.stepbook.domain.user.dto.TokenDto;
+import com.stepbook.interfaces.client.dto.TokenDto;
 import com.stepbook.infrastructure.exception.BusinessException;
 import com.stepbook.infrastructure.exception.ErrorCode;
 import com.stepbook.infrastructure.model.JwtUserDetails;

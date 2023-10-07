@@ -2,7 +2,7 @@ package com.stepbook.domain.product.service.impl;
 
 import com.stepbook.domain.product.entity.ProductEntity;
 import com.stepbook.domain.product.service.ProductService;
-import com.stepbook.infrastructure.mapper.ProductMapper;
+import com.stepbook.domain.product.mapper.ProductMapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.stereotype.Service;

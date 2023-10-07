@@ -2,7 +2,7 @@ package com.stepbook.domain.comment.service.impl;
 
 import com.stepbook.domain.comment.entity.RatingEntity;
 import com.stepbook.domain.comment.service.RatingService;
-import com.stepbook.infrastructure.mapper.RatingMapper;
+import com.stepbook.domain.comment.mapper.RatingMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

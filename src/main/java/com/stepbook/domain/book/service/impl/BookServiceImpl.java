@@ -1,18 +1,18 @@
 package com.stepbook.domain.book.service.impl;
 
-import com.stepbook.domain.admin.book.dto.MBookQueryDto;
-import com.stepbook.domain.book.dto.BookDetailDto;
+import com.stepbook.interfaces.admin.dto.MBookQueryDto;
+import com.stepbook.interfaces.client.dto.BookDetailDto;
 import com.stepbook.domain.book.entity.BookCategoryRefEntity;
 import com.stepbook.domain.book.entity.BookEntity;
 import com.stepbook.domain.book.service.BookService;
-import com.stepbook.domain.file.service.FileService;
+import com.stepbook.domain.common.service.FileService;
 import com.stepbook.domain.price.entity.PriceEntity;
 import com.stepbook.infrastructure.assembler.BaseAssembler;
 import com.stepbook.infrastructure.enums.BookStatus;
 import com.stepbook.infrastructure.enums.OrderByCriteria;
-import com.stepbook.infrastructure.mapper.BookCategoryRefMapper;
-import com.stepbook.infrastructure.mapper.BookMapper;
-import com.stepbook.infrastructure.mapper.PriceMapper;
+import com.stepbook.domain.book.mapper.BookCategoryRefMapper;
+import com.stepbook.domain.book.mapper.BookMapper;
+import com.stepbook.domain.price.mapper.PriceMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

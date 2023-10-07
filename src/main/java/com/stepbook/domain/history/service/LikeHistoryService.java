@@ -1,6 +1,6 @@
 package com.stepbook.domain.history.service;
 
-import com.stepbook.domain.book.dto.BookDto;
+import com.stepbook.interfaces.client.dto.BookDto;
 
 import java.util.List;
 

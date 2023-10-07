@@ -1,11 +1,11 @@
 package com.stepbook.domain.email.service.impl;
 
-import com.stepbook.domain.email.dto.EmailDto;
+import com.stepbook.interfaces.client.dto.EmailDto;
 import com.stepbook.domain.email.entity.EmailHistoryEntity;
 import com.stepbook.domain.email.service.EmailService;
 import com.stepbook.infrastructure.enums.EmailStatus;
 import com.stepbook.infrastructure.enums.EmailType;
-import com.stepbook.infrastructure.mapper.EmailHistoryMapper;
+import com.stepbook.domain.email.mapper.EmailHistoryMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

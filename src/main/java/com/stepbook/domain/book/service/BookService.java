@@ -1,7 +1,7 @@
 package com.stepbook.domain.book.service;
 
-import com.stepbook.domain.admin.book.dto.MBookQueryDto;
-import com.stepbook.domain.book.dto.BookDetailDto;
+import com.stepbook.interfaces.admin.dto.MBookQueryDto;
+import com.stepbook.interfaces.client.dto.BookDetailDto;
 import com.stepbook.domain.book.entity.BookEntity;
 import com.stepbook.infrastructure.enums.BookStatus;
 import com.stepbook.infrastructure.enums.OrderByCriteria;

@@ -1,9 +1,9 @@
 package com.stepbook.domain.order.service.impl;
 
-import com.stepbook.domain.admin.order.dto.ConsumptionInfoDto;
+import com.stepbook.interfaces.admin.dto.ConsumptionInfoDto;
 import com.stepbook.domain.order.entity.ConsumptionEntity;
 import com.stepbook.domain.order.service.ConsumptionService;
-import com.stepbook.infrastructure.mapper.ConsumptionMapper;
+import com.stepbook.domain.order.mapper.ConsumptionMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;

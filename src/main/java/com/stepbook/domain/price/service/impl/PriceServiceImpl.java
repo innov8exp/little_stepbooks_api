@@ -2,7 +2,7 @@ package com.stepbook.domain.price.service.impl;
 
 import com.stepbook.domain.price.entity.PriceEntity;
 import com.stepbook.domain.price.service.PriceService;
-import com.stepbook.infrastructure.mapper.PriceMapper;
+import com.stepbook.domain.price.mapper.PriceMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.stepbook.infrastructure.security.user;
 
-import com.stepbook.domain.user.dto.TokenDto;
+import com.stepbook.interfaces.client.dto.TokenDto;
 import com.stepbook.infrastructure.enums.AuthType;
 import com.stepbook.infrastructure.exception.BusinessException;
 import com.stepbook.infrastructure.exception.ErrorCode;

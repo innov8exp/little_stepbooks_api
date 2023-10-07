@@ -3,7 +3,7 @@ package com.stepbook.domain.dict.service.impl;
 import com.stepbook.domain.dict.entity.CategoryEntity;
 import com.stepbook.domain.dict.service.CategoryService;
 import com.stepbook.infrastructure.enums.SortDirection;
-import com.stepbook.infrastructure.mapper.CategoryMapper;
+import com.stepbook.domain.book.mapper.CategoryMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

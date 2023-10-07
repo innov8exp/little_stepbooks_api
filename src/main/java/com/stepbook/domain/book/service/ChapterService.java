@@ -1,7 +1,7 @@
 package com.stepbook.domain.book.service;
 
-import com.stepbook.domain.book.dto.ChapterCountDto;
-import com.stepbook.domain.book.dto.ChapterDto;
+import com.stepbook.interfaces.client.dto.ChapterCountDto;
+import com.stepbook.interfaces.client.dto.ChapterDto;
 import com.stepbook.domain.book.entity.ChapterEntity;
 import com.stepbook.infrastructure.enums.UploadType;
 import com.baomidou.mybatisplus.core.metadata.IPage;

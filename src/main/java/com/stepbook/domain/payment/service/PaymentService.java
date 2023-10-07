@@ -1,9 +1,9 @@
 package com.stepbook.domain.payment.service;
 
-import com.stepbook.domain.payment.dto.AndroidVerifyReceiptRequest;
-import com.stepbook.domain.payment.dto.AndroidVerifyReceiptResponse;
-import com.stepbook.domain.payment.dto.IOSVerifyReceiptRequest;
-import com.stepbook.domain.payment.dto.IOSVerifyReceiptResponse;
+import com.stepbook.domain.payment.vo.AndroidVerifyReceiptRequest;
+import com.stepbook.domain.payment.vo.AndroidVerifyReceiptResponse;
+import com.stepbook.domain.payment.vo.IOSVerifyReceiptRequest;
+import com.stepbook.domain.payment.vo.IOSVerifyReceiptResponse;
 
 public interface PaymentService {
 

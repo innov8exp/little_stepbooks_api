@@ -1,7 +1,7 @@
 package com.stepbook.domain.user.service.impl;
 
-import com.stepbook.domain.order.dto.ConsumptionDto;
-import com.stepbook.domain.order.dto.OrderDto;
+import com.stepbook.interfaces.client.dto.ConsumptionDto;
+import com.stepbook.interfaces.client.dto.OrderDto;
 import com.stepbook.domain.order.entity.ConsumptionEntity;
 import com.stepbook.domain.order.entity.OrderEntity;
 import com.stepbook.domain.order.service.ConsumptionService;
@@ -14,7 +14,7 @@ import com.stepbook.infrastructure.assembler.BaseAssembler;
 import com.stepbook.infrastructure.enums.OrderStatus;
 import com.stepbook.infrastructure.exception.BusinessException;
 import com.stepbook.infrastructure.exception.ErrorCode;
-import com.stepbook.infrastructure.mapper.UserAccountMapper;
+import com.stepbook.domain.user.mapper.UserAccountMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

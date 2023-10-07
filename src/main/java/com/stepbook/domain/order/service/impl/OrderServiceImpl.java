@@ -1,9 +1,9 @@
 package com.stepbook.domain.order.service.impl;
 
-import com.stepbook.domain.admin.order.dto.OrderInfoDto;
+import com.stepbook.interfaces.admin.dto.OrderInfoDto;
 import com.stepbook.domain.order.entity.OrderEntity;
 import com.stepbook.domain.order.service.OrderService;
-import com.stepbook.infrastructure.mapper.OrderMapper;
+import com.stepbook.domain.order.mapper.OrderMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

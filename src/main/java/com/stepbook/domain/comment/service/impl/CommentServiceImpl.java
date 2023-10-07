@@ -1,9 +1,9 @@
 package com.stepbook.domain.comment.service.impl;
 
-import com.stepbook.domain.comment.dto.CommentDetailDto;
+import com.stepbook.interfaces.client.dto.CommentDetailDto;
 import com.stepbook.domain.comment.entity.CommentEntity;
 import com.stepbook.domain.comment.service.CommentService;
-import com.stepbook.infrastructure.mapper.CommentMapper;
+import com.stepbook.domain.comment.mapper.CommentMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

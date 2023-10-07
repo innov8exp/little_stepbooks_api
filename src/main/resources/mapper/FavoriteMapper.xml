@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.stepbook.infrastructure.mapper.FavoriteMapper">
+<mapper namespace="com.stepbook.domain.bookshelf.mapper.FavoriteMapper">
     <select id="findBooksFromFavoriteByUserId"
             resultType="com.stepbook.domain.book.entity.BookEntity">
         select b.* from step_book b
