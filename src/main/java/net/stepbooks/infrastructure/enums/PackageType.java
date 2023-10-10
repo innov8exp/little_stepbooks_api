@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;
 
 @Getter
-public enum AdsType {
-    RECOMMEND("RECOMMEND"), CAROUSEL("CAROUSEL");
+public enum PackageType {
+    SINGLE("SINGLE"), PACKAGE("PACKAGE");
 
     @EnumValue
     private final String value;
 
-    AdsType(String value) {
+    PackageType(String value) {
         this.value = value;
     }
 }

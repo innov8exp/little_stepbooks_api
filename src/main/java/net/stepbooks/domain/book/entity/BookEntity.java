@@ -16,12 +16,11 @@ import org.apache.ibatis.type.JdbcType;
 public class BookEntity extends BaseEntity {
     private String bookName;
     private String author;
-    private String coverImg;
+    private String bookImgLink;
     private String introduction;
     @TableField(jdbcType = JdbcType.ARRAY, typeHandler = ArrayTypeHandler.class)
     private String[] keywords;
     private Boolean isSerialized;
     private Boolean hasEnding;
-    private String contentLocation;
     private String status;
 }

@@ -1,20 +1,8 @@
 package net.stepbooks.domain.product.entity;
 
-import net.stepbooks.infrastructure.enums.ClientPlatform;
-import net.stepbooks.infrastructure.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import net.stepbooks.infrastructure.model.BaseEntity;
 
-import java.math.BigDecimal;
-
-@EqualsAndHashCode(callSuper = true)
-@Data
 @TableName("STEP_PRODUCT")
 public class ProductEntity extends BaseEntity {
-    private String productNo;
-    private BigDecimal coinAmount;
-    private BigDecimal price;
-    private ClientPlatform platform;
-    private String storeProductId;
 }

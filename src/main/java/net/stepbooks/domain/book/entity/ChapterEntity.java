@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @TableName("STEP_CHAPTER")
+@Deprecated
 public class ChapterEntity extends BaseEntity {
     private Integer chapterNumber;
     private String chapterName;
