@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.stepbook.domain.history.mapper.ReadingHistoryMapper">
+<mapper namespace="net.stepbook.domain.history.mapper.ReadingHistoryMapper">
     <select id="findBookLastChapterRecordByUser"
-            resultType="com.stepbook.interfaces.client.dto.ChapterWithHistoryDto">
+            resultType="net.stepbooks.interfaces.client.dto.ChapterWithHistoryDto">
         select c.*, h.paragraph_number from STEP_CHAPTER c
         inner join STEP_READING_HISTORY h
         on c.id = h.chapter_id
         where h.book_id = #{bookId}
         and h.user_id = #{userId}
     </select>
-    <select id="findUserReadBooks" resultType="com.stepbook.interfaces.client.dto.BookDetailDto">
+    <select id="findUserReadBooks" resultType="net.stepbooks.interfaces.client.dto.BookDetailDto">
         select b.*, avg(r.rating) rating from STEP_READING_HISTORY h inner join STEP_BOOK b
         on h.book_id = b.id
         left join step_rating r on b.id = r.book_id

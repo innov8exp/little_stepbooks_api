@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: stepbook_user
-      POSTGRES_PASSWORD: stepbook
-      POSTGRES_DB: stepbook
+      POSTGRES_PASSWORD: stepbooks
+      POSTGRES_DB: stepbooks
     ports:
       - "65432:5432"

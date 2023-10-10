@@ -33,7 +33,7 @@ spring:
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml
   configuration:
-    type-enums-package: com.stepbook.infrastructure.enums
+    type-enums-package: net.stepbooks.infrastructure.enums
     #    cache-enabled: false
     map-underscore-to-camel-case: true
     #  #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
@@ -56,7 +56,7 @@ mybatis-plus:
 
 logging:
   level:
-    com.stepbook: debug
+    net.stepbooks: debug
 
 springdoc:
   show-actuator: true
@@ -111,6 +111,6 @@ in-app-purchase:
     android: https://androidpublisher.googleapis.com
 
 bundle-id:
-  ios: com.stepbook.ios.app
-  android: com.stepbook.android.app
+  ios: net.stepbooks.ios.app
+  android: net.stepbooks.android.app
 
