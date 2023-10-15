@@ -40,8 +40,6 @@ create TABLE STEP_BOOK
     book_img_link       TEXT,
     introduction        TEXT,
     keywords            VARCHAR[],
-    is_serialized       BOOLEAN DEFAULT(false),
-    has_ending          BOOLEAN DEFAULT(true),
     total_page_number   INTEGER,
     status              VARCHAR(20),    -- DISABLE, ENABLE
     created_at          TIMESTAMP,
@@ -53,6 +51,7 @@ create TABLE STEP_BOOK_CONTENT
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
     book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
+    page_discription TEXT,
     page_number INTEGER NOT NULL,
     page_img_link TEXT,
     page_audio_link TEXT,
@@ -64,7 +63,6 @@ create TABLE STEP_BOOK_CONTENT
 create TABLE STEP_COURSE
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
-    book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
     course_name VARCHAR(200) NOT NULL,
     course_img_link VARCHAR(200),
     course_description TEXT,
@@ -98,6 +96,8 @@ create TABLE STEP_PRODUCT
     charge_type VARCHAR(20), -- FREE, FULL_CHARGE, PART_CHARGE
     sales_platform VARCHAR(20), -- ANDROID, IOS, MINI_PROGRAM
     product_description TEXT,
+    product_img_link TEXT,
+    product_object_type VARCHAR(20), --PHYSICAL, VIRTUAL
     price DECIMAL,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
@@ -119,6 +119,16 @@ create TABLE STEP_PRODUCT_COURSE_REF
     course_id VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL
 );
 
+-- 库存信息
+create TABLE STEP_INVENTORY
+(
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    product_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    inventory_amount INTEGER,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
+);
+
 -- 促销信息
 create TABLE STEP_PROMOTION
 (
@@ -131,6 +141,17 @@ create TABLE STEP_PROMOTION
     discount_percent    DECIMAL,
     created_at          TIMESTAMP,
     modified_at         TIMESTAMP
+);
+
+-- 购物车
+create TABLE STEP_SHOPPING_CART
+(
+   id VARCHAR(100) NOT NULL PRIMARY KEY,
+   user_id VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
+   product_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+   product_amount DECIMAL,
+   created_at          TIMESTAMP,
+   modified_at         TIMESTAMP
 );
 
 -- 订单信息

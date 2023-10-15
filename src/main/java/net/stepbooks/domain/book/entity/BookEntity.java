@@ -1,9 +1,9 @@
 package net.stepbooks.domain.book.entity;
 
-import net.stepbooks.infrastructure.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+import net.stepbooks.infrastructure.model.BaseEntity;
 import org.apache.ibatis.type.ArrayTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
@@ -20,7 +20,5 @@ public class BookEntity extends BaseEntity {
     private String introduction;
     @TableField(jdbcType = JdbcType.ARRAY, typeHandler = ArrayTypeHandler.class)
     private String[] keywords;
-    private Boolean isSerialized;
-    private Boolean hasEnding;
     private String status;
 }
