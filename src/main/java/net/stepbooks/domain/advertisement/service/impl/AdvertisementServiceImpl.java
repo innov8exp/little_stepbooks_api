@@ -1,10 +1,10 @@
 package net.stepbooks.domain.advertisement.service.impl;
 
-import net.stepbooks.interfaces.client.dto.AdvertisementDto;
 import net.stepbooks.domain.advertisement.entity.AdvertisementEntity;
+import net.stepbooks.domain.advertisement.mapper.AdvertisementMapper;
 import net.stepbooks.domain.advertisement.service.AdvertisementService;
 import net.stepbooks.infrastructure.enums.AdsType;
-import net.stepbooks.domain.advertisement.mapper.AdvertisementMapper;
+import net.stepbooks.interfaces.client.dto.AdvertisementDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

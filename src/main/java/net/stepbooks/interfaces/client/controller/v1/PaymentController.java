@@ -1,17 +1,20 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
-import net.stepbooks.interfaces.client.dto.OrderDto;
-import net.stepbooks.domain.payment.service.PaymentService;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.coin.entity.CoinEntity;
 import net.stepbooks.domain.coin.service.CoinService;
+import net.stepbooks.domain.payment.service.PaymentService;
+import net.stepbooks.domain.payment.vo.*;
 import net.stepbooks.domain.user.entity.UserEntity;
 import net.stepbooks.domain.user.service.UserAccountService;
 import net.stepbooks.infrastructure.enums.ClientPlatform;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.domain.payment.vo.*;
-import lombok.RequiredArgsConstructor;
+import net.stepbooks.interfaces.client.dto.OrderDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/payments")

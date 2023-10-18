@@ -1,11 +1,11 @@
 package net.stepbooks.domain.email.entity;
 
-import net.stepbooks.infrastructure.enums.EmailStatus;
-import net.stepbooks.infrastructure.enums.EmailType;
-import net.stepbooks.infrastructure.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.stepbooks.infrastructure.enums.EmailStatus;
+import net.stepbooks.infrastructure.enums.EmailType;
+import net.stepbooks.infrastructure.model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

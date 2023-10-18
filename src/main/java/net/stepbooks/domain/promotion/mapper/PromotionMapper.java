@@ -1,8 +1,8 @@
 package net.stepbooks.domain.promotion.mapper;
 
-import net.stepbooks.interfaces.client.dto.PromotionDto;
-import net.stepbooks.domain.promotion.entity.PromotionEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import net.stepbooks.domain.promotion.entity.PromotionEntity;
+import net.stepbooks.interfaces.client.dto.PromotionDto;
 
 import java.util.List;
 

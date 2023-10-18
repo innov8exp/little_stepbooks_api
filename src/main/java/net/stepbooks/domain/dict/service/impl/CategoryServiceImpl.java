@@ -1,10 +1,10 @@
 package net.stepbooks.domain.dict.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import net.stepbooks.domain.book.mapper.CategoryMapper;
 import net.stepbooks.domain.dict.entity.CategoryEntity;
 import net.stepbooks.domain.dict.service.CategoryService;
 import net.stepbooks.infrastructure.enums.SortDirection;
-import net.stepbooks.domain.book.mapper.CategoryMapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

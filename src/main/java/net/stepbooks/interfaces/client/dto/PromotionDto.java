@@ -1,10 +1,10 @@
 package net.stepbooks.interfaces.client.dto;
 
-import net.stepbooks.infrastructure.enums.PromotionType;
-import net.stepbooks.infrastructure.model.BaseDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.stepbooks.infrastructure.enums.PromotionType;
+import net.stepbooks.infrastructure.model.BaseDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

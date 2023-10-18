@@ -1,7 +1,7 @@
 package net.stepbooks.domain.bookshelf.entity;
 
-import net.stepbooks.infrastructure.model.BaseEntity;
 import lombok.*;
+import net.stepbooks.infrastructure.model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

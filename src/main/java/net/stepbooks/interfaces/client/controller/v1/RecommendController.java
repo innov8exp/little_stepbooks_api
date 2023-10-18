@@ -1,7 +1,7 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
-import net.stepbooks.interfaces.client.dto.RecommendBookDto;
 import net.stepbooks.domain.advertisement.service.RecommendService;
+import net.stepbooks.interfaces.client.dto.RecommendBookDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,7 +1,9 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.email.service.EmailService;
-import net.stepbooks.interfaces.client.dto.*;
 import net.stepbooks.domain.user.entity.UserAccountEntity;
 import net.stepbooks.domain.user.entity.UserEntity;
 import net.stepbooks.domain.user.entity.UserTagRefEntity;
@@ -12,9 +14,6 @@ import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
 import net.stepbooks.interfaces.client.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;

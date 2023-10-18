@@ -1,9 +1,9 @@
 package net.stepbooks.interfaces.client.dto;
 
-import net.stepbooks.infrastructure.model.BaseDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.stepbooks.infrastructure.model.BaseDto;
 
 
 @EqualsAndHashCode(callSuper = true)

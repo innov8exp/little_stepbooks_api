@@ -1,8 +1,8 @@
 package net.stepbooks.infrastructure.security.user;
 
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.infrastructure.security.EntryPointUnauthorizedHandler;
 import net.stepbooks.infrastructure.security.RestAccessDeniedHandler;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;

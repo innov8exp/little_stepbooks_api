@@ -1,9 +1,9 @@
 package net.stepbooks.domain.comment.service.impl;
 
-import net.stepbooks.domain.comment.entity.RatingEntity;
-import net.stepbooks.domain.comment.service.RatingService;
-import net.stepbooks.domain.comment.mapper.RatingMapper;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.comment.entity.RatingEntity;
+import net.stepbooks.domain.comment.mapper.RatingMapper;
+import net.stepbooks.domain.comment.service.RatingService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

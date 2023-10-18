@@ -1,8 +1,8 @@
 package net.stepbooks.domain.history.mapper;
 
-import net.stepbooks.interfaces.client.dto.BookDto;
-import net.stepbooks.domain.history.entity.FinishHistoryEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import net.stepbooks.domain.history.entity.FinishHistoryEntity;
+import net.stepbooks.interfaces.client.dto.BookDto;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

@@ -1,9 +1,9 @@
 package net.stepbooks.domain.advertisement.service;
 
 
-import net.stepbooks.interfaces.client.dto.AdvertisementDto;
 import net.stepbooks.domain.advertisement.entity.AdvertisementEntity;
 import net.stepbooks.infrastructure.enums.AdsType;
+import net.stepbooks.interfaces.client.dto.AdvertisementDto;
 
 import java.util.List;
 

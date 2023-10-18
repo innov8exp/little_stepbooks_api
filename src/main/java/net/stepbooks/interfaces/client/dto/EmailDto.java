@@ -1,7 +1,7 @@
 package net.stepbooks.interfaces.client.dto;
 
-import net.stepbooks.infrastructure.enums.EmailType;
 import lombok.Data;
+import net.stepbooks.infrastructure.enums.EmailType;
 
 @Data
 public class EmailDto {

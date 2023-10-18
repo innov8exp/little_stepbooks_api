@@ -1,8 +1,8 @@
 package net.stepbooks.infrastructure.config;
 
-import net.stepbooks.infrastructure.model.ValidPassword;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import net.stepbooks.infrastructure.model.ValidPassword;
 import org.passay.*;
 import org.springframework.util.ObjectUtils;
 

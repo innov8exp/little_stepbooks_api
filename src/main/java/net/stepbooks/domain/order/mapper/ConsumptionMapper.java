@@ -1,10 +1,10 @@
 package net.stepbooks.domain.order.mapper;
 
-import net.stepbooks.interfaces.admin.dto.ConsumptionInfoDto;
-import net.stepbooks.domain.order.entity.ConsumptionEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import net.stepbooks.domain.order.entity.ConsumptionEntity;
+import net.stepbooks.interfaces.admin.dto.ConsumptionInfoDto;
 
 public interface ConsumptionMapper extends BaseMapper<ConsumptionEntity> {
 

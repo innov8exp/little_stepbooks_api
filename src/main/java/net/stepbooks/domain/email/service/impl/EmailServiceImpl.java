@@ -1,14 +1,14 @@
 package net.stepbooks.domain.email.service.impl;
 
-import net.stepbooks.interfaces.client.dto.EmailDto;
-import net.stepbooks.domain.email.entity.EmailHistoryEntity;
-import net.stepbooks.domain.email.service.EmailService;
-import net.stepbooks.infrastructure.enums.EmailStatus;
-import net.stepbooks.infrastructure.enums.EmailType;
-import net.stepbooks.domain.email.mapper.EmailHistoryMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import net.stepbooks.domain.email.entity.EmailHistoryEntity;
+import net.stepbooks.domain.email.mapper.EmailHistoryMapper;
+import net.stepbooks.domain.email.service.EmailService;
+import net.stepbooks.infrastructure.enums.EmailStatus;
+import net.stepbooks.infrastructure.enums.EmailType;
+import net.stepbooks.interfaces.client.dto.EmailDto;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;

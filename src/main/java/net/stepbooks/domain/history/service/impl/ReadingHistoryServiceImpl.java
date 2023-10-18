@@ -1,23 +1,20 @@
 package net.stepbooks.domain.history.service.impl;
 
-import net.stepbooks.interfaces.client.dto.BookDetailDto;
-import net.stepbooks.interfaces.client.dto.ChapterDto;
-import net.stepbooks.interfaces.client.dto.ChapterWithHistoryDto;
-import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
-import net.stepbooks.domain.history.service.ReadingHistoryService;
-import net.stepbooks.domain.order.service.ConsumptionService;
-import net.stepbooks.domain.history.mapper.ReadingHistoryMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
+import net.stepbooks.domain.history.mapper.ReadingHistoryMapper;
+import net.stepbooks.domain.history.service.ReadingHistoryService;
+import net.stepbooks.domain.order.service.ConsumptionService;
+import net.stepbooks.interfaces.client.dto.BookDetailDto;
+import net.stepbooks.interfaces.client.dto.ChapterWithHistoryDto;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +40,7 @@ public class ReadingHistoryServiceImpl implements ReadingHistoryService {
 
     @Override
     public List<ChapterWithHistoryDto> getReadingHistory(String bookId, String userId) {
-        //TODO: implement me
+        //todo: implement me
         return null;
     }
 

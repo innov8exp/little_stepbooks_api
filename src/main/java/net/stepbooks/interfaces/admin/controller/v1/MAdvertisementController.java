@@ -1,10 +1,10 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
-import net.stepbooks.interfaces.client.dto.AdvertisementDto;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.advertisement.entity.AdvertisementEntity;
 import net.stepbooks.domain.advertisement.service.AdvertisementService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
-import lombok.RequiredArgsConstructor;
+import net.stepbooks.interfaces.client.dto.AdvertisementDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

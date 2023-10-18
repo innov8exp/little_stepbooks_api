@@ -1,10 +1,10 @@
 package net.stepbooks.domain.price.entity;
 
-import net.stepbooks.infrastructure.enums.ChargeType;
-import net.stepbooks.infrastructure.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.stepbooks.infrastructure.enums.ChargeType;
+import net.stepbooks.infrastructure.model.BaseEntity;
 
 import java.math.BigDecimal;
 

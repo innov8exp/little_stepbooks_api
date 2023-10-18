@@ -1,9 +1,9 @@
 package net.stepbooks.domain.history.service.impl;
 
-import net.stepbooks.interfaces.client.dto.BookDto;
 import net.stepbooks.domain.history.entity.FinishHistoryEntity;
-import net.stepbooks.domain.history.service.FinishHistoryService;
 import net.stepbooks.domain.history.mapper.FinishHistoryMapper;
+import net.stepbooks.domain.history.service.FinishHistoryService;
+import net.stepbooks.interfaces.client.dto.BookDto;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

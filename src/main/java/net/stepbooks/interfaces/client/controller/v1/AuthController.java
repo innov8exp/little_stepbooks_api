@@ -1,5 +1,9 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.email.service.EmailService;
 import net.stepbooks.domain.user.entity.UserEntity;
 import net.stepbooks.domain.user.service.UserService;
@@ -9,11 +13,6 @@ import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.interfaces.client.dto.*;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import net.stepbooks.interfaces.client.dto.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

@@ -1,12 +1,12 @@
 package net.stepbooks.infrastructure.security;
 
-import net.stepbooks.interfaces.admin.assembler.AdminAuthAssembler;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.admin.entity.AdminUserEntity;
 import net.stepbooks.domain.admin.service.AdminUserService;
-import net.stepbooks.interfaces.client.assembler.AuthAssembler;
 import net.stepbooks.domain.user.entity.UserEntity;
 import net.stepbooks.domain.user.service.UserService;
-import lombok.RequiredArgsConstructor;
+import net.stepbooks.interfaces.admin.assembler.AdminAuthAssembler;
+import net.stepbooks.interfaces.client.assembler.AuthAssembler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;

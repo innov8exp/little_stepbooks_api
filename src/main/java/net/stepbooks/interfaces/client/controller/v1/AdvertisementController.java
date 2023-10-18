@@ -1,8 +1,8 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
-import net.stepbooks.interfaces.client.dto.AdvertisementDto;
 import net.stepbooks.domain.advertisement.service.AdvertisementService;
 import net.stepbooks.infrastructure.enums.AdsType;
+import net.stepbooks.interfaces.client.dto.AdvertisementDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,8 +1,8 @@
 package net.stepbooks.domain.history.mapper;
 
-import net.stepbooks.interfaces.client.dto.BookDto;
-import net.stepbooks.domain.history.entity.LikeHistoryEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import net.stepbooks.domain.history.entity.LikeHistoryEntity;
+import net.stepbooks.interfaces.client.dto.BookDto;
 
 import java.util.List;
 

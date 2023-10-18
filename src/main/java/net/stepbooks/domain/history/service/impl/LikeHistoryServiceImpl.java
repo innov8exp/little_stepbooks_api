@@ -1,8 +1,8 @@
 package net.stepbooks.domain.history.service.impl;
 
-import net.stepbooks.interfaces.client.dto.BookDto;
-import net.stepbooks.domain.history.service.LikeHistoryService;
 import net.stepbooks.domain.history.mapper.LikeHistoryMapper;
+import net.stepbooks.domain.history.service.LikeHistoryService;
+import net.stepbooks.interfaces.client.dto.BookDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

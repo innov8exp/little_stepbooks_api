@@ -1,9 +1,9 @@
 package net.stepbooks.domain.advertisement.mapper;
 
-import net.stepbooks.interfaces.client.dto.RecommendBookDto;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import net.stepbooks.domain.advertisement.entity.RecommendEntity;
 import net.stepbooks.domain.book.entity.BookEntity;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import net.stepbooks.interfaces.client.dto.RecommendBookDto;
 
 import java.util.List;
 

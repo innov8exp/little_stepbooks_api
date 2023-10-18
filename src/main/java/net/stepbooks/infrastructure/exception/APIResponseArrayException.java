@@ -1,7 +1,7 @@
 package net.stepbooks.infrastructure.exception;
 
-import net.stepbooks.infrastructure.model.APIResponse;
 import lombok.Getter;
+import net.stepbooks.infrastructure.model.APIResponse;
 
 import java.util.List;
 

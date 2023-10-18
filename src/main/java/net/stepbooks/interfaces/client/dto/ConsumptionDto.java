@@ -1,10 +1,10 @@
 package net.stepbooks.interfaces.client.dto;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.stepbooks.infrastructure.enums.ClientPlatform;
 import net.stepbooks.infrastructure.enums.ConsumeType;
 import net.stepbooks.infrastructure.model.BaseDto;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 

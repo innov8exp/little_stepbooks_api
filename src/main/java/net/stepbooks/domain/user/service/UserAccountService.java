@@ -1,8 +1,8 @@
 package net.stepbooks.domain.user.service;
 
+import net.stepbooks.domain.user.entity.UserAccountEntity;
 import net.stepbooks.interfaces.client.dto.ConsumptionDto;
 import net.stepbooks.interfaces.client.dto.OrderDto;
-import net.stepbooks.domain.user.entity.UserAccountEntity;
 
 public interface UserAccountService {
 

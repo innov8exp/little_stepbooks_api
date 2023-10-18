@@ -1,8 +1,8 @@
 package net.stepbooks.infrastructure.model;
 
-import net.stepbooks.infrastructure.config.PasswordConstraintValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
+import net.stepbooks.infrastructure.config.PasswordConstraintValidator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

@@ -1,9 +1,9 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
-import net.stepbooks.interfaces.client.dto.CategoryDto;
 import net.stepbooks.domain.dict.entity.CategoryEntity;
 import net.stepbooks.domain.dict.service.CategoryService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.client.dto.CategoryDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

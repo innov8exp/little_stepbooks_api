@@ -1,9 +1,9 @@
 package net.stepbooks.domain.advertisement.mapper;
 
-import net.stepbooks.interfaces.client.dto.AdvertisementDto;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import net.stepbooks.domain.advertisement.entity.AdvertisementEntity;
 import net.stepbooks.infrastructure.enums.AdsType;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import net.stepbooks.interfaces.client.dto.AdvertisementDto;
 
 import java.util.List;
 

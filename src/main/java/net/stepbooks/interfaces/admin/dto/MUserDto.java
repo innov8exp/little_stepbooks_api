@@ -1,8 +1,8 @@
 package net.stepbooks.interfaces.admin.dto;
 
 
-import net.stepbooks.infrastructure.model.BaseDto;
 import lombok.*;
+import net.stepbooks.infrastructure.model.BaseDto;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

@@ -1,10 +1,10 @@
 package net.stepbooks.domain.bookshelf.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import net.stepbooks.domain.book.entity.BookEntity;
 import net.stepbooks.domain.bookshelf.entity.FavoriteEntity;
-import net.stepbooks.domain.bookshelf.service.FavoriteService;
 import net.stepbooks.domain.bookshelf.mapper.FavoriteMapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import net.stepbooks.domain.bookshelf.service.FavoriteService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

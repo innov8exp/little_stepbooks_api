@@ -1,11 +1,11 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
-import net.stepbooks.interfaces.client.dto.BookDto;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.BookEntity;
 import net.stepbooks.domain.bookshelf.service.FavoriteService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.util.ContextManager;
-import lombok.RequiredArgsConstructor;
+import net.stepbooks.interfaces.client.dto.BookDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

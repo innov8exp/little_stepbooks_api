@@ -1,12 +1,10 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
-import net.stepbooks.interfaces.client.dto.BookDetailDto;
-import net.stepbooks.interfaces.client.dto.BookDto;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.BookEntity;
 import net.stepbooks.domain.book.service.BookService;
-import net.stepbooks.interfaces.client.dto.CommentDetailDto;
-import net.stepbooks.interfaces.client.dto.CommentDto;
-import net.stepbooks.interfaces.client.dto.RatingDto;
 import net.stepbooks.domain.comment.entity.CommentEntity;
 import net.stepbooks.domain.comment.entity.RatingEntity;
 import net.stepbooks.domain.comment.service.CommentService;
@@ -17,9 +15,7 @@ import net.stepbooks.domain.user.entity.UserEntity;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.OrderByCriteria;
 import net.stepbooks.infrastructure.util.ContextManager;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.RequiredArgsConstructor;
+import net.stepbooks.interfaces.client.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

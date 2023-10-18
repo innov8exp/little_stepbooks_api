@@ -1,9 +1,9 @@
 package net.stepbooks.domain.promotion.service.impl;
 
-import net.stepbooks.interfaces.client.dto.PromotionDto;
 import net.stepbooks.domain.promotion.entity.PromotionEntity;
-import net.stepbooks.domain.promotion.service.PromotionService;
 import net.stepbooks.domain.promotion.mapper.PromotionMapper;
+import net.stepbooks.domain.promotion.service.PromotionService;
+import net.stepbooks.interfaces.client.dto.PromotionDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

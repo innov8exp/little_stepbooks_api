@@ -1,7 +1,7 @@
 package net.stepbooks.domain.book.mapper;
 
-import net.stepbooks.domain.dict.entity.CategoryEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import net.stepbooks.domain.dict.entity.CategoryEntity;
 
 import java.util.List;
 

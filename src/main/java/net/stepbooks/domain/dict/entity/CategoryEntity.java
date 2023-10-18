@@ -1,8 +1,8 @@
 package net.stepbooks.domain.dict.entity;
 
-import net.stepbooks.infrastructure.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+import net.stepbooks.infrastructure.model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
