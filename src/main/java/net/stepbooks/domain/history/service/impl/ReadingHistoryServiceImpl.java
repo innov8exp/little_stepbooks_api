@@ -3,7 +3,6 @@ package net.stepbooks.domain.history.service.impl;
 import net.stepbooks.interfaces.client.dto.BookDetailDto;
 import net.stepbooks.interfaces.client.dto.ChapterDto;
 import net.stepbooks.interfaces.client.dto.ChapterWithHistoryDto;
-import net.stepbooks.domain.book.service.ChapterService;
 import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
 import net.stepbooks.domain.history.service.ReadingHistoryService;
 import net.stepbooks.domain.order.service.ConsumptionService;
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 public class ReadingHistoryServiceImpl implements ReadingHistoryService {
 
     private final ReadingHistoryMapper readingHistoryMapper;
-    private final ChapterService chapterService;
     private final ConsumptionService consumptionService;
 
     @Override
@@ -45,22 +43,8 @@ public class ReadingHistoryServiceImpl implements ReadingHistoryService {
 
     @Override
     public List<ChapterWithHistoryDto> getReadingHistory(String bookId, String userId) {
-        List<ChapterDto> chapters = chapterService.getChaptersByBookId(bookId, userId);
-        ChapterWithHistoryDto chapterWithHistoryDto = readingHistoryMapper.findBookLastChapterRecordByUser(bookId, userId);
-
-        return chapters.stream().map(chapterDto -> {
-            ChapterWithHistoryDto historyDto = ChapterWithHistoryDto.builder()
-                    .paragraphNumber(1L)
-                    .build();
-            if (chapterWithHistoryDto != null && chapterDto.getId().equals(chapterWithHistoryDto.getId())) {
-                historyDto = chapterWithHistoryDto;
-                historyDto.setIsLastReadChapter(true);
-            } else {
-                BeanUtils.copyProperties(chapterDto, historyDto);
-            }
-            historyDto.setUnlocked(chapterDto.getUnlocked());
-            return historyDto;
-        }).collect(Collectors.toList());
+        //TODO: implement me
+        return null;
     }
 
     @Override

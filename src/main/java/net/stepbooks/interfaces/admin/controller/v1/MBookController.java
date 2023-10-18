@@ -1,12 +1,12 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import net.stepbooks.interfaces.client.dto.BookDetailDto;
 import net.stepbooks.interfaces.client.dto.BookDto;
 import net.stepbooks.interfaces.client.dto.ChapterCountDto;
 import net.stepbooks.domain.book.entity.BookEntity;
 import net.stepbooks.domain.book.service.BookService;
-import net.stepbooks.domain.book.service.ChapterService;
 import net.stepbooks.domain.dict.entity.CategoryEntity;
 import net.stepbooks.domain.dict.service.CategoryService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
@@ -27,17 +27,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/v1/books")
+@RequiredArgsConstructor
 public class MBookController {
 
     private final BookService bookService;
     private final CategoryService categoryService;
-    private final ChapterService chapterService;
-
-    public MBookController(BookService bookService, CategoryService categoryService, ChapterService chapterService) {
-        this.bookService = bookService;
-        this.categoryService = categoryService;
-        this.chapterService = chapterService;
-    }
 
     @PostMapping
     public ResponseEntity<?> createBook(@RequestBody BookDetailDto bookDto) {
@@ -122,12 +116,6 @@ public class MBookController {
     public ResponseEntity<List<CategoryEntity>> findCategoriesByBook(@PathVariable String id) {
         List<CategoryEntity> categories = categoryService.findCategoriesByBookId(id);
         return ResponseEntity.ok(categories);
-    }
-
-    @GetMapping("/{ids}/chapter-count")
-    public ResponseEntity<List<ChapterCountDto>> findCategoriesCountByBook(@PathVariable String[] ids) {
-        List<ChapterCountDto> chapterCountDtos = chapterService.findCategoryCountsByBookId(ids);
-        return ResponseEntity.ok(chapterCountDtos);
     }
 
 //    @GetMapping

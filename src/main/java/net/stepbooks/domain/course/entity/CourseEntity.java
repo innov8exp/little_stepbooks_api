@@ -1,4 +1,4 @@
-package net.stepbooks.domain.book.entity;
+package net.stepbooks.domain.course.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
