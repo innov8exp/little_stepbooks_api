@@ -4,17 +4,18 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.email.service.EmailService;
-import net.stepbooks.domain.user.entity.UserAccountEntity;
 import net.stepbooks.domain.user.entity.UserEntity;
 import net.stepbooks.domain.user.entity.UserTagRefEntity;
-import net.stepbooks.domain.user.service.UserAccountService;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.interfaces.client.dto.*;
+import net.stepbooks.interfaces.client.dto.UserDto;
+import net.stepbooks.interfaces.client.dto.UserTagRefDto;
+import net.stepbooks.interfaces.client.dto.ValidateDto;
+import net.stepbooks.interfaces.client.dto.VerificationDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,6 @@ public class UserController {
     private final UserService userService;
     private final EmailService emailService;
     private final ContextManager contextManager;
-    private final UserAccountService userAccountService;
 
     @GetMapping("/info")
     public ResponseEntity<UserDto> getUserInfo() {
@@ -53,30 +53,6 @@ public class UserController {
         UserEntity currentUser = contextManager.currentUser();
         String url = userService.uploadImg(file, currentUser.getId());
         return ResponseEntity.ok(url);
-    }
-
-    @GetMapping("/account")
-    public ResponseEntity<UserAccountDto> getUserAccount() {
-        UserEntity currentUser = contextManager.currentUser();
-        UserAccountEntity userAccount = userAccountService.getUserAccount(currentUser.getId());
-        UserAccountDto userAccountDto = BaseAssembler.convert(userAccount, UserAccountDto.class);
-        return ResponseEntity.ok(userAccountDto);
-    }
-
-    @PostMapping("/account/consume")
-    public ResponseEntity<?> consumeCoin(@RequestBody ConsumptionDto consumptionDto) {
-        UserEntity currentUser = contextManager.currentUser();
-        consumptionDto.setUserId(currentUser.getId());
-        userAccountService.consumeCoin(currentUser.getId(), consumptionDto);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/account/recharge")
-    public ResponseEntity<?> rechargeCoin(@RequestBody OrderDto orderDto) {
-        UserEntity currentUser = contextManager.currentUser();
-        orderDto.setUserId(currentUser.getId());
-        userAccountService.rechargeCoin(currentUser.getId(), orderDto);
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/tags")

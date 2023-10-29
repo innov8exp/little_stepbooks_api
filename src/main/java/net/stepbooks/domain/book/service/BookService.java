@@ -3,7 +3,6 @@ package net.stepbooks.domain.book.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import net.stepbooks.domain.book.entity.BookEntity;
-import net.stepbooks.infrastructure.enums.BookStatus;
 import net.stepbooks.infrastructure.enums.OrderByCriteria;
 import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import net.stepbooks.interfaces.client.dto.BookDetailDto;
@@ -34,8 +33,6 @@ public interface BookService {
     void deleteBook(String id);
 
     BookDetailDto findBook(String id);
-
-    void updateBookStatus(String id, BookStatus bookStatus);
 
     String uploadCoverImg(MultipartFile file);
 

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.application.client.FacebookClient;
 import net.stepbooks.application.client.GoogleClient;
-import net.stepbooks.domain.common.service.FileService;
+import net.stepbooks.domain.media.service.FileService;
 import net.stepbooks.domain.email.service.EmailService;
 import net.stepbooks.domain.email.service.impl.EmailServiceImpl;
 import net.stepbooks.domain.user.entity.AuthHistoryEntity;

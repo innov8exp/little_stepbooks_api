@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="net.stepbook.domain.comment.mapper.CommentMapper">
+<mapper namespace="net.stepbooks.domain.comment.mapper.CommentMapper">
     <select id="findCommentsByCriteria"
             resultType="net.stepbooks.interfaces.client.dto.CommentDetailDto">
         select c.*, b.book_name, u.username, u.nickname, u.avatar_img from step_comment c

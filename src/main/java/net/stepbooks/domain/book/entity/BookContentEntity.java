@@ -15,6 +15,8 @@ public class BookContentEntity extends BaseEntity {
     private String bookId;
     private String pageDescription;
     private String pageNumber;
-    private String pageImgLink;
-    private String pageAudioLink;
+    private String pageImgId;
+    private String pageImgUrl;
+    private String pageAudioId;
+    private String pageAudioUrl;
 }

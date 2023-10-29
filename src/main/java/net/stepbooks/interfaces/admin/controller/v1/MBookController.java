@@ -8,7 +8,6 @@ import net.sf.jmimemagic.*;
 import net.stepbooks.domain.book.entity.BookEntity;
 import net.stepbooks.domain.book.service.BookService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
-import net.stepbooks.infrastructure.enums.BookStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
@@ -81,12 +80,6 @@ public class MBookController {
     public ResponseEntity<BookDetailDto> getBook(@PathVariable String id) {
         BookDetailDto book = bookService.findBook(id);
         return ResponseEntity.ok(book);
-    }
-
-    @PutMapping("/{id}/status/{status}")
-    public ResponseEntity<?> updateBookStatus(@PathVariable String id, @PathVariable BookStatus status) {
-        bookService.updateBookStatus(id, status);
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/upload")

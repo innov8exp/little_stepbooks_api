@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="net.stepbook.domain.order.mapper.OrderMapper">
+<mapper namespace="net.stepbooks.domain.order.mapper.OrderMapper">
     <select id="findByCriteria" resultType="net.stepbooks.interfaces.admin.dto.OrderInfoDto">
         select o.*, u.username, u.nickname from step_order o
         left join step_user u

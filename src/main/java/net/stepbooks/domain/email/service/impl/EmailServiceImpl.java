@@ -6,7 +6,7 @@ import jakarta.mail.internet.MimeMessage;
 import net.stepbooks.domain.email.entity.EmailHistoryEntity;
 import net.stepbooks.domain.email.mapper.EmailHistoryMapper;
 import net.stepbooks.domain.email.service.EmailService;
-import net.stepbooks.infrastructure.enums.EmailStatus;
+import net.stepbooks.infrastructure.enums.SendStatus;
 import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.interfaces.client.dto.EmailDto;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -45,7 +45,7 @@ public class EmailServiceImpl implements EmailService {
             emailHistoryEntity.setEmail(emailDto.getTo());
             emailHistoryEntity.setEmailType(emailDto.getEmailType());
             emailHistoryEntity.setVerificationCode(emailDto.getCode());
-            emailHistoryEntity.setStatus(EmailStatus.SUCCESS);
+            emailHistoryEntity.setStatus(SendStatus.SUCCESS);
             emailHistoryEntity.setValidSeconds(VERIFICATION_CODE_VALID_SECONDS);
             emailHistoryEntity.setCreatedAt(LocalDateTime.now());
             emailHistoryMapper.insert(emailHistoryEntity);

@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
 import net.stepbooks.domain.history.mapper.ReadingHistoryMapper;
 import net.stepbooks.domain.history.service.ReadingHistoryService;
-import net.stepbooks.domain.order.service.ConsumptionService;
 import net.stepbooks.interfaces.client.dto.BookDetailDto;
 import net.stepbooks.interfaces.client.dto.ChapterWithHistoryDto;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import java.util.List;
 public class ReadingHistoryServiceImpl implements ReadingHistoryService {
 
     private final ReadingHistoryMapper readingHistoryMapper;
-    private final ConsumptionService consumptionService;
 
     @Override
     public void createOrUpdateReadingHistory(ReadingHistoryEntity readingHistoryEntity) {

@@ -15,6 +15,7 @@ public enum ErrorCode {
     DATABASE_OPERATOR_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "database operator occur error"),
     PARSE_JSON_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "parse json occur error"),
     UPLOAD_FILE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Upload file to s3 failed"),
+    S3_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect S3 failed"),
     REDUCE_BALANCE_FAILED(HttpStatus.BAD_REQUEST.value(),
             "Reduce coin failed, insufficient coin balance, please recharge");
 

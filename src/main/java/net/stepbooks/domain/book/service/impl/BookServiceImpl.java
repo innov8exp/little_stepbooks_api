@@ -3,17 +3,17 @@ package net.stepbooks.domain.book.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.domain.book.entity.BookCategoryRefEntity;
+import net.stepbooks.domain.book.entity.BookClassificationRefEntity;
 import net.stepbooks.domain.book.entity.BookEntity;
-import net.stepbooks.domain.book.mapper.BookCategoryRefMapper;
+import net.stepbooks.domain.book.mapper.BookClassificationRefMapper;
 import net.stepbooks.domain.book.mapper.BookMapper;
 import net.stepbooks.domain.book.service.BookService;
-import net.stepbooks.domain.common.service.FileService;
+import net.stepbooks.domain.media.service.FileService;
 import net.stepbooks.domain.price.entity.PriceEntity;
 import net.stepbooks.domain.price.mapper.PriceMapper;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
-import net.stepbooks.infrastructure.enums.BookStatus;
 import net.stepbooks.infrastructure.enums.OrderByCriteria;
 import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import net.stepbooks.interfaces.client.dto.BookDetailDto;
@@ -31,25 +31,18 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
     public static final String STORE_PATH = "book-assets/images/";
     private static final int TOP = 5;
     private final BookMapper bookMapper;
     private final FileService fileService;
-    private final BookCategoryRefMapper bookCategoryRefMapper;
+    private final BookClassificationRefMapper bookClassificationRefMapper;
     private final PriceMapper priceMapper;
     @Value("${aws.cdn}")
     private String cdnUrl;
 
-
-    public BookServiceImpl(BookMapper bookMapper, FileService fileService,
-                           BookCategoryRefMapper bookCategoryRefMapper, PriceMapper priceMapper) {
-        this.bookMapper = bookMapper;
-        this.fileService = fileService;
-        this.bookCategoryRefMapper = bookCategoryRefMapper;
-        this.priceMapper = priceMapper;
-    }
 
     @Override
     public BookEntity findBookById(String bookId) {
@@ -121,11 +114,11 @@ public class BookServiceImpl implements BookService {
         priceMapper.insert(priceEntity);
         String[] categories = bookDetailDto.getCategories();
         for (String category : categories) {
-            BookCategoryRefEntity bookCategoryRefEntity = BookCategoryRefEntity.builder()
+            BookClassificationRefEntity bookCategoryRefEntity = BookClassificationRefEntity.builder()
                     .bookId(bookEntity.getId())
-                    .categoryId(category)
+                    .classificationId(category)
                     .build();
-            bookCategoryRefMapper.insert(bookCategoryRefEntity);
+            bookClassificationRefMapper.insert(bookCategoryRefEntity);
         }
     }
 
@@ -153,21 +146,21 @@ public class BookServiceImpl implements BookService {
             priceEntity.setModifiedAt(LocalDateTime.now());
             priceMapper.updateById(priceEntity);
         }
-        List<BookCategoryRefEntity> bookCategoryRefEntities = bookCategoryRefMapper.selectList(Wrappers
-                .<BookCategoryRefEntity>lambdaQuery()
-                .eq(BookCategoryRefEntity::getBookId, id));
+        List<BookClassificationRefEntity> bookCategoryRefEntities = bookClassificationRefMapper.selectList(Wrappers
+                .<BookClassificationRefEntity>lambdaQuery()
+                .eq(BookClassificationRefEntity::getBookId, id));
         List<String> ids = bookCategoryRefEntities.stream()
-                .map(BookCategoryRefEntity::getId).collect(Collectors.toList());
+                .map(BookClassificationRefEntity::getId).collect(Collectors.toList());
         if (!ObjectUtils.isEmpty(ids)) {
-            bookCategoryRefMapper.deleteBatchIds(ids);
+            bookClassificationRefMapper.deleteBatchIds(ids);
         }
         String[] categories = bookDetailDto.getCategories();
         for (String category : categories) {
-            BookCategoryRefEntity bookCategoryRefEntity = BookCategoryRefEntity.builder()
+            BookClassificationRefEntity bookCategoryRefEntity = BookClassificationRefEntity.builder()
                     .bookId(id)
-                    .categoryId(category)
+                    .classificationId(category)
                     .build();
-            bookCategoryRefMapper.insert(bookCategoryRefEntity);
+            bookClassificationRefMapper.insert(bookCategoryRefEntity);
         }
     }
 
@@ -188,13 +181,6 @@ public class BookServiceImpl implements BookService {
         }
         BeanUtils.copyProperties(priceEntity, bookDetailDto);
         return bookDetailDto;
-    }
-
-    @Override
-    public void updateBookStatus(String id, BookStatus bookStatus) {
-        BookEntity bookEntity = bookMapper.selectById(id);
-        bookEntity.setStatus(bookStatus.name());
-        bookMapper.updateById(bookEntity);
     }
 
     @Override

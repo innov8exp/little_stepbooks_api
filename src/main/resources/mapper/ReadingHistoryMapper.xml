@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="net.stepbook.domain.history.mapper.ReadingHistoryMapper">
+<mapper namespace="net.stepbooks.domain.history.mapper.ReadingHistoryMapper">
     <select id="findBookLastChapterRecordByUser"
             resultType="net.stepbooks.interfaces.client.dto.ChapterWithHistoryDto">
         select c.*, h.paragraph_number from STEP_CHAPTER c

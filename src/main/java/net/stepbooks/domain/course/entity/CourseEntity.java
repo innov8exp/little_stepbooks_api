@@ -13,8 +13,14 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 public class CourseEntity extends BaseEntity {
 
     private String bookId;
-    private String courseName;
-    private String courseImgLink;
-    private String courseDescription;
-    private String courseAuthor;
+    private String name;
+    private String description;
+    private String author;
+    private String authorDescription;
+    private Long duration;
+    private String coverImgId;
+    private String coverImgUrl;
+    private String videoId;
+    private String videoUrl;
+    private Boolean trial;
 }

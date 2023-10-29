@@ -3,7 +3,7 @@ package net.stepbooks.domain.email.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.stepbooks.infrastructure.enums.EmailStatus;
+import net.stepbooks.infrastructure.enums.SendStatus;
 import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
@@ -16,5 +16,5 @@ public class EmailHistoryEntity extends BaseEntity {
     private String verificationCode;
     private Long validSeconds;
     private EmailType emailType;
-    private EmailStatus status;
+    private SendStatus status;
 }
