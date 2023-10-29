@@ -1,9 +1,9 @@
-package net.stepbooks.domain.dict.service.impl;
+package net.stepbooks.domain.tag.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import net.stepbooks.domain.dict.entity.TagEntity;
-import net.stepbooks.domain.dict.mapper.TagMapper;
-import net.stepbooks.domain.dict.service.TagService;
+import net.stepbooks.domain.tag.entity.TagEntity;
+import net.stepbooks.domain.tag.mapper.TagMapper;
+import net.stepbooks.domain.tag.service.TagService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

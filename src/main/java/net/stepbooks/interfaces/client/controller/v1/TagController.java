@@ -1,7 +1,7 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
-import net.stepbooks.domain.dict.entity.TagEntity;
-import net.stepbooks.domain.dict.service.TagService;
+import net.stepbooks.domain.tag.entity.TagEntity;
+import net.stepbooks.domain.tag.service.TagService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.client.dto.TagDto;
 import org.springframework.http.ResponseEntity;

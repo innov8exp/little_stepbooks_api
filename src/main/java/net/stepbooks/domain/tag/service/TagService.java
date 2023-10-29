@@ -1,6 +1,6 @@
-package net.stepbooks.domain.dict.service;
+package net.stepbooks.domain.tag.service;
 
-import net.stepbooks.domain.dict.entity.TagEntity;
+import net.stepbooks.domain.tag.entity.TagEntity;
 
 import java.util.List;
 

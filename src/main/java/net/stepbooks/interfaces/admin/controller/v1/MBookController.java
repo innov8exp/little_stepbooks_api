@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import net.sf.jmimemagic.*;
 import net.stepbooks.domain.book.entity.BookEntity;
 import net.stepbooks.domain.book.service.BookService;
-import net.stepbooks.domain.dict.entity.CategoryEntity;
-import net.stepbooks.domain.dict.service.CategoryService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.BookStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/v1/books")
@@ -30,7 +27,6 @@ import java.util.List;
 public class MBookController {
 
     private final BookService bookService;
-    private final CategoryService categoryService;
 
     @PostMapping
     public ResponseEntity<?> createBook(@RequestBody BookDetailDto bookDto) {
@@ -111,11 +107,6 @@ public class MBookController {
         return ResponseEntity.ok(url);
     }
 
-    @GetMapping("/{id}/categories")
-    public ResponseEntity<List<CategoryEntity>> findCategoriesByBook(@PathVariable String id) {
-        List<CategoryEntity> categories = categoryService.findCategoriesByBookId(id);
-        return ResponseEntity.ok(categories);
-    }
 
 //    @GetMapping
 //    public ResponseEntity<IPage<BookDto>> getHotSearchBooks(@RequestParam int currentPage,

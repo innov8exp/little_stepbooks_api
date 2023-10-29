@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum PaymentMethod {
-    APPLE_PAY("APPLE_PAY"), GOOGLE_PAY("GOOGLE_PAY");
+    WECHAT_PAY("WECHAT_PAY"), ALI_PAY("ALI_PAY");
 
     @EnumValue
     private final String value;

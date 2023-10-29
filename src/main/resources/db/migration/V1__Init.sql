@@ -21,24 +21,16 @@ create TABLE STEP_USER
     modified_at   TIMESTAMP
 );
 
--- 用户账户信息
-create TABLE STEP_USER_ACCOUNT
-(
-    id              VARCHAR(100) NOT NULL PRIMARY KEY,
-    user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    coin_balance    DECIMAL,
-    created_at    TIMESTAMP,
-    modified_at   TIMESTAMP
-);
-
-
 -- 资源信息
 create TABLE STEP_MEDIA
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
-    media_name VARCHAR(200) NOT NULL,
-    media_type VARCHAR(20), -- IMAGE, AUDIO, VIDEO
-    media_link TEXT,
+    object_name VARCHAR(200) NOT NULL,
+    object_type VARCHAR(20), -- IMAGE, AUDIO, VIDEO
+    object_link TEXT,
+    s3_object_id VARCHAR(200),
+    s3_bucket VARCHAR(200),
+    store_path VARCHAR(200),
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -50,9 +42,9 @@ create TABLE STEP_BOOK
     id                  VARCHAR(100) NOT NULL PRIMARY KEY,
     book_name           VARCHAR(200) NOT NULL UNIQUE,
     author              VARCHAR(200),
+    book_img_id         VARCHAR(100) REFERENCES STEP_MEDIA(id),
     book_img_link       TEXT,
     introduction        TEXT,
-    keywords            VARCHAR[],
     total_page_number   INTEGER,
     status              VARCHAR(20),    -- DISABLE, ENABLE
     created_at          TIMESTAMP,
@@ -66,7 +58,9 @@ create TABLE STEP_BOOK_CONTENT
     book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
     page_discription TEXT,
     page_number INTEGER NOT NULL,
+    page_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     page_img_link TEXT,
+    page_audio_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     page_audio_link TEXT,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
@@ -76,37 +70,33 @@ create TABLE STEP_BOOK_CONTENT
 create TABLE STEP_COURSE
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
-    course_name VARCHAR(200) NOT NULL,
-    course_img_link VARCHAR(200),
-    course_description TEXT,
-    course_author VARCHAR(200),
+    book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    description TEXT,
+    author VARCHAR(200),
+    author_introduction VARCHAR(200),
+    duration INTEGER NOT NULL,
+    media_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    media_link TEXT,
+    cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    cover_img_link TEXT,
+    video_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    video_link TEXT,
+    trial BOOLEAN DEFAULT (false),
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 );
 
--- 课程内容
-create TABLE STEP_COURSE_CHAPTER
-(
-    id VARCHAR(100) NOT NULL PRIMARY KEY,
-    course_id VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL,
-    chapter_number INTEGER NOT NULL,
-    chapter_name VARCHAR(200) NOT NULL,
-    chapter_content_link TEXT,
-    chapter_duration VARCHAR(200),
-    chapter_content_description TEXT,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP
-);
 
--- 主产品信息
+-- 产品信息
 create TABLE STEP_PRODUCT
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
     product_name VARCHAR(200) NOT NULL,
     charge_type VARCHAR(20), -- FREE, FULL_CHARGE, PART_CHARGE
     description TEXT,
+    cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     cover_img_link TEXT,
-    price DECIMAL,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -127,10 +117,14 @@ create TABLE STEP_SKU
     product_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
     sku_no VARCHAR(200) NOT NULL UNIQUE,
     sku_name VARCHAR(200) NOT NULL,
-    sales_platform VARCHAR(20), -- ANDROID, IOS, MINI_PROGRAM
+    sales_platform TEXT[], -- ANDROID, IOS, MINI_PROGRAM
     has_inventory BOOLEAN,
     description TEXT,
-    price DECIMAL,
+    price MONEY,
+    free BOOLEAN DEFAULT (false),
+    include_content TEXT[], -- AUDIO, COURSE, EXERCISE
+    cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    cover_img_link TEXT,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -164,21 +158,10 @@ create TABLE STEP_SKU_MEDIA
 create TABLE STEP_INVENTORY
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
-    sku_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    sku_id VARCHAR(100) REFERENCES STEP_SKU(id) NOT NULL,
     inventory_amount INTEGER,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
-);
-
--- 购物车
-create TABLE STEP_SHOPPING_CART
-(
-   id VARCHAR(100) NOT NULL PRIMARY KEY,
-   user_id VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-   product_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
-   product_amount DECIMAL,
-   created_at          TIMESTAMP,
-   modified_at         TIMESTAMP
 );
 
 -- 订单信息
@@ -186,7 +169,7 @@ create TABLE STEP_ORDER
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    product_id      VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    sku_id      VARCHAR(100) REFERENCES STEP_SKU(id) NOT NULL,
     order_no        VARCHAR(100) NOT NULL UNIQUE,
     transaction_amount          DECIMAL,
     coin_amount     DECIMAL,
@@ -202,29 +185,13 @@ create TABLE STEP_PAYMENT
     order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
     order_no        VARCHAR(100) NOT NULL,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    payment_method  VARCHAR(20),    -- APPLE_PAY, GOOGLE_PAY
+    payment_method  VARCHAR(20),    -- WECHAT_PAY, ALI_PAY
     transaction_amount          DECIMAL,
     vendor_payment_no         VARCHAR(200) NOT NULL UNIQUE,
     receipt         VARCHAR(200),
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
 );
-
--- 消费明细
-create TABLE STEP_CONSUMPTION
-(
-    id              VARCHAR(100) NOT NULL PRIMARY KEY,
-    user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    book_id         VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    chapter_id      VARCHAR(100) REFERENCES STEP_CHAPTER(id) NOT NULL,
-    consume_order_no        VARCHAR(100) NOT NULL UNIQUE,
-    client_platform   VARCHAR(20),    -- IOS, ANDROID
-    coin_amount     DECIMAL,
-    consume_type    VARCHAR(20),    -- SYSTEM_GIFT, RECHARGE
-    created_at      TIMESTAMP,
-    modified_at     TIMESTAMP
-);
-
 
 -- 促销信息
 create TABLE STEP_PROMOTION
@@ -244,51 +211,40 @@ create TABLE STEP_PROMOTION
 create TABLE STEP_BOOKSHELF
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
-    book_id         VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    sort_index      SERIAL NOT NULL,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
+    book_id         VARCHAR(100) REFERENCES STEP_BOOK(id),
+    course_id       VARCHAR(100) REFERENCES STEP_COURSE(id),
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
 );
 
--- 用户收藏
-create TABLE STEP_FAVORITE
-(
-    id              VARCHAR(100) NOT NULL PRIMARY KEY,
-    book_id         VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    sort_index      SERIAL NOT NULL,
-    user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    created_at      TIMESTAMP,
-    modified_at     TIMESTAMP
-);
-
--- 书籍分类
-create TABLE STEP_CATEGORY
+-- 书籍分级
+create TABLE STEP_CLASSIFICATION
 (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
-    category_name VARCHAR(200) NOT NULL UNIQUE,
+    classification_name VARCHAR(200) NOT NULL UNIQUE,
+    max_age       INTEGER,
+    min_age       INTEGER,
     description   TEXT,
-    sort_index    SERIAL NOT NULL,
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );
 
--- 书籍分类与书籍关系
-create TABLE STEP_BOOK_CATEGORY_REF
+-- 书籍分级与书籍关系
+create TABLE STEP_BOOK_STEP_CLASSIFICATION_REF
 (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
     book_id       VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    category_id   VARCHAR(100) REFERENCES STEP_CATEGORY(id) NOT NULL
+    classification_id VARCHAR(100) REFERENCES STEP_CLASSIFICATION(id) NOT NULL
 );
 
--- 标签信息
+-- 标签
 create TABLE STEP_TAG
 (
-    id            VARCHAR(100) NOT NULL PRIMARY KEY,
-    tag_name      VARCHAR(200) NOT NULL UNIQUE,
-    description   TEXT,
-    created_at    TIMESTAMP,
-    modified_at   TIMESTAMP
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    tag_name VARCHAR(200) NOT NULL UNIQUE,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
 );
 
 -- 书籍标签关系
@@ -316,7 +272,6 @@ create TABLE STEP_BOOKMARK
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
     book_id         VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    chapter_id      VARCHAR(100) REFERENCES STEP_CHAPTER(id) NOT NULL,
     paragraph_number      BIGINT,
     first_line_content  VARCHAR(200),
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
@@ -351,29 +306,8 @@ create TABLE STEP_READING_HISTORY
 (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
     book_id       VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    chapter_id    VARCHAR(100) REFERENCES STEP_CHAPTER(id) NOT NULL,
     user_id       VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
     paragraph_number BIGINT,
-    created_at    TIMESTAMP,
-    modified_at   TIMESTAMP
-);
-
--- 用户浏览记录
-create TABLE STEP_VIEW_HISTORY
-(
-    id            VARCHAR(100) NOT NULL PRIMARY KEY,
-    book_id       VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    user_id       VARCHAR(100) NOT NULL,
-    created_at    TIMESTAMP,
-    modified_at   TIMESTAMP
-);
-
--- 用户喜欢记录
-create TABLE STEP_LIKE_HISTORY
-(
-    id            VARCHAR(100) NOT NULL PRIMARY KEY,
-    book_id       VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    user_id       VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );
@@ -385,19 +319,6 @@ create TABLE STEP_SEARCH_HISTORY
     book_id       VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
     user_id       VARCHAR(100),
     keywords      VARCHAR(200) NOT NULL,
-    created_at    TIMESTAMP,
-    modified_at   TIMESTAMP
-);
-
--- 广告投放信息
-create TABLE STEP_ADVERTISEMENT
-(
-    id            VARCHAR(100) NOT NULL PRIMARY KEY,
-    book_id       VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    sort_index    SERIAL,
-    ads_img       VARCHAR(200),
-    introduction  TEXT,
-    ads_type      VARCHAR(20), -- RECOMMEND, CAROUSEL
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );
