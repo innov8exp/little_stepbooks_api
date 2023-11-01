@@ -1,41 +1,33 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.course.entity.CourseEntity;
+import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
-import net.stepbooks.interfaces.client.dto.BookDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.List;
+
+@RestController
 @RequestMapping("/v1/courses")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 public class CourseController {
 
     private final CourseService courseService;
 
-    @PostMapping
-    public ResponseEntity<?> createOne(@RequestBody CourseEntity entity) {
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateOne(@PathVariable String id, @RequestBody CourseEntity entity) {
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOne(@PathVariable String id) {
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping
-    public ResponseEntity<IPage<BookDto>> getAll(@RequestParam int currentPage,
-                                                 @RequestParam int pageSize
-    ) {
-        return null;
+    public ResponseEntity<List<Course>> getAll() {
+        return ResponseEntity.ok(courseService.list());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Course> getOne(@PathVariable String id) {
+        return ResponseEntity.ok(courseService.getById(id));
     }
 
 }

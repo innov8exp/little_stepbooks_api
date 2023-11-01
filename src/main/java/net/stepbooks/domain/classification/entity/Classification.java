@@ -8,7 +8,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("STEP_CLASSIFICATION")
-public class ClassificationEntity extends BaseEntity {
+public class Classification extends BaseEntity {
 
     private String classificationName;
     private Integer maxAge;

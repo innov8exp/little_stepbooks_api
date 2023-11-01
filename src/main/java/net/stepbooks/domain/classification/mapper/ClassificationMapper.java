@@ -1,7 +1,7 @@
 package net.stepbooks.domain.classification.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import net.stepbooks.domain.classification.entity.ClassificationEntity;
+import net.stepbooks.domain.classification.entity.Classification;
 
-public interface ClassificationMapper extends BaseMapper<ClassificationEntity> {
+public interface ClassificationMapper extends BaseMapper<Classification> {
 }

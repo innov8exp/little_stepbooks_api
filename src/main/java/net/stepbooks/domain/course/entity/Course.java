@@ -10,7 +10,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @NoArgsConstructor
 @Builder
 @TableName("STEP_COURSE")
-public class CourseEntity extends BaseEntity {
+public class Course extends BaseEntity {
 
     private String bookId;
     private String name;

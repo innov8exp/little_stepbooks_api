@@ -1,20 +1,7 @@
 package net.stepbooks.domain.classification.service;
 
-import net.stepbooks.domain.classification.entity.ClassificationEntity;
+import com.baomidou.mybatisplus.extension.service.IService;
+import net.stepbooks.domain.classification.entity.Classification;
 
-import java.util.List;
-
-public interface ClassificationService {
-
-    List<ClassificationEntity> findAll();
-
-    List<ClassificationEntity> findByBookId(String bookId);
-
-    ClassificationEntity findOne(String id);
-
-    void createOne(ClassificationEntity entity);
-
-    void updateOne(String id, ClassificationEntity updatedEntity);
-
-    void deleteOne(String id);
+public interface ClassificationService extends IService<Classification> {
 }
