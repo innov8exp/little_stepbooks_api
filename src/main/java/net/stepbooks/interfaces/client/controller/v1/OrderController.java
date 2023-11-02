@@ -9,8 +9,8 @@ import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.user.entity.UserEntity;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
-import net.stepbooks.interfaces.client.dto.OrderDto;
+import net.stepbooks.application.dto.admin.OrderInfoDto;
+import net.stepbooks.application.dto.client.OrderDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

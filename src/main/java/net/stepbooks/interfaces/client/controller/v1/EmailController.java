@@ -2,7 +2,7 @@ package net.stepbooks.interfaces.client.controller.v1;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.stepbooks.domain.email.service.EmailService;
-import net.stepbooks.interfaces.client.dto.EmailDto;
+import net.stepbooks.application.dto.client.EmailDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

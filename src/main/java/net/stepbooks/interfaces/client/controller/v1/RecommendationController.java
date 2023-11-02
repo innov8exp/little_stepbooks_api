@@ -3,7 +3,7 @@ package net.stepbooks.interfaces.client.controller.v1;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.recommendation.service.RecommendationService;
-import net.stepbooks.interfaces.client.dto.RecommendBookDto;
+import net.stepbooks.application.dto.client.RecommendBookDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

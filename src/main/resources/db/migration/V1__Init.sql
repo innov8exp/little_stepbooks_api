@@ -309,9 +309,9 @@ create TABLE STEP_FINISH_HISTORY (
 -- SMS发送记录
 create TABLE STEP_SMS_HISTORY (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
-    phoneNumber         VARCHAR(100) NOT NULL,
-    sms_content VARCHAR(50),
-    valid_seconds BIGINT,
+    phone         VARCHAR(100) NOT NULL,
+    content       TEXT,
+    msg_id        BIGINT,
     sms_type    VARCHAR(50),  -- VERIFICATION, PROMOTION
     status        VARCHAR(50),  -- SUCCESS, FAILED
     created_at    TIMESTAMP,

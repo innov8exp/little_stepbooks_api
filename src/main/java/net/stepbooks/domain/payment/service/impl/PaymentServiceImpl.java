@@ -1,8 +1,8 @@
 package net.stepbooks.domain.payment.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.application.client.AndroidClient;
-import net.stepbooks.application.client.IOSClient;
+import net.stepbooks.infrastructure.external.client.AndroidClient;
+import net.stepbooks.infrastructure.external.client.IOSClient;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.payment.vo.AndroidVerifyReceiptRequest;
 import net.stepbooks.domain.payment.vo.AndroidVerifyReceiptResponse;

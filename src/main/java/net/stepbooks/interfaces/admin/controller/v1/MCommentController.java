@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.stepbooks.domain.comment.service.CommentService;
-import net.stepbooks.interfaces.client.dto.CommentDetailDto;
+import net.stepbooks.application.dto.client.CommentDetailDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

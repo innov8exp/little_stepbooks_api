@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import net.stepbooks.domain.comment.entity.CommentEntity;
 import net.stepbooks.domain.comment.mapper.CommentMapper;
 import net.stepbooks.domain.comment.service.CommentService;
-import net.stepbooks.interfaces.client.dto.CommentDetailDto;
+import net.stepbooks.application.dto.client.CommentDetailDto;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.recommendation.entity.RecommendationEntity;
 import net.stepbooks.domain.recommendation.service.RecommendationService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
-import net.stepbooks.interfaces.client.dto.RecommendBookDto;
-import net.stepbooks.interfaces.client.dto.RecommendDto;
+import net.stepbooks.application.dto.client.RecommendBookDto;
+import net.stepbooks.application.dto.client.RecommendDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

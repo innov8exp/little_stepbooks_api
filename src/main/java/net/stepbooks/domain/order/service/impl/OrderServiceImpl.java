@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import net.stepbooks.domain.order.entity.OrderEntity;
 import net.stepbooks.domain.order.mapper.OrderMapper;
 import net.stepbooks.domain.order.service.OrderService;
-import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
+import net.stepbooks.application.dto.admin.OrderInfoDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

@@ -3,7 +3,7 @@ package net.stepbooks.domain.recommendation.service.impl;
 import net.stepbooks.domain.recommendation.entity.RecommendationEntity;
 import net.stepbooks.domain.recommendation.mapper.RecommendationMapper;
 import net.stepbooks.domain.recommendation.service.RecommendationService;
-import net.stepbooks.interfaces.client.dto.RecommendBookDto;
+import net.stepbooks.application.dto.client.RecommendBookDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

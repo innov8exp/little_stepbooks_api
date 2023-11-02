@@ -6,7 +6,7 @@ import net.stepbooks.domain.feedback.entity.FeedbackEntity;
 import net.stepbooks.domain.feedback.service.FeedbackService;
 import net.stepbooks.domain.user.entity.UserEntity;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.interfaces.client.dto.FeedbackDto;
+import net.stepbooks.application.dto.client.FeedbackDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

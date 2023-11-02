@@ -8,7 +8,7 @@
         on b.id = r.book_id
         order by r.sort_index ASC
     </select>
-    <select id="listRecommendBooks" resultType="net.stepbooks.interfaces.client.dto.RecommendBookDto">
+    <select id="listRecommendBooks" resultType="net.stepbooks.application.dto.client.RecommendBookDto">
         select b.book_name, b.author, b.cover_img, b.introduction, b.is_serialized, b.has_ending,
             r.id, r.recommend_type, r.sort_index 
         from step_book b

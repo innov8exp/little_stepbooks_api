@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import net.stepbooks.domain.order.entity.OrderEntity;
-import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
+import net.stepbooks.application.dto.admin.OrderInfoDto;
 
 public interface OrderMapper extends BaseMapper<OrderEntity> {
 

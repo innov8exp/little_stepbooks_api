@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.application.dto.client.*;
 import net.stepbooks.domain.book.entity.BookEntity;
 import net.stepbooks.domain.book.service.BookService;
 import net.stepbooks.domain.comment.entity.CommentEntity;
@@ -16,7 +17,6 @@ import net.stepbooks.domain.user.entity.UserEntity;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.OrderByCriteria;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.interfaces.client.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

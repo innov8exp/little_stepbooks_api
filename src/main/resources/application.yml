@@ -82,6 +82,11 @@ facebook:
 google:
   host: https://oauth2.googleapis.com
 
+sms:
+  host: https://api.shumi365.com/sms/v1/message
+  account: 410720
+  password: 141636
+
 admin:
   jwt:
     header: Authorization
