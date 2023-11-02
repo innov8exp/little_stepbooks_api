@@ -2,6 +2,7 @@ package net.stepbooks.interfaces.client.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.BookEntity;
 import net.stepbooks.domain.book.service.BookService;
@@ -25,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/books")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Client Authentication")
 public class BookController {
 
     private final BookService bookService;

@@ -1,5 +1,6 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
@@ -11,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/v1/courses")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Admin Authentication")
 public class MCourseController {
 
     private final CourseService courseService;

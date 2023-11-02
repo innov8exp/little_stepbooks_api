@@ -2,6 +2,7 @@ package net.stepbooks.interfaces.client.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.stepbooks.domain.comment.service.CommentService;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.client.dto.CommentDetailDto;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/comments")
+@SecurityRequirement(name = "Client Authentication")
 public class CommentController {
 
     private final CommentService commentService;

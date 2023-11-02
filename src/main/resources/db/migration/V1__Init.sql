@@ -25,10 +25,12 @@ create TABLE STEP_USER
 create TABLE STEP_MEDIA
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
-    object_name VARCHAR(200) NOT NULL,
+    file_name VARCHAR(200) NOT NULL,
+    file_size BIGINT,
+    public_access BOOLEAN DEFAULT (false),
+    object_name VARCHAR(200) NOT NULL UNIQUE,
     object_type VARCHAR(20), -- IMAGE, AUDIO, VIDEO
-    object_url TEXT,
-    s3_object_id VARCHAR(200),
+    s3_object_id VARCHAR(200) NOT NULL UNIQUE,
     s3_bucket VARCHAR(200),
     store_path VARCHAR(200),
     created_at TIMESTAMP,

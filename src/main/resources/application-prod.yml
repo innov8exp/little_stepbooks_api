@@ -14,7 +14,7 @@ logging:
 
 aws:
   s3:
-    bucket: stepbooks.production
+    bucket: stepbook.production
   cdn: https://novlshared.s3.ap-northeast-1.amazonaws.com
 
 in-app-purchase:

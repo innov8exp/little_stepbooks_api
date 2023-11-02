@@ -2,7 +2,9 @@ package net.stepbooks.interfaces.client.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
 import net.stepbooks.domain.history.service.ReadingHistoryService;
 import net.stepbooks.domain.user.entity.UserEntity;
@@ -18,18 +20,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/v1/reading-histories")
+@SecurityRequirement(name = "Client Authentication")
 public class ReadingHistoryController {
 
     private final ReadingHistoryService readingHistoryService;
     private final ContextManager contextManager;
-
-    public ReadingHistoryController(
-            ReadingHistoryService readingHistoryService,
-            ContextManager contextManager) {
-        this.readingHistoryService = readingHistoryService;
-        this.contextManager = contextManager;
-    }
 
     @GetMapping
     public ResponseEntity<List<ChapterWithHistoryDto>> getReadingHistory(@RequestParam("bookId") String bookId) {

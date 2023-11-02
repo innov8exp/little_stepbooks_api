@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface FileService {
 
-    String upload(MultipartFile file, String filename);
+    String upload(MultipartFile file, String filename, String path);
 
-    String upload(File file, String filename);
+    String upload(File file, String filename, String path);
 
     void batchUpload(String path, List<File> fileList);
 
@@ -24,6 +24,6 @@ public interface FileService {
 
     void deleteKeys(List<String> keys);
 
-    String getPreSignedUrl(String key);
+    String getUrl(String key);
 
 }

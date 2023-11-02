@@ -44,7 +44,8 @@ public class AdminSecurityConfig {
                                 mvc.pattern("/admin/auth/refresh"),
                                 mvc.pattern("/admin/auth/logout"))
                         .permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest()
+                        .authenticated()
                 );
         return http.build();
     }

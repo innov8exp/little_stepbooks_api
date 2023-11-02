@@ -2,6 +2,7 @@ package net.stepbooks.interfaces.admin.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import net.sf.jmimemagic.*;
@@ -23,6 +24,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/admin/v1/books")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Admin Authentication")
 public class MBookController {
 
     private final BookService bookService;
@@ -94,7 +96,7 @@ public class MBookController {
                 throw new BusinessException(ErrorCode.FILETYPE_ERROR);
             }
         } catch (IOException | MagicException | MagicParseException | MagicMatchNotFoundException e) {
-            e.printStackTrace();
+            throw new BusinessException(ErrorCode.FILETYPE_ERROR);
         }
         String url = bookService.uploadCoverImg(file);
         return ResponseEntity.ok(url);

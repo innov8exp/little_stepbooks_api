@@ -30,7 +30,7 @@ jacocoTestCoverageVerification {
 
 checkstyle {
     configFile = file('checkstyle.xml')
-    toolVersion = '8.8'
+    toolVersion = '10.12.4'
     checkstyleMain.source = "src/main/java"
 }
 

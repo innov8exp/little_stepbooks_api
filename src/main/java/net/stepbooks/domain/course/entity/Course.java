@@ -16,7 +16,7 @@ public class Course extends BaseEntity {
     private String name;
     private String description;
     private String author;
-    private String authorDescription;
+    private String authorIntroduction;
     private Long duration;
     private String coverImgId;
     private String coverImgUrl;

@@ -1,5 +1,6 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.recommendation.entity.RecommendationEntity;
 import net.stepbooks.domain.recommendation.service.RecommendationService;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/v1/recommendations")
+@SecurityRequirement(name = "Admin Authentication")
 public class MRecommendationController {
 
     private final RecommendationService recommendationService;

@@ -2,6 +2,7 @@ package net.stepbooks.interfaces.client.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.order.entity.OrderEntity;
 import net.stepbooks.domain.order.service.OrderService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/orders")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Client Authentication")
 public class OrderController {
 
     private final ContextManager contextManager;

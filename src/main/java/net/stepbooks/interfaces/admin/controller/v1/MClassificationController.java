@@ -1,5 +1,6 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.classification.service.ClassificationService;
@@ -11,6 +12,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/v1/classifications")
+@SecurityRequirement(name = "Admin Authentication")
 public class MClassificationController {
 
     private final ClassificationService classificationService;

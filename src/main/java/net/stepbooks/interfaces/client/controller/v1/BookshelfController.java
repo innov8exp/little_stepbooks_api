@@ -1,5 +1,6 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.BookEntity;
 import net.stepbooks.domain.bookshelf.service.BookshelfService;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/bookshelf")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Client Authentication")
 public class BookshelfController {
 
     private final BookshelfService bookshelfService;

@@ -1,5 +1,6 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.stepbooks.domain.user.entity.UserEntity;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/v1/users")
+@SecurityRequirement(name = "Admin Authentication")
 public class MUserController {
 
     private final UserService userService;

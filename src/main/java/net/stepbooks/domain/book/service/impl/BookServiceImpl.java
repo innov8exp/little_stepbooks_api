@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,8 +36,8 @@ public class BookServiceImpl implements BookService {
     public static final String STORE_PATH = "book-assets/images/";
     private static final int TOP = 5;
     private final BookMapper bookMapper;
-    private final FileService fileService;
     private final BookClassificationRefMapper bookClassificationRefMapper;
+    private final FileService publicFileServiceImpl;
     private final PriceMapper priceMapper;
     @Value("${aws.cdn}")
     private String cdnUrl;
@@ -62,34 +61,34 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookDetailDto> findTopBooks(OrderByCriteria orderByCriteria, String categoryID) {
         Page<BookDetailDto> page = Page.of(1, TOP);
-        switch (orderByCriteria) {
-            case HIGH_RATED:
+        return switch (orderByCriteria) {
+            case HIGH_RATED -> {
                 IPage<BookDetailDto> topHighRatedBooks = bookMapper.findTopHighRatedBooks(page, categoryID);
-                return topHighRatedBooks.getRecords();
-            case HIGH_VIEW:
+                yield topHighRatedBooks.getRecords();
+            }
+            case HIGH_VIEW -> {
                 IPage<BookDetailDto> topHighViewedBooks = bookMapper.findTopHighViewedBooks(page, categoryID);
-                return topHighViewedBooks.getRecords();
-            case LATEST_CREATED:
+                yield topHighViewedBooks.getRecords();
+            }
+            case LATEST_CREATED -> {
                 IPage<BookDetailDto> topLatestBooks = bookMapper.findTopLatestBooks(page, categoryID);
-                return topLatestBooks.getRecords();
-            default:
+                yield topLatestBooks.getRecords();
+            }
+            default -> {
                 IPage<BookDetailDto> topDefaultBooks = bookMapper.findTopDefaultBooks(page, categoryID);
-                return topDefaultBooks.getRecords();
-        }
+                yield topDefaultBooks.getRecords();
+            }
+        };
     }
 
     @Override
     public IPage<BookDetailDto> findBooksInPagingByCategory(Page<BookDetailDto> page, OrderByCriteria orderByCriteria, String categoryID) {
-        switch (orderByCriteria) {
-            case HIGH_RATED:
-                return bookMapper.findTopHighRatedBooks(page, categoryID);
-            case HIGH_VIEW:
-                return bookMapper.findTopHighViewedBooks(page, categoryID);
-            case LATEST_CREATED:
-                return bookMapper.findTopLatestBooks(page, categoryID);
-            default:
-                return bookMapper.findTopDefaultBooks(page, categoryID);
-        }
+        return switch (orderByCriteria) {
+            case HIGH_RATED -> bookMapper.findTopHighRatedBooks(page, categoryID);
+            case HIGH_VIEW -> bookMapper.findTopHighViewedBooks(page, categoryID);
+            case LATEST_CREATED -> bookMapper.findTopLatestBooks(page, categoryID);
+            default -> bookMapper.findTopDefaultBooks(page, categoryID);
+        };
     }
 
     @Override
@@ -186,9 +185,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String uploadCoverImg(MultipartFile file) {
         String filename = file.getOriginalFilename();
-        assert filename != null;
-        String fileType = filename.substring(filename.lastIndexOf(".") + 1);
-        String key = fileService.upload(file, STORE_PATH + UUID.randomUUID() + "." + fileType);
+        String key = publicFileServiceImpl.upload(file, filename, STORE_PATH);
         return cdnUrl + "/" + key;
     }
 }

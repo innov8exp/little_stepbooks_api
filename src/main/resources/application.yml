@@ -101,6 +101,7 @@ aws:
   region: cn-north-1
   s3:
     pre-signed-url-expire-time: 7200  # 2 hours
+    public-bucket: stepbook.public
 
 
 in-app-purchase:

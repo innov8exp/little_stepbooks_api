@@ -2,6 +2,8 @@ package net.stepbooks.interfaces.admin.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.order.entity.OrderEntity;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
@@ -12,13 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin/v1/orders")
+@SecurityRequirement(name = "Admin Authentication")
+@RequiredArgsConstructor
 public class MOrderController {
 
     private final OrderService orderService;
 
-    public MOrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
 
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {

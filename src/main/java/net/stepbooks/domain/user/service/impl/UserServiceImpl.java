@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final AuthHistoryMapper authHistoryMapper;
     private final UserTagRefMapper userTagRefMapper;
-    private final FileService fileService;
+    private final FileService privateFileServiceImpl;
     private final FacebookClient facebookClient;
     private final GoogleClient googleClient;
 
@@ -414,10 +414,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public String uploadImg(MultipartFile file, String userId) {
         String filename = file.getOriginalFilename();
-        assert filename != null;
-        String fileType = filename.substring(filename.lastIndexOf(".") + 1);
-        String imgUrl = cdnUrl + "/" + fileService.upload(file, STORE_PATH
-                + userId + "_" + UUID.randomUUID() + "." + fileType);
+        String key = privateFileServiceImpl.upload(file, filename, STORE_PATH + userId + "/");
+        String imgUrl = cdnUrl + "/" + key;
         UserEntity userEntity = UserEntity.builder().avatarImg(imgUrl).build();
         updateUserById(userId, userEntity);
         return imgUrl;

@@ -1,5 +1,6 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/users")
+@SecurityRequirement(name = "Client Authentication")
 public class UserController {
 
     private final UserService userService;

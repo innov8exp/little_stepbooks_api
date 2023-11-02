@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/courses")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "Bearer Authentication")
+@SecurityRequirement(name = "Client Authentication")
 public class CourseController {
 
     private final CourseService courseService;

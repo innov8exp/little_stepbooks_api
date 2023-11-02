@@ -1,5 +1,6 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.classification.service.ClassificationService;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/classifications")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Client Authentication")
 public class ClassificationController {
 
     private final ClassificationService classificationService;
