@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum AuthType {
-    EMAIL("EMAIL"), GOOGLE("GOOGLE"), FACEBOOK("FACEBOOK"), GUEST("GUEST");
+    PHONE("PHONE"), EMAIL("EMAIL"), WECHAT("WECHAT"), GOOGLE("GOOGLE"), FACEBOOK("FACEBOOK"), GUEST("GUEST");
 
     @EnumValue
     private final String value;

@@ -13,6 +13,8 @@ public class AuthHistoryEntity extends BaseEntity {
     private String username;
     private String email;
     private AuthType authType;
+    private String phone;
+    private String wechatId;
     private String googleId;
     private String facebookId;
 }

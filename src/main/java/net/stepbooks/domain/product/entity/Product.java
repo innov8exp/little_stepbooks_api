@@ -8,24 +8,24 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 import org.apache.ibatis.type.ArrayTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
+import java.math.BigDecimal;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @TableName("STEP_PRODUCT")
-public class ProductEntity extends BaseEntity {
+public class Product extends BaseEntity {
 
     private String skuNo;
     private String skuName;
-    private PackageType packageType;
-    private ProductType productType;
-    private ChargeType chargeType;
     private SalesPlatform salesPlatform;
-    private String productDescription;
-    private Double price;
-    private String productImgLink;
-    private ProductObjectType productObjectType;
+    private Boolean hasInventory;
+    private String description;
+    private BigDecimal price;
+    private String coverImgId;
+    private String coverImgUrl;
     @TableField(jdbcType = JdbcType.ARRAY, typeHandler = ArrayTypeHandler.class)
     private String[] resources;
 }

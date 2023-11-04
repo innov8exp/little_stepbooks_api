@@ -4,6 +4,8 @@ import com.auth0.jwt.interfaces.Claim;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.stepbooks.domain.sms.service.SmsService;
+import net.stepbooks.infrastructure.enums.SmsType;
 import net.stepbooks.infrastructure.external.client.FacebookClient;
 import net.stepbooks.infrastructure.external.client.GoogleClient;
 import net.stepbooks.application.dto.client.*;
@@ -22,6 +24,7 @@ import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.infrastructure.enums.RoleEnum;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.infrastructure.external.client.WechatClient;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.security.user.UserJwtTokenProvider;
 import net.stepbooks.infrastructure.util.CommonUtil;
@@ -54,6 +57,8 @@ public class UserServiceImpl implements UserService {
     private final FileService privateFileServiceImpl;
     private final FacebookClient facebookClient;
     private final GoogleClient googleClient;
+    private final SmsService smsService;
+    private final WechatClient wechatClient;
 
     @Value("${aws.cdn}")
     private String cdnUrl;
@@ -83,6 +88,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity findUserByPhone(String phone) {
+        return userMapper.selectOne(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getPhone, phone));
+    }
+
+    @Override
     public UserEntity findUserByUsername(String username) {
         UserEntity userEntity = userMapper.selectOne(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getUsername, username));
         if (ObjectUtils.isEmpty(userEntity)) {
@@ -104,13 +114,48 @@ public class UserServiceImpl implements UserService {
         String password = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(userEntity.getPassword());
         userEntity.setPassword(password);
         userEntity.setRole(RoleEnum.NORMAL_USER.getValue());
-        userEntity.setNickname("Novl" + CommonUtil.getStringRandom(8));
+        userEntity.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
         userEntity.setUsername(UUID.randomUUID().toString());
         int insert = userMapper.insert(userEntity);
         AuthHistoryEntity authHistoryEntity = new AuthHistoryEntity();
         authHistoryEntity.setUsername(userEntity.getUsername());
         authHistoryEntity.setAuthType(AuthType.EMAIL);
         authHistoryEntity.setEmail(email);
+        authHistoryEntity.setCreatedAt(LocalDateTime.now());
+        authHistoryMapper.insert(authHistoryEntity);
+        if (insert != 1) {
+            throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
+        }
+    }
+
+    @Override
+    public void registerWithPhone(UserEntity userEntity) {
+        String phone = userEntity.getPhone();
+        userEntity.setRole(RoleEnum.NORMAL_USER.getValue());
+        userEntity.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        userEntity.setUsername(UUID.randomUUID().toString());
+        int insert = userMapper.insert(userEntity);
+        AuthHistoryEntity authHistoryEntity = new AuthHistoryEntity();
+        authHistoryEntity.setUsername(userEntity.getUsername());
+        authHistoryEntity.setAuthType(AuthType.PHONE);
+        authHistoryEntity.setPhone(phone);
+        authHistoryEntity.setCreatedAt(LocalDateTime.now());
+        authHistoryMapper.insert(authHistoryEntity);
+        if (insert != 1) {
+            throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
+        }
+    }
+
+    @Override
+    public void registerWithWechat(UserEntity userEntity) {
+        String wechatId = userEntity.getWechatId();
+        userEntity.setRole(RoleEnum.NORMAL_USER.getValue());
+        userEntity.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        userEntity.setUsername(UUID.randomUUID().toString());
+        int insert = userMapper.insert(userEntity);
+        AuthHistoryEntity authHistoryEntity = new AuthHistoryEntity();
+        authHistoryEntity.setUsername(userEntity.getUsername());
+        authHistoryEntity.setAuthType(AuthType.WECHAT);
         authHistoryEntity.setCreatedAt(LocalDateTime.now());
         authHistoryMapper.insert(authHistoryEntity);
         if (insert != 1) {
@@ -146,6 +191,22 @@ public class UserServiceImpl implements UserService {
         Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
                 .eq(AuthHistoryEntity::getEmail, email));
         return getTokenDto(authCount, userEntity, AuthType.EMAIL);
+    }
+
+    @Override
+    public TokenDto loginWithSms(String phone, String verificationCode) {
+        UserEntity userEntity = findUserByPhone(phone);
+        if (ObjectUtils.isEmpty(userEntity)) {
+            registerWithPhone(userEntity);
+        }
+        Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
+                .eq(AuthHistoryEntity::getEmail, phone));
+        return getTokenDto(authCount, userEntity, AuthType.PHONE);
+    }
+
+    @Override
+    public TokenDto loginWithWechat(String code, String deviceId) {
+        return null;
     }
 
     @Override
@@ -238,7 +299,7 @@ public class UserServiceImpl implements UserService {
                 .username(UUID.randomUUID().toString())
                 .nickname(facebookUserInfo.getName())
                 .facebookId(facebookId)
-                .avatarImg(facebookUserInfo.getPicture().getData().getUrl())
+                .avatarImgUrl(facebookUserInfo.getPicture().getData().getUrl())
                 .deviceId(deviceId)
                 .build();
         int insert = userMapper.insert(userEntity);
@@ -261,7 +322,7 @@ public class UserServiceImpl implements UserService {
                 .nickname(googleUserDto.getName())
 //                .email(googleUserDto.getEmail())
                 .googleId(googleId)
-                .avatarImg(googleUserDto.getPicture())
+                .avatarImgUrl(googleUserDto.getPicture())
                 .deviceId(deviceId)
                 .build();
         int insert = userMapper.insert(userEntity);
@@ -405,6 +466,12 @@ public class UserServiceImpl implements UserService {
         emailService.sendSimpleMessage(emailDto);
     }
 
+    @Override
+    public void sendLoginVerificationSms(String phone) {
+        String verifyCode = generateVerifyCode();
+        smsService.sendSms(SmsType.VERIFICATION, phone, verifyCode);
+    }
+
     @Transactional
     @Override
     public void createUserTagRef(List<UserTagRefEntity> userTagRefEntities) {
@@ -416,7 +483,7 @@ public class UserServiceImpl implements UserService {
         String filename = file.getOriginalFilename();
         String key = privateFileServiceImpl.upload(file, filename, STORE_PATH + userId + "/");
         String imgUrl = cdnUrl + "/" + key;
-        UserEntity userEntity = UserEntity.builder().avatarImg(imgUrl).build();
+        UserEntity userEntity = UserEntity.builder().avatarImgUrl(imgUrl).build();
         updateUserById(userId, userEntity);
         return imgUrl;
     }

@@ -87,6 +87,10 @@ sms:
   account: 410720
   password: 141636
 
+wechat:
+  host: https://api.weixin.qq.com
+  appId: wx132bc1c2f65e1494
+
 admin:
   jwt:
     header: Authorization

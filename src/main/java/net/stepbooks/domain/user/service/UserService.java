@@ -14,13 +14,23 @@ public interface UserService {
 
     UserEntity findUserByEmail(String email);
 
+    UserEntity findUserByPhone(String phone);
+
     UserEntity findUserByUsername(String username);
 
     void registerWithEmail(UserEntity userEntity);
 
+    void registerWithPhone(UserEntity userEntity);
+
+    void registerWithWechat(UserEntity userEntity);
+
     void resetPassword(UserEntity userEntity);
 
     TokenDto loginWithEmail(String email, String password);
+
+    TokenDto loginWithSms(String phone, String verificationCode);
+
+    TokenDto loginWithWechat(String code, String deviceId);
 
     TokenDto guestLogin(String deviceId);
 
@@ -47,6 +57,8 @@ public interface UserService {
     void sendForgetPasswordVerificationEmail(String email);
 
     void sendLinkVerificationEmail(String email);
+
+    void sendLoginVerificationSms(String phone);
 
     void createUserTagRef(List<UserTagRefEntity> userTagRefEntities);
 

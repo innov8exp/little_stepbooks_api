@@ -18,10 +18,14 @@ public class UserEntity extends BaseEntity {
     private String nickname;
     private String phone;
     private String deviceId;
-    private String avatarImg;
+    private String avatarImgId;
+    private String avatarImgUrl;
     private String gender;
     private Boolean active;
     private String role;
     private String googleId;
     private String facebookId;
+    private String wechatId;
+    private String alipayId;
+    private String openId;
 }

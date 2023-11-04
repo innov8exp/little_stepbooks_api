@@ -10,7 +10,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @NoArgsConstructor
 @Builder
 @TableName("STEP_INVENTORY")
-public class InventoryEntity extends BaseEntity {
+public class Inventory extends BaseEntity {
 
     private String productId;
     private Integer inventoryAmount;
