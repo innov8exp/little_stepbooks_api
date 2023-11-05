@@ -2,7 +2,7 @@ package net.stepbooks.domain.history.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import net.stepbooks.domain.history.entity.FinishHistoryEntity;
-import net.stepbooks.application.dto.client.BookDto;
+import net.stepbooks.application.dto.admin.BookDto;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

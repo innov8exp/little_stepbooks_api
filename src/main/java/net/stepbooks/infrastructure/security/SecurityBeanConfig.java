@@ -3,7 +3,7 @@ package net.stepbooks.infrastructure.security;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.admin.entity.AdminUserEntity;
 import net.stepbooks.domain.admin.service.AdminUserService;
-import net.stepbooks.domain.user.entity.UserEntity;
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.interfaces.admin.assembler.AdminAuthAssembler;
 import net.stepbooks.interfaces.client.assembler.AuthAssembler;
@@ -38,11 +38,11 @@ public class SecurityBeanConfig {
     @Bean
     public UserDetailsService endUserDetailsService() {
         return username -> {
-            UserEntity userEntity = userService.findUserByUsername(username);
-            if (ObjectUtils.isEmpty(userEntity)) {
+            User user = userService.findUserByUsername(username);
+            if (ObjectUtils.isEmpty(user)) {
                 throw new UsernameNotFoundException("Cannot found the user with username: " + username);
             }
-            return AuthAssembler.userEntityToJwtUserDetails(userEntity);
+            return AuthAssembler.userEntityToJwtUserDetails(user);
         };
     }
 

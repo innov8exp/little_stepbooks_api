@@ -22,4 +22,5 @@ public class Media extends BaseEntity {
     private String s3ObjectId;
     private String s3Bucket;
     private String storePath;
+    private String objectUrl;
 }

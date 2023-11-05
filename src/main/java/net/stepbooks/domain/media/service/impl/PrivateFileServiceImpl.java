@@ -49,7 +49,7 @@ public class PrivateFileServiceImpl implements FileService {
     @Value("${aws.cdn}")
     private String cdnUrl;
 
-    public String upload(MultipartFile file, String filename, String path) {
+    public Media upload(MultipartFile file, String filename, String path) {
         String objectName = UUID.randomUUID().toString();
         AmazonS3 s3Client = this.getS3Client();
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -70,11 +70,13 @@ public class PrivateFileServiceImpl implements FileService {
                 .fileSize(file.getSize()).objectType(MediaType.IMAGE).s3ObjectId(objectKey).publicAccess(false)
                 .s3Bucket(bucketName).storePath(path).build();
         mediaService.save(media);
-        return objectKey;
+        Media one = mediaService.getOne(Wrappers.<Media>lambdaQuery().eq(Media::getS3ObjectId, objectKey));
+        one.setObjectUrl(getUrl(objectKey));
+        return one;
     }
 
     @Override
-    public String upload(File file, String filename, String path) {
+    public Media upload(File file, String filename, String path) {
         String objectName = UUID.randomUUID().toString();
         AmazonS3 s3Client = this.getS3Client();
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, path + objectName, file);
@@ -93,7 +95,9 @@ public class PrivateFileServiceImpl implements FileService {
                 .fileSize(file.length()).objectType(MediaType.IMAGE).s3ObjectId(objectKey).publicAccess(false)
                 .s3Bucket(bucketName).storePath(path).build();
         mediaService.save(media);
-        return objectKey;
+        Media one = mediaService.getOne(Wrappers.<Media>lambdaQuery().eq(Media::getS3ObjectId, objectKey));
+        one.setObjectUrl(getUrl(objectKey));
+        return one;
     }
 
     @Override

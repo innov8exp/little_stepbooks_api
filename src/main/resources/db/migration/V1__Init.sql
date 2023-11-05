@@ -12,8 +12,22 @@ create TABLE STEP_MEDIA
     s3_object_id VARCHAR(200) NOT NULL UNIQUE,
     s3_bucket VARCHAR(200),
     store_path VARCHAR(200),
+    object_url TEXT,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
+);
+
+
+-- 书籍分级
+create TABLE STEP_CLASSIFICATION
+(
+    id            VARCHAR(100) NOT NULL PRIMARY KEY,
+    classification_name VARCHAR(200) NOT NULL UNIQUE,
+    min_age       INTEGER,
+    max_age       INTEGER,
+    description   TEXT,
+    created_at    TIMESTAMP,
+    modified_at   TIMESTAMP
 );
 
 
@@ -36,22 +50,10 @@ create TABLE STEP_USER
     avatar_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     avatar_img_url    TEXT,
     gender        VARCHAR(20),
-    minAge        INTEGER,
-    maxAge        INTEGER,
+    child_classification_id VARCHAR(100) REFERENCES STEP_CLASSIFICATION(id),
+    child_min_age        INTEGER,
+    child_max_age        INTEGER,
     active        BOOLEAN DEFAULT (true),
-    created_at    TIMESTAMP,
-    modified_at   TIMESTAMP
-);
-
-
--- 书籍分级
-create TABLE STEP_CLASSIFICATION
-(
-    id            VARCHAR(100) NOT NULL PRIMARY KEY,
-    classification_name VARCHAR(200) NOT NULL UNIQUE,
-    max_age       INTEGER,
-    min_age       INTEGER,
-    description   TEXT,
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );
@@ -80,17 +82,18 @@ create TABLE STEP_BOOK_CLASSIFICATION_REF
 );
 
 
--- 书籍内容
-create TABLE STEP_BOOK_CONTENT
+-- 书籍章节内容
+create TABLE STEP_BOOK_CHAPTER
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
     book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    page_discription TEXT,
-    page_number INTEGER NOT NULL,
-    page_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
-    page_img_url TEXT,
-    page_audio_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
-    page_audio_url TEXT,
+    description TEXT,
+    chapter_no INTEGER NOT NULL,
+    chapter_name VARCHAR(200),
+    img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    img_url TEXT,
+    audio_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    audio_url TEXT,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 );

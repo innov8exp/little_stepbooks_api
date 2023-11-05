@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.bookshelf.mapper.BookshelfMapper">
     <select id="findBooksInBookshelfByUser"
-            resultType="net.stepbooks.domain.book.entity.BookEntity">
+            resultType="net.stepbooks.domain.book.entity.Book">
         select b.* from step_book b
         inner join STEP_BOOKSHELF s
         on b.id = s.book_id

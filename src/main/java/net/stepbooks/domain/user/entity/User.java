@@ -11,7 +11,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("STEP_USER")
-public class UserEntity extends BaseEntity {
+public class User extends BaseEntity {
     private String username;
     private String email;
     private String password;
@@ -28,4 +28,7 @@ public class UserEntity extends BaseEntity {
     private String wechatId;
     private String alipayId;
     private String openId;
+    private String childClassificationId;
+    private String childMinAge;
+    private String childMaxAge;
 }

@@ -1,6 +1,6 @@
 package net.stepbooks.infrastructure.util;
 
-import net.stepbooks.domain.user.entity.UserEntity;
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +15,7 @@ public class ContextManager {
         this.userService = userService;
     }
 
-    public UserEntity currentUser() {
+    public User currentUser() {
         JwtUserDetails details = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return this.userService.findUserByUsername(details.getUsername());
     }

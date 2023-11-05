@@ -3,7 +3,7 @@ package net.stepbooks.domain.bookshelf.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.recommendation.mapper.RecommendationMapper;
-import net.stepbooks.domain.book.entity.BookEntity;
+import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.bookshelf.entity.BookshelfEntity;
 import net.stepbooks.domain.bookshelf.mapper.BookshelfMapper;
 import net.stepbooks.domain.bookshelf.service.BookshelfService;
@@ -44,7 +44,7 @@ public class BookshelfServiceImpl implements BookshelfService {
     }
 
     @Override
-    public List<BookEntity> listBooksInBookshelf(String userId) {
+    public List<Book> listBooksInBookshelf(String userId) {
         //        if (ObjectUtils.isEmpty(books)) {
 //            return recommendMapper.findDefaultRecommendBooks();
 //        }

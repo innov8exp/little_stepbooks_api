@@ -4,26 +4,25 @@ import com.auth0.jwt.interfaces.Claim;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.domain.sms.service.SmsService;
-import net.stepbooks.infrastructure.enums.SmsType;
-import net.stepbooks.infrastructure.external.client.FacebookClient;
-import net.stepbooks.infrastructure.external.client.GoogleClient;
 import net.stepbooks.application.dto.client.*;
-import net.stepbooks.domain.media.service.FileService;
 import net.stepbooks.domain.email.service.EmailService;
 import net.stepbooks.domain.email.service.impl.EmailServiceImpl;
-import net.stepbooks.domain.user.entity.AuthHistoryEntity;
-import net.stepbooks.domain.user.entity.UserEntity;
-import net.stepbooks.domain.user.entity.UserTagRefEntity;
+import net.stepbooks.domain.media.entity.Media;
+import net.stepbooks.domain.media.service.FileService;
+import net.stepbooks.domain.sms.service.SmsService;
+import net.stepbooks.domain.user.entity.AuthHistory;
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.mapper.AuthHistoryMapper;
 import net.stepbooks.domain.user.mapper.UserMapper;
-import net.stepbooks.domain.user.mapper.UserTagRefMapper;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.enums.AuthType;
 import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.infrastructure.enums.RoleEnum;
+import net.stepbooks.infrastructure.enums.SmsType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.infrastructure.external.client.FacebookClient;
+import net.stepbooks.infrastructure.external.client.GoogleClient;
 import net.stepbooks.infrastructure.external.client.WechatClient;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.security.user.UserJwtTokenProvider;
@@ -53,15 +52,13 @@ public class UserServiceImpl implements UserService {
     private final UserJwtTokenProvider jwtTokenProvider;
     private final EmailService emailService;
     private final AuthHistoryMapper authHistoryMapper;
-    private final UserTagRefMapper userTagRefMapper;
     private final FileService privateFileServiceImpl;
     private final FacebookClient facebookClient;
     private final GoogleClient googleClient;
     private final SmsService smsService;
     private final WechatClient wechatClient;
 
-    @Value("${aws.cdn}")
-    private String cdnUrl;
+
     @Value("${facebook.client-id}")
     private String facebookClientId;
     @Value("${facebook.client-secret}")
@@ -74,90 +71,90 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Boolean existsUserByEmail(String email) {
-        Long count = userMapper.selectCount(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getEmail, email));
+        Long count = userMapper.selectCount(Wrappers.<User>lambdaQuery().eq(User::getEmail, email));
         return count > 0;
     }
 
     @Override
-    public UserEntity findUserByEmail(String email) {
-        UserEntity userEntity = userMapper.selectOne(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getEmail, email));
-        if (ObjectUtils.isEmpty(userEntity)) {
+    public User findUserByEmail(String email) {
+        User user = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getEmail, email));
+        if (ObjectUtils.isEmpty(user)) {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot found the user with email: " + email);
         }
-        return userEntity;
+        return user;
     }
 
     @Override
-    public UserEntity findUserByPhone(String phone) {
-        return userMapper.selectOne(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getPhone, phone));
+    public User findUserByPhone(String phone) {
+        return userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getPhone, phone));
     }
 
     @Override
-    public UserEntity findUserByUsername(String username) {
-        UserEntity userEntity = userMapper.selectOne(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getUsername, username));
-        if (ObjectUtils.isEmpty(userEntity)) {
+    public User findUserByUsername(String username) {
+        User user = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
+        if (ObjectUtils.isEmpty(user)) {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot found the user with username: " + username);
         }
-        return userEntity;
+        return user;
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
     @Transactional
     @Override
-    public void registerWithEmail(UserEntity userEntity) {
-        String email = userEntity.getEmail();
-        UserEntity isUserExist = userMapper.selectOne(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getEmail, email));
+    public void registerWithEmail(User user) {
+        String email = user.getEmail();
+        User isUserExist = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getEmail, email));
         if (!ObjectUtils.isEmpty(isUserExist)) {
             throw new BusinessException(ErrorCode.EMAIL_EXISTS_ERROR,
                     "Email: " + email + " has been registered, please select another one.");
         }
-        String password = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(userEntity.getPassword());
-        userEntity.setPassword(password);
-        userEntity.setRole(RoleEnum.NORMAL_USER.getValue());
-        userEntity.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
-        userEntity.setUsername(UUID.randomUUID().toString());
-        int insert = userMapper.insert(userEntity);
-        AuthHistoryEntity authHistoryEntity = new AuthHistoryEntity();
-        authHistoryEntity.setUsername(userEntity.getUsername());
-        authHistoryEntity.setAuthType(AuthType.EMAIL);
-        authHistoryEntity.setEmail(email);
-        authHistoryEntity.setCreatedAt(LocalDateTime.now());
-        authHistoryMapper.insert(authHistoryEntity);
+        String password = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword());
+        user.setPassword(password);
+        user.setRole(RoleEnum.NORMAL_USER.getValue());
+        user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        user.setUsername(UUID.randomUUID().toString());
+        int insert = userMapper.insert(user);
+        AuthHistory authHistory = new AuthHistory();
+        authHistory.setUsername(user.getUsername());
+        authHistory.setAuthType(AuthType.EMAIL);
+        authHistory.setEmail(email);
+        authHistory.setCreatedAt(LocalDateTime.now());
+        authHistoryMapper.insert(authHistory);
         if (insert != 1) {
             throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
         }
     }
 
     @Override
-    public void registerWithPhone(UserEntity userEntity) {
-        String phone = userEntity.getPhone();
-        userEntity.setRole(RoleEnum.NORMAL_USER.getValue());
-        userEntity.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
-        userEntity.setUsername(UUID.randomUUID().toString());
-        int insert = userMapper.insert(userEntity);
-        AuthHistoryEntity authHistoryEntity = new AuthHistoryEntity();
-        authHistoryEntity.setUsername(userEntity.getUsername());
-        authHistoryEntity.setAuthType(AuthType.PHONE);
-        authHistoryEntity.setPhone(phone);
-        authHistoryEntity.setCreatedAt(LocalDateTime.now());
-        authHistoryMapper.insert(authHistoryEntity);
+    public void registerWithPhone(User user) {
+        String phone = user.getPhone();
+        user.setRole(RoleEnum.NORMAL_USER.getValue());
+        user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        user.setUsername(UUID.randomUUID().toString());
+        int insert = userMapper.insert(user);
+        AuthHistory authHistory = new AuthHistory();
+        authHistory.setUsername(user.getUsername());
+        authHistory.setAuthType(AuthType.PHONE);
+        authHistory.setPhone(phone);
+        authHistory.setCreatedAt(LocalDateTime.now());
+        authHistoryMapper.insert(authHistory);
         if (insert != 1) {
             throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
         }
     }
 
     @Override
-    public void registerWithWechat(UserEntity userEntity) {
-        String wechatId = userEntity.getWechatId();
-        userEntity.setRole(RoleEnum.NORMAL_USER.getValue());
-        userEntity.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
-        userEntity.setUsername(UUID.randomUUID().toString());
-        int insert = userMapper.insert(userEntity);
-        AuthHistoryEntity authHistoryEntity = new AuthHistoryEntity();
-        authHistoryEntity.setUsername(userEntity.getUsername());
-        authHistoryEntity.setAuthType(AuthType.WECHAT);
-        authHistoryEntity.setCreatedAt(LocalDateTime.now());
-        authHistoryMapper.insert(authHistoryEntity);
+    public void registerWithWechat(User user) {
+        String wechatId = user.getWechatId();
+        user.setRole(RoleEnum.NORMAL_USER.getValue());
+        user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        user.setUsername(UUID.randomUUID().toString());
+        int insert = userMapper.insert(user);
+        AuthHistory authHistory = new AuthHistory();
+        authHistory.setUsername(user.getUsername());
+        authHistory.setAuthType(AuthType.WECHAT);
+        authHistory.setCreatedAt(LocalDateTime.now());
+        authHistoryMapper.insert(authHistory);
         if (insert != 1) {
             throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
         }
@@ -165,17 +162,17 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void resetPassword(UserEntity userEntity) {
-        String email = userEntity.getEmail();
-        String password = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(userEntity.getPassword());
-        userEntity.setPassword(password);
-        int update = userMapper.updateById(userEntity);
-        AuthHistoryEntity authHistoryEntity = new AuthHistoryEntity();
-        authHistoryEntity.setAuthType(AuthType.EMAIL);
-        authHistoryEntity.setUsername(userEntity.getUsername());
-        authHistoryEntity.setEmail(email);
-        authHistoryEntity.setCreatedAt(LocalDateTime.now());
-        authHistoryMapper.insert(authHistoryEntity);
+    public void resetPassword(User user) {
+        String email = user.getEmail();
+        String password = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword());
+        user.setPassword(password);
+        int update = userMapper.updateById(user);
+        AuthHistory authHistory = new AuthHistory();
+        authHistory.setAuthType(AuthType.EMAIL);
+        authHistory.setUsername(user.getUsername());
+        authHistory.setEmail(email);
+        authHistory.setCreatedAt(LocalDateTime.now());
+        authHistoryMapper.insert(authHistory);
         if (update != 1) {
             throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Reset password error");
         }
@@ -183,25 +180,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenDto loginWithEmail(String email, String password) {
-        UserEntity userEntity = this.findUserByEmail(email);
-        var valid = PasswordEncoderFactories.createDelegatingPasswordEncoder().matches(password, userEntity.getPassword());
+        User user = this.findUserByEmail(email);
+        var valid = PasswordEncoderFactories.createDelegatingPasswordEncoder().matches(password, user.getPassword());
         if (!valid) {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "auth failed, please input the correct password");
         }
-        Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
-                .eq(AuthHistoryEntity::getEmail, email));
-        return getTokenDto(authCount, userEntity, AuthType.EMAIL);
+        Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistory>lambdaQuery()
+                .eq(AuthHistory::getEmail, email));
+        return getTokenDto(authCount, user, AuthType.EMAIL);
     }
 
     @Override
     public TokenDto loginWithSms(String phone, String verificationCode) {
-        UserEntity userEntity = findUserByPhone(phone);
-        if (ObjectUtils.isEmpty(userEntity)) {
-            registerWithPhone(userEntity);
+        User user = findUserByPhone(phone);
+        if (ObjectUtils.isEmpty(user)) {
+            registerWithPhone(user);
         }
-        Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
-                .eq(AuthHistoryEntity::getEmail, phone));
-        return getTokenDto(authCount, userEntity, AuthType.PHONE);
+        Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistory>lambdaQuery()
+                .eq(AuthHistory::getEmail, phone));
+        return getTokenDto(authCount, user, AuthType.PHONE);
     }
 
     @Override
@@ -211,39 +208,39 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenDto guestLogin(String deviceId) {
-        List<UserEntity> userEntities = userMapper.selectList(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getDeviceId, deviceId)
-                .eq(UserEntity::getRole, RoleEnum.GUEST.getValue()));
-        UserEntity userEntity;
+        List<User> userEntities = userMapper.selectList(Wrappers.<User>lambdaQuery().eq(User::getDeviceId, deviceId)
+                .eq(User::getRole, RoleEnum.GUEST.getValue()));
+        User user;
         if (!ObjectUtils.isEmpty(userEntities)) {
-            userEntity = userEntities.get(0);
+            user = userEntities.get(0);
         } else {
-            userEntity = UserEntity.builder()
+            user = User.builder()
                     .role(RoleEnum.GUEST.getValue())
                     .deviceId(deviceId)
                     .username(UUID.randomUUID().toString())
                     .nickname("Guest User").build();
-            int insert = userMapper.insert(userEntity);
+            int insert = userMapper.insert(user);
             if (insert != 1) {
                 throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
             }
         }
-        return getTokenDto(0L, userEntity, AuthType.GUEST);
+        return getTokenDto(0L, user, AuthType.GUEST);
     }
 
-    private TokenDto getTokenDto(Long authCount, UserEntity userEntity, AuthType authType) {
-        JwtUserDetails jwtUserDetails = AuthAssembler.userEntityToJwtUserDetails(userEntity);
+    private TokenDto getTokenDto(Long authCount, User user, AuthType authType) {
+        JwtUserDetails jwtUserDetails = AuthAssembler.userEntityToJwtUserDetails(user);
         TokenDto tokenDto = jwtTokenProvider.generateToken(jwtUserDetails, authType);
         // First time to login
         tokenDto.setIsFirstAuth(authCount == 0);
-        tokenDto.setRole(userEntity.getRole());
-        AuthHistoryEntity authHistoryEntity = new AuthHistoryEntity();
-        authHistoryEntity.setUsername(userEntity.getUsername());
-        authHistoryEntity.setAuthType(authType);
-        authHistoryEntity.setEmail(userEntity.getEmail());
-        authHistoryEntity.setFacebookId(userEntity.getFacebookId());
-        authHistoryEntity.setGoogleId(userEntity.getGoogleId());
-        authHistoryEntity.setCreatedAt(LocalDateTime.now());
-        authHistoryMapper.insert(authHistoryEntity);
+        tokenDto.setRole(user.getRole());
+        AuthHistory authHistory = new AuthHistory();
+        authHistory.setUsername(user.getUsername());
+        authHistory.setAuthType(authType);
+        authHistory.setEmail(user.getEmail());
+        authHistory.setFacebookId(user.getFacebookId());
+        authHistory.setGoogleId(user.getGoogleId());
+        authHistory.setCreatedAt(LocalDateTime.now());
+        authHistoryMapper.insert(authHistory);
         return tokenDto;
     }
 
@@ -257,15 +254,15 @@ public class UserServiceImpl implements UserService {
             FacebookAuthResDto facebookAuthResDto = introspectFacebook(inputToken, accessToken);
             if (facebookAuthResDto.getData().isValid()) {
                 String facebookId = facebookAuthResDto.getData().getUserId();
-                UserEntity userEntity = this.findUserByFacebookId(facebookId);
-                if (userEntity != null) {
-                    Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
-                            .eq(AuthHistoryEntity::getFacebookId, facebookId));
-                    return getTokenDto(authCount, userEntity, AuthType.FACEBOOK);
+                User user = this.findUserByFacebookId(facebookId);
+                if (user != null) {
+                    Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistory>lambdaQuery()
+                            .eq(AuthHistory::getFacebookId, facebookId));
+                    return getTokenDto(authCount, user, AuthType.FACEBOOK);
                 } else {
                     FacebookUserDto facebookUserInfo = getFacebookUserInfo(facebookId, accessToken);
-                    userEntity = registerUserFromFacebook(socialAuthDto.getDeviceId(), facebookId, facebookUserInfo);
-                    JwtUserDetails jwtUserDetails = AuthAssembler.userEntityToJwtUserDetails(userEntity);
+                    user = registerUserFromFacebook(socialAuthDto.getDeviceId(), facebookId, facebookUserInfo);
+                    JwtUserDetails jwtUserDetails = AuthAssembler.userEntityToJwtUserDetails(user);
                     TokenDto token = jwtTokenProvider.generateToken(jwtUserDetails, AuthType.FACEBOOK);
                     token.setIsFirstAuth(true);
                     return token;
@@ -276,14 +273,14 @@ public class UserServiceImpl implements UserService {
             GoogleUserDto googleUserDto = introspectGoogle(idToken);
             if (googleUserDto != null) {
                 String googleId = googleUserDto.getSub();
-                UserEntity userEntity = this.findUserByGoogleId(googleId);
-                if (userEntity != null) {
-                    Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistoryEntity>lambdaQuery()
-                            .eq(AuthHistoryEntity::getGoogleId, googleId));
-                    return getTokenDto(authCount, userEntity, AuthType.GOOGLE);
+                User user = this.findUserByGoogleId(googleId);
+                if (user != null) {
+                    Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistory>lambdaQuery()
+                            .eq(AuthHistory::getGoogleId, googleId));
+                    return getTokenDto(authCount, user, AuthType.GOOGLE);
                 } else {
-                    userEntity = registerUserFromGoogle(socialAuthDto.getDeviceId(), googleId, googleUserDto);
-                    JwtUserDetails jwtUserDetails = AuthAssembler.userEntityToJwtUserDetails(userEntity);
+                    user = registerUserFromGoogle(socialAuthDto.getDeviceId(), googleId, googleUserDto);
+                    JwtUserDetails jwtUserDetails = AuthAssembler.userEntityToJwtUserDetails(user);
                     TokenDto token = jwtTokenProvider.generateToken(jwtUserDetails, AuthType.GOOGLE);
                     token.setIsFirstAuth(true);
                     return token;
@@ -293,8 +290,8 @@ public class UserServiceImpl implements UserService {
         throw new BusinessException(ErrorCode.AUTH_ERROR, "Failed auth with facebook");
     }
 
-    private UserEntity registerUserFromFacebook(String deviceId, String facebookId, FacebookUserDto facebookUserInfo) {
-        UserEntity userEntity = UserEntity.builder()
+    private User registerUserFromFacebook(String deviceId, String facebookId, FacebookUserDto facebookUserInfo) {
+        User user = User.builder()
                 .role(RoleEnum.NORMAL_USER.getValue())
                 .username(UUID.randomUUID().toString())
                 .nickname(facebookUserInfo.getName())
@@ -302,21 +299,21 @@ public class UserServiceImpl implements UserService {
                 .avatarImgUrl(facebookUserInfo.getPicture().getData().getUrl())
                 .deviceId(deviceId)
                 .build();
-        int insert = userMapper.insert(userEntity);
-        AuthHistoryEntity authHistoryEntity = new AuthHistoryEntity();
-        authHistoryEntity.setUsername(userEntity.getUsername());
-        authHistoryEntity.setAuthType(AuthType.FACEBOOK);
-        authHistoryEntity.setFacebookId(facebookId);
-        authHistoryEntity.setCreatedAt(LocalDateTime.now());
-        authHistoryMapper.insert(authHistoryEntity);
+        int insert = userMapper.insert(user);
+        AuthHistory authHistory = new AuthHistory();
+        authHistory.setUsername(user.getUsername());
+        authHistory.setAuthType(AuthType.FACEBOOK);
+        authHistory.setFacebookId(facebookId);
+        authHistory.setCreatedAt(LocalDateTime.now());
+        authHistoryMapper.insert(authHistory);
         if (insert != 1) {
             throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
         }
-        return userEntity;
+        return user;
     }
 
-    private UserEntity registerUserFromGoogle(String deviceId, String googleId, GoogleUserDto googleUserDto) {
-        UserEntity userEntity = UserEntity.builder()
+    private User registerUserFromGoogle(String deviceId, String googleId, GoogleUserDto googleUserDto) {
+        User user = User.builder()
                 .role(RoleEnum.NORMAL_USER.getValue())
                 .username(UUID.randomUUID().toString())
                 .nickname(googleUserDto.getName())
@@ -325,17 +322,17 @@ public class UserServiceImpl implements UserService {
                 .avatarImgUrl(googleUserDto.getPicture())
                 .deviceId(deviceId)
                 .build();
-        int insert = userMapper.insert(userEntity);
-        AuthHistoryEntity authHistoryEntity = new AuthHistoryEntity();
-        authHistoryEntity.setUsername(userEntity.getUsername());
-        authHistoryEntity.setAuthType(AuthType.GOOGLE);
-        authHistoryEntity.setGoogleId(googleId);
-        authHistoryEntity.setCreatedAt(LocalDateTime.now());
-        authHistoryMapper.insert(authHistoryEntity);
+        int insert = userMapper.insert(user);
+        AuthHistory authHistory = new AuthHistory();
+        authHistory.setUsername(user.getUsername());
+        authHistory.setAuthType(AuthType.GOOGLE);
+        authHistory.setGoogleId(googleId);
+        authHistory.setCreatedAt(LocalDateTime.now());
+        authHistoryMapper.insert(authHistory);
         if (insert != 1) {
             throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
         }
-        return userEntity;
+        return user;
     }
 
     private GoogleUserDto introspectGoogle(String idToken) {
@@ -355,17 +352,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity findUserByFacebookId(String facebookUserId) {
-        return userMapper.selectOne(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getFacebookId, facebookUserId));
+    public User findUserByFacebookId(String facebookUserId) {
+        return userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getFacebookId, facebookUserId));
     }
 
     @Override
-    public UserEntity findUserByGoogleId(String googleUserId) {
-        return userMapper.selectOne(Wrappers.<UserEntity>lambdaQuery().eq(UserEntity::getGoogleId, googleUserId));
+    public User findUserByGoogleId(String googleUserId) {
+        return userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getGoogleId, googleUserId));
     }
 
     @Override
-    public UserEntity getUserInfoFromToken(String token) {
+    public User getUserInfoFromToken(String token) {
         return null;
     }
 
@@ -373,43 +370,43 @@ public class UserServiceImpl implements UserService {
     public TokenDto refreshToken(String accessToken, String refreshToken) {
         String username = jwtTokenProvider.getSubjectFromToken(accessToken);
         Map<String, Claim> claims = jwtTokenProvider.getClaimsFromToken(accessToken);
-        UserEntity userEntity = this.findUserByUsername(username);
-        if (userEntity == null) {
+        User user = this.findUserByUsername(username);
+        if (user == null) {
             throw new BusinessException(ErrorCode.AUTH_ERROR);
         }
         JwtUserDetails userDetails = JwtUserDetails.builder()
                 .username(username)
-                .email(userEntity.getUsername())
-                .nickname(userEntity.getNickname())
-                .googleId(userEntity.getGoogleId())
-                .facebookId(userEntity.getFacebookId())
+                .email(user.getUsername())
+                .nickname(user.getNickname())
+                .googleId(user.getGoogleId())
+                .facebookId(user.getFacebookId())
                 .build();
         return jwtTokenProvider.refreshToken(userDetails, refreshToken, AuthType.valueOf(claims.get("authType").asString()),
-                userEntity.getModifiedAt());
+                user.getModifiedAt());
     }
 
     @Override
-    public void updateUserById(String id, UserEntity updatedUser) {
-        UserEntity userEntity = userMapper.selectById(id);
-        BeanUtils.copyProperties(updatedUser, userEntity, CommonUtil.getNullPropertyNames(updatedUser));
-        userMapper.updateById(userEntity);
+    public void updateUserById(String id, User updatedUser) {
+        User user = userMapper.selectById(id);
+        BeanUtils.copyProperties(updatedUser, user, CommonUtil.getNullPropertyNames(updatedUser));
+        userMapper.updateById(user);
     }
 
     @Override
-    public List<UserEntity> findUsers() {
+    public List<User> findUsers() {
         return userMapper.selectList(Wrappers.emptyWrapper());
     }
 
     @Override
-    public UserEntity findUser(String id) {
+    public User findUser(String id) {
         return userMapper.selectById(id);
     }
 
     @Override
     public void deleteUser(String id) {
-        UserEntity userEntity = userMapper.selectById(id);
-        userEntity.setActive(false);
-        userMapper.updateById(userEntity);
+        User user = userMapper.selectById(id);
+        user.setActive(false);
+        userMapper.updateById(user);
     }
 
     @Override
@@ -472,20 +469,15 @@ public class UserServiceImpl implements UserService {
         smsService.sendSms(SmsType.VERIFICATION, phone, verifyCode);
     }
 
-    @Transactional
     @Override
-    public void createUserTagRef(List<UserTagRefEntity> userTagRefEntities) {
-        userTagRefEntities.forEach(userTagRefMapper::insert);
-    }
-
-    @Override
-    public String uploadImg(MultipartFile file, String userId) {
+    public Media uploadImg(MultipartFile file, String userId) {
         String filename = file.getOriginalFilename();
-        String key = privateFileServiceImpl.upload(file, filename, STORE_PATH + userId + "/");
-        String imgUrl = cdnUrl + "/" + key;
-        UserEntity userEntity = UserEntity.builder().avatarImgUrl(imgUrl).build();
-        updateUserById(userId, userEntity);
-        return imgUrl;
+        Media media = privateFileServiceImpl.upload(file, filename, STORE_PATH);
+        User user = User.builder()
+                .avatarImgId(media.getId())
+                .avatarImgUrl(media.getObjectUrl()).build();
+        updateUserById(userId, user);
+        return media;
     }
 
 }

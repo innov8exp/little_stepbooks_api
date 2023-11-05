@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.order.entity.OrderEntity;
 import net.stepbooks.domain.order.service.OrderService;
-import net.stepbooks.domain.user.entity.UserEntity;
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.application.dto.admin.OrderInfoDto;
@@ -34,9 +34,9 @@ public class OrderController {
 
     @PostMapping("/chapter")
     public ResponseEntity<?> orderChapter(@RequestBody OrderDto orderDto) {
-        UserEntity userEntity = contextManager.currentUser();
+        User user = contextManager.currentUser();
         OrderEntity orderEntity = BaseAssembler.convert(orderDto, OrderEntity.class);
-        orderEntity.setUserId(userEntity.getId());
+        orderEntity.setUserId(user.getId());
         orderService.createOrder(orderEntity);
         return ResponseEntity.ok().build();
     }

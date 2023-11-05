@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -56,7 +57,7 @@ public class MAuthController {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "cannot found access_token from cookie");
         }
         for (Cookie cookie : cookies) {
-            if (accessToken != null && refreshToken != null) {
+            if (!ObjectUtils.isEmpty(accessToken) && !ObjectUtils.isEmpty(refreshToken)) {
                 break;
             }
             if (accessTokenCookieName.equals(cookie.getName())) {
@@ -67,12 +68,12 @@ public class MAuthController {
                 refreshToken = cookie.getValue();
             }
         }
-        if (accessToken == null) {
+        if (ObjectUtils.isEmpty(accessToken)) {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "cannot found access_token from cookie");
         }
         var username = adminJwtTokenProvider.getSubjectFromToken(accessToken);
         var userDto = adminUserService.findUserByUsername(username);
-        if (userDto == null) {
+        if (ObjectUtils.isEmpty(userDto)) {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "无效的登录信息，请重新登录");
         }
         JwtUserDetails userDetails = JwtUserDetails.builder().email(userDto.getEmail()).username(username).build();

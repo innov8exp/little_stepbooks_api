@@ -9,7 +9,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("STEP_AUTH_HISTORY")
-public class AuthHistoryEntity extends BaseEntity {
+public class AuthHistory extends BaseEntity {
     private String username;
     private String email;
     private AuthType authType;

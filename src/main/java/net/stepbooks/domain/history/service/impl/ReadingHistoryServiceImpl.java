@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.application.dto.client.ChapterWithHistoryDto;
+import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
 import net.stepbooks.domain.history.mapper.ReadingHistoryMapper;
 import net.stepbooks.domain.history.service.ReadingHistoryService;
-import net.stepbooks.application.dto.client.BookDetailDto;
-import net.stepbooks.application.dto.client.ChapterWithHistoryDto;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -43,7 +43,7 @@ public class ReadingHistoryServiceImpl implements ReadingHistoryService {
     }
 
     @Override
-    public IPage<BookDetailDto> getUserReadBooks(Page<BookDetailDto> page, String userId) {
+    public IPage<Book> getUserReadBooks(Page<Book> page, String userId) {
         return readingHistoryMapper.findUserReadBooks(page, userId);
     }
 }

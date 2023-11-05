@@ -5,6 +5,15 @@ VALUES ('0', 'admin', 'admin@example.com', '{bcrypt}$2a$10$Mauvb3WBioPsOf9hZHX7l
 INSERT INTO STEP_USER (id, username, email, password, nickname, role, device_id)
 VALUES ('0', 'admin', 'admin@example.com', '{bcrypt}$2a$10$Mauvb3WBioPsOf9hZHX7l.np69XxobcoDn.kOEvcuu6YSafmqgQ6q', '系统管理员', 'ADMIN', 'test_device_id_1');
 
+INSERT INTO STEP_CLASSIFICATION (id, classification_name, min_age, max_age, description)
+VALUES ('0', '0-3岁', 0, 3, '适合0-3岁阅读观看');
+INSERT INTO STEP_CLASSIFICATION (id, classification_name, min_age, max_age, description)
+VALUES ('1', '3-5岁', 3, 5, '适合3-5岁阅读观看');
+INSERT INTO STEP_CLASSIFICATION (id, classification_name, min_age, max_age, description)
+VALUES ('2', '5-10岁', 5, 10, '适合5-10岁阅读观看');
+INSERT INTO STEP_CLASSIFICATION (id, classification_name, min_age, max_age, description)
+VALUES ('3', '10岁以上', 10, 99, '适合10岁以上阅读观看');
+
 --
 --INSERT INTO STEP_BOOK (id, book_name, author, cover_img, introduction, keywords, content_location, status)
 --values ('0', 'Husband Be A Gentleman', 'Smith Lose', 'https://novlshared.s3.ap-northeast-1.amazonaws.com/book_cover_img/1.jpeg',

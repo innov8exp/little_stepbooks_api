@@ -9,12 +9,15 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@TableName(value = "STEP_BOOK")
-public class BookEntity extends BaseEntity {
-    private String bookName;
-    private String author;
-    private String bookImgId;
-    private String bookImgUrl;
+@TableName("STEP_BOOK_CHAPTER")
+public class BookChapter extends BaseEntity {
+
+    private String bookId;
+    private Integer chapterNo;
+    private String chapterName;
     private String description;
-    private Integer totalPageNumber;
+    private String imgId;
+    private String imgUrl;
+    private String audioId;
+    private String audioUrl;
 }

@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.application.dto.client.*;
 import net.stepbooks.domain.email.service.EmailService;
-import net.stepbooks.domain.user.entity.UserEntity;
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.EmailType;
@@ -64,7 +64,7 @@ public class AuthController {
                 userService.sendRegisterVerificationEmail(verificationDto.getEmail());
                 break;
             case "FORGET":
-                UserEntity userByEmail = userService.findUserByEmail(verificationDto.getEmail());
+                User userByEmail = userService.findUserByEmail(verificationDto.getEmail());
                 if (ObjectUtils.isEmpty(userByEmail)) {
                     throw new BusinessException(ErrorCode.USER_NOT_FOUND);
                 }
@@ -91,9 +91,9 @@ public class AuthController {
         if (!valid) {
             throw new BusinessException(ErrorCode.BAD_REQUEST);
         }
-        UserEntity userEntity = BaseAssembler.convert(registerDto, UserEntity.class);
-        userEntity.setId(null);
-        userService.registerWithEmail(userEntity);
+        User user = BaseAssembler.convert(registerDto, User.class);
+        user.setId(null);
+        userService.registerWithEmail(user);
         TokenDto tokenDto = userService.loginWithEmail(registerDto.getEmail(), registerDto.getPassword());
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(tokenDto);
     }
@@ -105,9 +105,9 @@ public class AuthController {
         if (!valid) {
             throw new BusinessException(ErrorCode.BAD_REQUEST);
         }
-        UserEntity userEntity = userService.findUserByEmail(resetPasswordDto.getEmail());
-        userEntity.setPassword(resetPasswordDto.getNewPassword());
-        userService.resetPassword(userEntity);
+        User user = userService.findUserByEmail(resetPasswordDto.getEmail());
+        user.setPassword(resetPasswordDto.getNewPassword());
+        userService.resetPassword(user);
         TokenDto tokenDto = userService.loginWithEmail(resetPasswordDto.getEmail(), resetPasswordDto.getNewPassword());
         return ResponseEntity.ok(tokenDto);
     }
@@ -126,7 +126,7 @@ public class AuthController {
     @GetMapping("/user-info")
     public ResponseEntity<UserDto> userInfo() {
         JwtUserDetails details = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserEntity userByEmail = userService.findUserByUsername(details.getUsername());
+        User userByEmail = userService.findUserByUsername(details.getUsername());
         UserDto userDto = BaseAssembler.convert(userByEmail, UserDto.class);
         return ResponseEntity.ok(userDto);
     }

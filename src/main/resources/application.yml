@@ -99,11 +99,11 @@ admin:
     access-token:
       cookie-name: access_token
       secret: 5310l8Mz5v&B
-      expiration: 3600
+      expiration: 72000
     refresh-token:
       cookie-name: refresh_token
       secret: jCqdfD13l#tT
-      expiration: 36000
+      expiration: 720000
 
 
 aws:

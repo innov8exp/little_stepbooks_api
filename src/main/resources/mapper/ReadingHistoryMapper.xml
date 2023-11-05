@@ -9,7 +9,7 @@
         where h.book_id = #{bookId}
         and h.user_id = #{userId}
     </select>
-    <select id="findUserReadBooks" resultType="net.stepbooks.application.dto.client.BookDetailDto">
+    <select id="findUserReadBooks" resultType="net.stepbooks.domain.book.entity.Book">
         select b.*, avg(r.rating) rating from STEP_READING_HISTORY h inner join STEP_BOOK b
         on h.book_id = b.id
         left join step_rating r on b.id = r.book_id

@@ -1,5 +1,6 @@
 package net.stepbooks.domain.media.service;
 
+import net.stepbooks.domain.media.entity.Media;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -8,9 +9,9 @@ import java.util.List;
 
 public interface FileService {
 
-    String upload(MultipartFile file, String filename, String path);
+    Media upload(MultipartFile file, String filename, String path);
 
-    String upload(File file, String filename, String path);
+    Media upload(File file, String filename, String path);
 
     void batchUpload(String path, List<File> fileList);
 

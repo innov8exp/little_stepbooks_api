@@ -6,20 +6,25 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import net.sf.jmimemagic.*;
-import net.stepbooks.domain.book.entity.BookEntity;
+import net.stepbooks.application.dto.admin.MBookQueryDto;
+import net.stepbooks.application.dto.admin.BookDto;
+import net.stepbooks.application.service.BookAggregateService;
+import net.stepbooks.domain.book.entity.Book;
+import net.stepbooks.domain.book.entity.BookChapter;
+import net.stepbooks.domain.book.service.BookChapterService;
 import net.stepbooks.domain.book.service.BookService;
+import net.stepbooks.domain.classification.entity.Classification;
+import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
-import net.stepbooks.application.dto.admin.MBookQueryDto;
-import net.stepbooks.application.dto.client.BookDetailDto;
-import net.stepbooks.application.dto.client.BookDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/v1/books")
@@ -28,15 +33,16 @@ import java.io.IOException;
 public class MBookController {
 
     private final BookService bookService;
+    private final BookChapterService bookChapterService;
 
     @PostMapping
-    public ResponseEntity<?> createBook(@RequestBody BookDetailDto bookDto) {
+    public ResponseEntity<?> createBook(@RequestBody BookDto bookDto) {
         bookService.createBook(bookDto);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable String id, @RequestBody BookDetailDto bookDto) {
+    public ResponseEntity<?> updateBook(@PathVariable String id, @RequestBody BookDto bookDto) {
         bookService.updateBook(id, bookDto);
         return ResponseEntity.ok().build();
     }
@@ -48,44 +54,28 @@ public class MBookController {
     }
 
     @GetMapping
-    public ResponseEntity<IPage<BookDto>> getAllBooks(@RequestParam int currentPage,
-                                                      @RequestParam int pageSize,
-                                                      @RequestParam(required = false) String bookName,
-                                                      @RequestParam(required = false) String author
+    public ResponseEntity<IPage<BookDto>> getPagedBooks(@RequestParam int currentPage,
+                                                        @RequestParam int pageSize,
+                                                        @RequestParam(required = false) String bookName,
+                                                        @RequestParam(required = false) String author
     ) {
         MBookQueryDto bookQueryDto = MBookQueryDto.builder()
                 .bookName(bookName)
                 .author(author)
                 .build();
-        Page<BookEntity> page = Page.of(currentPage, pageSize);
-        IPage<BookEntity> books = bookService.findBooksInPagingByCriteria(page, bookQueryDto);
-        IPage<BookDto> bookDtoIPage = books.convert(bookEntity -> BaseAssembler.convert(bookEntity, BookDto.class));
-        return ResponseEntity.ok(bookDtoIPage);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<IPage<BookDetailDto>> searchBooks(@RequestParam int currentPage,
-                                                            @RequestParam int pageSize,
-                                                            @RequestParam(required = false) String bookName,
-                                                            @RequestParam(required = false) String author
-    ) {
-        MBookQueryDto bookQueryDto = MBookQueryDto.builder()
-                .bookName(bookName)
-                .author(author)
-                .build();
-        Page<BookDetailDto> page = Page.of(currentPage, pageSize);
-        IPage<BookDetailDto> books = bookService.searchBookDetailsInPaging(page, bookQueryDto);
+        Page<BookDto> page = Page.of(currentPage, pageSize);
+        IPage<BookDto> books = bookService.findBooksInPagingByCriteria(page, bookQueryDto);
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookDetailDto> getBook(@PathVariable String id) {
-        BookDetailDto book = bookService.findBook(id);
+    public ResponseEntity<BookDto> getBook(@PathVariable String id) {
+        BookDto book = bookService.findBookById(id);
         return ResponseEntity.ok(book);
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadCoverImg(@RequestParam("file") @NotNull MultipartFile file) {
+    public ResponseEntity<Media> uploadCoverImg(@RequestParam("file") @NotNull MultipartFile file) {
         try {
             byte[] bytes = file.getBytes();
             MagicMatch magicMatch = Magic.getMagicMatch(bytes);
@@ -98,25 +88,37 @@ public class MBookController {
         } catch (IOException | MagicException | MagicParseException | MagicMatchNotFoundException e) {
             throw new BusinessException(ErrorCode.FILETYPE_ERROR);
         }
-        String url = bookService.uploadCoverImg(file);
-        return ResponseEntity.ok(url);
+        Media media = bookService.uploadCoverImg(file);
+        return ResponseEntity.ok(media);
+    }
+
+    @GetMapping("/{id}/classifications")
+    public ResponseEntity<List<Classification>> getBookClassifications(@PathVariable String id) {
+        List<Classification> classifications = bookService.getBookClassifications(id);
+        return ResponseEntity.ok(classifications);
+    }
+
+    @PostMapping("/{id}/chapters")
+    public ResponseEntity<?> createBookChapter(@PathVariable String id, @RequestBody BookChapter bookChapter) {
+        bookChapter.setBookId(id);
+        bookChapterService.save(bookChapter);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/chapters")
+    public ResponseEntity<List<BookChapter>> getBookChapters(@PathVariable String id) {
+        List<BookChapter> chapters = bookChapterService.getBookChapters(id);
+        return ResponseEntity.ok(chapters);
+    }
+
+    @GetMapping("/{id}/max-chapter-no")
+    public ResponseEntity<Long> getBookMaxChapterNo(@PathVariable String id) {
+        Long chapterNo = bookChapterService.getMaxChapterNo(id);
+        return ResponseEntity.ok(chapterNo);
     }
 
 
-//    @GetMapping
-//    public ResponseEntity<IPage<BookDto>> getHotSearchBooks(@RequestParam int currentPage,
-//                                                      @RequestParam int pageSize,
-//                                                      @RequestParam(required = false) String bookName
-//    ) {
-//        MBookQueryDto bookQueryDto = MBookQueryDto.builder()
-//                .bookName(bookName)
-//                .author(author)
-//                .build();
-//        Page<BookEntity> page = Page.of(currentPage, pageSize);
-//        IPage<BookEntity> books = bookService.findBooksInPagingByCriteria(page, bookQueryDto);
-//        IPage<BookDto> bookDtoIPage = books.convert(bookEntity -> BaseAssembler.convert(bookEntity, BookDto.class));
-//        return ResponseEntity.ok(bookDtoIPage);
-//    }
+
 }
 
 

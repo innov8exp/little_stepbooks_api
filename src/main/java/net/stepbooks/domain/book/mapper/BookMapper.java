@@ -3,28 +3,19 @@ package net.stepbooks.domain.book.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import net.stepbooks.domain.book.entity.BookEntity;
-import net.stepbooks.application.dto.client.BookDetailDto;
+import net.stepbooks.application.dto.admin.BookDto;
+import net.stepbooks.domain.book.entity.Book;
+import net.stepbooks.domain.classification.entity.Classification;
 import org.apache.ibatis.annotations.Param;
 
-public interface BookMapper extends BaseMapper<BookEntity> {
+import java.util.List;
 
-    IPage<BookDetailDto> searchAllByBookNameAndKeywords(Page<BookDetailDto> page, @Param("keyword") String keyword);
+public interface BookMapper extends BaseMapper<Book> {
 
-    IPage<BookDetailDto> findTopDefaultBooks(Page<BookDetailDto> page, @Param("categoryID") String categoryID);
+    IPage<BookDto> findAllByCriteria(Page<BookDto> page, @Param("bookName") String bookName,
+                                     @Param("author") String author);
 
-    IPage<BookDetailDto> findTopHighRatedBooks(Page<BookDetailDto> page, @Param("categoryID") String categoryID);
+    List<Classification> findClassificationsByBookId(@Param("bookId") String bookId);
 
-    IPage<BookDetailDto> findTopHighViewedBooks(Page<BookDetailDto> page, @Param("categoryID") String categoryID);
-
-    IPage<BookDetailDto> findTopLatestBooks(Page<BookDetailDto> page, @Param("categoryID") String categoryID);
-
-    IPage<BookEntity> findAllByCriteria(Page<BookEntity> page, @Param("bookName") String bookName,
-                                        @Param("author") String author);
-
-    BookEntity findBookById(String id);
-
-    IPage<BookDetailDto> searchBookDetails(Page<BookDetailDto> page, String bookName, String author);
-
-    BookDetailDto findBookDetail(String id, String userId);
+    BookDto findBookById(@Param("bookId") String bookId);
 }

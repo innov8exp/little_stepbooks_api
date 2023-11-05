@@ -2,11 +2,11 @@ package net.stepbooks.interfaces.client.controller.v1;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.book.entity.BookEntity;
+import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.bookshelf.service.BookshelfService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.application.dto.client.BookDto;
+import net.stepbooks.application.dto.admin.BookDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +39,7 @@ public class BookshelfController {
     @GetMapping("/books")
     public ResponseEntity<List<BookDto>> findBooksFromUserBookshelf() {
         String userId = contextManager.currentUser().getId();
-        List<BookEntity> bookEntities = bookshelfService.listBooksInBookshelf(userId);
+        List<Book> bookEntities = bookshelfService.listBooksInBookshelf(userId);
         List<BookDto> bookDtos = BaseAssembler.convert(bookEntities, BookDto.class);
         return ResponseEntity.ok(bookDtos);
     }

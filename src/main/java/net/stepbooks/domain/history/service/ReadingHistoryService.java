@@ -2,9 +2,9 @@ package net.stepbooks.domain.history.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
-import net.stepbooks.application.dto.client.BookDetailDto;
 import net.stepbooks.application.dto.client.ChapterWithHistoryDto;
+import net.stepbooks.domain.book.entity.Book;
+import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public interface ReadingHistoryService {
 
     List<ChapterWithHistoryDto> getReadingHistory(String bookId, String userId);
 
-    IPage<BookDetailDto> getUserReadBooks(Page<BookDetailDto> page, String userId);
+    IPage<Book> getUserReadBooks(Page<Book> page, String userId);
 }

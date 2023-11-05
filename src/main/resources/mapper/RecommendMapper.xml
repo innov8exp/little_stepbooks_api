@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.recommendation.mapper.RecommendationMapper">
     <select id="findDefaultRecommendBooks"
-            resultType="net.stepbooks.domain.book.entity.BookEntity">
+            resultType="net.stepbooks.domain.book.entity.Book">
         select distinct b.* from step_book b
         inner join STEP_RECOMMEND r
         on b.id = r.book_id

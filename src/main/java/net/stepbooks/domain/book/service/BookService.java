@@ -2,49 +2,32 @@ package net.stepbooks.domain.book.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import net.stepbooks.domain.book.entity.BookEntity;
-import net.stepbooks.infrastructure.enums.OrderByCriteria;
+import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.application.dto.admin.MBookQueryDto;
-import net.stepbooks.application.dto.client.BookDetailDto;
+import net.stepbooks.application.dto.admin.BookDto;
+import net.stepbooks.domain.book.entity.Book;
+import net.stepbooks.domain.classification.entity.Classification;
+import net.stepbooks.domain.media.entity.Media;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public interface BookService {
+public interface BookService extends IService<Book> {
 
-    BookEntity findBookById(String bookId);
+    IPage<BookDto> findBooksInPagingByCriteria(Page<BookDto> page, MBookQueryDto queryDto);
 
-    BookDetailDto findBookDetailById(String id, String userId);
+    void createBook(BookDto bookDto);
 
-    IPage<BookDetailDto> searchBooksWithKeyword(Page<BookDetailDto> page, String keyword);
-
-    List<BookDetailDto> findTopBooks(OrderByCriteria orderByCriteria, String categoryID);
-
-    IPage<BookDetailDto> findBooksInPagingByCategory(Page<BookDetailDto> page, OrderByCriteria orderByCriteria, String categoryID);
-
-    IPage<BookEntity> findBooksInPagingByCriteria(Page<BookEntity> page, MBookQueryDto queryDto);
-
-    IPage<BookDetailDto> searchBookDetailsInPaging(Page<BookDetailDto> page, MBookQueryDto queryDto);
-
-    void createBook(BookDetailDto bookDetailDto);
-
-    void updateBook(String id, BookDetailDto bookDetailDto);
+    void updateBook(String id, BookDto bookDto);
 
     void deleteBook(String id);
 
-    BookDetailDto findBook(String id);
+    Media uploadCoverImg(MultipartFile file);
 
-    String uploadCoverImg(MultipartFile file);
+    Long chapterCount(String bookId);
 
-//    List<BookEntity> findHighViewTopBooks();
-//
-//    List<BookEntity> findHighViewTopBooksInPaging();
-//
-//    List<BookEntity> findLatestCreatedTopBooks();
-//
-//    List<BookEntity> findLatestCreatedTopBooks();
-//
-//    List<BookEntity> findDefaultTopBooks();
+    List<Classification> getBookClassifications(String bookId);
 
+    BookDto findBookById(String bookId);
 
 }

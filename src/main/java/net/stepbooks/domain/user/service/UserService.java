@@ -1,9 +1,9 @@
 package net.stepbooks.domain.user.service;
 
-import net.stepbooks.domain.user.entity.UserEntity;
-import net.stepbooks.domain.user.entity.UserTagRefEntity;
 import net.stepbooks.application.dto.client.SocialAuthDto;
 import net.stepbooks.application.dto.client.TokenDto;
+import net.stepbooks.domain.media.entity.Media;
+import net.stepbooks.domain.user.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -12,19 +12,19 @@ public interface UserService {
 
     Boolean existsUserByEmail(String email);
 
-    UserEntity findUserByEmail(String email);
+    User findUserByEmail(String email);
 
-    UserEntity findUserByPhone(String phone);
+    User findUserByPhone(String phone);
 
-    UserEntity findUserByUsername(String username);
+    User findUserByUsername(String username);
 
-    void registerWithEmail(UserEntity userEntity);
+    void registerWithEmail(User user);
 
-    void registerWithPhone(UserEntity userEntity);
+    void registerWithPhone(User user);
 
-    void registerWithWechat(UserEntity userEntity);
+    void registerWithWechat(User user);
 
-    void resetPassword(UserEntity userEntity);
+    void resetPassword(User user);
 
     TokenDto loginWithEmail(String email, String password);
 
@@ -36,19 +36,19 @@ public interface UserService {
 
     TokenDto socialLogin(SocialAuthDto socialAuthDto);
 
-    UserEntity findUserByFacebookId(String facebookUserId);
+    User findUserByFacebookId(String facebookUserId);
 
-    UserEntity findUserByGoogleId(String googleUserId);
+    User findUserByGoogleId(String googleUserId);
 
-    UserEntity getUserInfoFromToken(String token);
+    User getUserInfoFromToken(String token);
 
     TokenDto refreshToken(String accessToken, String refreshToken);
 
-    void updateUserById(String id, UserEntity userEntity);
+    void updateUserById(String id, User user);
 
-    List<UserEntity> findUsers();
+    List<User> findUsers();
 
-    UserEntity findUser(String id);
+    User findUser(String id);
 
     void deleteUser(String id);
 
@@ -60,7 +60,5 @@ public interface UserService {
 
     void sendLoginVerificationSms(String phone);
 
-    void createUserTagRef(List<UserTagRefEntity> userTagRefEntities);
-
-    String uploadImg(MultipartFile file, String userId);
+    Media uploadImg(MultipartFile file, String userId);
 }

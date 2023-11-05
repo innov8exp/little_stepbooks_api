@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @TableName("STEP_BOOK_CLASSIFICATION_REF")
-public class BookClassificationRefEntity {
+public class BookClassificationRef {
     private String id;
     private String bookId;
     private String classificationId;

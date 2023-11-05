@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.feedback.entity.FeedbackEntity;
 import net.stepbooks.domain.feedback.service.FeedbackService;
-import net.stepbooks.domain.user.entity.UserEntity;
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.application.dto.client.FeedbackDto;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +24,9 @@ public class FeedbackController {
 
     @PostMapping
     public ResponseEntity<?> submitFeedback(@RequestBody FeedbackDto feedbackDto) {
-        UserEntity userEntity = contextManager.currentUser();
+        User user = contextManager.currentUser();
         FeedbackEntity feedbackEntity = new FeedbackEntity();
-        feedbackEntity.setUserId(userEntity.getId());
+        feedbackEntity.setUserId(user.getId());
         feedbackEntity.setContent(feedbackDto.getContent());
         feedbackService.createFeedback(feedbackEntity);
         return ResponseEntity.ok().build();

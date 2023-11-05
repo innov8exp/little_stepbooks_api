@@ -1,7 +1,7 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import net.stepbooks.domain.user.entity.UserEntity;
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.application.dto.admin.MUserDto;
@@ -29,14 +29,14 @@ public class MUserController {
 
     @GetMapping
     public ResponseEntity<List<MUserDto>> getAllUsers() {
-        List<UserEntity> users = userService.findUsers();
+        List<User> users = userService.findUsers();
         List<MUserDto> userDtos = BaseAssembler.convert(users, MUserDto.class);
         return ResponseEntity.ok(userDtos);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MUserDto> getAllUser(@PathVariable String id) {
-        UserEntity userEntity = userService.findUser(id);
-        return ResponseEntity.ok(BaseAssembler.convert(userEntity, MUserDto.class));
+        User user = userService.findUser(id);
+        return ResponseEntity.ok(BaseAssembler.convert(user, MUserDto.class));
     }
 }

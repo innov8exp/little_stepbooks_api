@@ -11,6 +11,7 @@ public class EntityMetaHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         this.strictInsertFill(metaObject, "createdAt", LocalDateTime.class, LocalDateTime.now());
+        this.strictInsertFill(metaObject, "modifiedAt", LocalDateTime.class, LocalDateTime.now());
     }
 
     @Override

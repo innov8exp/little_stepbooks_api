@@ -1,6 +1,6 @@
 package net.stepbooks.domain.bookshelf.service;
 
-import net.stepbooks.domain.book.entity.BookEntity;
+import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.bookshelf.entity.BookshelfEntity;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface BookshelfService {
 
     int removeBooksFromBookshelf(List<String> bookIds, String userId);
 
-    List<BookEntity> listBooksInBookshelf(String userId);
+    List<Book> listBooksInBookshelf(String userId);
 
     void setTopBooksFromBookshelf(List<String> bookIds, String userId);
 }

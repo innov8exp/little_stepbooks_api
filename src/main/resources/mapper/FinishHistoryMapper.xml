@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.history.mapper.FinishHistoryMapper">
     <select id="findFinishBooksByUser"
-            resultType="net.stepbooks.application.dto.client.BookDto">
+            resultType="net.stepbooks.application.dto.admin.BookDto">
         select DISTINCT b.* from step_finish_history f inner join step_book b
         on f.book_id = b.id
         where f.user_id = #{userId}

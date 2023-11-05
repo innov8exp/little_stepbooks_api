@@ -4,26 +4,22 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.application.dto.client.UserDto;
+import net.stepbooks.application.dto.client.ValidateDto;
+import net.stepbooks.application.dto.client.VerificationDto;
 import net.stepbooks.domain.email.service.EmailService;
-import net.stepbooks.domain.user.entity.UserEntity;
-import net.stepbooks.domain.user.entity.UserTagRefEntity;
+import net.stepbooks.domain.media.entity.Media;
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.application.dto.client.UserDto;
-import net.stepbooks.application.dto.client.UserTagRefDto;
-import net.stepbooks.application.dto.client.ValidateDto;
-import net.stepbooks.application.dto.client.VerificationDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,37 +33,24 @@ public class UserController {
 
     @GetMapping("/info")
     public ResponseEntity<UserDto> getUserInfo() {
-        UserEntity userEntity = contextManager.currentUser();
-        UserDto userDto = BaseAssembler.convert(userEntity, UserDto.class);
+        User user = contextManager.currentUser();
+        UserDto userDto = BaseAssembler.convert(user, UserDto.class);
         return ResponseEntity.ok(userDto);
     }
 
     @PutMapping("/info")
     public ResponseEntity<?> updateUserInfo(@RequestBody UserDto userDto) {
-        UserEntity currentUser = contextManager.currentUser();
-        UserEntity userEntity = BaseAssembler.convert(userDto, UserEntity.class);
-        userService.updateUserById(currentUser.getId(), userEntity);
+        User currentUser = contextManager.currentUser();
+        User user = BaseAssembler.convert(userDto, User.class);
+        userService.updateUserById(currentUser.getId(), user);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/avatar/upload")
-    public ResponseEntity<String> uploadAvatar(@RequestParam("file") @NotNull MultipartFile file) {
-        UserEntity currentUser = contextManager.currentUser();
-        String url = userService.uploadImg(file, currentUser.getId());
-        return ResponseEntity.ok(url);
-    }
-
-    @PostMapping("/tags")
-    public ResponseEntity<?> createTagRef(@RequestBody UserTagRefDto userTagRefDto) {
-        UserEntity currentUser = contextManager.currentUser();
-        userTagRefDto.setUserId(currentUser.getId());
-        List<UserTagRefEntity> userTagRefEntities = userTagRefDto.getTagIds().stream().map(tagId ->
-                UserTagRefEntity.builder()
-                        .tagId(tagId)
-                        .userId(currentUser.getId())
-                        .build()).collect(Collectors.toList());
-        userService.createUserTagRef(userTagRefEntities);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Media> uploadAvatar(@RequestParam("file") @NotNull MultipartFile file) {
+        User currentUser = contextManager.currentUser();
+        Media media = userService.uploadImg(file, currentUser.getId());
+        return ResponseEntity.ok(media);
     }
 
     @PostMapping("/link-email")
@@ -79,9 +62,9 @@ public class UserController {
             if (existsUserByEmail) {
                 throw new BusinessException(ErrorCode.EMAIL_EXISTS_ERROR);
             }
-            UserEntity userEntity = contextManager.currentUser();
-            userEntity.setEmail(validateDto.getEmail());
-            userService.updateUserById(userEntity.getId(), userEntity);
+            User user = contextManager.currentUser();
+            user.setEmail(validateDto.getEmail());
+            userService.updateUserById(user.getId(), user);
         }
         return ResponseEntity.ok(valid);
     }
@@ -89,8 +72,8 @@ public class UserController {
     @PostMapping("/verification")
     public ResponseEntity<?> sendVerificationCode(@Valid @RequestBody VerificationDto verificationDto) {
         if ("LINK".equals(verificationDto.getEmailType())) {
-            UserEntity userEntity = contextManager.currentUser();
-            if (ObjectUtils.isEmpty(userEntity)) {
+            User user = contextManager.currentUser();
+            if (ObjectUtils.isEmpty(user)) {
                 throw new BusinessException(ErrorCode.USER_NOT_FOUND);
             }
             userService.sendLinkVerificationEmail(verificationDto.getEmail());
