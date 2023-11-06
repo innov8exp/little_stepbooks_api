@@ -6,12 +6,11 @@ import net.stepbooks.infrastructure.enums.OrderStatus;
 import java.math.BigDecimal;
 
 @Data
-public class OrderDto {
+public class PlaceOrderDto {
 
-    private String orderNo;
-    private String userId;
-    private String productId;
+    private String skuNo;
+    private String userName;
+    private String phone;
+    private String address;
     private BigDecimal transactionAmount;
-    private BigDecimal coinAmount;
-    private OrderStatus status;
 }

@@ -47,6 +47,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public void createOrder(Order entity) {
 //        entity.setOrderNo(IdWorker.getIdStr());
         entity.setOrderNo(generateOrderNo(ORDER_CODE_PREFIX));
+        log.debug("OrderNo:" + entity.getOrderNo());
         orderMapper.insert(entity);
     }
 
