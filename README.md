@@ -1,5 +1,8 @@
 # Little Stepbooks API
 
+## Init
+./gradlew initGitHooks
+
 ## How to build
 
 ```shell script
