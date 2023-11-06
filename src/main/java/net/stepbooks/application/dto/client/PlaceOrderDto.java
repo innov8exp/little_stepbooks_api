@@ -1,7 +1,6 @@
 package net.stepbooks.application.dto.client;
 
 import lombok.Data;
-import net.stepbooks.infrastructure.enums.OrderStatus;
 
 import java.math.BigDecimal;
 
