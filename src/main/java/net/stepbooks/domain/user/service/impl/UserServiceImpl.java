@@ -125,6 +125,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     @Override
     public void registerWithPhone(User user) {
         String phone = user.getPhone();
@@ -143,6 +144,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     @Override
     public void registerWithWechat(User user) {
         String wechatId = user.getWechatId();

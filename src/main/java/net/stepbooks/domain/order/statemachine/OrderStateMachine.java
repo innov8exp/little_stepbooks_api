@@ -21,8 +21,10 @@ public class OrderStateMachine {
                 .when(checkCondition())
                 .perform(doAction());
 
-        StateMachine<OrderState, OrderEvent, OrderEntity> orderStateMachine = builder.build("orderStateMachine");
-        OrderState orderState = orderStateMachine.fireEvent(OrderState.INIT, OrderEvent.PLACE_SUCCESS, new OrderEntity());
+        StateMachine<OrderState, OrderEvent, OrderEntity> orderStateMachine
+                = builder.build("orderStateMachine");
+        OrderState orderState
+                = orderStateMachine.fireEvent(OrderState.INIT, OrderEvent.PLACE_SUCCESS, new OrderEntity());
         assert orderState == OrderState.PLACED;
     }
 

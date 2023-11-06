@@ -8,7 +8,8 @@ import net.stepbooks.application.dto.admin.ConsumptionInfoDto;
 
 public interface ConsumptionMapper extends BaseMapper<ConsumptionEntity> {
 
-    IPage<ConsumptionInfoDto> findByCriteria(Page<ConsumptionInfoDto> page, String bookName, String username, String consumeOrderNo);
+    IPage<ConsumptionInfoDto> findByCriteria(Page<ConsumptionInfoDto> page, String bookName,
+                                             String username, String consumeOrderNo);
 
     IPage<ConsumptionInfoDto> findPageByUser(Page<ConsumptionInfoDto> page, String userId);
 }

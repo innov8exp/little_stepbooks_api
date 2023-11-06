@@ -18,7 +18,7 @@ public class CommonUtil {
     }
 
     //生成随机用户名，数字和字母组成,
-    @SuppressWarnings("checkstyle:MagicNumber")
+    @SuppressWarnings("checkstyle:magicnumber")
     public static String getStringRandom(int length) {
         StringBuilder val = new StringBuilder();
         Random random = new Random();

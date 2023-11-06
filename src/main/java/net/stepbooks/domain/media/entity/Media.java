@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import net.stepbooks.infrastructure.enums.MediaType;
 import net.stepbooks.infrastructure.model.BaseEntity;
 

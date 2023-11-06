@@ -20,8 +20,8 @@ public class SnowflakeID {
     private static final int NODE_ID_BITS = 10;
     private static final int SEQUENCE_BITS = 12;
 
-    private static final long maxNodeId = (1L << NODE_ID_BITS) - 1;
-    private static final long maxSequence = (1L << SEQUENCE_BITS) - 1;
+    private static final long MAX_NODE_ID = (1L << NODE_ID_BITS) - 1;
+    private static final long MAX_SEQUENCE = (1L << SEQUENCE_BITS) - 1;
 
     // Custom Epoch (January 1, 2015 Midnight UTC = 2015-01-01T00:00:00Z)
     private static final long DEFAULT_CUSTOM_EPOCH = 1420070400000L;
@@ -34,8 +34,8 @@ public class SnowflakeID {
 
     // Create Snowflake with a nodeId and custom epoch
     public SnowflakeID(long nodeId, long customEpoch) {
-        if (nodeId < 0 || nodeId > maxNodeId) {
-            throw new IllegalArgumentException(String.format("NodeId must be between %d and %d", 0, maxNodeId));
+        if (nodeId < 0 || nodeId > MAX_NODE_ID) {
+            throw new IllegalArgumentException(String.format("NodeId must be between %d and %d", 0, MAX_NODE_ID));
         }
         this.nodeId = nodeId;
         this.customEpoch = customEpoch;
@@ -60,7 +60,7 @@ public class SnowflakeID {
         }
 
         if (currentTimestamp == lastTimestamp) {
-            sequence = (sequence + 1) & maxSequence;
+            sequence = (sequence + 1) & MAX_SEQUENCE;
             if (sequence == 0) {
                 // Sequence Exhausted, wait till next millisecond.
                 currentTimestamp = waitNextMillis(currentTimestamp);
@@ -109,7 +109,7 @@ public class SnowflakeID {
         } catch (Exception ex) {
             nodeId = (new SecureRandom().nextInt());
         }
-        nodeId = nodeId & maxNodeId;
+        nodeId = nodeId & MAX_NODE_ID;
         return nodeId;
     }
 

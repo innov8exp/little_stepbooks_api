@@ -44,7 +44,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public IPage<CommentDetailDto> findCommentsByCriteria(Page<CommentDetailDto> page, String nickname, String bookName) {
+    public IPage<CommentDetailDto> findCommentsByCriteria(Page<CommentDetailDto> page,
+                                                          String nickname, String bookName) {
         return commentMapper.searchCommentsByCriteria(page, nickname, bookName);
     }
 

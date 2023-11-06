@@ -103,7 +103,8 @@ public class UserJwtTokenProvider {
         }
     }
 
-    public TokenDto refreshToken(JwtUserDetails userDetails, String refreshToken, AuthType authType, LocalDateTime lastPasswordReset) {
+    public TokenDto refreshToken(JwtUserDetails userDetails, String refreshToken, AuthType authType,
+                                 LocalDateTime lastPasswordReset) {
         Boolean canTokenBeRefreshed = canTokenBeRefreshed(refreshToken, lastPasswordReset);
         if (!canTokenBeRefreshed) {
             throw new BusinessException(ErrorCode.AUTH_ERROR);

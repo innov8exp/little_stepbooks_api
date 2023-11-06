@@ -75,7 +75,8 @@ public class ExceptionHandlers {
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public final ResponseEntity<ErrorResponseDto> handleDatabindException(ConstraintViolationException ex, HttpServletRequest request,
+    public final ResponseEntity<ErrorResponseDto> handleDatabindException(ConstraintViolationException ex,
+                                                                          HttpServletRequest request,
                                                                           HttpServletResponse response) {
         log.error(MessageFormat.format("请求发生了非预期异常，出错的 url [{0}]，出错的描述为 [{1}]",
                 request.getRequestURL().toString(), ex.getMessage()), ex);

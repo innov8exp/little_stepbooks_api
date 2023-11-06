@@ -29,7 +29,8 @@ public class JsonUtils {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
-            return objectMapper.readValue(jsonStr, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+            return objectMapper.readValue(jsonStr,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
         } catch (Exception e) {
             log.error("fromJson failed, json = {}, list of clazz = {}", jsonStr, clazz, e);
             throw new JsonException(jsonStr, clazz);
