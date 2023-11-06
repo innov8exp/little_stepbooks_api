@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.order.entity.OrderEntity;
+import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
@@ -35,9 +35,9 @@ public class OrderController {
     @PostMapping("/chapter")
     public ResponseEntity<?> orderChapter(@RequestBody OrderDto orderDto) {
         User user = contextManager.currentUser();
-        OrderEntity orderEntity = BaseAssembler.convert(orderDto, OrderEntity.class);
-        orderEntity.setUserId(user.getId());
-        orderService.createOrder(orderEntity);
+        Order order = BaseAssembler.convert(orderDto, Order.class);
+        order.setUserId(user.getId());
+        orderService.createOrder(order);
         return ResponseEntity.ok().build();
     }
 }

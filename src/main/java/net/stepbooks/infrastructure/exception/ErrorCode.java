@@ -17,7 +17,8 @@ public enum ErrorCode {
     UPLOAD_FILE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Upload file to s3 failed"),
     S3_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect S3 failed"),
     REDUCE_BALANCE_FAILED(HttpStatus.BAD_REQUEST.value(),
-            "Reduce coin failed, insufficient coin balance, please recharge");
+            "Reduce coin failed, insufficient coin balance, please recharge"),
+    REDIS_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect redis failed");
 
     private final int status;
     @Setter

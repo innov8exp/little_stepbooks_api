@@ -4,6 +4,11 @@ spring:
     url: jdbc:postgresql://localhost:65432/stepbook
     username: stepbook_user
     password: stepbook
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
 
 logging:
   level:
@@ -13,3 +18,4 @@ aws:
   s3:
     bucket: stepbooks.stage
   cdn: https://ds2rcorotrbeb.cloudfront.net
+

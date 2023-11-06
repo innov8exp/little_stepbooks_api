@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("STEP_ORDER")
-public class OrderEntity extends BaseEntity {
+public class Order extends BaseEntity {
 
     private String orderNo;
     private String productId;

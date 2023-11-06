@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.order.entity.OrderEntity;
+import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.application.dto.admin.OrderInfoDto;
@@ -23,14 +23,14 @@ public class MOrderController {
 
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody OrderDto orderDto) {
-        OrderEntity entity = BaseAssembler.convert(orderDto, OrderEntity.class);
+        Order entity = BaseAssembler.convert(orderDto, Order.class);
         orderService.createOrder(entity);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@PathVariable String id, @RequestBody OrderDto orderDto) {
-        OrderEntity entity = BaseAssembler.convert(orderDto, OrderEntity.class);
+        Order entity = BaseAssembler.convert(orderDto, Order.class);
         orderService.updateOrder(id, entity);
         return ResponseEntity.ok().build();
     }
@@ -53,8 +53,8 @@ public class MOrderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderDto> getAllOrder(@PathVariable String id) {
-        OrderEntity orderEntity = orderService.findOrder(id);
-        return ResponseEntity.ok(BaseAssembler.convert(orderEntity, OrderDto.class));
+        Order order = orderService.findOrder(id);
+        return ResponseEntity.ok(BaseAssembler.convert(order, OrderDto.class));
     }
 
 }

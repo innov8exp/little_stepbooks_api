@@ -5,14 +5,14 @@ import com.alibaba.cola.statemachine.Condition;
 import com.alibaba.cola.statemachine.StateMachine;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilder;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilderFactory;
-import net.stepbooks.domain.order.entity.OrderEntity;
+import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 
 public class OrderStateMachine {
 
     public void createStateMachine() {
-        StateMachineBuilder<OrderState, OrderEvent, OrderEntity> builder = StateMachineBuilderFactory.create();
+        StateMachineBuilder<OrderState, OrderEvent, Order> builder = StateMachineBuilderFactory.create();
 
         builder.externalTransition()
                 .from(OrderState.INIT)
@@ -21,18 +21,18 @@ public class OrderStateMachine {
                 .when(checkCondition())
                 .perform(doAction());
 
-        StateMachine<OrderState, OrderEvent, OrderEntity> orderStateMachine
+        StateMachine<OrderState, OrderEvent, Order> orderStateMachine
                 = builder.build("orderStateMachine");
         OrderState orderState
-                = orderStateMachine.fireEvent(OrderState.INIT, OrderEvent.PLACE_SUCCESS, new OrderEntity());
+                = orderStateMachine.fireEvent(OrderState.INIT, OrderEvent.PLACE_SUCCESS, new Order());
         assert orderState == OrderState.PLACED;
     }
 
-    private Condition<OrderEntity> checkCondition() {
+    private Condition<Order> checkCondition() {
         return orderEntity -> true;
     }
 
-    private Action<OrderState, OrderEvent, OrderEntity> doAction() {
+    private Action<OrderState, OrderEvent, Order> doAction() {
         System.out.println("doAction");
         return (from, to, event, context) -> {
             System.out.println("from: " + from);
