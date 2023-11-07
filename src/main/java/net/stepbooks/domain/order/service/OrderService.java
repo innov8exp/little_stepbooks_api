@@ -21,4 +21,7 @@ public interface OrderService extends IService<Order> {
 
     void deleteOrder(String id);
 
+    void cancelOrder(String id);
+
+    long getUnpaidRemainingTime(String orderId);
 }

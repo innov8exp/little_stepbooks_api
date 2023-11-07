@@ -23,6 +23,15 @@ public class OrderController {
     private final ContextManager contextManager;
     private final OrderService orderService;
 
+    @PostMapping
+    public ResponseEntity<?> placeOrder(@RequestBody PlaceOrderDto orderDto) {
+        User user = contextManager.currentUser();
+        Order order = BaseAssembler.convert(orderDto, Order.class);
+        order.setUserId(user.getId());
+        orderService.createOrder(order);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/user")
     public ResponseEntity<IPage<OrderInfoDto>> getUserOrderHistory(@RequestParam int currentPage,
                                                                    @RequestParam int pageSize) {
@@ -32,12 +41,9 @@ public class OrderController {
         return ResponseEntity.ok(ordersByCriteria);
     }
 
-    @PostMapping
-    public ResponseEntity<?> placeOrder(@RequestBody PlaceOrderDto orderDto) {
-        User user = contextManager.currentUser();
-        Order order = BaseAssembler.convert(orderDto, Order.class);
-        order.setUserId(user.getId());
-        orderService.createOrder(order);
-        return ResponseEntity.ok().build();
+    @GetMapping("/{id}/unpaid-remaining-time")
+    public ResponseEntity<Long> getOrderUnpaidRemainingTime(@PathVariable String id) {
+        long remainingTime = orderService.getUnpaidRemainingTime(id);
+        return ResponseEntity.ok(remainingTime);
     }
 }

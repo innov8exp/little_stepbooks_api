@@ -18,6 +18,7 @@ public enum ErrorCode {
     S3_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect S3 failed"),
     REDUCE_BALANCE_FAILED(HttpStatus.BAD_REQUEST.value(),
             "Reduce coin failed, insufficient coin balance, please recharge"),
+    SCHEDULE_TASK_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Schedule task occur error"),
     REDIS_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect redis failed");
 
     private final int status;

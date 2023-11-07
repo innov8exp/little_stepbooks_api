@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum OrderStatus {
-    UNPAID("UNPAID"), PAID("PAID");
+    UNPAID("UNPAID"), PAID("PAID"), CANCELLED("CANCELLED");
 
     @EnumValue
     private final String value;
