@@ -24,4 +24,6 @@ public interface OrderService extends IService<Order> {
     void cancelOrder(String id);
 
     long getUnpaidRemainingTime(String orderId);
+
+    void cancelTimeoutOrders();
 }

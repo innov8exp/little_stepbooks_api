@@ -16,6 +16,6 @@ logging:
 
 aws:
   s3:
-    bucket: stepbooks.stage
+    bucket: stepbook.stage
   cdn: https://ds2rcorotrbeb.cloudfront.net
 

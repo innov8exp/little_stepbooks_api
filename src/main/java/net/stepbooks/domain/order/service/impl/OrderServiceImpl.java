@@ -1,6 +1,7 @@
 package net.stepbooks.domain.order.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -86,6 +87,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Duration duration = Duration.between(createdAt, now);
         long seconds = duration.getSeconds();
         return seconds > ORDER_UNPAID_TIMEOUT ? 0 : ORDER_UNPAID_TIMEOUT - seconds;
+    }
+
+    @Override
+    public void cancelTimeoutOrders() {
+        orderMapper.selectList(Wrappers.<Order>lambdaQuery().eq(Order::getStatus, OrderStatus.UNPAID))
+                .forEach(order -> {
+                    if (order.getCreatedAt()
+                            .plusSeconds(ORDER_UNPAID_TIMEOUT)
+                            .plusSeconds(ORDER_UNPAID_TIMEOUT_BUFFER)
+                            .isAfter(LocalDateTime.now())) {
+                        order.setStatus(OrderStatus.CANCELLED);
+                        order.setModifiedAt(LocalDateTime.now());
+                        orderMapper.updateById(order);
+                    }
+                });
     }
 
     // 生成订单号
