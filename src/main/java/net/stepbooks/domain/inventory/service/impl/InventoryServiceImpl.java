@@ -20,7 +20,8 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
 
     @Override
     public void createInventory(Inventory inventory) {
-        Inventory inventoryExists = getOne(Wrappers.<Inventory>lambdaQuery().eq(Inventory::getProductId, inventory.getProductId()));
+        Inventory inventoryExists = getOne(Wrappers.<Inventory>lambdaQuery()
+                .eq(Inventory::getProductId, inventory.getProductId()));
         if (inventoryExists == null) {
             inventoryMapper.insert(inventory);
             return;
