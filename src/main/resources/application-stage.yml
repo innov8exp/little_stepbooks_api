@@ -4,6 +4,11 @@ spring:
     url: jdbc:postgresql://non-prod-db.czvfgexghsct.rds.cn-north-1.amazonaws.com.cn:5432/stepbook_stage?ssl=true&sslrootcert=/app/rds-cert.pem
     username: stepbook_user
     password: 17@6WI4zcA
+  data:
+    redis:
+      host: clustercfg.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn
+      port: 6379
+      database: 0
 
 server:
   forward-headers-strategy: framework
