@@ -4,16 +4,13 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;
 
 @Getter
-public enum OrderStatus {
-    CREATED("CREATED"),
-    UNPAID("UNPAID"),
-    PAID("PAID"),
-    CANCELLED("CANCELLED");
+public enum OrderType {
+    PURCHASE("PURCHASE"), REFUND("REFUND");
 
     @EnumValue
     private final String value;
 
-    OrderStatus(String value) {
+    OrderType(String value) {
         this.value = value;
     }
 }

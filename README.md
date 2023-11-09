@@ -27,6 +27,8 @@ docker run -p 5432:5432 -d \
 ```
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
+
+GRANT ALL ON SCHEMA public TO stepbook_user;
 ```
 
 

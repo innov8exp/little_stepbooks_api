@@ -10,6 +10,7 @@ spring:
       port: 6379
       database: 0
 
+
 server:
   forward-headers-strategy: framework
 

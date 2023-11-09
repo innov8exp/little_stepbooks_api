@@ -191,14 +191,39 @@ create TABLE STEP_INVENTORY
 create TABLE STEP_ORDER
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
-    user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    product_id      VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
     order_no        VARCHAR(100) NOT NULL UNIQUE,
-    transaction_amount          DECIMAL,
-    coin_amount     DECIMAL,
-    status          VARCHAR(20),    -- UNPAID, PAID
+    user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
+    order_type      VARCHAR(20),    -- PURCHASE, REFUND
+    total_amount    DECIMAL,
+    recipient_phone VARCHAR(20),
+    recipient_name  VARCHAR(100),
+    recipient_address TEXT,
+    payment_status  VARCHAR(20),    -- UNPAID, PAID
+    status          VARCHAR(20),
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
+);
+
+-- 订单产品信息
+create TABLE STEP_ORDER_PRODUCT_REF
+(
+    id              VARCHAR(100) NOT NULL PRIMARY KEY,
+    order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
+    product_id      VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    quantity        INTEGER,
+    created_at      TIMESTAMP,
+    modified_at     TIMESTAMP
+);
+
+-- 订单事件
+create TABLE STEP_ORDER_EVENT
+(
+    id             VARCHAR(100) NOT NULL PRIMARY KEY,
+    order_id       VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
+    event_type     VARCHAR(20),    -- CREATE, PAY, REFUND, CANCEL
+    event_desc     TEXT,
+    created_at     TIMESTAMP,
+    modified_at    TIMESTAMP
 );
 
 -- 支付信息
@@ -212,6 +237,7 @@ create TABLE STEP_PAYMENT
     transaction_amount          DECIMAL,
     vendor_payment_no         VARCHAR(200) NOT NULL UNIQUE,
     receipt         VARCHAR(200),
+    transaction_status          VARCHAR(20),    -- SUCCESS, FAILED
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
 );

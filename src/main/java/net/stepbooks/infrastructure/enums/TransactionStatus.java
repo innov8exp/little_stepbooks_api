@@ -4,16 +4,13 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;
 
 @Getter
-public enum OrderStatus {
-    CREATED("CREATED"),
-    UNPAID("UNPAID"),
-    PAID("PAID"),
-    CANCELLED("CANCELLED");
+public enum TransactionStatus {
+    SUCCESS("SUCCESS"), FAILED("FAILED");
 
     @EnumValue
     private final String value;
 
-    OrderStatus(String value) {
+    TransactionStatus(String value) {
         this.value = value;
     }
 }

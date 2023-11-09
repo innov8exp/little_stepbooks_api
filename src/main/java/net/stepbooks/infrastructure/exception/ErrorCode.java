@@ -16,6 +16,13 @@ public enum ErrorCode {
     PARSE_JSON_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "parse json occur error"),
     UPLOAD_FILE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Upload file to s3 failed"),
     S3_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect S3 failed"),
+
+    PRODUCT_NOT_EXISTS(HttpStatus.BAD_REQUEST.value(), "The product is already unshelve"),
+    STOCK_NOT_EXISTS(HttpStatus.BAD_REQUEST.value(), "The product is out of stock"),
+    STOCK_NOT_ENOUGH(HttpStatus.BAD_REQUEST.value(), "The product is out of stock"),
+
+    LOCK_STOCK_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Lock stock failed"),
+
     REDUCE_BALANCE_FAILED(HttpStatus.BAD_REQUEST.value(),
             "Reduce coin failed, insufficient coin balance, please recharge"),
     SCHEDULE_TASK_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Schedule task occur error"),
