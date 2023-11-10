@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.mapper.ProductMapper;
 import net.stepbooks.domain.product.service.ProductService;
-import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.interfaces.admin.dto.MProductQueryDto;
 import org.springframework.stereotype.Service;
 

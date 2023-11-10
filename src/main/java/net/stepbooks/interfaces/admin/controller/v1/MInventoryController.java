@@ -3,11 +3,11 @@ package net.stepbooks.interfaces.admin.controller.v1;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.interfaces.admin.dto.InventoryQueryDto;
-import net.stepbooks.interfaces.admin.dto.MInventoryDto;
 import net.stepbooks.domain.inventory.entity.Inventory;
 import net.stepbooks.domain.inventory.service.InventoryService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.admin.dto.InventoryQueryDto;
+import net.stepbooks.interfaces.admin.dto.MInventoryDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +19,8 @@ public class MInventoryController {
     private final InventoryService inventoryService;
 
     @PostMapping
-    public ResponseEntity<?> createInventory(@RequestBody MInventoryDto MInventoryDto) {
-        Inventory inventory = BaseAssembler.convert(MInventoryDto, Inventory.class);
+    public ResponseEntity<?> createInventory(@RequestBody MInventoryDto inventoryDto) {
+        Inventory inventory = BaseAssembler.convert(inventoryDto, Inventory.class);
         inventoryService.createInventory(inventory);
         return ResponseEntity.ok().build();
     }
