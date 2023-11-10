@@ -17,15 +17,16 @@ import org.springframework.stereotype.Service;
 public class WechatPaymentServiceImpl implements PaymentService {
 
     /** 商户号 */
-    public static String merchantId = "190000****";
+    private static final String MERCHANT_ID = "190000****";
     /** 商户API私钥路径 */
-    public static String privateKeyPath = "/Users/yourname/your/path/apiclient_key.pem";
+    private static final String PRIVATE_KEY_PATH = "/Users/yourname/your/path/apiclient_key.pem";
     /** 商户证书序列号 */
-    public static String merchantSerialNumber = "5157F09EFDC096DE15EBE81A47057A72********";
+    private static final String MERCHANT_SERIAL_NUMBER = "5157F09EFDC096DE15EBE81A47057A72********";
     /** 商户APIV3密钥 */
-    public static String apiV3Key = "...";
+    private static final String API_V_3_KEY = "...";
 
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     @Override
     public void payment() {
         System.out.println("Wechat payment");
@@ -34,10 +35,10 @@ public class WechatPaymentServiceImpl implements PaymentService {
         // 一个商户号只能初始化一个配置，否则会因为重复的下载任务报错
         Config config =
                 new RSAAutoCertificateConfig.Builder()
-                        .merchantId(merchantId)
-                        .privateKeyFromPath(privateKeyPath)
-                        .merchantSerialNumber(merchantSerialNumber)
-                        .apiV3Key(apiV3Key)
+                        .merchantId(MERCHANT_ID)
+                        .privateKeyFromPath(PRIVATE_KEY_PATH)
+                        .merchantSerialNumber(MERCHANT_SERIAL_NUMBER)
+                        .apiV3Key(API_V_3_KEY)
                         .build();
         // 构建service
         JsapiService service = new JsapiService.Builder().config(config).build();

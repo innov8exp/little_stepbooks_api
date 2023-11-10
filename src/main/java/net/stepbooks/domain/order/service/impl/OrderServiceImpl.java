@@ -11,10 +11,8 @@ import net.stepbooks.application.dto.admin.OrderInfoDto;
 import net.stepbooks.application.dto.client.CreateOrderDto;
 import net.stepbooks.domain.inventory.service.InventoryService;
 import net.stepbooks.domain.order.entity.Order;
-import net.stepbooks.domain.order.entity.OrderEventLog;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
-import net.stepbooks.domain.order.event.DelayQueueMessageProducer;
 import net.stepbooks.domain.order.mapper.OrderMapper;
 import net.stepbooks.domain.order.service.OrderEventLogService;
 import net.stepbooks.domain.order.service.OrderService;
@@ -38,7 +36,6 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import static net.stepbooks.infrastructure.AppConstants.*;
 
@@ -155,8 +152,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public void cancelTimeoutOrders() {
         orderMapper.selectList(Wrappers.<Order>lambdaQuery().eq(Order::getState, OrderState.PLACED))
                 .forEach(order -> {
-                    log.info("Find placed order [{}], start to check if it is payment timeout... [{}]", order.getId(),
-                            order.getCreatedAt().plusSeconds(order.getPaymentTimeoutDuration()).plusSeconds(ORDER_PAYMENT_TIMEOUT_BUFFER).isBefore(LocalDateTime.now()));
                     if (order.getCreatedAt()
                             .plusSeconds(order.getPaymentTimeoutDuration())
                             .plusSeconds(ORDER_PAYMENT_TIMEOUT_BUFFER)

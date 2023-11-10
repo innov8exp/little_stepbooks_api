@@ -28,7 +28,8 @@ public class OrderActionServiceImpl implements OrderActionService {
         // start 30 + buffer min count down
         LocalDateTime timeOutDateTime = order.getCreatedAt().plusSeconds(order.getPaymentTimeoutDuration());
         Duration between = Duration.between(LocalDateTime.now(), timeOutDateTime);
-        delayQueueMessageProducer.addDelayQueue(ORDER_PAYMENT_TIMEOUT_QUEUE, order.getId(), between.toSeconds(), TimeUnit.SECONDS);
+        delayQueueMessageProducer
+                .addDelayQueue(ORDER_PAYMENT_TIMEOUT_QUEUE, order.getId(), between.toSeconds(), TimeUnit.SECONDS);
     }
 
     @Override

@@ -1,11 +1,7 @@
 package net.stepbooks.domain.order.event;
 
-import com.alibaba.cola.statemachine.StateMachine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.domain.order.entity.Order;
-import net.stepbooks.domain.order.enums.OrderEvent;
-import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.service.OrderService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
