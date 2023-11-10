@@ -1,6 +1,8 @@
 package net.stepbooks.domain.inventory.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,8 @@ import net.stepbooks.domain.inventory.mapper.InventoryMapper;
 import net.stepbooks.domain.inventory.service.InventoryService;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.interfaces.admin.dto.MInventoryDto;
+import net.stepbooks.interfaces.admin.dto.InventoryQueryDto;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -46,5 +50,10 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
             throw new BusinessException(ErrorCode.STOCK_NOT_ENOUGH);
         }
         log.info("扣减库存成功，商品ID：{}，扣减数量：{}", productId, quantity);
+    }
+
+    @Override
+    public IPage<MInventoryDto> findInventoriesInPagingByCriteria(Page<MInventoryDto> page, InventoryQueryDto queryDto) {
+        return inventoryMapper.findPagedByCriteria(page, queryDto.getSkuCode());
     }
 }
