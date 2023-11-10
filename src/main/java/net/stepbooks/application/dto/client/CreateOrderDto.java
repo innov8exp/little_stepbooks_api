@@ -6,7 +6,7 @@ import lombok.Data;
 public class CreateOrderDto {
 
     private String userId;
-    private String skuNo;
+    private String skuCode;
     private int quantity;
     private String recipientName;
     private String recipientPhone;

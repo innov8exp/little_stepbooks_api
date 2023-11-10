@@ -38,9 +38,9 @@ public class DelayQueueMessageProducer {
         RBlockingDeque<String> blockingDeque = redissonClient.getBlockingDeque(queueCode);
         try {
             if (blockingDeque.isEmpty()) {
-                if (log.isDebugEnabled()) {
-                    log.debug("there is no data in {}", queueCode);
-                }
+//                if (log.isDebugEnabled()) {
+//                    log.debug("there is no data in {}", queueCode);
+//                }
                 return null;
             } else {
                 return blockingDeque.take();

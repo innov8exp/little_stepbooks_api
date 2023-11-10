@@ -16,7 +16,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Override
     public Product getProductBySkuCode(String skuCode) {
-        return getOne(Wrappers.<Product>lambdaQuery().eq(Product::getSkuNo, skuCode));
+        return getOne(Wrappers.<Product>lambdaQuery().eq(Product::getSkuCode, skuCode));
     }
 
     @Override

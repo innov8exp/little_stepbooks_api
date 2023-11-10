@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class PlaceOrderDto {
 
-    private String skuNo;
+    private String skuCode;
     private int quantity;
     private String recipientName;
     private String recipientPhone;

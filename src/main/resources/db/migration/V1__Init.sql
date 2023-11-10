@@ -140,7 +140,7 @@ create TABLE STEP_BOOK_SET_BOOK_REF
 create TABLE STEP_PRODUCT
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
-    sku_no VARCHAR(200) NOT NULL UNIQUE,
+    sku_code VARCHAR(200) NOT NULL UNIQUE,
     sku_name VARCHAR(200) NOT NULL,
     sales_platform TEXT[], -- ANDROID, IOS, MINI_PROGRAM
     has_inventory BOOLEAN,
@@ -182,7 +182,7 @@ create TABLE STEP_INVENTORY
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
     product_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
-    inventory_amount INTEGER,
+    inventory_quantity INTEGER,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -191,15 +191,17 @@ create TABLE STEP_INVENTORY
 create TABLE STEP_ORDER
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
-    order_no        VARCHAR(100) NOT NULL UNIQUE,
+    order_code        VARCHAR(100) NOT NULL UNIQUE,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
     order_type      VARCHAR(20),    -- PURCHASE, REFUND
     total_amount    DECIMAL,
+    discount_amount DECIMAL,
     recipient_phone VARCHAR(20),
     recipient_name  VARCHAR(100),
     recipient_address TEXT,
+    payment_timeout_duration BIGINT,
     payment_status  VARCHAR(20),    -- UNPAID, PAID
-    status          VARCHAR(20),
+    state          VARCHAR(20),
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
 );
@@ -216,12 +218,15 @@ create TABLE STEP_ORDER_PRODUCT_REF
 );
 
 -- 订单事件
-create TABLE STEP_ORDER_EVENT
+create TABLE STEP_ORDER_EVENT_LOG
 (
     id             VARCHAR(100) NOT NULL PRIMARY KEY,
     order_id       VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
+    order_code       VARCHAR(100) NOT NULL,
+    from_state    VARCHAR(20),
+    to_state    VARCHAR(20),
     event_type     VARCHAR(20),    -- CREATE, PAY, REFUND, CANCEL
-    event_desc     TEXT,
+    event_time     TIMESTAMP,
     created_at     TIMESTAMP,
     modified_at    TIMESTAMP
 );
@@ -231,7 +236,7 @@ create TABLE STEP_PAYMENT
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
     order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
-    order_no        VARCHAR(100) NOT NULL,
+    order_code        VARCHAR(100) NOT NULL,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
     payment_method  VARCHAR(20),    -- WECHAT_PAY, ALI_PAY
     transaction_amount          DECIMAL,

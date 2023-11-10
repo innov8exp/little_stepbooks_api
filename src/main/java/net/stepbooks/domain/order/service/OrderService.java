@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.application.dto.client.CreateOrderDto;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.application.dto.admin.OrderInfoDto;
+import net.stepbooks.domain.order.enums.OrderEvent;
+import net.stepbooks.domain.order.enums.OrderState;
 
 public interface OrderService extends IService<Order> {
 
@@ -16,15 +18,17 @@ public interface OrderService extends IService<Order> {
 
     Order findOrder(String id);
 
+    long getUnpaidRemainingTime(String orderId);
+
     void createOrder(CreateOrderDto orderDto);
 
     void updateOrder(String id, Order updatedEntity);
 
     void deleteOrder(String id);
 
-    void cancelOrder(String id);
-
-    long getUnpaidRemainingTime(String orderId);
+    Order updateOrderState(String id, OrderState orderState, OrderEvent orderEvent);
 
     void cancelTimeoutOrders();
+
+    void autoCancelWhenPaymentTimeout(String recordId);
 }

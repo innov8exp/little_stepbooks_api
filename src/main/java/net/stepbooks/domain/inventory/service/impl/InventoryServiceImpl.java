@@ -26,7 +26,7 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
             inventoryMapper.insert(inventory);
             return;
         }
-        inventory.setInventoryAmount(inventoryExists.getInventoryAmount() + inventory.getInventoryAmount());
+        inventory.setInventoryQuantity(inventoryExists.getInventoryQuantity() + inventory.getInventoryQuantity());
         inventoryMapper.insert(inventory);
         log.info("创建库存成功，商品ID：{}", inventory.getProductId());
     }
@@ -37,10 +37,10 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
         if (inventory == null) {
             throw new BusinessException(ErrorCode.STOCK_NOT_EXISTS);
         }
-        if (inventory.getInventoryAmount() < quantity) {
+        if (inventory.getInventoryQuantity() < quantity) {
             throw new BusinessException(ErrorCode.STOCK_NOT_ENOUGH);
         }
-        inventory.setInventoryAmount(inventory.getInventoryAmount() - quantity);
+        inventory.setInventoryQuantity(inventory.getInventoryQuantity() - quantity);
         int row = inventoryMapper.updateById(inventory);
         if (row == 0) {
             throw new BusinessException(ErrorCode.STOCK_NOT_ENOUGH);

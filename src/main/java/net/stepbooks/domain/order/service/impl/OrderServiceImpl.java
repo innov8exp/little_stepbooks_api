@@ -1,5 +1,6 @@
 package net.stepbooks.domain.order.service.impl;
 
+import com.alibaba.cola.statemachine.StateMachine;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,12 +11,16 @@ import net.stepbooks.application.dto.admin.OrderInfoDto;
 import net.stepbooks.application.dto.client.CreateOrderDto;
 import net.stepbooks.domain.inventory.service.InventoryService;
 import net.stepbooks.domain.order.entity.Order;
+import net.stepbooks.domain.order.entity.OrderEventLog;
+import net.stepbooks.domain.order.enums.OrderEvent;
+import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.event.DelayQueueMessageProducer;
 import net.stepbooks.domain.order.mapper.OrderMapper;
+import net.stepbooks.domain.order.service.OrderEventLogService;
 import net.stepbooks.domain.order.service.OrderService;
+import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.service.ProductService;
-import net.stepbooks.infrastructure.enums.OrderStatus;
 import net.stepbooks.infrastructure.enums.OrderType;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
@@ -43,10 +48,14 @@ import static net.stepbooks.infrastructure.AppConstants.*;
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
 
     private final OrderMapper orderMapper;
-    private final DelayQueueMessageProducer delayQueueMessageProducer;
+    private final StateMachine<OrderState, OrderEvent, Order> orderStateMachine;
+
+    private final RedisDistributedLocker redisDistributedLocker;
     private final InventoryService inventoryService;
     private final ProductService productService;
-    private final RedisDistributedLocker redisDistributedLocker;
+    private final OrderEventLogService orderEventLogService;
+    private final PaymentService paymentService;
+
 
     @Override
     public IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderNo, String username) {
@@ -67,7 +76,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Transactional(rollbackFor = Exception.class)
     public void createOrder(CreateOrderDto orderDto) {
 //        entity.setOrderNo(IdWorker.getIdStr());
-        Product product = productService.getProductBySkuCode(orderDto.getSkuNo());
+        Product product = productService.getProductBySkuCode(orderDto.getSkuCode());
         if (product == null) {
             throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
         }
@@ -81,8 +90,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         try {
             inventoryService.decreaseInventory(productId, orderDto.getQuantity());
             BigDecimal totalAmount = product.getPrice().multiply(new BigDecimal(orderDto.getQuantity()));
+
             Order order = Order.builder()
-                    .orderNo(generateOrderNo(ORDER_CODE_PREFIX))
+                    .orderCode(generateOrderNo(ORDER_CODE_PREFIX))
                     .userId(orderDto.getUserId())
                     .recipientName(orderDto.getRecipientName())
                     .recipientPhone(orderDto.getRecipientPhone())
@@ -90,14 +100,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                     .totalAmount(totalAmount)
                     .orderType(OrderType.PURCHASE)
                     .paymentStatus(PaymentStatus.UNPAID)
-                    .status(OrderStatus.CREATED)
+                    .state(OrderState.INIT)
+                    .paymentTimeoutDuration(ORDER_PAYMENT_TIMEOUT)
                     .build();
-            log.info("OrderNo:" + order.getOrderNo());
+            log.info("OrderNo:" + order.getOrderCode());
             orderMapper.insert(order);
-            // TODO order event
-            // unpaid order start count down
-            Order theOrder = orderMapper.selectOne(Wrappers.<Order>lambdaQuery().eq(Order::getOrderNo, order.getOrderNo()));
-            startOrderCountDown(theOrder);
+            updateOrderState(order.getId(), order.getState(), OrderEvent.PLACE_SUCCESS);
         } catch (OptimisticLockingFailureException e) {
             throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED);
         } finally {
@@ -112,7 +120,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public void updateOrder(String id, Order updatedEntity) {
         Order order = orderMapper.selectById(id);
         BeanUtils.copyProperties(updatedEntity, order, "id", "orderNo", "createdAt");
-        order.setModifiedAt(LocalDateTime.now());
         orderMapper.updateById(order);
     }
 
@@ -122,12 +129,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public void cancelOrder(String id) {
-        // TODO
-        Order order = orderMapper.selectById(id);
-        order.setStatus(OrderStatus.CANCELLED);
-        order.setModifiedAt(LocalDateTime.now());
-        orderMapper.updateById(order);
+    @Transactional(rollbackFor = Exception.class)
+    public Order updateOrderState(String id, OrderState orderState, OrderEvent orderEvent) {
+        String machineId = orderStateMachine.getMachineId();
+        log.debug("订单状态机：{}", machineId);
+        Order order = getById(id);
+        OrderState state = orderStateMachine.fireEvent(orderState, orderEvent, order);
+        order.setState(state);
+        updateById(order);
+        // TODO order event time log
+        return getById(id);
     }
 
     @Override
@@ -137,22 +148,28 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         LocalDateTime now = LocalDateTime.now();
         Duration duration = Duration.between(createdAt, now);
         long seconds = duration.getSeconds();
-        return seconds > ORDER_UNPAID_TIMEOUT ? 0 : ORDER_UNPAID_TIMEOUT - seconds;
+        return seconds > ORDER_PAYMENT_TIMEOUT ? 0 : ORDER_PAYMENT_TIMEOUT - seconds;
     }
 
     @Override
     public void cancelTimeoutOrders() {
-        orderMapper.selectList(Wrappers.<Order>lambdaQuery().eq(Order::getStatus, OrderStatus.UNPAID))
+        orderMapper.selectList(Wrappers.<Order>lambdaQuery().eq(Order::getState, OrderState.PLACED))
                 .forEach(order -> {
+                    log.info("Find placed order [{}], start to check if it is payment timeout... [{}]", order.getId(),
+                            order.getCreatedAt().plusSeconds(order.getPaymentTimeoutDuration()).plusSeconds(ORDER_PAYMENT_TIMEOUT_BUFFER).isBefore(LocalDateTime.now()));
                     if (order.getCreatedAt()
-                            .plusSeconds(ORDER_UNPAID_TIMEOUT)
-                            .plusSeconds(ORDER_UNPAID_TIMEOUT_BUFFER)
-                            .isAfter(LocalDateTime.now())) {
-                        order.setStatus(OrderStatus.CANCELLED);
-                        order.setModifiedAt(LocalDateTime.now());
-                        orderMapper.updateById(order);
+                            .plusSeconds(order.getPaymentTimeoutDuration())
+                            .plusSeconds(ORDER_PAYMENT_TIMEOUT_BUFFER)
+                            .isBefore(LocalDateTime.now())) {
+                        log.info("Find already payment timeout and uncancelled order [{}], start to cancel it...", order.getId());
+                        updateOrderState(order.getId(), order.getState(), OrderEvent.PAYMENT_TIMEOUT_CANCEL_SUCCESS);
                     }
                 });
+    }
+
+    @Override
+    public void autoCancelWhenPaymentTimeout(String recordId) {
+        updateOrderState(recordId, OrderState.PLACED, OrderEvent.PAYMENT_TIMEOUT_CANCEL_SUCCESS);
     }
 
     // 生成订单号
@@ -165,10 +182,5 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return String.format("%s%s%s", prefix, currentDate, random);
     }
 
-    private void startOrderCountDown(Order order) {
-        // start 30 + buffer min count down
-        LocalDateTime timeOutDateTime = order.getCreatedAt().plusSeconds(ORDER_UNPAID_TIMEOUT);
-        Duration between = Duration.between(LocalDateTime.now(), timeOutDateTime);
-        delayQueueMessageProducer.addDelayQueue(ORDER_UNPAID_TIMEOUT_QUEUE, order.getId(), between.toSeconds(), TimeUnit.SECONDS);
-    }
+
 }

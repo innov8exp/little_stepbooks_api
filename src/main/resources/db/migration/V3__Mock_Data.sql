@@ -14,6 +14,18 @@ VALUES ('2', '5-10岁', 5, 10, '适合5-10岁阅读观看');
 INSERT INTO STEP_CLASSIFICATION (id, classification_name, min_age, max_age, description)
 VALUES ('3', '10岁以上', 10, 99, '适合10岁以上阅读观看');
 
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, has_inventory)
+VALUES ('0', '001', '霸王龙绘本', 39.00, 'true');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, has_inventory)
+VALUES ('1', '002', '你看起来好像很好吃绘本', 29.00, 'true');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, has_inventory)
+VALUES ('2', '003', '你看起来好像很好吃课程', 19.00, 'false');
+
+INSERT INTO STEP_INVENTORY(id, product_id, inventory_quantity)
+VALUES ('0', '0', 100);
+INSERT INTO STEP_INVENTORY(id, product_id, inventory_quantity)
+VALUES ('1', '1', 100);
+
 --
 --INSERT INTO STEP_BOOK (id, book_name, author, cover_img, introduction, keywords, content_location, status)
 --values ('0', 'Husband Be A Gentleman', 'Smith Lose', 'https://novlshared.s3.ap-northeast-1.amazonaws.com/book_cover_img/1.jpeg',

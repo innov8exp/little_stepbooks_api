@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("STEP_PAYMENT")
-public class PaymentEntity extends BaseEntity {
+public class Payment extends BaseEntity {
 
     private String orderId;
     private String orderNo;

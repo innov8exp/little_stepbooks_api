@@ -13,5 +13,5 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 public class Inventory extends BaseEntity {
 
     private String productId;
-    private Integer inventoryAmount;
+    private Integer inventoryQuantity;
 }

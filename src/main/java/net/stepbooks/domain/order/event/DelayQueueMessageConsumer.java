@@ -1,13 +1,17 @@
 package net.stepbooks.domain.order.event;
 
+import com.alibaba.cola.statemachine.StateMachine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.stepbooks.domain.order.entity.Order;
+import net.stepbooks.domain.order.enums.OrderEvent;
+import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.service.OrderService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import static net.stepbooks.infrastructure.AppConstants.ORDER_UNPAID_TIMEOUT_QUEUE;
+import static net.stepbooks.infrastructure.AppConstants.ORDER_PAYMENT_TIMEOUT_QUEUE;
 
 
 @Slf4j
@@ -16,19 +20,19 @@ import static net.stepbooks.infrastructure.AppConstants.ORDER_UNPAID_TIMEOUT_QUE
 public class DelayQueueMessageConsumer {
 
     public static final int FIXED_DELAY_TIME = 1000;
-    private final OrderService orderService;
     private final DelayQueueMessageProducer delayQueueMessageProducer;
+    private final OrderService orderService;
 
-    @Async("consumerTaskExecutor")
+    @Async("CustomAsyncExecutor")
     @Scheduled(fixedDelay = FIXED_DELAY_TIME)
-    public void cancelOrderAsDepositPaymentTimeout() {
-        if (log.isDebugEnabled()) {
-            log.debug("Start to do cancelOrderAsDepositPaymentTimeout...");
-        }
-        String recordId = delayQueueMessageProducer.getDelayQueue(ORDER_UNPAID_TIMEOUT_QUEUE);
+    public void cancelOrderAsPaymentTimeout() {
+//        if (log.isDebugEnabled()) {
+//            log.debug("Start to do cancelOrderAsPaymentTimeout...");
+//        }
+        String recordId = delayQueueMessageProducer.getDelayQueue(ORDER_PAYMENT_TIMEOUT_QUEUE);
         if (recordId != null) {
-            log.info("get content to do cancelOrderAsDepositPaymentTimeout task [{}]...", recordId);
-            orderService.cancelOrder(recordId);
+            log.info("get content to do cancelOrderAsPaymentTimeout task [{}]...", recordId);
+            orderService.autoCancelWhenPaymentTimeout(recordId);
         }
     }
 

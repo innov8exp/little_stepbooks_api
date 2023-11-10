@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @TableName("STEP_PRODUCT")
 public class Product extends BaseEntity {
 
-    private String skuNo;
+    private String skuCode;
     private String skuName;
     @TableField(jdbcType = JdbcType.ARRAY, typeHandler = ArrayTypeHandler.class)
     private String[] salesPlatform;

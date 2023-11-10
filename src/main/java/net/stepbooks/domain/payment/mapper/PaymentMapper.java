@@ -1,7 +1,7 @@
 package net.stepbooks.domain.payment.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import net.stepbooks.domain.payment.entity.PaymentEntity;
+import net.stepbooks.domain.payment.entity.Payment;
 
-public interface PaymentMapper extends BaseMapper<PaymentEntity> {
+public interface PaymentMapper extends BaseMapper<Payment> {
 }

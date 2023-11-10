@@ -2,7 +2,7 @@ package net.stepbooks.application.dto.admin;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.stepbooks.infrastructure.enums.OrderStatus;
+import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.infrastructure.model.BaseDto;
 
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Data
 public class OrderInfoDto extends BaseDto {
 
-    private String orderNo;
+    private String orderCode;
     private String userId;
     private String username;
     private String nickname;
@@ -19,5 +19,5 @@ public class OrderInfoDto extends BaseDto {
     private String productNo;
     private BigDecimal transactionAmount;
     private BigDecimal coinAmount;
-    private OrderStatus status;
+    private OrderState state;
 }

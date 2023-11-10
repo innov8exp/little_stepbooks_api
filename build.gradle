@@ -54,6 +54,7 @@ dependencies {
     implementation 'org.redisson:redisson-spring-boot-starter:3.23.5'
     implementation 'com.auth0:java-jwt:4.3.0'
     implementation 'org.modelmapper:modelmapper:2.4.0'
+    implementation 'com.github.wechatpay-apiv3:wechatpay-java:0.2.12'
 //    implementation 'org.apache.poi:poi:5.0.0'z
 //    implementation 'org.apache.poi:poi-ooxml:5.0.0'
     implementation 'com.github.ozlerhakan:poiji:4.1.1'

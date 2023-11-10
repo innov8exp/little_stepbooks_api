@@ -10,8 +10,7 @@ public class QuartzConfig {
 
     @Bean
     public JobDetail orderJobDetail() {
-        return JobBuilder.newJob().ofType(OrderJob.class)
-                .storeDurably()
+        return JobBuilder.newJob(OrderJob.class)
                 .withIdentity("OrderJob")
                 .withDescription("Invoke Order Job service...")
                 .storeDurably()
@@ -23,8 +22,8 @@ public class QuartzConfig {
         return TriggerBuilder.newTrigger().forJob(orderJobDetail)
                 .withIdentity("OrderJobTrigger")
                 .withDescription("Order Job Trigger")
-                .startNow()
                 .withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * * * ?"))
+                .startNow()
                 .build();
     }
 
