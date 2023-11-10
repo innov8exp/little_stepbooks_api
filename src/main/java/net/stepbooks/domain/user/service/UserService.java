@@ -1,7 +1,7 @@
 package net.stepbooks.domain.user.service;
 
-import net.stepbooks.application.dto.client.SocialAuthDto;
-import net.stepbooks.application.dto.client.TokenDto;
+import net.stepbooks.interfaces.client.dto.SocialAuthDto;
+import net.stepbooks.interfaces.client.dto.TokenDto;
 import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.user.entity.User;
 import org.springframework.web.multipart.MultipartFile;

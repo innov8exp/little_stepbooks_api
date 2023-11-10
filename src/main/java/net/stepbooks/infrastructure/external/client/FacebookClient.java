@@ -1,8 +1,8 @@
 package net.stepbooks.infrastructure.external.client;
 
-import net.stepbooks.application.dto.client.FacebookAuthResDto;
-import net.stepbooks.application.dto.client.FacebookUserDto;
-import net.stepbooks.application.dto.client.SocialTokenDto;
+import net.stepbooks.interfaces.client.dto.FacebookAuthResDto;
+import net.stepbooks.interfaces.client.dto.FacebookUserDto;
+import net.stepbooks.interfaces.client.dto.SocialTokenDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

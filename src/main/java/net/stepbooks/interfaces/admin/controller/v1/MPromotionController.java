@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.stepbooks.domain.promotion.entity.PromotionEntity;
 import net.stepbooks.domain.promotion.service.PromotionService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
-import net.stepbooks.application.dto.client.PromotionDto;
+import net.stepbooks.interfaces.client.dto.PromotionDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

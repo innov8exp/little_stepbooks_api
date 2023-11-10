@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import net.stepbooks.domain.comment.entity.CommentEntity;
-import net.stepbooks.application.dto.client.CommentDetailDto;
+import net.stepbooks.interfaces.client.dto.CommentDetailDto;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

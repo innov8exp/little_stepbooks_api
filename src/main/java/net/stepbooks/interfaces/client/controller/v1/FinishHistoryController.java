@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.stepbooks.domain.history.service.FinishHistoryService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.application.dto.admin.BookDto;
+import net.stepbooks.interfaces.admin.dto.BookDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

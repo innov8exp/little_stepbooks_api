@@ -4,9 +4,9 @@ package net.stepbooks.domain.order.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import net.stepbooks.application.dto.client.CreateOrderDto;
+import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import net.stepbooks.domain.order.entity.Order;
-import net.stepbooks.application.dto.admin.OrderInfoDto;
+import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 

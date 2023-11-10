@@ -1,7 +1,7 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.application.dto.client.InventoryDto;
+import net.stepbooks.interfaces.client.dto.InventoryDto;
 import net.stepbooks.domain.inventory.entity.Inventory;
 import net.stepbooks.domain.inventory.service.InventoryService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;

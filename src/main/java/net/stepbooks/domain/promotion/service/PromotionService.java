@@ -2,7 +2,7 @@ package net.stepbooks.domain.promotion.service;
 
 
 import net.stepbooks.domain.promotion.entity.PromotionEntity;
-import net.stepbooks.application.dto.client.PromotionDto;
+import net.stepbooks.interfaces.client.dto.PromotionDto;
 
 import java.util.List;
 

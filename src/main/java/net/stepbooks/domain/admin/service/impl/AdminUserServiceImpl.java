@@ -12,7 +12,7 @@ import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.security.admin.AdminJwtTokenProvider;
 import net.stepbooks.interfaces.admin.assembler.AdminAuthAssembler;
-import net.stepbooks.application.dto.client.TokenDto;
+import net.stepbooks.interfaces.client.dto.TokenDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Service;

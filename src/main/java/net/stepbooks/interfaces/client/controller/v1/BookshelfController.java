@@ -6,7 +6,7 @@ import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.bookshelf.service.BookshelfService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.application.dto.admin.BookDto;
+import net.stepbooks.interfaces.admin.dto.BookDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

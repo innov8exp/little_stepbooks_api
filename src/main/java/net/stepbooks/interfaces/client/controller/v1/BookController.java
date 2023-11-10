@@ -2,10 +2,10 @@ package net.stepbooks.interfaces.client.controller.v1;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.application.dto.admin.BookDto;
-import net.stepbooks.application.dto.client.CommentDetailDto;
-import net.stepbooks.application.dto.client.CommentDto;
-import net.stepbooks.application.dto.client.RatingDto;
+import net.stepbooks.interfaces.admin.dto.BookDto;
+import net.stepbooks.interfaces.client.dto.CommentDetailDto;
+import net.stepbooks.interfaces.client.dto.CommentDto;
+import net.stepbooks.interfaces.client.dto.RatingDto;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.book.service.BookService;
 import net.stepbooks.domain.comment.entity.CommentEntity;

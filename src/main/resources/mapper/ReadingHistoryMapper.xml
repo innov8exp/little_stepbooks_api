@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.history.mapper.ReadingHistoryMapper">
     <select id="findBookLastChapterRecordByUser"
-            resultType="net.stepbooks.application.dto.client.ChapterWithHistoryDto">
+            resultType="net.stepbooks.interfaces.client.dto.ChapterWithHistoryDto">
         select c.*, h.paragraph_number from STEP_CHAPTER c
         inner join STEP_READING_HISTORY h
         on c.id = h.chapter_id

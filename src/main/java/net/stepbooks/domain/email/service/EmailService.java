@@ -1,7 +1,7 @@
 package net.stepbooks.domain.email.service;
 
 import net.stepbooks.infrastructure.enums.EmailType;
-import net.stepbooks.application.dto.client.EmailDto;
+import net.stepbooks.interfaces.client.dto.EmailDto;
 
 public interface EmailService {
 

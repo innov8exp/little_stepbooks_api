@@ -1,7 +1,7 @@
 package net.stepbooks.domain.admin.service;
 
 import net.stepbooks.domain.admin.entity.AdminUserEntity;
-import net.stepbooks.application.dto.client.TokenDto;
+import net.stepbooks.interfaces.client.dto.TokenDto;
 
 public interface AdminUserService {
 

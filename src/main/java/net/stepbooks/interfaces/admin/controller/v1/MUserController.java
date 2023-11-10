@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
-import net.stepbooks.application.dto.admin.MUserDto;
+import net.stepbooks.interfaces.admin.dto.MUserDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

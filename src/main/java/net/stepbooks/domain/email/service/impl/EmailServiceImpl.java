@@ -8,7 +8,7 @@ import net.stepbooks.domain.email.mapper.EmailHistoryMapper;
 import net.stepbooks.domain.email.service.EmailService;
 import net.stepbooks.infrastructure.enums.SendStatus;
 import net.stepbooks.infrastructure.enums.EmailType;
-import net.stepbooks.application.dto.client.EmailDto;
+import net.stepbooks.interfaces.client.dto.EmailDto;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;

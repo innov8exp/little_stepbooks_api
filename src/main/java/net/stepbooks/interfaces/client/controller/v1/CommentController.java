@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.stepbooks.domain.comment.service.CommentService;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.application.dto.client.CommentDetailDto;
+import net.stepbooks.interfaces.client.dto.CommentDetailDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

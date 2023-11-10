@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.application.dto.client.ChapterWithHistoryDto;
+import net.stepbooks.interfaces.client.dto.ChapterWithHistoryDto;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
 import net.stepbooks.domain.history.mapper.ReadingHistoryMapper;

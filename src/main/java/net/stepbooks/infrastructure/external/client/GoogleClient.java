@@ -1,6 +1,6 @@
 package net.stepbooks.infrastructure.external.client;
 
-import net.stepbooks.application.dto.client.GoogleUserDto;
+import net.stepbooks.interfaces.client.dto.GoogleUserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
