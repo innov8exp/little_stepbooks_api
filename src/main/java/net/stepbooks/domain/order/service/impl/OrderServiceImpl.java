@@ -7,14 +7,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
-import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import net.stepbooks.domain.inventory.service.InventoryService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.mapper.OrderMapper;
-import net.stepbooks.domain.order.service.OrderEventLogService;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.product.entity.Product;
@@ -26,6 +23,8 @@ import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.RandomNumberUtils;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
 import net.stepbooks.infrastructure.util.RedisLockUtils;
+import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
+import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -50,7 +49,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private final RedisDistributedLocker redisDistributedLocker;
     private final InventoryService inventoryService;
     private final ProductService productService;
-    private final OrderEventLogService orderEventLogService;
     private final PaymentService paymentService;
 
 
@@ -102,7 +100,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                     .build();
             log.info("OrderNo:" + order.getOrderCode());
             orderMapper.insert(order);
-            updateOrderState(order.getId(), order.getState(), OrderEvent.PLACE_SUCCESS);
+            updateOrderState(order.getId(), OrderEvent.PLACE_SUCCESS);
         } catch (OptimisticLockingFailureException e) {
             throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED);
         } finally {
@@ -127,14 +125,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Order updateOrderState(String id, OrderState orderState, OrderEvent orderEvent) {
+    public Order updateOrderState(String id, OrderEvent orderEvent) {
         String machineId = orderStateMachine.getMachineId();
         log.debug("订单状态机：{}", machineId);
         Order order = getById(id);
-        OrderState state = orderStateMachine.fireEvent(orderState, orderEvent, order);
+        OrderState state = orderStateMachine.fireEvent(order.getState(), orderEvent, order);
         order.setState(state);
         updateById(order);
-        // TODO order event time log
         return getById(id);
     }
 
@@ -157,19 +154,44 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                             .plusSeconds(ORDER_PAYMENT_TIMEOUT_BUFFER)
                             .isBefore(LocalDateTime.now())) {
                         log.info("Find already payment timeout and uncancelled order [{}], start to cancel it...", order.getId());
-                        updateOrderState(order.getId(), order.getState(), OrderEvent.PAYMENT_TIMEOUT_CANCEL_SUCCESS);
+                        updateOrderState(order.getId(), OrderEvent.PAYMENT_TIMEOUT);
                     }
                 });
     }
 
     @Override
     public void autoCancelWhenPaymentTimeout(String recordId) {
-        updateOrderState(recordId, OrderState.PLACED, OrderEvent.PAYMENT_TIMEOUT_CANCEL_SUCCESS);
+        updateOrderState(recordId, OrderEvent.PAYMENT_TIMEOUT);
+    }
+
+    @Override
+    public void shipOrder(String id) {
+        updateOrderState(id, OrderEvent.SHIP_SUCCESS);
+    }
+
+    @Override
+    public void receiveOrder(String id) {
+        updateOrderState(id, OrderEvent.RECEIVED_SUCCESS);
+    }
+
+    @Override
+    public void closeOrder(String id) {
+        updateOrderState(id, OrderEvent.ADMIN_MANUAL_CLOSE);
+    }
+
+    @Override
+    public void cancelOrder(String id) {
+        updateOrderState(id, OrderEvent.USER_MANUAL_CANCEL);
+    }
+
+    @Override
+    public void applyRefundOrder(String id) {
+        updateOrderState(id, OrderEvent.REFUND_APPLICATION);
     }
 
     // 生成订单号
     private String generateOrderNo(String prefix) {
-        // yyMMddHH （下单日期时间）
+        // yyMMddHHmmSS （下单日期时间）
         final String currentDate = FastDateFormat.getInstance("yyMMddHHmmSS").format(new Date());
         // 12345(5位随机数)
         final String random = RedisLockUtils.operateWithLock(String.format("LOCK_%s", currentDate),

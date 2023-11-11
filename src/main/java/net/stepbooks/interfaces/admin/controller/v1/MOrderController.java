@@ -50,4 +50,9 @@ public class MOrderController {
         return ResponseEntity.ok(BaseAssembler.convert(order, OrderDto.class));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> closeOrder(@PathVariable String id) {
+        orderService.closeOrder(id);
+        return ResponseEntity.ok().build();
+    }
 }

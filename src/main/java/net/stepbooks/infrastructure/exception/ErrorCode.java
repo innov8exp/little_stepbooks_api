@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Cannot found the order"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Cannot found the user"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "The request param is not valid"),
     AUTH_ERROR(HttpStatus.UNAUTHORIZED.value(), "authenticated error"),

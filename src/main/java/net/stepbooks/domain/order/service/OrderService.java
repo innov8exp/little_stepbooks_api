@@ -8,7 +8,6 @@ import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 import net.stepbooks.domain.order.enums.OrderEvent;
-import net.stepbooks.domain.order.enums.OrderState;
 
 public interface OrderService extends IService<Order> {
 
@@ -26,9 +25,22 @@ public interface OrderService extends IService<Order> {
 
     void deleteOrder(String id);
 
-    Order updateOrderState(String id, OrderState orderState, OrderEvent orderEvent);
+    Order updateOrderState(String id, OrderEvent orderEvent);
 
     void cancelTimeoutOrders();
 
     void autoCancelWhenPaymentTimeout(String recordId);
+
+    // 发货
+    void shipOrder(String id);
+
+    // 签收
+    void receiveOrder(String id);
+
+    // 关闭订单
+    void closeOrder(String id);
+
+    void cancelOrder(String id);
+
+    void applyRefundOrder(String id);
 }

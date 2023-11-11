@@ -8,16 +8,12 @@ public enum OrderState {
     INIT("INIT"),
     PLACED("PLACED"),
     PAID("PAID"),
+    REFUND_APPLYING("REFUND_APPLYING"),
+    REFUNDING("REFUNDING"),
     SHIPPED("SHIPPED"),
-    DELIVERED("DELIVERED"),
-    RECEIVED("RECEIVED"),
-    CANCELLED("CANCELLED"),
     CLOSED("CLOSED"),
     REFUNDED("REFUNDED"),
-    FINISHED("FINISHED"),
-    EXPIRED("EXPIRED"),
-    DELETED("DELETED"),
-    UNKNOWN("UNKNOWN");
+    FINISHED("FINISHED");
 
     @EnumValue
     private final String value;

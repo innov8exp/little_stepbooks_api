@@ -47,8 +47,15 @@ public class OrderStateMachineConfig {
 
         builder.externalTransition()
                 .from(OrderState.PLACED)
-                .to(OrderState.CANCELLED)
-                .on(OrderEvent.PAYMENT_TIMEOUT_CANCEL_SUCCESS)
+                .to(OrderState.CLOSED)
+                .on(OrderEvent.USER_MANUAL_CANCEL)
+                .when(checkCondition())
+                .perform(doAction());
+
+        builder.externalTransition()
+                .from(OrderState.PLACED)
+                .to(OrderState.CLOSED)
+                .on(OrderEvent.PAYMENT_TIMEOUT)
                 .when(checkCondition())
                 .perform(doAction());
 
@@ -60,67 +67,76 @@ public class OrderStateMachineConfig {
                 .perform(doAction());
 
         builder.externalTransition()
-                .from(OrderState.SHIPPED)
-                .to(OrderState.DELIVERED)
-                .on(OrderEvent.DELIVER_SUCCESS)
+                .from(OrderState.PAID)
+                .to(OrderState.REFUNDING)
+                .on(OrderEvent.REFUND_APPLICATION)
                 .when(checkCondition())
                 .perform(doAction());
 
         builder.externalTransition()
-                .from(OrderState.DELIVERED)
+                .from(OrderState.REFUNDING)
                 .to(OrderState.REFUNDED)
-                .on(OrderEvent.DELIVERED_TO_REFUND_SUCCESS)
+                .on(OrderEvent.REFUND_SUCCESS)
                 .when(checkCondition())
                 .perform(doAction());
 
         builder.externalTransition()
-                .from(OrderState.REFUNDED)
-                .to(OrderState.CLOSED)
-                .on(OrderEvent.REFUND_TO_CLOSE_SUCCESS)
+                .from(OrderState.SHIPPED)
+                .to(OrderState.FINISHED)
+                .on(OrderEvent.RECEIVED_SUCCESS)
                 .when(checkCondition())
                 .perform(doAction());
+
+        builder.externalTransition()
+                .from(OrderState.SHIPPED)
+                .to(OrderState.REFUND_APPLYING)
+                .on(OrderEvent.REFUND_APPLICATION)
+                .when(checkCondition())
+                .perform(doAction());
+
 
         builder.externalTransition()
                 .from(OrderState.INIT)
                 .to(OrderState.CLOSED)
-                .on(OrderEvent.INIT_TO_CLOSE_SUCCESS)
+                .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
                 .perform(doAction());
 
         builder.externalTransition()
                 .from(OrderState.PLACED)
                 .to(OrderState.CLOSED)
-                .on(OrderEvent.PLACED_TO_CLOSE_SUCCESS)
+                .on(OrderEvent.USER_MANUAL_CANCEL)
+                .when(checkCondition())
+                .perform(doAction());
+
+        builder.externalTransition()
+                .from(OrderState.PLACED)
+                .to(OrderState.CLOSED)
+                .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
                 .perform(doAction());
 
         builder.externalTransition()
                 .from(OrderState.PAID)
                 .to(OrderState.CLOSED)
-                .on(OrderEvent.PAID_TO_CLOSE_SUCCESS)
+                .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
                 .perform(doAction());
 
         builder.externalTransition()
                 .from(OrderState.SHIPPED)
                 .to(OrderState.CLOSED)
-                .on(OrderEvent.SHIPPED_TO_CLOSE_SUCCESS)
+                .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
                 .perform(doAction());
 
         builder.externalTransition()
-                .from(OrderState.DELIVERED)
-                .to(OrderState.CLOSED)
-                .on(OrderEvent.DELIVERED_TO_CLOSE_SUCCESS)
+                .from(OrderState.SHIPPED)
+                .to(OrderState.REFUNDED)
+                .on(OrderEvent.SHIPPED_TO_REFUND)
                 .when(checkCondition())
                 .perform(doAction());
 
-        builder.externalTransition()
-                .from(OrderState.CANCELLED)
-                .to(OrderState.CLOSED)
-                .on(OrderEvent.USER_MANUAL_CANCEL_SUCCESS)
-                .when(checkCondition())
-                .perform(doAction());
 
 
         StateMachine<OrderState, OrderEvent, Order> orderStateMachine = builder.build(ORDER_STATE_MACHINE_ID);

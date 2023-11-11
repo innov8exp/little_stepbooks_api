@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.infrastructure.exception.BusinessException;
+import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import net.stepbooks.interfaces.client.dto.PlaceOrderDto;
@@ -48,5 +50,17 @@ public class OrderController {
     public ResponseEntity<Long> getOrderUnpaidRemainingTime(@PathVariable String id) {
         long remainingTime = orderService.getUnpaidRemainingTime(id);
         return ResponseEntity.ok(remainingTime);
+    }
+
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelOrder(@PathVariable String id) {
+        User user = contextManager.currentUser();
+        Order order = orderService.getById(id);
+        if (user.getId().equals(order.getUserId())) {
+            orderService.cancelOrder(id);
+        } else {
+            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+        }
+        return ResponseEntity.ok().build();
     }
 }
