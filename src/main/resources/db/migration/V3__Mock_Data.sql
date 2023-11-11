@@ -14,12 +14,62 @@ VALUES ('2', '5-10岁', 5, 10, '适合5-10岁阅读观看');
 INSERT INTO STEP_CLASSIFICATION (id, classification_name, min_age, max_age, description)
 VALUES ('3', '10岁以上', 10, 99, '适合10岁以上阅读观看');
 
+INSERT INTO STEP_BOOK(id, book_name, author)
+VALUES ('0', '我是霸王龙', '宫西达也');
+
+INSERT INTO STEP_BOOK(id, book_name, author)
+VALUES ('1', '你看起来好像很好吃', '宫西达也');
+
+INSERT INTO STEP_BOOK(id, book_name, author)
+VALUES ('2', '永远永远在一起', '宫西达也');
+
+INSERT INTO STEP_BOOK(id, book_name, author)
+VALUES ('3', '温柔的和体贴的', '宫西达也');
+
+INSERT INTO STEP_BOOK(id, book_name, author)
+VALUES ('4', '最爱的，是我', '宫西达也');
+
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('0', '0', '0');
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('1', '0', '1');
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('2', '0', '2');
+
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('3', '1', '0');
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('4', '1', '1');
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('5', '1', '2');
+
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('6', '2', '0');
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('7', '2', '1');
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('8', '2', '2');
+
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('9', '3', '0');
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('10', '3', '1');
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('11', '3', '2');
+
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('12', '4', '0');
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('13', '4', '1');
+INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
+VALUES ('14', '4', '2');
+
 INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, has_inventory)
-VALUES ('0', '001', '霸王龙绘本', 39.00, 'true');
+VALUES ('0', '001', '宫西达也恐龙系列(全5册)', 39.00, 'true');
 INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, has_inventory)
-VALUES ('1', '002', '你看起来好像很好吃绘本', 29.00, 'true');
+VALUES ('1', '002', '宫西达也恐龙系列(全5册)+课程', 29.00, 'true');
 INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, has_inventory)
-VALUES ('2', '003', '你看起来好像很好吃课程', 19.00, 'false');
+VALUES ('2', '003', '宫西达也恐龙系列课程', 19.00, 'false');
 
 INSERT INTO STEP_INVENTORY(id, product_id, inventory_quantity)
 VALUES ('0', '0', 100);

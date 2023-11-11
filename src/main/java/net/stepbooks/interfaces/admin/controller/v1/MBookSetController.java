@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.bookset.entity.BookSet;
 import net.stepbooks.domain.bookset.service.BookSetService;
+import net.stepbooks.interfaces.admin.dto.BookSetFormDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,8 @@ public class MBookSetController {
     private final BookSetService bookSetService;
 
     @PostMapping
-    public ResponseEntity<?> createBookSet(@RequestBody BookSet bookSet) {
-        bookSetService.save(bookSet);
+    public ResponseEntity<?> createBookSet(@RequestBody BookSetFormDto bookSet) {
+        bookSetService.createBookSet(bookSet);
         return ResponseEntity.ok().build();
     }
 
@@ -32,7 +33,7 @@ public class MBookSetController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBookSet(@PathVariable String id) {
-        bookSetService.removeById(id);
+        bookSetService.deleteBookSet(id);
         return ResponseEntity.ok().build();
     }
 
@@ -46,8 +47,8 @@ public class MBookSetController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookSet> getBookSet(@PathVariable String id) {
-        BookSet bookSet = bookSetService.getById(id);
+    public ResponseEntity<BookSetFormDto> getBookSet(@PathVariable String id) {
+        BookSetFormDto bookSet = bookSetService.getBookSet(id);
         return ResponseEntity.ok(bookSet);
     }
 }

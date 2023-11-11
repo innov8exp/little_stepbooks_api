@@ -8,7 +8,7 @@ create TABLE STEP_MEDIA
     file_size BIGINT,
     public_access BOOLEAN DEFAULT (false),
     object_name VARCHAR(200) NOT NULL UNIQUE,
-    object_type VARCHAR(20), -- IMAGE, AUDIO, VIDEO
+    object_type VARCHAR(100), -- IMAGE, AUDIO, VIDEO
     s3_object_id VARCHAR(200) NOT NULL UNIQUE,
     s3_bucket VARCHAR(200),
     store_path VARCHAR(200),
@@ -43,13 +43,13 @@ create TABLE STEP_USER
     alipay_id     VARCHAR(100),
     open_id       VARCHAR(255),
     password      VARCHAR(200),
-    role          VARCHAR(20) NOT NULL, -- NORMAL_USER, GUEST,
+    role          VARCHAR(100) NOT NULL, -- NORMAL_USER, GUEST,
     device_id     VARCHAR(200) NOT NULL,
     nickname      VARCHAR(255),
-    phone         VARCHAR(20),
+    phone         VARCHAR(100),
     avatar_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     avatar_img_url    TEXT,
-    gender        VARCHAR(20),
+    gender        VARCHAR(100),
     child_classification_id VARCHAR(100) REFERENCES STEP_CLASSIFICATION(id),
     child_min_age        INTEGER,
     child_max_age        INTEGER,
@@ -193,15 +193,15 @@ create TABLE STEP_ORDER
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
     order_code        VARCHAR(100) NOT NULL UNIQUE,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    order_type      VARCHAR(20),    -- PURCHASE, REFUND
+    order_type      VARCHAR(100),    -- PURCHASE, REFUND
     total_amount    DECIMAL,
     discount_amount DECIMAL,
-    recipient_phone VARCHAR(20),
+    recipient_phone VARCHAR(100),
     recipient_name  VARCHAR(100),
     recipient_address TEXT,
     payment_timeout_duration BIGINT,
-    payment_status  VARCHAR(20),    -- UNPAID, PAID
-    state          VARCHAR(20),
+    payment_status  VARCHAR(100),    -- UNPAID, PAID
+    state          VARCHAR(100),
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
 );
@@ -223,9 +223,9 @@ create TABLE STEP_ORDER_EVENT_LOG
     id             VARCHAR(100) NOT NULL PRIMARY KEY,
     order_id       VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
     order_code       VARCHAR(100) NOT NULL,
-    from_state    VARCHAR(20),
-    to_state    VARCHAR(20),
-    event_type     VARCHAR(20),    -- CREATE, PAY, REFUND, CANCEL
+    from_state    VARCHAR(100),
+    to_state    VARCHAR(100),
+    event_type     VARCHAR(100),    -- CREATE, PAY, REFUND, CANCEL
     event_time     TIMESTAMP,
     created_at     TIMESTAMP,
     modified_at    TIMESTAMP
@@ -238,11 +238,11 @@ create TABLE STEP_PAYMENT
     order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
     order_code        VARCHAR(100) NOT NULL,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    payment_method  VARCHAR(20),    -- WECHAT_PAY, ALI_PAY
+    payment_method  VARCHAR(100),    -- WECHAT_PAY, ALI_PAY
     transaction_amount          DECIMAL,
     vendor_payment_no         VARCHAR(200) NOT NULL UNIQUE,
     receipt         VARCHAR(200),
-    transaction_status          VARCHAR(20),    -- SUCCESS, FAILED
+    transaction_status          VARCHAR(100),    -- SUCCESS, FAILED
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
 );
@@ -252,7 +252,7 @@ create TABLE STEP_PROMOTION
 (
     id                  VARCHAR(100) NOT NULL PRIMARY KEY,
     book_id             VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    promotion_type      VARCHAR(20),    -- LIMIT_FREE, LIMIT_DISCOUNT
+    promotion_type      VARCHAR(100),    -- LIMIT_FREE, LIMIT_DISCOUNT
     coin_amount         DECIMAL,
     limit_from           TIMESTAMP,
     limit_to             TIMESTAMP,
@@ -323,7 +323,7 @@ create TABLE STEP_RECOMMENDATION
     book_id       VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
     sort_index    SERIAL NOT NULL,
     introduction  TEXT,
-    recommend_type VARCHAR(20), -- FIX, RANDOM, TAG
+    recommend_type VARCHAR(100), -- FIX, RANDOM, TAG
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );
@@ -345,9 +345,9 @@ create TABLE STEP_ADMIN_USER
     username      VARCHAR(100) NOT NULL UNIQUE,
     email         VARCHAR(100) NOT NULL UNIQUE,
     password      VARCHAR(200) NOT NULL,
-    role          VARCHAR(20) NOT NULL,
+    role          VARCHAR(100) NOT NULL,
     nickname      VARCHAR(255),
-    phone         VARCHAR(20),
+    phone         VARCHAR(100),
     avatar_img    VARCHAR(200),
     active        BOOLEAN DEFAULT (true),
     created_at    TIMESTAMP,
@@ -379,9 +379,9 @@ create TABLE STEP_SMS_HISTORY (
     phone         VARCHAR(100) NOT NULL,
     content       TEXT,
     msg_id        BIGINT,
-    sms_type    VARCHAR(50),  -- VERIFICATION, PROMOTION
+    sms_type    VARCHAR(100),  -- VERIFICATION, PROMOTION
     valid_seconds BIGINT,
-    status        VARCHAR(50),  -- SUCCESS, FAILED
+    status        VARCHAR(100),  -- SUCCESS, FAILED
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );
@@ -389,11 +389,11 @@ create TABLE STEP_SMS_HISTORY (
 -- Email发送记录
 create TABLE STEP_EMAIL_HISTORY (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
-    email         VARCHAR(100) NOT NULL,
-    verification_code VARCHAR(50),
+    email         VARCHAR(200) NOT NULL,
+    verification_code VARCHAR(100),
     valid_seconds BIGINT,
-    email_type    VARCHAR(50),  -- REGISTER, LINK, FORGET
-    status        VARCHAR(50),  -- SUCCESS, FAILED
+    email_type    VARCHAR(100),  -- REGISTER, LINK, FORGET
+    status        VARCHAR(100),  -- SUCCESS, FAILED
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );
@@ -401,13 +401,13 @@ create TABLE STEP_EMAIL_HISTORY (
 -- 登录认证记录
 create TABLE STEP_AUTH_HISTORY (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
-    username        VARCHAR(100) NOT NULL,
-    email           VARCHAR(100),
-    phone           VARCHAR(20),
-    wechat_id       VARCHAR(100),
+    username        VARCHAR(200) NOT NULL,
+    email           VARCHAR(200),
+    phone           VARCHAR(100),
+    wechat_id       VARCHAR(200),
     google_id       VARCHAR(100),
     facebook_id     VARCHAR(100),
-    auth_type       VARCHAR(50), -- phone, email, wechat, google, facebook
+    auth_type       VARCHAR(100), -- phone, email, wechat, google, facebook
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
 );
