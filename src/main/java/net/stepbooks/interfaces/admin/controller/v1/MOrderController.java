@@ -5,12 +5,23 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.order.entity.Order;
+import net.stepbooks.domain.order.entity.OrderEventLog;
+import net.stepbooks.domain.order.enums.DeliveryCompany;
+import net.stepbooks.domain.order.service.OrderEventLogService;
+import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.domain.order.service.OrderService;
+import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.admin.dto.DeliveryCompanyDto;
+import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
+import net.stepbooks.interfaces.admin.dto.OrderProductDto;
 import net.stepbooks.interfaces.client.dto.OrderDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/v1/orders")
@@ -19,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 public class MOrderController {
 
     private final OrderService orderService;
+    private final OrderEventLogService orderEventLogService;
+    private final OrderProductService orderProductService;
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@PathVariable String id, @RequestBody OrderDto orderDto) {
@@ -44,14 +57,49 @@ public class MOrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDto> getAllOrder(@PathVariable String id) {
-        Order order = orderService.findOrder(id);
-        return ResponseEntity.ok(BaseAssembler.convert(order, OrderDto.class));
+    public ResponseEntity<Order> getOrder(@PathVariable String id) {
+        Order order = orderService.getById(id);
+        return ResponseEntity.ok(order);
+    }
+
+    @GetMapping("/ship-companies")
+    public ResponseEntity<List<DeliveryCompanyDto>> getShipCompanies() {
+        ArrayList<DeliveryCompanyDto> deliveryCompanies = new ArrayList<>();
+        for (DeliveryCompany deliveryCompany : DeliveryCompany.values()) {
+            DeliveryCompanyDto companyDto = DeliveryCompanyDto.builder().code(deliveryCompany.getKey())
+                    .name(deliveryCompany.getValue()).build();
+            deliveryCompanies.add(companyDto);
+        }
+        return ResponseEntity.ok(deliveryCompanies);
     }
 
     @PutMapping("/{id}/close")
     public ResponseEntity<?> closeOrder(@PathVariable String id) {
         orderService.closeOrder(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/shipment")
+    public ResponseEntity<?> shipOrder(@PathVariable String id, @RequestBody DeliveryInfoDto deliveryInfoDto) {
+        orderService.shipOrder(id, deliveryInfoDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/sign")
+    public ResponseEntity<?> signOrder(@PathVariable String id) {
+        orderService.signOrder(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/event-logs")
+    public ResponseEntity<List<OrderEventLog>> getOrderEventLog(@PathVariable String id) {
+        List<OrderEventLog> orderEventLogs = orderEventLogService.findByOrderId(id);
+        return ResponseEntity.ok(orderEventLogs);
+    }
+
+    @GetMapping("/{id}/products")
+    public ResponseEntity<List<OrderProductDto>> getOrderProducts(@PathVariable String id) {
+        List<OrderProductDto> orderProducts = orderProductService.findByOrderId(id);
+        return ResponseEntity.ok(orderProducts);
     }
 }

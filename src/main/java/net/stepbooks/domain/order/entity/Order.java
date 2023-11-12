@@ -19,9 +19,7 @@ public class Order extends BaseEntity {
 
     private String orderCode;
     private String userId;
-    private String recipientName;
     private String recipientPhone;
-    private String recipientAddress;
     private OrderType orderType;
     private BigDecimal totalAmount;
     private BigDecimal discountAmount;

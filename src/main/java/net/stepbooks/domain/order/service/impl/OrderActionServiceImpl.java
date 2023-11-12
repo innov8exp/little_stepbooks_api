@@ -1,6 +1,10 @@
 package net.stepbooks.domain.order.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.delivery.entity.Delivery;
+import net.stepbooks.domain.delivery.enums.DeliveryStatus;
+import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.OrderEventLog;
 import net.stepbooks.domain.order.enums.OrderEvent;
@@ -8,6 +12,7 @@ import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.event.DelayQueueMessageProducer;
 import net.stepbooks.domain.order.service.OrderActionService;
 import net.stepbooks.domain.order.service.OrderEventLogService;
+import net.stepbooks.domain.payment.service.PaymentService;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -22,6 +27,8 @@ public class OrderActionServiceImpl implements OrderActionService {
 
     private final DelayQueueMessageProducer delayQueueMessageProducer;
     private final OrderEventLogService orderEventLogService;
+    private final DeliveryService deliveryService;
+    private final PaymentService paymentService;
 
     @Override
     public void startPaymentTimeoutCountDown(OrderState from, OrderState to, OrderEvent event, Order order) {
@@ -30,6 +37,7 @@ public class OrderActionServiceImpl implements OrderActionService {
         Duration between = Duration.between(LocalDateTime.now(), timeOutDateTime);
         delayQueueMessageProducer
                 .addDelayQueue(ORDER_PAYMENT_TIMEOUT_QUEUE, order.getId(), between.toSeconds(), TimeUnit.SECONDS);
+
     }
 
     @Override
@@ -44,4 +52,11 @@ public class OrderActionServiceImpl implements OrderActionService {
                 .build();
         orderEventLogService.save(eventLog);
     }
+
+    @Override
+    public void updateDeliveryStatus(Order order, DeliveryStatus deliveryStatus) {
+        deliveryService.update(Wrappers.<Delivery>lambdaUpdate().set(Delivery::getDeliveryStatus, deliveryStatus)
+                .eq(Delivery::getOrderId, order.getId()));
+    }
+
 }

@@ -4,6 +4,7 @@ package net.stepbooks.domain.order.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
@@ -15,9 +16,9 @@ public interface OrderService extends IService<Order> {
 
     IPage<OrderInfoDto> findOrdersByUser(Page<OrderInfoDto> page, String userId);
 
-    Order findOrder(String id);
+    Order findOrderByCode(String code);
 
-    long getUnpaidRemainingTime(String orderId);
+    long getUnpaidRemainingTime(String code);
 
     void createOrder(CreateOrderDto orderDto);
 
@@ -32,7 +33,7 @@ public interface OrderService extends IService<Order> {
     void autoCancelWhenPaymentTimeout(String recordId);
 
     // 发货
-    void shipOrder(String id);
+    void shipOrder(String id, DeliveryInfoDto deliveryInfoDto);
 
     // 签收
     void receiveOrder(String id);
@@ -43,4 +44,10 @@ public interface OrderService extends IService<Order> {
     void cancelOrder(String id);
 
     void applyRefundOrder(String id);
+
+    void approveRefundOrder(String id);
+
+    void paymentCallback(Order order);
+
+    void signOrder(String id);
 }

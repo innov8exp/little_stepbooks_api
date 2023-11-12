@@ -34,4 +34,10 @@ public class MInventoryController {
         IPage<MInventoryDto> inventories = inventoryService.findInventoriesInPagingByCriteria(page, queryDto);
         return ResponseEntity.ok(inventories);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Inventory> getInventoryById(@PathVariable String id) {
+        Inventory inventory = inventoryService.getById(id);
+        return ResponseEntity.ok(inventory);
+    }
 }

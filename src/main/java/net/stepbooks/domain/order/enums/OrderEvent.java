@@ -2,8 +2,11 @@ package net.stepbooks.domain.order.enums;
 
 public enum OrderEvent {
     PLACE_SUCCESS,
-    PAY_SUCCESS,
-    REFUND_APPLICATION,
+    PAYMENT_SUCCESS,
+    REFUND_APPROVE,
+    REFUND_REJECT,
+    REFUND_REQUEST,
+
     SHIP_SUCCESS,
     SHIPPED_TO_REFUND,
     RECEIVED_SUCCESS,

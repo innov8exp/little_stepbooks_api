@@ -1,15 +1,17 @@
 package net.stepbooks.interfaces.admin.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import net.stepbooks.infrastructure.model.BaseDto;
+import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
-public class MInventoryDto extends BaseDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class MInventoryDto {
 
+    private String id;
     private String skuCode;
     private String skuName;
     private Integer inventoryQuantity;

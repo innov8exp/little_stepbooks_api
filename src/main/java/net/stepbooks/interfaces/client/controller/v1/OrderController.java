@@ -46,21 +46,31 @@ public class OrderController {
         return ResponseEntity.ok(ordersByCriteria);
     }
 
-    @GetMapping("/{id}/unpaid-remaining-time")
-    public ResponseEntity<Long> getOrderUnpaidRemainingTime(@PathVariable String id) {
-        long remainingTime = orderService.getUnpaidRemainingTime(id);
+    @GetMapping("/{code}/unpaid-remaining-time")
+    public ResponseEntity<Long> getOrderUnpaidRemainingTime(@PathVariable String code) {
+        long remainingTime = orderService.getUnpaidRemainingTime(code);
         return ResponseEntity.ok(remainingTime);
     }
 
-    @PutMapping("/{id}/cancel")
-    public ResponseEntity<?> cancelOrder(@PathVariable String id) {
+    @PutMapping("/{code}/cancel")
+    public ResponseEntity<?> cancelOrder(@PathVariable String code) {
         User user = contextManager.currentUser();
-        Order order = orderService.getById(id);
-        if (user.getId().equals(order.getUserId())) {
-            orderService.cancelOrder(id);
-        } else {
+        Order order = orderService.findOrderByCode(code);
+        if (!user.getId().equals(order.getUserId())) {
             throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
         }
+        orderService.cancelOrder(order.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{code}/mock/payment-callback")
+    public ResponseEntity<?> mockPayOrder(@PathVariable String code) {
+        User user = contextManager.currentUser();
+        Order order = orderService.findOrderByCode(code);
+        if (!user.getId().equals(order.getUserId())) {
+            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+        }
+        orderService.paymentCallback(order);
         return ResponseEntity.ok().build();
     }
 }

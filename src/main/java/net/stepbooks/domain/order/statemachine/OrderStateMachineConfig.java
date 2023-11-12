@@ -7,6 +7,7 @@ import com.alibaba.cola.statemachine.builder.StateMachineBuilder;
 import com.alibaba.cola.statemachine.builder.StateMachineBuilderFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.stepbooks.domain.delivery.enums.DeliveryStatus;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
@@ -34,14 +35,14 @@ public class OrderStateMachineConfig {
                 .on(OrderEvent.PLACE_SUCCESS)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
-                    orderActionService.saveOrderEventLog(from, to, event, context);
                     orderActionService.startPaymentTimeoutCountDown(from, to, event, context);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
                 });
 
         builder.externalTransition()
                 .from(OrderState.PLACED)
                 .to(OrderState.PAID)
-                .on(OrderEvent.PAY_SUCCESS)
+                .on(OrderEvent.PAYMENT_SUCCESS)
                 .when(checkCondition())
                 .perform(doAction());
 
@@ -64,12 +65,15 @@ public class OrderStateMachineConfig {
                 .to(OrderState.SHIPPED)
                 .on(OrderEvent.SHIP_SUCCESS)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.updateDeliveryStatus(context, DeliveryStatus.DELIVERING);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                });
 
         builder.externalTransition()
                 .from(OrderState.PAID)
                 .to(OrderState.REFUNDING)
-                .on(OrderEvent.REFUND_APPLICATION)
+                .on(OrderEvent.REFUND_REQUEST)
                 .when(checkCondition())
                 .perform(doAction());
 
@@ -85,12 +89,15 @@ public class OrderStateMachineConfig {
                 .to(OrderState.FINISHED)
                 .on(OrderEvent.RECEIVED_SUCCESS)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.updateDeliveryStatus(context, DeliveryStatus.DELIVERED);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                });
 
         builder.externalTransition()
                 .from(OrderState.SHIPPED)
-                .to(OrderState.REFUND_APPLYING)
-                .on(OrderEvent.REFUND_APPLICATION)
+                .to(OrderState.REFUNDING)
+                .on(OrderEvent.REFUND_APPROVE)
                 .when(checkCondition())
                 .perform(doAction());
 

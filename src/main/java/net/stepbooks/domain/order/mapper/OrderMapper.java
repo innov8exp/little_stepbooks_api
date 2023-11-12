@@ -11,4 +11,5 @@ public interface OrderMapper extends BaseMapper<Order> {
     IPage<OrderInfoDto> findByCriteria(Page<OrderInfoDto> page, String orderCode, String username);
 
     IPage<OrderInfoDto> findPageByUser(Page<OrderInfoDto> page, String userId);
+
 }

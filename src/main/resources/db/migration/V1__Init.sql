@@ -197,8 +197,6 @@ create TABLE STEP_ORDER
     total_amount    DECIMAL,
     discount_amount DECIMAL,
     recipient_phone VARCHAR(100),
-    recipient_name  VARCHAR(100),
-    recipient_address TEXT,
     payment_timeout_duration BIGINT,
     payment_status  VARCHAR(100),    -- UNPAID, PAID
     state          VARCHAR(100),
@@ -245,6 +243,38 @@ create TABLE STEP_PAYMENT
     transaction_status          VARCHAR(100),    -- SUCCESS, FAILED
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
+);
+
+-- 配送信息
+create TABLE STEP_DELIVERY
+(
+    id            VARCHAR(100) NOT NULL PRIMARY KEY,
+    order_id      VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
+    order_code      VARCHAR(100) NOT NULL,
+    user_id       VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
+    delivery_method VARCHAR(100), -- EXPRESS, ONLINE
+    delivery_status VARCHAR(100), -- WAITING, DELIVERING, DELIVERED, CANCELED
+    delivery_code   VARCHAR(200),
+    delivery_company VARCHAR(200),
+    recipient_name  VARCHAR(100),
+    recipient_phone VARCHAR(100),
+    recipient_address TEXT,
+    created_at    TIMESTAMP,
+    modified_at   TIMESTAMP
+);
+
+-- 退款申请
+create TABLE STEP_ORDER_REFUND_REQUEST
+(
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    order_id VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
+    order_code VARCHAR(100) NOT NULL,
+    user_id VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
+    refund_amount DECIMAL,
+    refund_reason TEXT,
+    refund_status VARCHAR(100), -- PENDING, APPROVED, REJECTED
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
 );
 
 -- 促销信息
