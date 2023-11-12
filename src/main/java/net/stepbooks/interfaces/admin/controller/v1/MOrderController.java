@@ -10,7 +10,6 @@ import net.stepbooks.domain.order.enums.DeliveryCompany;
 import net.stepbooks.domain.order.service.OrderEventLogService;
 import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.domain.order.service.OrderService;
-import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.admin.dto.DeliveryCompanyDto;
 import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;

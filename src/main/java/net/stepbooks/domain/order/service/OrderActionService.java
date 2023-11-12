@@ -11,7 +11,5 @@ public interface OrderActionService {
 
     void saveOrderEventLog(OrderState from, OrderState to, OrderEvent event, Order order);
 
-    void saveOrderProduct(Order order);
-
     void updateDeliveryStatus(Order order, DeliveryStatus deliveryStatus);
 }
