@@ -105,13 +105,6 @@ public class OrderStateMachineConfig {
         builder.externalTransition()
                 .from(OrderState.PLACED)
                 .to(OrderState.CLOSED)
-                .on(OrderEvent.USER_MANUAL_CANCEL)
-                .when(checkCondition())
-                .perform(doAction());
-
-        builder.externalTransition()
-                .from(OrderState.PLACED)
-                .to(OrderState.CLOSED)
                 .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
                 .perform(doAction());

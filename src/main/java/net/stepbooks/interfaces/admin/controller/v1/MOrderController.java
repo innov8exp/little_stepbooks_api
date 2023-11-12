@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
-import net.stepbooks.interfaces.client.dto.OrderDto;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
+import net.stepbooks.interfaces.client.dto.OrderDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class MOrderController {
 
     private final OrderService orderService;
-
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(@PathVariable String id, @RequestBody OrderDto orderDto) {
@@ -50,7 +49,7 @@ public class MOrderController {
         return ResponseEntity.ok(BaseAssembler.convert(order, OrderDto.class));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/close")
     public ResponseEntity<?> closeOrder(@PathVariable String id) {
         orderService.closeOrder(id);
         return ResponseEntity.ok().build();
