@@ -17,6 +17,7 @@ public class Delivery extends BaseEntity {
     private String orderId;
     private String orderCode;
     private String userId;
+    private String shipperUserId;
     private DeliveryMethod deliveryMethod;
     private DeliveryStatus deliveryStatus;
     private String deliveryCode;

@@ -27,7 +27,9 @@ public enum ErrorCode {
     REDUCE_BALANCE_FAILED(HttpStatus.BAD_REQUEST.value(),
             "Reduce coin failed, insufficient coin balance, please recharge"),
     SCHEDULE_TASK_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Schedule task occur error"),
-    REDIS_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect redis failed");
+    REDIS_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect redis failed"),
+    PRODUCT_NATURE_NOT_SUPPORT(HttpStatus.BAD_REQUEST.value(), "The product nature is not support"),
+    ORDER_NATURE_NOT_SUPPORT(HttpStatus.BAD_REQUEST.value(), "The order nature is not support");
 
     private final int status;
     @Setter

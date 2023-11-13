@@ -4,6 +4,6 @@
     <select id="findPagedByCriteria" resultType="net.stepbooks.interfaces.admin.dto.MInventoryDto">
         select i.id, p.sku_code, p.sku_name, COALESCE(i.inventory_quantity, 0) inventory_quantity from step_product p
         left join step_inventory i on p.id = i.product_id
-        where p.has_inventory = true
+        where p.product_nature = 'PHYSICAL'
     </select>
 </mapper>

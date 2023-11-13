@@ -1,7 +1,7 @@
 package net.stepbooks.infrastructure.security;
 
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.admin.entity.AdminUserEntity;
+import net.stepbooks.domain.admin.entity.AdminUser;
 import net.stepbooks.domain.admin.service.AdminUserService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
@@ -27,11 +27,11 @@ public class SecurityBeanConfig {
     @Bean
     public UserDetailsService adminUserDetailsService() {
         return username -> {
-            AdminUserEntity adminUserEntity = adminUserService.findUserByUsername(username);
-            if (ObjectUtils.isEmpty(adminUserEntity)) {
+            AdminUser adminUser = adminUserService.findUserByUsername(username);
+            if (ObjectUtils.isEmpty(adminUser)) {
                 throw new UsernameNotFoundException("Cannot found the user with username: " + username);
             }
-            return AdminAuthAssembler.adminUserEntityToJwtUserDetails(adminUserEntity);
+            return AdminAuthAssembler.adminUserEntityToJwtUserDetails(adminUser);
         };
     }
 
@@ -45,33 +45,6 @@ public class SecurityBeanConfig {
             return AuthAssembler.userEntityToJwtUserDetails(user);
         };
     }
-
-//    @Bean
-//    public AuthenticationProvider adminAuthenticationProvider() {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(adminUserDetailsService());
-//        authProvider.setPasswordEncoder(adminPasswordEncoder());
-//        return authProvider;
-//    }
-//
-//    @Bean
-//    public AuthenticationManager adminAuthenticationManager(AuthenticationConfiguration config) throws Exception {
-//        return config.getAuthenticationManager();
-//    }
-
-    //    @Bean
-//    public AuthenticationProvider userAuthenticationProvider() {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(endUserDetailsService());
-//        authProvider.setPasswordEncoder(passwordEncoder());
-//        return authProvider;
-//    }
-//
-//    @Bean
-//    public AuthenticationManager userAuthenticationManager(AuthenticationConfiguration config) throws Exception {
-//        return config.getAuthenticationManager();
-//    }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

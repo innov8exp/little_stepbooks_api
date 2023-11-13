@@ -12,11 +12,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OrderJob implements Job {
 
-    private final OrderService orderService;
+    private final OrderService physicalOrderServiceImpl;
+    private final OrderService virtualOrderServiceImpl;
 
     @Override
     public void execute(JobExecutionContext context) {
         log.debug("Order Job is running...");
-        orderService.cancelTimeoutOrders();
+        physicalOrderServiceImpl.cancelTimeoutOrders();
+        virtualOrderServiceImpl.cancelTimeoutOrders();
     }
 }

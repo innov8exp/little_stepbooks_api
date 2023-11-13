@@ -17,7 +17,9 @@ public class DelayQueueMessageConsumer {
 
     public static final int FIXED_DELAY_TIME = 1000;
     private final DelayQueueMessageProducer delayQueueMessageProducer;
-    private final OrderService orderService;
+    private final OrderService physicalOrderServiceImpl;
+    private final OrderService virtualOrderServiceImpl;
+
 
     @Async("CustomAsyncExecutor")
     @Scheduled(fixedDelay = FIXED_DELAY_TIME)
@@ -28,7 +30,8 @@ public class DelayQueueMessageConsumer {
         String recordId = delayQueueMessageProducer.getDelayQueue(ORDER_PAYMENT_TIMEOUT_QUEUE);
         if (recordId != null) {
             log.info("get content to do cancelOrderAsPaymentTimeout task [{}]...", recordId);
-            orderService.autoCancelWhenPaymentTimeout(recordId);
+            physicalOrderServiceImpl.autoCancelWhenPaymentTimeout(recordId);
+            virtualOrderServiceImpl.autoCancelWhenPaymentTimeout(recordId);
         }
     }
 

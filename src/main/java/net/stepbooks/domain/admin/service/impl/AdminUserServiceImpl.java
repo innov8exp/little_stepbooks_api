@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.domain.admin.entity.AdminUserEntity;
+import net.stepbooks.domain.admin.entity.AdminUser;
 import net.stepbooks.domain.admin.mapper.AdminUserMapper;
 import net.stepbooks.domain.admin.service.AdminUserService;
 import net.stepbooks.infrastructure.exception.BusinessException;
@@ -26,9 +26,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     private final AdminJwtTokenProvider adminJwtTokenProvider;
 
     @Override
-    public AdminUserEntity findUserByEmail(String email) {
-        AdminUserEntity userEntity = adminUserMapper.selectOne(Wrappers.<AdminUserEntity>lambdaQuery()
-                .eq(AdminUserEntity::getEmail, email));
+    public AdminUser findUserByEmail(String email) {
+        AdminUser userEntity = adminUserMapper.selectOne(Wrappers.<AdminUser>lambdaQuery()
+                .eq(AdminUser::getEmail, email));
         if (ObjectUtils.isEmpty(userEntity)) {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot found the user with email: " + email);
         }
@@ -36,9 +36,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public AdminUserEntity findUserByUsername(String username) {
-        AdminUserEntity userEntity = adminUserMapper.selectOne(Wrappers.<AdminUserEntity>lambdaQuery()
-                .eq(AdminUserEntity::getUsername, username));
+    public AdminUser findUserByUsername(String username) {
+        AdminUser userEntity = adminUserMapper.selectOne(Wrappers.<AdminUser>lambdaQuery()
+                .eq(AdminUser::getUsername, username));
         if (ObjectUtils.isEmpty(userEntity)) {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot found the user with username: " + username);
         }
@@ -46,10 +46,10 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public void registerWithEmail(AdminUserEntity userEntity) {
+    public void registerWithEmail(AdminUser userEntity) {
         String email = userEntity.getEmail();
-        AdminUserEntity isUserExist = adminUserMapper.selectOne(Wrappers.<AdminUserEntity>lambdaQuery()
-                .eq(AdminUserEntity::getEmail, email));
+        AdminUser isUserExist = adminUserMapper.selectOne(Wrappers.<AdminUser>lambdaQuery()
+                .eq(AdminUser::getEmail, email));
         if (!ObjectUtils.isEmpty(isUserExist)) {
             throw new BusinessException(ErrorCode.EMAIL_EXISTS_ERROR,
                     "Email: " + email + " has been registered, please select another one.");
@@ -65,7 +65,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public TokenDto loginWithEmail(String email, String password) {
-        AdminUserEntity userEntity = this.findUserByEmail(email);
+        AdminUser userEntity = this.findUserByEmail(email);
         var valid = PasswordEncoderFactories.createDelegatingPasswordEncoder()
                 .matches(password, userEntity.getPassword());
         if (!valid) {
@@ -76,14 +76,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public AdminUserEntity getUserInfoFromToken(String token) {
+    public AdminUser getUserInfoFromToken(String token) {
         return null;
     }
 
     @Override
     public TokenDto refreshToken(String accessToken, String refreshToken) {
         String username = adminJwtTokenProvider.getSubjectFromToken(accessToken);
-        AdminUserEntity userEntity = this.findUserByUsername(username);
+        AdminUser userEntity = this.findUserByUsername(username);
         if (userEntity == null) {
             throw new BusinessException(ErrorCode.AUTH_ERROR);
         }
@@ -95,8 +95,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
-    public void updateUserById(String id, AdminUserEntity updatedUser) {
-        AdminUserEntity userEntity = adminUserMapper.selectById(id);
+    public void updateUserById(String id, AdminUser updatedUser) {
+        AdminUser userEntity = adminUserMapper.selectById(id);
         BeanUtils.copyProperties(updatedUser, userEntity);
         adminUserMapper.updateById(userEntity);
     }

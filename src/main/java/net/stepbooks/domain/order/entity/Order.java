@@ -3,6 +3,7 @@ package net.stepbooks.domain.order.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 import net.stepbooks.domain.order.enums.OrderState;
+import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.OrderType;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.model.BaseEntity;
@@ -21,6 +22,7 @@ public class Order extends BaseEntity {
     private String userId;
     private String recipientPhone;
     private OrderType orderType;
+    private ProductNature productNature;
     private BigDecimal totalAmount;
     private BigDecimal discountAmount;
     private Long paymentTimeoutDuration;

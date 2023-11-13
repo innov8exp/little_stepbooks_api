@@ -1,22 +1,22 @@
 package net.stepbooks.domain.admin.service;
 
-import net.stepbooks.domain.admin.entity.AdminUserEntity;
+import net.stepbooks.domain.admin.entity.AdminUser;
 import net.stepbooks.interfaces.client.dto.TokenDto;
 
 public interface AdminUserService {
 
-    AdminUserEntity findUserByEmail(String email);
+    AdminUser findUserByEmail(String email);
 
-    AdminUserEntity findUserByUsername(String username);
+    AdminUser findUserByUsername(String username);
 
-    void registerWithEmail(AdminUserEntity userEntity);
+    void registerWithEmail(AdminUser userEntity);
 
     TokenDto loginWithEmail(String email, String password);
 
-    AdminUserEntity getUserInfoFromToken(String token);
+    AdminUser getUserInfoFromToken(String token);
 
     TokenDto refreshToken(String accessToken, String refreshToken);
 
-    void updateUserById(String id, AdminUserEntity userEntity);
+    void updateUserById(String id, AdminUser userEntity);
 
 }

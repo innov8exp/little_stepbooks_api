@@ -1,6 +1,7 @@
 package net.stepbooks.interfaces.admin.dto;
 
 import lombok.Data;
+import net.stepbooks.domain.product.enums.ProductNature;
 
 import java.math.BigDecimal;
 
@@ -11,7 +12,7 @@ public class OrderProductDto {
     private String skuCode;
     private String skuName;
     private BigDecimal price;
-    private Boolean hasInventory;
+    private ProductNature productNature;
     private String[] resources;
     private int quantity;
 }

@@ -11,7 +11,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("STEP_ADMIN_USER")
-public class AdminUserEntity extends BaseEntity {
+public class AdminUser extends BaseEntity {
     private String username;
     private String email;
     private String password;

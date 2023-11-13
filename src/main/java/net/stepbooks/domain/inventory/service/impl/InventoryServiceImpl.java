@@ -36,7 +36,7 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
     }
 
     @Override
-    public void decreaseInventory(String productId, int quantity) {
+    public Inventory decreaseInventory(String productId, int quantity) {
         Inventory inventory = getOne(Wrappers.<Inventory>lambdaQuery().eq(Inventory::getProductId, productId));
         if (inventory == null) {
             throw new BusinessException(ErrorCode.STOCK_NOT_EXISTS);
@@ -50,6 +50,7 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
             throw new BusinessException(ErrorCode.STOCK_NOT_ENOUGH);
         }
         log.info("扣减库存成功，商品ID：{}，扣减数量：{}", productId, quantity);
+        return inventory;
     }
 
     @Override

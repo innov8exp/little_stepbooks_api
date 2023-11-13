@@ -1,13 +1,15 @@
 package net.stepbooks.domain.order.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("STEP_ORDER_PRODUCT")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@TableName("STEP_ORDER_PRODUCT_REF")
 public class OrderProduct extends BaseEntity {
 
         private String orderId;

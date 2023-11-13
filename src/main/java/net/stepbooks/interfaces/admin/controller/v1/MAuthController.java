@@ -3,7 +3,7 @@ package net.stepbooks.interfaces.admin.controller.v1;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import net.stepbooks.domain.admin.entity.AdminUserEntity;
+import net.stepbooks.domain.admin.entity.AdminUser;
 import net.stepbooks.domain.admin.service.AdminUserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
@@ -84,8 +84,8 @@ public class MAuthController {
     @GetMapping("/user-info")
     public ResponseEntity<AdminUserDto> userInfo() {
         JwtUserDetails details = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        AdminUserEntity adminUserEntity = adminUserService.findUserByUsername(details.getUsername());
-        AdminUserDto userDto = BaseAssembler.convert(adminUserEntity, AdminUserDto.class);
+        AdminUser adminUser = adminUserService.findUserByUsername(details.getUsername());
+        AdminUserDto userDto = BaseAssembler.convert(adminUser, AdminUserDto.class);
         return ResponseEntity.ok(userDto);
     }
 

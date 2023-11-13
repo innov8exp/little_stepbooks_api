@@ -30,6 +30,22 @@ create TABLE STEP_CLASSIFICATION
     modified_at   TIMESTAMP
 );
 
+-- 管理员用户信息
+create TABLE STEP_ADMIN_USER
+(
+    id            VARCHAR(100) NOT NULL PRIMARY KEY,
+    username      VARCHAR(100) NOT NULL UNIQUE,
+    email         VARCHAR(100) NOT NULL UNIQUE,
+    password      VARCHAR(200) NOT NULL,
+    role          VARCHAR(100) NOT NULL,
+    nickname      VARCHAR(255),
+    phone         VARCHAR(100),
+    avatar_img    VARCHAR(200),
+    active        BOOLEAN DEFAULT (true),
+    created_at    TIMESTAMP,
+    modified_at   TIMESTAMP
+);
+
 
 -- 用户信息
 create TABLE STEP_USER
@@ -143,7 +159,7 @@ create TABLE STEP_PRODUCT
     sku_code VARCHAR(200) NOT NULL UNIQUE,
     sku_name VARCHAR(200) NOT NULL,
     sales_platform TEXT[], -- ANDROID, IOS, MINI_PROGRAM
-    has_inventory BOOLEAN,
+    product_nature VARCHAR(100), -- PHYSICAL, VIRTUAL
     description TEXT,
     price MONEY,
     resources TEXT[], -- AUDIO, COURSE, EXERCISE
@@ -198,6 +214,7 @@ create TABLE STEP_ORDER
     discount_amount DECIMAL,
     recipient_phone VARCHAR(100),
     payment_timeout_duration BIGINT,
+    product_nature      VARCHAR(100), -- PHYSICAL, VIRTUAL
     payment_status  VARCHAR(100),    -- UNPAID, PAID
     state          VARCHAR(100),
     created_at      TIMESTAMP,
@@ -229,6 +246,20 @@ create TABLE STEP_ORDER_EVENT_LOG
     modified_at    TIMESTAMP
 );
 
+-- 订单库存流水记录
+create TABLE STEP_ORDER_INVENTORY_LOG
+(
+    id             VARCHAR(100) NOT NULL PRIMARY KEY,
+    order_id       VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
+    order_code       VARCHAR(100) NOT NULL,
+    product_id     VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    sku_code       VARCHAR(100) NOT NULL,
+    inventory_id   VARCHAR(100) REFERENCES STEP_INVENTORY(id) NOT NULL,
+    quantity       INTEGER,
+    created_at     TIMESTAMP,
+    modified_at    TIMESTAMP
+);
+
 -- 支付信息
 create TABLE STEP_PAYMENT
 (
@@ -252,6 +283,7 @@ create TABLE STEP_DELIVERY
     order_id      VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
     order_code      VARCHAR(100) NOT NULL,
     user_id       VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
+    shipper_user_id  VARCHAR(100) REFERENCES STEP_ADMIN_USER(id),
     delivery_method VARCHAR(100), -- EXPRESS, ONLINE
     delivery_status VARCHAR(100), -- WAITING, DELIVERING, DELIVERED, CANCELED
     delivery_code   VARCHAR(200),
@@ -368,21 +400,6 @@ create TABLE STEP_READING_TIME
     modified_at   TIMESTAMP
 );
 
--- 管理员用户信息
-create TABLE STEP_ADMIN_USER
-(
-    id            VARCHAR(100) NOT NULL PRIMARY KEY,
-    username      VARCHAR(100) NOT NULL UNIQUE,
-    email         VARCHAR(100) NOT NULL UNIQUE,
-    password      VARCHAR(200) NOT NULL,
-    role          VARCHAR(100) NOT NULL,
-    nickname      VARCHAR(255),
-    phone         VARCHAR(100),
-    avatar_img    VARCHAR(200),
-    active        BOOLEAN DEFAULT (true),
-    created_at    TIMESTAMP,
-    modified_at   TIMESTAMP
-);
 
 -- 用户反馈
 create TABLE STEP_FEEDBACK
