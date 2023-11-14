@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.stepbooks.domain.bookset.mapper.BookSetMapper">
+    <select id="findBooksByBookSetId" resultType="net.stepbooks.domain.book.entity.Book">
+        select b.* from step_book_set_book_ref bs
+        left join step_book b on bs.book_id = b.id
+        where bs.id = #{id}
+    </select>
+</mapper>

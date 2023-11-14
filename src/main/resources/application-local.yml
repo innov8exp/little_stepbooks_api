@@ -19,3 +19,5 @@ aws:
     bucket: stepbook.stage
   cdn: https://ds2rcorotrbeb.cloudfront.net
 
+stepbooks:
+  mnp-qrcode-host: https://api-stage.stepbooks.net/mnp-qrcode

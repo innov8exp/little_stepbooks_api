@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.bookset.entity.BookSet;
 import net.stepbooks.domain.bookset.entity.BookSetBook;
 import net.stepbooks.domain.bookset.mapper.BookSetMapper;
@@ -55,14 +56,8 @@ public class BookSetServiceImpl extends ServiceImpl<BookSetMapper, BookSet> impl
     }
 
     @Override
-    public BookSetFormDto getBookSet(String id) {
-        BookSet bookSet = getById(id);
-        List<BookSetBook> bookSetBooks = bookSetBookService
-                .list(Wrappers.<BookSetBook>lambdaQuery().eq(BookSetBook::getBookSetId, id));
-        BookSetFormDto bookSetFormDto = new BookSetFormDto();
-        bookSetFormDto.setName(bookSet.getName());
-        bookSetFormDto.setCode(bookSet.getCode());
-        bookSetFormDto.setBookIds(bookSetBooks.stream().map(BookSetBook::getBookId).toArray(String[]::new));
-        return bookSetFormDto;
+    public List<Book> findBooksByBookSetId(String id) {
+        return bookSetMapper.findBooksByBookSetId(id);
     }
+
 }

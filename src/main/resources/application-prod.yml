@@ -21,3 +21,6 @@ in-app-purchase:
   verify-host:
     ios: https://buy.itunes.apple.com
     android: https://androidpublisher.googleapis.com
+
+stepbooks:
+  mnp-qrcode-host: https://api.stepbooks.net/mnp-qrcode

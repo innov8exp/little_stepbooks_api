@@ -4,11 +4,17 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.bookset.entity.BookSet;
 import net.stepbooks.domain.bookset.service.BookSetService;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.admin.dto.BookSetDto;
 import net.stepbooks.interfaces.admin.dto.BookSetFormDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/v1/book-sets")
@@ -17,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 public class MBookSetController {
 
     private final BookSetService bookSetService;
+    @Value("${stepbooks.mnp-qrcode-host}")
+    private String mnpQRCodeHost;
 
     @PostMapping
     public ResponseEntity<?> createBookSet(@RequestBody BookSetFormDto bookSet) {
@@ -47,9 +55,17 @@ public class MBookSetController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookSetFormDto> getBookSet(@PathVariable String id) {
-        BookSetFormDto bookSet = bookSetService.getBookSet(id);
-        return ResponseEntity.ok(bookSet);
+    public ResponseEntity<BookSetDto> getBookSet(@PathVariable String id) {
+        BookSet bookSet = bookSetService.getById(id);
+        BookSetDto bookSetDto = BaseAssembler.convert(bookSet, BookSetDto.class);
+        bookSetDto.setMnpQRCode(String.format("%s?code=%s", mnpQRCodeHost, bookSet.getCode()));
+        return ResponseEntity.ok(bookSetDto);
+    }
+
+    @GetMapping("/{id}/books")
+    public ResponseEntity<List<Book>> getBookSetBooks(@PathVariable String id) {
+        List<Book> books = bookSetService.findBooksByBookSetId(id);
+        return ResponseEntity.ok(books);
     }
 }
 
