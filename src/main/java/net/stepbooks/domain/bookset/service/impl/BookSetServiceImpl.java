@@ -12,6 +12,12 @@ import net.stepbooks.domain.bookset.entity.BookSetBook;
 import net.stepbooks.domain.bookset.mapper.BookSetMapper;
 import net.stepbooks.domain.bookset.service.BookSetBookService;
 import net.stepbooks.domain.bookset.service.BookSetService;
+import net.stepbooks.domain.product.entity.Product;
+import net.stepbooks.domain.product.service.ProductService;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.infrastructure.exception.BusinessException;
+import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.interfaces.admin.dto.BookSetDto;
 import net.stepbooks.interfaces.admin.dto.BookSetFormDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +32,11 @@ public class BookSetServiceImpl extends ServiceImpl<BookSetMapper, BookSet> impl
 
     private final BookSetBookService bookSetBookService;
     private final BookSetMapper bookSetMapper;
+    private final ProductService productService;
 
     @Override
     public IPage<BookSet> findInPagingByCriteria(Page<BookSet> page, String name) {
-        return page(page, Wrappers.<BookSet>lambdaQuery());
+        return bookSetMapper.findInPagingByCriteria(page, name);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -48,9 +55,27 @@ public class BookSetServiceImpl extends ServiceImpl<BookSetMapper, BookSet> impl
         bookSetBookService.saveBatch(bookSetBooks);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateBookSet(BookSetFormDto bookSetFormDto) {
+        BookSet bookSet = BaseAssembler.convert(bookSetFormDto, BookSet.class);
+        updateById(bookSet);
+        bookSetBookService.remove(Wrappers.<BookSetBook>lambdaQuery().eq(BookSetBook::getBookSetId, bookSet.getId()));
+        List<BookSetBook> bookSetBooks = Arrays.stream(bookSetFormDto.getBookIds()).map(bookId -> BookSetBook.builder()
+                .bookSetId(bookSet.getId())
+                .bookId(bookId)
+                .build()).toList();
+        bookSetBookService.saveBatch(bookSetBooks);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteBookSet(String id) {
+        boolean exists = productService.exists(Wrappers.<Product>lambdaQuery()
+                .eq(Product::getBookSetId, id));
+        if (exists) {
+            throw new BusinessException(ErrorCode.BOOK_SET_HAS_BEEN_USED);
+        }
         bookSetBookService.remove(Wrappers.<BookSetBook>lambdaQuery().eq(BookSetBook::getBookSetId, id));
         bookSetMapper.deleteById(id);
     }
@@ -58,6 +83,16 @@ public class BookSetServiceImpl extends ServiceImpl<BookSetMapper, BookSet> impl
     @Override
     public List<Book> findBooksByBookSetId(String id) {
         return bookSetMapper.findBooksByBookSetId(id);
+    }
+
+    @Override
+    public BookSetDto findById(String id) {
+        BookSet bookSet = getById(id);
+        List<String> bookIds = bookSetBookService.list(Wrappers.<BookSetBook>lambdaQuery()
+                .eq(BookSetBook::getBookSetId, id)).stream().map(BookSetBook::getBookId).toList();
+        BookSetDto bookSetDto = BaseAssembler.convert(bookSet, BookSetDto.class);
+        bookSetDto.setBookIds(bookIds);
+        return bookSetDto;
     }
 
 }

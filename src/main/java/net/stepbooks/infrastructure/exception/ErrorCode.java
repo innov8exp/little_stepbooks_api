@@ -29,7 +29,8 @@ public enum ErrorCode {
     SCHEDULE_TASK_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Schedule task occur error"),
     REDIS_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect redis failed"),
     PRODUCT_NATURE_NOT_SUPPORT(HttpStatus.BAD_REQUEST.value(), "The product nature is not support"),
-    ORDER_NATURE_NOT_SUPPORT(HttpStatus.BAD_REQUEST.value(), "The order nature is not support");
+    ORDER_NATURE_NOT_SUPPORT(HttpStatus.BAD_REQUEST.value(), "The order nature is not support"),
+    BOOK_SET_HAS_BEEN_USED(HttpStatus.BAD_REQUEST.value(), "The book set has been used");
 
     private final int status;
     @Setter

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.interfaces.admin.dto.MProductQueryDto;
+import net.stepbooks.interfaces.admin.dto.ProductDto;
 
 public interface ProductService extends IService<Product> {
 
@@ -14,4 +15,5 @@ public interface ProductService extends IService<Product> {
 
     void createProduct(Product product);
 
+    ProductDto findDetailById(String id);
 }

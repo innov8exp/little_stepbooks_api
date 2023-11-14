@@ -158,23 +158,17 @@ create TABLE STEP_PRODUCT
     id VARCHAR(100) NOT NULL PRIMARY KEY,
     sku_code VARCHAR(200) NOT NULL UNIQUE,
     sku_name VARCHAR(200) NOT NULL,
-    sales_platform TEXT[], -- ANDROID, IOS, MINI_PROGRAM
+    sales_platform VARCHAR(200), -- ANDROID, IOS, MINI_PROGRAM
     product_nature VARCHAR(100), -- PHYSICAL, VIRTUAL
     description TEXT,
     price MONEY,
-    resources TEXT[], -- AUDIO, COURSE, EXERCISE
+    resources VARCHAR(200), -- AUDIO, COURSE, EXERCISE
     cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     cover_img_url TEXT,
+    book_set_id VARCHAR(100) REFERENCES STEP_BOOK_SET(id),
+    status VARCHAR(100), -- ONLINE, OFFLINE
     created_at TIMESTAMP,
     modified_at TIMESTAMP
-);
-
--- 产品SKU与套装关系
-create TABLE STEP_PRODUCT_BOOK_SET_REF
-(
-    id VARCHAR(100) NOT NULL PRIMARY KEY,
-    product_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
-    book_set_id VARCHAR(100) REFERENCES STEP_BOOK_SET(id) NOT NULL
 );
 
 -- 产品SKU与课程关系

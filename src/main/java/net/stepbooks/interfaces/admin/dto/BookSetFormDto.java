@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class BookSetFormDto {
+    private String id;
     private String code;
     private String name;
     private String description;

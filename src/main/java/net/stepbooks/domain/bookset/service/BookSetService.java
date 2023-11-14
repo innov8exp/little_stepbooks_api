@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.bookset.entity.BookSet;
+import net.stepbooks.interfaces.admin.dto.BookSetDto;
 import net.stepbooks.interfaces.admin.dto.BookSetFormDto;
 
 import java.util.List;
@@ -15,7 +16,11 @@ public interface BookSetService extends IService<BookSet> {
 
     void createBookSet(BookSetFormDto bookSet);
 
+    void updateBookSet(BookSetFormDto bookSetFormDto);
+
     void deleteBookSet(String id);
 
     List<Book> findBooksByBookSetId(String id);
+
+    BookSetDto findById(String id);
 }

@@ -124,24 +124,24 @@ VALUES ('9', '3', '5');
 INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
 VALUES ('10', '3', '6');
 
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature)
-VALUES ('0', '001', '宫西达也恐龙系列(全5册)', 39.00, 'PHYSICAL');
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature)
-VALUES ('1', '002', '宫西达也恐龙系列(全5册)+课程', 29.00, 'PHYSICAL');
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature)
-VALUES ('2', '003', '宫西达也恐龙系列课程', 19.00, 'VIRTUAL');
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature)
-VALUES ('3', '004', '睡前小故事(3册)', 29.00, 'PHYSICAL');
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature)
-VALUES ('4', '005', '睡前小故事(3册)+课程', 19.00, 'PHYSICAL');
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature)
-VALUES ('5', '006', '睡前小故事课程', 9.00, 'VIRTUAL');
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature)
-VALUES ('6', '007', '数学思维(2册)', 29.00, 'PHYSICAL');
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature)
-VALUES ('7', '008', '数学思维(2册)+课程', 19.00, 'PHYSICAL');
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature)
-VALUES ('8', '009', '数学思维课程', 9.00, 'VIRTUAL');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature, book_set_id)
+VALUES ('0', '001', '宫西达也恐龙系列(全5册)', 39.00, 'PHYSICAL', '1');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature, book_set_id)
+VALUES ('1', '002', '宫西达也恐龙系列(全5册)+课程', 29.00, 'PHYSICAL', '1');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature, book_set_id)
+VALUES ('2', '003', '宫西达也恐龙系列课程', 19.00, 'VIRTUAL', '1');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature, book_set_id)
+VALUES ('3', '004', '睡前小故事(3册)', 29.00, 'PHYSICAL', '2');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature, book_set_id)
+VALUES ('4', '005', '睡前小故事(3册)+课程', 19.00, 'PHYSICAL', '2');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature, book_set_id)
+VALUES ('5', '006', '睡前小故事课程', 9.00, 'VIRTUAL', '2');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature, book_set_id)
+VALUES ('6', '007', '数学思维(2册)', 29.00, 'PHYSICAL', '3');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature, book_set_id)
+VALUES ('7', '008', '数学思维(2册)+课程', 19.00, 'PHYSICAL', '3');
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, price, product_nature, book_set_id)
+VALUES ('8', '009', '数学思维课程', 9.00, 'VIRTUAL', '3');
 
 INSERT INTO STEP_INVENTORY(id, product_id, inventory_quantity)
 VALUES ('0', '0', 100);

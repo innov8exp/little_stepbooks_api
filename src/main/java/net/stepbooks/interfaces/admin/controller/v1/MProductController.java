@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.service.ProductService;
+import net.stepbooks.interfaces.admin.dto.ProductDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,8 +46,8 @@ public class MProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable String id) {
-        Product product = productService.getById(id);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<ProductDto> getProduct(@PathVariable String id) {
+        ProductDto productDto = productService.findDetailById(id);
+        return ResponseEntity.ok(productDto);
     }
 }

@@ -6,4 +6,11 @@
         left join step_book b on bs.book_id = b.id
         where bs.book_set_id = #{bookSetId}
     </select>
+    <select id="findInPagingByCriteria" resultType="net.stepbooks.domain.bookset.entity.BookSet">
+        select * from step_book_set where 1 = 1
+        <if test="name != null">
+            <bind name="pattern" value="'%' + name + '%'"/>
+            AND name ILIKE #{pattern}
+        </if>
+    </select>
 </mapper>

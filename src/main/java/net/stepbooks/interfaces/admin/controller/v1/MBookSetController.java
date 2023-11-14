@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.bookset.entity.BookSet;
 import net.stepbooks.domain.bookset.service.BookSetService;
-import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.admin.dto.BookSetDto;
 import net.stepbooks.interfaces.admin.dto.BookSetFormDto;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,9 +32,9 @@ public class MBookSetController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBookSet(@PathVariable String id, @RequestBody BookSet bookSet) {
-        bookSet.setId(id);
-        bookSetService.updateById(bookSet);
+    public ResponseEntity<?> updateBookSet(@PathVariable String id, @RequestBody BookSetFormDto bookSetFormDto) {
+        bookSetFormDto.setId(id);
+        bookSetService.updateBookSet(bookSetFormDto);
         return ResponseEntity.ok().build();
     }
 
@@ -56,9 +55,8 @@ public class MBookSetController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BookSetDto> getBookSet(@PathVariable String id) {
-        BookSet bookSet = bookSetService.getById(id);
-        BookSetDto bookSetDto = BaseAssembler.convert(bookSet, BookSetDto.class);
-        bookSetDto.setMnpQRCode(String.format("%s?code=%s", mnpQRCodeHost, bookSet.getCode()));
+        BookSetDto bookSetDto = bookSetService.findById(id);
+        bookSetDto.setMnpQRCode(String.format("%s?code=%s", mnpQRCodeHost, bookSetDto.getCode()));
         return ResponseEntity.ok(bookSetDto);
     }
 

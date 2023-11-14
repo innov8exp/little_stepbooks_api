@@ -11,8 +11,10 @@ import net.stepbooks.domain.inventory.mapper.InventoryMapper;
 import net.stepbooks.domain.inventory.service.InventoryService;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.infrastructure.util.RedisDistributedLocker;
 import net.stepbooks.interfaces.admin.dto.MInventoryDto;
 import net.stepbooks.interfaces.admin.dto.InventoryQueryDto;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory> implements InventoryService {
 
     private final InventoryMapper inventoryMapper;
+    private final RedisDistributedLocker redisDistributedLocker;
 
     @Override
     public void createInventory(Inventory inventory) {
@@ -30,8 +33,22 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
             inventoryMapper.insert(inventory);
             return;
         }
-        inventory.setInventoryQuantity(inventoryExists.getInventoryQuantity() + inventory.getInventoryQuantity());
-        inventoryMapper.insert(inventory);
+        String productId = inventory.getProductId();
+        boolean res = redisDistributedLocker.tryLock(productId);
+        if (!res) {
+            log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁失败", productId);
+            throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED, "Server is busy, please try again later");
+        }
+        log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁成功", productId);
+        try {
+            inventory.setInventoryQuantity(inventoryExists.getInventoryQuantity() + inventory.getInventoryQuantity());
+            inventoryMapper.updateById(inventory);
+        } catch (OptimisticLockingFailureException e) {
+            throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED);
+        } finally {
+            redisDistributedLocker.unlock(productId);
+            log.info("线程 PRODUCT_STOCK_LOCK_{} 释放锁成功", productId);
+        }
         log.info("创建库存成功，商品ID：{}", inventory.getProductId());
     }
 
