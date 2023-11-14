@@ -7,5 +7,5 @@ import net.stepbooks.domain.bookset.entity.BookSet;
 import java.util.List;
 
 public interface BookSetMapper extends BaseMapper<BookSet> {
-    List<Book> findBooksByBookSetId(String id);
+    List<Book> findBooksByBookSetId(String bookSetId);
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.stepbooks.domain.order.mapper.OrderInventoryLogMapper">
+    <select id="findInPagingByCriteria" resultType="net.stepbooks.domain.order.entity.OrderInventoryLog">
+        select * from step_order_inventory_log where 1=1
+        <if test="skuCode != null">
+            and sku_code = #{skuCode}
+        </if>
+        <if test="orderCode != null">
+            and order_code = #{orderCode}
+        </if>
+    </select>
+</mapper>

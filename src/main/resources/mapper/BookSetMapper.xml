@@ -4,6 +4,6 @@
     <select id="findBooksByBookSetId" resultType="net.stepbooks.domain.book.entity.Book">
         select b.* from step_book_set_book_ref bs
         left join step_book b on bs.book_id = b.id
-        where bs.id = #{id}
+        where bs.book_set_id = #{bookSetId}
     </select>
 </mapper>

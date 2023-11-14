@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import net.sf.jmimemagic.*;
+import net.stepbooks.domain.course.entity.Course;
+import net.stepbooks.domain.course.service.CourseService;
 import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import net.stepbooks.domain.book.entity.BookChapter;
@@ -31,6 +33,7 @@ public class MBookController {
 
     private final BookService bookService;
     private final BookChapterService bookChapterService;
+    private final CourseService courseService;
 
     @PostMapping
     public ResponseEntity<?> createBook(@RequestBody BookDto bookDto) {
@@ -114,7 +117,11 @@ public class MBookController {
         return ResponseEntity.ok(chapterNo);
     }
 
-
+    @GetMapping("/{id}/courses")
+    public ResponseEntity<List<Course>> getBookCourses(@PathVariable String id) {
+        List<Course> courses = courseService.getBookCourses(id);
+        return ResponseEntity.ok(courses);
+    }
 
 }
 
