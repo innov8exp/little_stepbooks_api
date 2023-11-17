@@ -95,4 +95,9 @@ public class BookSetServiceImpl extends ServiceImpl<BookSetMapper, BookSet> impl
         return bookSetDto;
     }
 
+    @Override
+    public BookSet findByCode(String bookSetCode) {
+        return getOne(Wrappers.<BookSet>lambdaQuery().eq(BookSet::getCode, bookSetCode));
+    }
+
 }

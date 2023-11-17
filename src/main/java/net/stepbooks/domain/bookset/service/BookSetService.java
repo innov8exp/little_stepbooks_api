@@ -23,4 +23,6 @@ public interface BookSetService extends IService<BookSet> {
     List<Book> findBooksByBookSetId(String id);
 
     BookSetDto findById(String id);
+
+    BookSet findByCode(String bookSetCode);
 }

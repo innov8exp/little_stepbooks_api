@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.address.entity.UserAddress;
+import net.stepbooks.domain.address.service.UserAddressService;
 import net.stepbooks.interfaces.client.dto.UserDto;
 import net.stepbooks.interfaces.client.dto.ValidateDto;
 import net.stepbooks.interfaces.client.dto.VerificationDto;
@@ -21,6 +23,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/users")
@@ -29,6 +33,7 @@ public class UserController {
 
     private final UserService userService;
     private final EmailService emailService;
+    private final UserAddressService userAddressService;
     private final ContextManager contextManager;
 
     @GetMapping("/info")
@@ -81,5 +86,11 @@ public class UserController {
             throw new BusinessException(ErrorCode.BAD_REQUEST);
         }
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/addresses")
+    public ResponseEntity<List<UserAddress>> getUserAddresses() {
+        User user = contextManager.currentUser();
+        return ResponseEntity.ok(userAddressService.findByUserId(user.getId()));
     }
 }

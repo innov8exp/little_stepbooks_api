@@ -3,8 +3,12 @@ package net.stepbooks.domain.order.service;
 
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderEvent;
+import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
+
+import java.util.List;
+import java.util.Set;
 
 public interface OrderService {
 
@@ -33,4 +37,7 @@ public interface OrderService {
 
     void refundApprove(String id);
 
+    boolean existsBookSetInOrder(String bookSetCode, String userId);
+
+    List<Product> findOrderProductByUserIdAndBookSetIds(String userId, Set<String> bookSetIds);
 }

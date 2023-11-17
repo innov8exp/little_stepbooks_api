@@ -6,17 +6,19 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import net.sf.jmimemagic.*;
-import net.stepbooks.domain.course.entity.Course;
-import net.stepbooks.domain.course.service.CourseService;
-import net.stepbooks.interfaces.admin.dto.BookDto;
-import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.book.service.BookChapterService;
 import net.stepbooks.domain.book.service.BookService;
+import net.stepbooks.domain.bookset.entity.BookSetBook;
+import net.stepbooks.domain.bookset.service.BookSetBookService;
 import net.stepbooks.domain.classification.entity.Classification;
+import net.stepbooks.domain.course.entity.Course;
+import net.stepbooks.domain.course.service.CourseService;
 import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.interfaces.admin.dto.BookDto;
+import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,7 @@ public class MBookController {
     private final BookService bookService;
     private final BookChapterService bookChapterService;
     private final CourseService courseService;
+    private final BookSetBookService bookSetBookService;
 
     @PostMapping
     public ResponseEntity<?> createBook(@RequestBody BookDto bookDto) {
@@ -49,6 +52,18 @@ public class MBookController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable String id) {
+        List<Course> bookCourses = courseService.getBookCourses(id);
+        if (!bookCourses.isEmpty()) {
+            throw new BusinessException(ErrorCode.BOOK_HAS_COURSE);
+        }
+        List<BookChapter> bookChapters = bookChapterService.getBookChapters(id);
+        if (!bookChapters.isEmpty()) {
+            throw new BusinessException(ErrorCode.BOOK_HAS_CHAPTER);
+        }
+        List<BookSetBook> bookSetBooks = bookSetBookService.findByBookId(id);
+        if (!bookSetBooks.isEmpty()) {
+            throw new BusinessException(ErrorCode.BOOK_HAS_BOOKSET);
+        }
         bookService.deleteBook(id);
         return ResponseEntity.ok().build();
     }
@@ -121,6 +136,13 @@ public class MBookController {
     public ResponseEntity<List<Course>> getBookCourses(@PathVariable String id) {
         List<Course> courses = courseService.getBookCourses(id);
         return ResponseEntity.ok(courses);
+    }
+
+    @PostMapping("/{id}/courses")
+    public ResponseEntity<?> createBookCourse(@PathVariable String id, @RequestBody Course course) {
+        course.setBookId(id);
+        courseService.save(course);
+        return ResponseEntity.ok().build();
     }
 
 }

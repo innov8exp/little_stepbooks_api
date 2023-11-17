@@ -10,8 +10,10 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @NoArgsConstructor
 @Builder
 @TableName("STEP_BOOKSHELF")
-public class BookshelfEntity extends BaseEntity {
+public class Bookshelf extends BaseEntity {
     private String bookId;
     private String userId;
+    private String bookSetId;
+    private String bookSetCode;
     private Integer sortIndex;
 }

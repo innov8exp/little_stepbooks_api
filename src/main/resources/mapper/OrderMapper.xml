@@ -18,4 +18,14 @@
         where o.user_id = #{userId}
         order by o.created_at desc
     </select>
+    <select id="findOrderProductByUserIdAndProductIds"
+            resultType="net.stepbooks.domain.product.entity.Product">
+        select p.* from step_order o
+        left join step_order_product op on o.id = op.order_id
+        left join step_product p on op.product_id = p.id
+        where o.user_id = #{userId} and op.product_id in
+        <foreach collection="productIds" item="productId" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </select>
 </mapper>

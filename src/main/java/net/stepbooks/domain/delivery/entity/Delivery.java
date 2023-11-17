@@ -24,5 +24,6 @@ public class Delivery extends BaseEntity {
     private String deliveryCompany;
     private String recipientName;
     private String recipientPhone;
+    private String recipientLocation;
     private String recipientAddress;
 }

@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.product.mapper.ProductMapper">
-
     <select id="findDetailById" resultType="net.stepbooks.interfaces.admin.dto.ProductDto">
         select p.*, bs.code book_set_code, bs.name book_set_name
         from step_product p left join step_book_set bs on p.book_set_id = bs.id
         where p.id = #{id}
+    </select>
+    <select id="findProductsInPagingByCriteria" resultType="net.stepbooks.domain.product.entity.Product">
+        select p.* from step_product p where 1=1
+        <if test="skuName != null">
+            <bind name="pattern" value="'%' + skuName + '%'"/>
+            AND p.sku_name ILIKE #{pattern}
+        </if>
     </select>
 </mapper>

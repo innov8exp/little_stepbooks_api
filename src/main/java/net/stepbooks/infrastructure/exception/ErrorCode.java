@@ -30,7 +30,17 @@ public enum ErrorCode {
     REDIS_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect redis failed"),
     PRODUCT_NATURE_NOT_SUPPORT(HttpStatus.BAD_REQUEST.value(), "The product nature is not support"),
     ORDER_NATURE_NOT_SUPPORT(HttpStatus.BAD_REQUEST.value(), "The order nature is not support"),
-    BOOK_SET_HAS_BEEN_USED(HttpStatus.BAD_REQUEST.value(), "The book set has been used");
+    BOOK_SET_HAS_BEEN_USED(HttpStatus.BAD_REQUEST.value(), "The book set has been used"),
+    PRODUCT_ON_SHELF_CANNOT_BE_DELETED(HttpStatus.BAD_REQUEST.value(),
+            "The product on shelf cannot be deleted"),
+    BOOK_HAS_COURSE(HttpStatus.BAD_REQUEST.value(), "The book has course, cannot be deleted"),
+    BOOK_HAS_CHAPTER(HttpStatus.BAD_REQUEST.value(), "The book has chapter, cannot be deleted"),
+    BOOK_HAS_BOOKSET(HttpStatus.BAD_REQUEST.value(), "The book has bind by bookset, cannot be deleted"), 
+    BOOK_SET_EXISTS_ERROR(HttpStatus.BAD_REQUEST.value(),
+            "The book set has already exist, please input another one."),
+    BOOK_SET_NOT_EXISTS_IN_ORDER_ERROR(HttpStatus.BAD_REQUEST.value(),
+            "The book set is not exists in order, please check again.");
+
 
     private final int status;
     @Setter

@@ -7,8 +7,6 @@ import net.stepbooks.domain.course.service.CourseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/admin/v1/courses")
 @RequiredArgsConstructor
@@ -16,12 +14,6 @@ import java.util.List;
 public class MCourseController {
 
     private final CourseService courseService;
-
-    @PostMapping
-    public ResponseEntity<?> createOne(@RequestBody Course entity) {
-        courseService.save(entity);
-        return ResponseEntity.ok().build();
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOne(@PathVariable String id, @RequestBody Course entity) {
@@ -36,8 +28,8 @@ public class MCourseController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<Course>> getAll() {
-        return ResponseEntity.ok(courseService.list());
+    @GetMapping("/{id}")
+    public ResponseEntity<Course> getOne(@PathVariable String id) {
+        return ResponseEntity.ok(courseService.getById(id));
     }
 }

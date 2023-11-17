@@ -1,5 +1,5 @@
 package net.stepbooks.domain.product.enums;
 
 public enum ProductStatus {
-    ONLINE, OFFLINE
+    ON_SHELF, OFF_SHELF
 }

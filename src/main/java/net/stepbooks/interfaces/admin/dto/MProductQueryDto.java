@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MProductQueryDto {
     private String skuCode;
-    private String bookName;
+    private String skuName;
 }

@@ -8,7 +8,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("STEP_FINISH_HISTORY")
-public class FinishHistoryEntity extends BaseEntity {
+public class FinishHistory extends BaseEntity {
 
     private String userId;
     private String bookId;

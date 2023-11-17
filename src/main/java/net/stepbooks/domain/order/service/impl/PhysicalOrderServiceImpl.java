@@ -32,8 +32,11 @@ import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 import static net.stepbooks.infrastructure.AppConstants.ORDER_PAYMENT_TIMEOUT_BUFFER;
 import static net.stepbooks.infrastructure.AppConstants.PHYSICAL_ORDER_CODE_PREFIX;
@@ -171,6 +174,23 @@ public class PhysicalOrderServiceImpl implements OrderService {
     @Override
     public void refundApprove(String id) {
         updateOrderState(id, OrderEvent.REFUND_APPROVE);
+    }
+
+    @Override
+    public boolean existsBookSetInOrder(String bookSetCode, String userId) {
+        List<Product> products = productService.findProductsByBookSetCode(bookSetCode);
+        // 筛选出在用户中的订单产品集合
+        List<Product> filteredProducts = orderMapper.findOrderProductByUserIdAndProductIds(userId,
+                products.stream().map(Product::getId).toList());
+        return !ObjectUtils.isEmpty(filteredProducts);
+    }
+
+    @Override
+    public List<Product> findOrderProductByUserIdAndBookSetIds(String userId, Set<String> bookSetIds) {
+        List<Product> products = productService.findProductsByBookSetIds(bookSetIds);
+        // 筛选出在用户中的订单产品集合
+        return orderMapper.findOrderProductByUserIdAndProductIds(userId,
+                products.stream().map(Product::getId).toList());
     }
 
 

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.enums.ProductStatus;
+import net.stepbooks.infrastructure.enums.Material;
+import net.stepbooks.infrastructure.enums.SalesPlatform;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 import java.math.BigDecimal;
@@ -18,13 +20,30 @@ public class Product extends BaseEntity {
 
     private String skuCode;
     private String skuName;
-    private String salesPlatform;
+    private int salesPlatforms;
     private ProductNature productNature;
     private String description;
     private BigDecimal price;
     private String coverImgId;
     private String coverImgUrl;
-    private String resources;
+    private int materials;
     private String bookSetId;
+    private String bookSetCode;
     private ProductStatus status;
+
+    public SalesPlatform[] getParsedSalesPlatforms() {
+        return SalesPlatform.parseSalesPlatforms(salesPlatforms);
+    }
+
+    public Material[] getParsedMaterials() {
+        return Material.parseMaterials(materials);
+    }
+
+    public void setParsedSalesPlatforms(SalesPlatform[] salesPlatforms) {
+        this.salesPlatforms = SalesPlatform.parseSalesPlatforms(salesPlatforms);
+    }
+
+    public void setParsedMaterials(Material[] materials) {
+        this.materials = Material.parseMaterials(materials);
+    }
 }

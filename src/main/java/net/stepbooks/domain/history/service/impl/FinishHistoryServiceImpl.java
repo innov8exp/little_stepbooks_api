@@ -1,6 +1,6 @@
 package net.stepbooks.domain.history.service.impl;
 
-import net.stepbooks.domain.history.entity.FinishHistoryEntity;
+import net.stepbooks.domain.history.entity.FinishHistory;
 import net.stepbooks.domain.history.mapper.FinishHistoryMapper;
 import net.stepbooks.domain.history.service.FinishHistoryService;
 import net.stepbooks.interfaces.admin.dto.BookDto;
@@ -26,10 +26,10 @@ public class FinishHistoryServiceImpl implements FinishHistoryService {
 
     @Override
     public void addUserFinishBookHistory(String userId, String bookId) {
-        FinishHistoryEntity finishHistoryEntity = new FinishHistoryEntity();
-        finishHistoryEntity.setUserId(userId);
-        finishHistoryEntity.setBookId(bookId);
-        finishHistoryEntity.setCreatedAt(LocalDateTime.now());
-        finishHistoryMapper.insert(finishHistoryEntity);
+        FinishHistory finishHistory = new FinishHistory();
+        finishHistory.setUserId(userId);
+        finishHistory.setBookId(bookId);
+        finishHistory.setCreatedAt(LocalDateTime.now());
+        finishHistoryMapper.insert(finishHistory);
     }
 }

@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 import static net.stepbooks.infrastructure.AppConstants.ORDER_PAYMENT_TIMEOUT_BUFFER;
 import static net.stepbooks.infrastructure.AppConstants.VIRTUAL_ORDER_CODE_PREFIX;
@@ -126,6 +128,18 @@ public class VirtualOrderServiceImpl implements OrderService {
     @Override
     public void refundApprove(String id) {
         updateOrderState(id, OrderEvent.REFUND_APPROVE);
+    }
+
+    // 物理订单中的逻辑处理，不需要实现
+    @Override
+    public boolean existsBookSetInOrder(String bookSetCode, String userId) {
+        return false;
+    }
+
+    // 物理订单中的逻辑处理，不需要实现
+    @Override
+    public List<Product> findOrderProductByUserIdAndBookSetIds(String userId, Set<String> bookSetIds) {
+        return null;
     }
 
 }

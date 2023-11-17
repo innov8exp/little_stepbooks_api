@@ -20,7 +20,6 @@ public class User extends BaseEntity {
     private String deviceId;
     private String avatarImgId;
     private String avatarImgUrl;
-    private String gender;
     private Boolean active;
     private String role;
     private String googleId;
@@ -28,6 +27,7 @@ public class User extends BaseEntity {
     private String wechatId;
     private String alipayId;
     private String openId;
+    private String childGender;
     private String childClassificationId;
     private String childMinAge;
     private String childMaxAge;
