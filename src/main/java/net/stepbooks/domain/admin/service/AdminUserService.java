@@ -1,9 +1,10 @@
 package net.stepbooks.domain.admin.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.domain.admin.entity.AdminUser;
 import net.stepbooks.interfaces.client.dto.TokenDto;
 
-public interface AdminUserService {
+public interface AdminUserService extends IService<AdminUser> {
 
     AdminUser findUserByEmail(String email);
 

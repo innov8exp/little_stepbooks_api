@@ -3,6 +3,7 @@ package net.stepbooks.interfaces.admin.controller.v1;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.admin.entity.AdminUser;
 import net.stepbooks.domain.admin.service.AdminUserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
@@ -22,6 +23,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/admin/auth")
 public class MAuthController {
 
@@ -35,12 +37,6 @@ public class MAuthController {
     private String tokenType;
     @Value("${admin.jwt.header}")
     private String authHeader;
-
-    public MAuthController(AdminUserService adminUserService,
-                           AdminJwtTokenProvider adminJwtTokenProvider) {
-        this.adminUserService = adminUserService;
-        this.adminJwtTokenProvider = adminJwtTokenProvider;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<TokenDto> authToken(@Valid @RequestBody LoginDto loginDto) {

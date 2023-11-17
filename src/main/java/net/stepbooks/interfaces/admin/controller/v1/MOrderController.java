@@ -1,10 +1,13 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.admin.entity.AdminUser;
+import net.stepbooks.domain.delivery.entity.Delivery;
+import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.OrderEventLog;
 import net.stepbooks.domain.order.enums.DeliveryCompany;
@@ -12,8 +15,9 @@ import net.stepbooks.domain.order.service.OrderEventLogService;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.domain.order.service.OrderService;
+import net.stepbooks.domain.payment.entity.Payment;
+import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.product.enums.ProductNature;
-import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
@@ -34,39 +38,13 @@ import java.util.List;
 public class MOrderController {
 
     private final OrderOpsService orderOpsService;
-    private final ProductService productService;
     private final OrderService physicalOrderServiceImpl;
     private final OrderService virtualOrderServiceImpl;
     private final OrderEventLogService orderEventLogService;
     private final OrderProductService orderProductService;
     private final ContextManager contextManager;
-
-    @GetMapping("/search")
-    public ResponseEntity<IPage<OrderInfoDto>> getAllOrders(@RequestParam int currentPage,
-                                                            @RequestParam int pageSize,
-                                                            @RequestParam(required = false) String orderNo,
-                                                            @RequestParam(required = false) String username) {
-        Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
-        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderNo, username);
-        return ResponseEntity.ok(orders);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrder(@PathVariable String id) {
-        Order order = orderOpsService.findOrderById(id);
-        return ResponseEntity.ok(order);
-    }
-
-    @GetMapping("/ship-companies")
-    public ResponseEntity<List<DeliveryCompanyDto>> getShipCompanies() {
-        ArrayList<DeliveryCompanyDto> deliveryCompanies = new ArrayList<>();
-        for (DeliveryCompany deliveryCompany : DeliveryCompany.values()) {
-            DeliveryCompanyDto companyDto = DeliveryCompanyDto.builder().code(deliveryCompany.getKey())
-                    .name(deliveryCompany.getValue()).build();
-            deliveryCompanies.add(companyDto);
-        }
-        return ResponseEntity.ok(deliveryCompanies);
-    }
+    private final PaymentOpsService paymentOpsService;
+    private final DeliveryService deliveryService;
 
     @PutMapping("/{id}/close")
     public ResponseEntity<?> closeOrder(@PathVariable String id) {
@@ -95,6 +73,33 @@ public class MOrderController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<IPage<OrderInfoDto>> getAllOrders(@RequestParam int currentPage,
+                                                            @RequestParam int pageSize,
+                                                            @RequestParam(required = false) String orderCode,
+                                                            @RequestParam(required = false) String username) {
+        Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
+        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username);
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrder(@PathVariable String id) {
+        Order order = orderOpsService.findOrderById(id);
+        return ResponseEntity.ok(order);
+    }
+
+    @GetMapping("/ship-companies")
+    public ResponseEntity<List<DeliveryCompanyDto>> getShipCompanies() {
+        ArrayList<DeliveryCompanyDto> deliveryCompanies = new ArrayList<>();
+        for (DeliveryCompany deliveryCompany : DeliveryCompany.values()) {
+            DeliveryCompanyDto companyDto = DeliveryCompanyDto.builder().code(deliveryCompany.getKey())
+                    .name(deliveryCompany.getValue()).build();
+            deliveryCompanies.add(companyDto);
+        }
+        return ResponseEntity.ok(deliveryCompanies);
+    }
+
     @GetMapping("/{id}/event-logs")
     public ResponseEntity<List<OrderEventLog>> getOrderEventLog(@PathVariable String id) {
         List<OrderEventLog> orderEventLogs = orderEventLogService.findByOrderId(id);
@@ -105,5 +110,17 @@ public class MOrderController {
     public ResponseEntity<List<OrderProductDto>> getOrderProducts(@PathVariable String id) {
         List<OrderProductDto> orderProducts = orderProductService.findByOrderId(id);
         return ResponseEntity.ok(orderProducts);
+    }
+
+    @GetMapping("/{id}/payments")
+    public ResponseEntity<List<Payment>> getOrderPayments(@PathVariable String id) {
+        List<Payment> payments = paymentOpsService.list(Wrappers.<Payment>lambdaQuery().eq(Payment::getOrderId, id));
+        return ResponseEntity.ok(payments);
+    }
+
+    @GetMapping("/{id}/delivery")
+    public ResponseEntity<Delivery> getOrderDelivery(@PathVariable String id) {
+        Delivery delivery = deliveryService.getOne(Wrappers.<Delivery>lambdaQuery().eq(Delivery::getOrderId, id));
+        return ResponseEntity.ok(delivery);
     }
 }

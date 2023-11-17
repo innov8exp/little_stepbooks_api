@@ -39,7 +39,10 @@ public enum ErrorCode {
     BOOK_SET_EXISTS_ERROR(HttpStatus.BAD_REQUEST.value(),
             "The book set has already exist, please input another one."),
     BOOK_SET_NOT_EXISTS_IN_ORDER_ERROR(HttpStatus.BAD_REQUEST.value(),
-            "The book set is not exists in order, please check again.");
+            "The book set is not exists in order, please check again."),
+    ORDER_STATE_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "The order state is not support refund"),
+    REFUND_REQUEST_EXISTS(HttpStatus.BAD_REQUEST.value(), "The order has refund request, please check again."),
+    VIRTUAL_ORDER_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "The virtual order is not support refund");
 
 
     private final int status;

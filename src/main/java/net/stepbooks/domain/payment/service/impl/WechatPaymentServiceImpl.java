@@ -1,5 +1,6 @@
 package net.stepbooks.domain.payment.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wechat.pay.java.core.Config;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.service.payments.jsapi.JsapiService;
@@ -8,13 +9,15 @@ import com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest;
 import com.wechat.pay.java.service.payments.jsapi.model.PrepayResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.stepbooks.domain.payment.entity.Payment;
+import net.stepbooks.domain.payment.mapper.PaymentMapper;
 import net.stepbooks.domain.payment.service.PaymentService;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class WechatPaymentServiceImpl implements PaymentService {
+public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> implements PaymentService {
 
     /** 商户号 */
     private static final String MERCHANT_ID = "190000****";

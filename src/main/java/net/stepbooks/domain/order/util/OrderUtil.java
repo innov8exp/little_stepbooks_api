@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.product.entity.Product;
-import net.stepbooks.infrastructure.enums.OrderType;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.util.RandomNumberUtils;
 import net.stepbooks.infrastructure.util.RedisLockUtils;
@@ -30,7 +29,6 @@ public class OrderUtil {
                 .recipientPhone(orderDto.getRecipientPhone())
                 .totalAmount(totalAmount)
                 .productNature(product.getProductNature())
-                .orderType(OrderType.PURCHASE)
                 .paymentStatus(PaymentStatus.UNPAID)
                 .state(OrderState.INIT)
                 .paymentTimeoutDuration(ORDER_PAYMENT_TIMEOUT)

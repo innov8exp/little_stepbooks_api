@@ -7,12 +7,17 @@ import net.stepbooks.domain.delivery.enums.DeliveryStatus;
 import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.OrderEventLog;
+import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.event.DelayQueueMessageProducer;
+import net.stepbooks.domain.order.mapper.RefundRequestMapper;
 import net.stepbooks.domain.order.service.OrderActionService;
 import net.stepbooks.domain.order.service.OrderEventLogService;
+import net.stepbooks.domain.order.service.RefundRequestService;
 import net.stepbooks.domain.payment.service.PaymentService;
+import net.stepbooks.infrastructure.enums.RefundStatus;
+import net.stepbooks.infrastructure.enums.RefundType;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -29,6 +34,8 @@ public class OrderActionServiceImpl implements OrderActionService {
     private final OrderEventLogService orderEventLogService;
     private final DeliveryService deliveryService;
     private final PaymentService paymentService;
+    private final RefundRequestMapper refundRequestMapper;
+
 
     @Override
     public void startPaymentTimeoutCountDown(OrderState from, OrderState to, OrderEvent event, Order order) {
@@ -57,6 +64,12 @@ public class OrderActionServiceImpl implements OrderActionService {
     public void updateDeliveryStatus(Order order, DeliveryStatus deliveryStatus) {
         deliveryService.update(Wrappers.<Delivery>lambdaUpdate().set(Delivery::getDeliveryStatus, deliveryStatus)
                 .eq(Delivery::getOrderId, order.getId()));
+    }
+
+    @Override
+    public void updateRequestRefundStatus(Order order, RefundStatus refundStatus) {
+        refundRequestMapper.update(null, Wrappers.<RefundRequest>lambdaUpdate().set(RefundRequest::getRefundStatus, refundStatus)
+                .eq(RefundRequest::getOrderId, order.getId()));
     }
 
 }

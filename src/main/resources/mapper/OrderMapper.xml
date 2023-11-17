@@ -12,6 +12,7 @@
         <if test="username != null">
             and exists (select 1 from step_user u1 where u1.username = #{username} and o.user_id = u1.id)
         </if>
+        order by o.modified_at desc
     </select>
     <select id="findPageByUser" resultType="net.stepbooks.interfaces.admin.dto.OrderInfoDto">
         select o.* from step_order o

@@ -8,6 +8,7 @@ public class CreateOrderDto {
     private String userId;
     private String recipientName;
     private String recipientPhone;
+    private String recipientLocation;
     private String recipientAddress;
     private String skuCode;
     private int quantity;

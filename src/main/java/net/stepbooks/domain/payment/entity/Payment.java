@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
+import net.stepbooks.infrastructure.enums.PaymentType;
 import net.stepbooks.infrastructure.enums.TransactionStatus;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
@@ -15,8 +16,9 @@ import java.math.BigDecimal;
 public class Payment extends BaseEntity {
 
     private String orderId;
-    private String orderNo;
+    private String orderCode;
     private String userId;
+    private PaymentType paymentType;
     private PaymentMethod paymentMethod;
     private BigDecimal transactionAmount;
     private String vendorPaymentNo;

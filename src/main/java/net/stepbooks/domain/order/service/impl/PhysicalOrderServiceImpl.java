@@ -20,10 +20,12 @@ import net.stepbooks.domain.order.service.OrderInventoryLogService;
 import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.order.util.OrderUtil;
+import net.stepbooks.domain.payment.entity.Payment;
+import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.service.ProductService;
-import net.stepbooks.infrastructure.enums.PaymentStatus;
+import net.stepbooks.infrastructure.enums.*;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
@@ -34,9 +36,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import static net.stepbooks.infrastructure.AppConstants.ORDER_PAYMENT_TIMEOUT_BUFFER;
 import static net.stepbooks.infrastructure.AppConstants.PHYSICAL_ORDER_CODE_PREFIX;
@@ -56,6 +60,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
     private final OrderInventoryLogService orderInventoryLogService;
     private final DeliveryService deliveryService;
     private final PaymentService paymentService;
+    private final PaymentOpsService paymentOpsService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -146,7 +151,22 @@ public class PhysicalOrderServiceImpl implements OrderService {
     public void paymentCallback(Order order) {
         Order updatedOrder = updateOrderState(order.getId(), OrderEvent.PAYMENT_SUCCESS);
         updatedOrder.setPaymentStatus(PaymentStatus.PAID);
+        updatedOrder.setPaymentMethod(order.getPaymentMethod());
+        // TODO
+        updatedOrder.setPaymentAmount(order.getTotalAmount());
         orderMapper.updateById(updatedOrder);
+        Payment payment = new Payment();
+        payment.setPaymentMethod(updatedOrder.getPaymentMethod());
+        payment.setPaymentType(PaymentType.ORDER_PAYMENT);
+        payment.setOrderId(updatedOrder.getId());
+        payment.setOrderCode(updatedOrder.getOrderCode());
+        payment.setTransactionAmount(updatedOrder.getPaymentAmount());
+        payment.setTransactionStatus(TransactionStatus.SUCCESS);
+        payment.setUserId(updatedOrder.getUserId());
+        //TODO
+        payment.setVendorPaymentNo(UUID.randomUUID().toString());
+        paymentOpsService.save(payment);
+
     }
 
     @Override
@@ -167,13 +187,41 @@ public class PhysicalOrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void refundRequest(String id) {
         updateOrderState(id, OrderEvent.REFUND_REQUEST);
+        Order order = orderMapper.selectById(id);
+        order.setRefundType(RefundType.ONLY_REFUND);
+        orderMapper.updateById(order);
+        // 发起退款支付
+        refundPayment(id);
     }
 
     @Override
-    public void refundApprove(String id) {
+    public void refundApprove(String id, BigDecimal refundAmount) {
         updateOrderState(id, OrderEvent.REFUND_APPROVE);
+        Order order = orderMapper.selectById(id);
+        order.setRefundType(RefundType.REFUND_AND_RETURN);
+        order.setRefundAmount(refundAmount);
+        orderMapper.updateById(order);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void refundPayment(String id) {
+        // TODO 发起退款支付
+        // 获取退款金额
+        Order order = orderMapper.selectById(id);
+        Payment payment = new Payment();
+        payment.setPaymentMethod(order.getPaymentMethod());
+        payment.setPaymentType(PaymentType.REFUND_PAYMENT);
+        payment.setOrderId(order.getId());
+        payment.setOrderCode(order.getOrderCode());
+        payment.setTransactionAmount(order.getPaymentAmount());
+        payment.setUserId(order.getUserId());
+        //TODO
+        payment.setVendorPaymentNo(UUID.randomUUID().toString());
+        paymentOpsService.save(payment);
     }
 
     @Override
@@ -191,6 +239,15 @@ public class PhysicalOrderServiceImpl implements OrderService {
         // 筛选出在用户中的订单产品集合
         return orderMapper.findOrderProductByUserIdAndProductIds(userId,
                 products.stream().map(Product::getId).toList());
+    }
+
+    @Override
+    public void refundCallback(Order order) {
+        updateOrderState(order.getId(), OrderEvent.REFUND_SUCCESS);
+        paymentOpsService.update(Wrappers.<Payment>lambdaUpdate()
+                .eq(Payment::getOrderCode, order.getOrderCode())
+                .eq(Payment::getPaymentType, PaymentType.REFUND_PAYMENT)
+                .set(Payment::getTransactionStatus, TransactionStatus.SUCCESS));
     }
 
 

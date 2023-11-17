@@ -214,13 +214,16 @@ create TABLE STEP_ORDER
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
     order_code        VARCHAR(100) NOT NULL UNIQUE,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    order_type      VARCHAR(100),    -- PURCHASE, REFUND
     total_amount    DECIMAL,
     discount_amount DECIMAL,
+    payment_amount  DECIMAL,
+    refund_amount   DECIMAL,
     recipient_phone VARCHAR(100),
     payment_timeout_duration BIGINT,
     product_nature      VARCHAR(100), -- PHYSICAL, VIRTUAL
+    payment_method  VARCHAR(100),    -- WECHAT_PAY, ALI_PAY
     payment_status  VARCHAR(100),    -- UNPAID, PAID
+    refund_type    VARCHAR(100),    -- ONLY_REFUND, REFUND_AND_RETURN
     state          VARCHAR(100),
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
@@ -273,6 +276,7 @@ create TABLE STEP_PAYMENT
     order_code        VARCHAR(100) NOT NULL,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
     payment_method  VARCHAR(100),    -- WECHAT_PAY, ALI_PAY
+    payment_type    VARCHAR(100),    -- ORDER_PAYMENT, REFUND_PAYMENT
     transaction_amount          DECIMAL,
     vendor_payment_no         VARCHAR(200) NOT NULL UNIQUE,
     receipt         VARCHAR(200),
@@ -285,8 +289,8 @@ create TABLE STEP_PAYMENT
 create TABLE STEP_DELIVERY
 (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
-    order_id      VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
-    order_code      VARCHAR(100) NOT NULL,
+    order_id      VARCHAR(100) REFERENCES STEP_ORDER(id) UNIQUE NOT NULL,
+    order_code      VARCHAR(100) UNIQUE NOT NULL,
     user_id       VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
     shipper_user_id  VARCHAR(100) REFERENCES STEP_ADMIN_USER(id),
     delivery_method VARCHAR(100), -- EXPRESS, ONLINE
@@ -302,15 +306,26 @@ create TABLE STEP_DELIVERY
 );
 
 -- 退款申请
-create TABLE STEP_ORDER_REFUND_REQUEST
+create TABLE STEP_REFUND_REQUEST
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
     order_id VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
     order_code VARCHAR(100) NOT NULL,
     user_id VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
     refund_amount DECIMAL,
-    refund_reason TEXT,
-    refund_status VARCHAR(100), -- PENDING, APPROVED, REJECTED
+    refund_reason VARCHAR(200), -- WRONG_PURCHASE, WRONG_PAYMENT, OTHER
+    refund_reason_description TEXT,
+    request_status VARCHAR(100), -- PENDING, APPROVED, REJECTED
+    refund_status VARCHAR(100), -- PENDING, REFUNDING_WAIT_DELIVERY, REFUNDING_WAIT_SIGN, REFUNDED, REFUND_FAILED, REFUND_CANCELLED
+    refund_type VARCHAR(100), -- ONLY_REFUND, REFUND_AND_RETURN
+    reject_reason TEXT,
+    delivery_code   VARCHAR(200),
+    delivery_company VARCHAR(200),
+    delivery_status VARCHAR(100),
+    recipient_name  VARCHAR(100),
+    recipient_phone VARCHAR(100),
+    recipient_location VARCHAR(200),
+    recipient_address TEXT,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 );

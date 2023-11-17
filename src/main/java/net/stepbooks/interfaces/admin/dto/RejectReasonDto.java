@@ -3,7 +3,7 @@ package net.stepbooks.interfaces.admin.dto;
 import lombok.Data;
 
 @Data
-public class PaymentTypeDto {
+public class RejectReasonDto {
 
-    private Boolean needPay;
+    private String rejectReason;
 }

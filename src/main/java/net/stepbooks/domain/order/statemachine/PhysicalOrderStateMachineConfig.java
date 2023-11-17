@@ -12,6 +12,7 @@ import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.service.OrderActionService;
+import net.stepbooks.infrastructure.enums.RefundStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ObjectUtils;
@@ -82,7 +83,11 @@ public class PhysicalOrderStateMachineConfig {
                 .to(OrderState.REFUNDED)
                 .on(OrderEvent.REFUND_SUCCESS)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.updateDeliveryStatus(context, DeliveryStatus.CANCELED);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                    orderActionService.updateRequestRefundStatus(context, RefundStatus.REFUNDED);
+                });
 
         builder.externalTransition()
                 .from(OrderState.SHIPPED)

@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.order.entity.Order;
+import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.order.service.OrderService;
+import net.stepbooks.domain.order.service.RefundRequestService;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
@@ -20,6 +23,8 @@ import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import net.stepbooks.interfaces.client.dto.PlaceOrderDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/orders")
@@ -32,6 +37,7 @@ public class OrderController {
     private final OrderService virtualOrderServiceImpl;
     private final OrderOpsService orderOpsService;
     private final ProductService productService;
+    private final RefundRequestService refundRequestService;
 
     @PostMapping
     public ResponseEntity<?> placeOrder(@RequestBody PlaceOrderDto placeOrderDto) {
@@ -82,6 +88,17 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{code}/refund-requests")
+    public ResponseEntity<?> getOrderRefundRequests(@PathVariable String code) {
+        User user = contextManager.currentUser();
+        Order order = orderOpsService.findOrderByCode(code);
+        if (!user.getId().equals(order.getUserId())) {
+            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+        }
+        List<RefundRequest> refundRequests = refundRequestService.getRefundRequestsByOrderId(order.getId());
+        return ResponseEntity.ok(refundRequests);
+    }
+
     @PutMapping("/{code}/mock/payment-callback")
     public ResponseEntity<?> mockPayOrder(@PathVariable String code) {
         User user = contextManager.currentUser();
@@ -89,6 +106,7 @@ public class OrderController {
         if (!user.getId().equals(order.getUserId())) {
             throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
         }
+        order.setPaymentMethod(PaymentMethod.WECHAT_PAY);
         if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
             physicalOrderServiceImpl.paymentCallback(order);
         } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
@@ -99,4 +117,24 @@ public class OrderController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{code}/mock/refund-callback")
+    public ResponseEntity<?> mockRefundOrder(@PathVariable String code) {
+        User user = contextManager.currentUser();
+        Order order = orderOpsService.findOrderByCode(code);
+        if (!user.getId().equals(order.getUserId())) {
+            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+        }
+        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
+            physicalOrderServiceImpl.refundCallback(order);
+        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
+            virtualOrderServiceImpl.refundCallback(order);
+        } else {
+            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+
 }

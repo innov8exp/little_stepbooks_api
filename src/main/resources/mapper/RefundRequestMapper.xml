@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.stepbooks.domain.order.mapper.RefundRequestMapper">
+    <select id="getPagedRefundRequests" resultType="net.stepbooks.domain.order.entity.RefundRequest">
+        select * from step_refund_request r where 1=1
+        <if test="orderCode != null and orderCode != ''">
+            and r.order_code = #{orderCode}
+        </if>
+        order by r.modified_at desc
+    </select>
+    <select id="checkRefundRequestExistsByOrderCode" resultType="java.lang.Boolean">
+        select count(1) > 0 from step_refund_request r where r.order_code = #{orderCode}
+        and ( r.request_status = 'PENDING' or r.request_status = 'APPROVED' )
+    </select>
+</mapper>

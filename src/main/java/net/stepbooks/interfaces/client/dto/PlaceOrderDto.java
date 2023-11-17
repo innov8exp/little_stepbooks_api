@@ -9,5 +9,6 @@ public class PlaceOrderDto {
     private int quantity;
     private String recipientName;
     private String recipientPhone;
+    private String recipientLocation;
     private String recipientAddress;
 }

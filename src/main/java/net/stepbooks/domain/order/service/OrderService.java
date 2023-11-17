@@ -7,6 +7,7 @@ import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +26,7 @@ public interface OrderService {
 
     void cancelOrder(String id);
 
+    // 付款回掉
     void paymentCallback(Order order);
 
     // 发货
@@ -33,11 +35,19 @@ public interface OrderService {
     // 签收
     void signOrder(String id);
 
+    // 申请退款
     void refundRequest(String id);
 
-    void refundApprove(String id);
+    // 同意退款
+    void refundApprove(String id, BigDecimal refundAmount);
+
+    // 发起退款支付
+    void refundPayment(String id);
 
     boolean existsBookSetInOrder(String bookSetCode, String userId);
 
     List<Product> findOrderProductByUserIdAndBookSetIds(String userId, Set<String> bookSetIds);
+
+    // 退款回调
+    void refundCallback(Order order);
 }
