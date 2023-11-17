@@ -11,8 +11,6 @@ import net.stepbooks.interfaces.admin.dto.RejectReasonDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Admin Authentication")

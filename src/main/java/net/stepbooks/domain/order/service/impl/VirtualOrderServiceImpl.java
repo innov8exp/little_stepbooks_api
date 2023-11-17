@@ -19,7 +19,6 @@ import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.enums.PaymentType;
-import net.stepbooks.infrastructure.enums.RefundType;
 import net.stepbooks.infrastructure.enums.TransactionStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;

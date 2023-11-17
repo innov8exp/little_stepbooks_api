@@ -14,10 +14,8 @@ import net.stepbooks.domain.order.event.DelayQueueMessageProducer;
 import net.stepbooks.domain.order.mapper.RefundRequestMapper;
 import net.stepbooks.domain.order.service.OrderActionService;
 import net.stepbooks.domain.order.service.OrderEventLogService;
-import net.stepbooks.domain.order.service.RefundRequestService;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.infrastructure.enums.RefundStatus;
-import net.stepbooks.infrastructure.enums.RefundType;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;

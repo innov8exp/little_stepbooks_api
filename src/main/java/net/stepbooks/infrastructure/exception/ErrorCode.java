@@ -35,7 +35,7 @@ public enum ErrorCode {
             "The product on shelf cannot be deleted"),
     BOOK_HAS_COURSE(HttpStatus.BAD_REQUEST.value(), "The book has course, cannot be deleted"),
     BOOK_HAS_CHAPTER(HttpStatus.BAD_REQUEST.value(), "The book has chapter, cannot be deleted"),
-    BOOK_HAS_BOOKSET(HttpStatus.BAD_REQUEST.value(), "The book has bind by bookset, cannot be deleted"), 
+    BOOK_HAS_BOOKSET(HttpStatus.BAD_REQUEST.value(), "The book has bind by bookset, cannot be deleted"),
     BOOK_SET_EXISTS_ERROR(HttpStatus.BAD_REQUEST.value(),
             "The book set has already exist, please input another one."),
     BOOK_SET_NOT_EXISTS_IN_ORDER_ERROR(HttpStatus.BAD_REQUEST.value(),
