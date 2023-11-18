@@ -11,8 +11,8 @@ import net.stepbooks.infrastructure.model.BaseDto;
 public class BookDto extends BaseDto {
     private String bookName;
     private String author;
-    private String coverImgId;
-    private String coverImgUrl;
+    private String bookImgId;
+    private String bookImgUrl;
     private String description;
     private String[] classifications;
     private Long chapterCount;

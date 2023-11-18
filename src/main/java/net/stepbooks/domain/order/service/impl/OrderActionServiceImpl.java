@@ -15,6 +15,7 @@ import net.stepbooks.domain.order.mapper.RefundRequestMapper;
 import net.stepbooks.domain.order.service.OrderActionService;
 import net.stepbooks.domain.order.service.OrderEventLogService;
 import net.stepbooks.domain.payment.service.PaymentService;
+import net.stepbooks.domain.sms.service.SmsService;
 import net.stepbooks.infrastructure.enums.RefundStatus;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,7 @@ public class OrderActionServiceImpl implements OrderActionService {
     private final DeliveryService deliveryService;
     private final PaymentService paymentService;
     private final RefundRequestMapper refundRequestMapper;
+    private final SmsService smsService;
 
 
     @Override
@@ -56,6 +58,9 @@ public class OrderActionServiceImpl implements OrderActionService {
                 .eventType(event)
                 .build();
         orderEventLogService.save(eventLog);
+        // 发送短信
+//        String phone = order.getRecipientPhone();
+//        smsService.sendSms(SmsType.ORDER, phone, "订单：" + order.getOrderCode() + "已经创建成功，请尽快支付");
     }
 
     @Override

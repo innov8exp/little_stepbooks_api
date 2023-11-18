@@ -1,6 +1,7 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,16 +13,15 @@ import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
-import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.client.dto.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 
+@Tag(name = "Auth", description = "认证相关接口")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
@@ -34,27 +34,30 @@ public class AuthController {
 
     private final UserService userService;
     private final EmailService emailService;
-    private final ContextManager contextManager;
 
     @PostMapping("/login")
+    @Operation(summary = "使用邮箱和密码登录")
     public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
         TokenDto tokenDto = userService.loginWithEmail(loginDto.getEmail(), loginDto.getPassword());
         return ResponseEntity.ok(tokenDto);
     }
 
     @PostMapping("/social-login")
+    @Operation(summary = "使用第三方登录")
     public ResponseEntity<TokenDto> socialLogin(@Valid @RequestBody SocialAuthDto socialAuthDto) {
         TokenDto tokenDto = userService.socialLogin(socialAuthDto);
         return ResponseEntity.ok(tokenDto);
     }
 
     @PostMapping("/guest-login")
+    @Operation(summary = "游客登录")
     public ResponseEntity<TokenDto> guestLogin(@Valid @RequestBody GuestAuthDto guestAuthDto) {
         TokenDto tokenDto = userService.guestLogin(guestAuthDto.getDeviceId());
         return ResponseEntity.ok(tokenDto);
     }
 
     @PostMapping("/verification")
+    @Operation(summary = "发送验证码")
     public ResponseEntity<?> sendVerificationCode(@Valid @RequestBody VerificationDto verificationDto) {
         switch (verificationDto.getEmailType()) {
             case "REGISTER":
@@ -77,6 +80,7 @@ public class AuthController {
     }
 
     @PostMapping("/validation")
+    @Operation(summary = "验证验证码")
     public ResponseEntity<Boolean> validateTheVerificationCode(@Valid @RequestBody ValidateDto validateDto) {
         Boolean valid = emailService.verifyValidationCode(validateDto.getEmail(),
                 validateDto.getCode(), EmailType.valueOf(validateDto.getEmailType()));
@@ -84,7 +88,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @ApiResponse(responseCode = "201")
+    @Operation(summary = "注册")
     public ResponseEntity<TokenDto> register(@Valid @RequestBody RegisterDto registerDto) {
         Boolean valid = emailService.verifyValidationCode(registerDto.getEmail(),
                 registerDto.getCode(), EmailType.REGISTER);
@@ -95,10 +99,11 @@ public class AuthController {
         user.setId(null);
         userService.registerWithEmail(user);
         TokenDto tokenDto = userService.loginWithEmail(registerDto.getEmail(), registerDto.getPassword());
-        return ResponseEntity.status(HttpStatus.CREATED.value()).body(tokenDto);
+        return ResponseEntity.ok(tokenDto);
     }
 
     @PostMapping("/reset-password")
+    @Operation(summary = "重置密码")
     public ResponseEntity<TokenDto> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto) {
         Boolean valid = emailService.verifyValidationCode(resetPasswordDto.getEmail(),
                 resetPasswordDto.getResetToken(), EmailType.FORGET);
@@ -113,6 +118,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
+    @Operation(summary = "刷新token")
     public ResponseEntity<TokenDto> refreshToken(HttpServletRequest httpRequest,
                                                  @Valid @RequestBody RefreshTokenDto refreshTokenDto) {
         String accessToken = httpRequest.getHeader(authHeader);
@@ -124,16 +130,11 @@ public class AuthController {
     }
 
     @GetMapping("/user-info")
+    @Operation(summary = "获取用户信息")
     public ResponseEntity<UserDto> userInfo() {
         JwtUserDetails details = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userByEmail = userService.findUserByUsername(details.getUsername());
         UserDto userDto = BaseAssembler.convert(userByEmail, UserDto.class);
         return ResponseEntity.ok(userDto);
     }
-
-//    @PostMapping("/guest-token")
-//    public ResponseEntity<TokenDto> createGuestToken() {
-//        TokenDto tokenDto = userService.loginWithEmail(loginDto.getEmail(), loginDto.getPassword());
-//        return ResponseEntity.ok(tokenDto);
-//    }
 }

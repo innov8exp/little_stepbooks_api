@@ -3,9 +3,7 @@ package net.stepbooks.interfaces.admin.controller.v1;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import net.sf.jmimemagic.*;
 import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.book.service.BookChapterService;
 import net.stepbooks.domain.book.service.BookService;
@@ -14,17 +12,13 @@ import net.stepbooks.domain.bookset.service.BookSetBookService;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
-import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -87,24 +81,6 @@ public class MBookController {
     public ResponseEntity<BookDto> getBook(@PathVariable String id) {
         BookDto book = bookService.findBookById(id);
         return ResponseEntity.ok(book);
-    }
-
-    @PostMapping("/upload")
-    public ResponseEntity<Media> uploadCoverImg(@RequestParam("file") @NotNull MultipartFile file) {
-        try {
-            byte[] bytes = file.getBytes();
-            MagicMatch magicMatch = Magic.getMagicMatch(bytes);
-            String mimeType = magicMatch.getMimeType();
-            if (!MimeTypeUtils.IMAGE_JPEG_VALUE.equals(mimeType)
-                    && !MimeTypeUtils.IMAGE_PNG_VALUE.equals(mimeType)
-                    && !MimeTypeUtils.IMAGE_GIF_VALUE.equals(mimeType)) {
-                throw new BusinessException(ErrorCode.FILETYPE_ERROR);
-            }
-        } catch (IOException | MagicException | MagicParseException | MagicMatchNotFoundException e) {
-            throw new BusinessException(ErrorCode.FILETYPE_ERROR);
-        }
-        Media media = bookService.uploadCoverImg(file);
-        return ResponseEntity.ok(media);
     }
 
     @GetMapping("/{id}/classifications")

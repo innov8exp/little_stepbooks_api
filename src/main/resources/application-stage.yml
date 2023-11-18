@@ -6,8 +6,13 @@ spring:
     password: 17@6WI4zcA
   data:
     redis:
-      host: clustercfg.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn
-      port: 6379
+      cluster:
+        nodes:
+          - clustercfg.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn:6379
+#          - nonprod-stepbook-redis-cluster-0001-001.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn:6379
+#          - nonprod-stepbook-redis-cluster-0001-002.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn:6379
+#      host: clustercfg.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn
+#      port: 6379
       database: 0
 
 
@@ -21,6 +26,7 @@ logging:
 aws:
   s3:
     bucket: stepbook.stage
+    public-bucket: stepbook.public
   cdn: https://d1wf51uw2ybdc9.cloudfront.net
 
 stepbooks:

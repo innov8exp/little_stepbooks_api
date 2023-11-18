@@ -2,7 +2,9 @@ package net.stepbooks.interfaces.client.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.RefundRequest;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Order", description = "订单相关接口")
 @RestController
 @RequestMapping("/v1/orders")
 @RequiredArgsConstructor
@@ -39,6 +42,7 @@ public class OrderController {
     private final ProductService productService;
     private final RefundRequestService refundRequestService;
 
+    @Operation(summary = "下单")
     @PostMapping
     public ResponseEntity<?> placeOrder(@RequestBody PlaceOrderDto placeOrderDto) {
         User user = contextManager.currentUser();
@@ -56,6 +60,7 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "获取用户订单列表")
     @GetMapping("/user")
     public ResponseEntity<IPage<OrderInfoDto>> getUserOrderHistory(@RequestParam int currentPage,
                                                                    @RequestParam int pageSize) {
@@ -65,12 +70,14 @@ public class OrderController {
         return ResponseEntity.ok(ordersByCriteria);
     }
 
+    @Operation(summary = "获取订单未支付剩余时间")
     @GetMapping("/{code}/unpaid-remaining-time")
     public ResponseEntity<Long> getOrderUnpaidRemainingTime(@PathVariable String code) {
         long remainingTime = orderOpsService.getUnpaidRemainingTime(code);
         return ResponseEntity.ok(remainingTime);
     }
 
+    @Operation(summary = "取消订单")
     @PutMapping("/{code}/cancel")
     public ResponseEntity<?> cancelOrder(@PathVariable String code) {
         User user = contextManager.currentUser();
@@ -88,6 +95,7 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "获取订单退款请求列表")
     @GetMapping("/{code}/refund-requests")
     public ResponseEntity<?> getOrderRefundRequests(@PathVariable String code) {
         User user = contextManager.currentUser();

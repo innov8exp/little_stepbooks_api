@@ -2,6 +2,7 @@ package net.stepbooks.interfaces.client.controller.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.RefundRequest;
@@ -18,6 +19,7 @@ import net.stepbooks.interfaces.client.dto.ReturnDeliveryInfoDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Refund Request", description = "退款申请相关接口")
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Client Authentication")

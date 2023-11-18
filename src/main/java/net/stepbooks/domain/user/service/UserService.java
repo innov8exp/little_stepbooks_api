@@ -1,10 +1,8 @@
 package net.stepbooks.domain.user.service;
 
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.interfaces.client.dto.SocialAuthDto;
 import net.stepbooks.interfaces.client.dto.TokenDto;
-import net.stepbooks.domain.media.entity.Media;
-import net.stepbooks.domain.user.entity.User;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -60,5 +58,4 @@ public interface UserService {
 
     void sendLoginVerificationSms(String phone);
 
-    Media uploadImg(MultipartFile file, String userId);
 }

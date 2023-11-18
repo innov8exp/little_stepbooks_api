@@ -22,6 +22,7 @@
             <bind name="pattern" value="'%' + author + '%'"/>
             AND b.AUTHOR ILIKE #{pattern}
         </if>
+        order by b.created_at desc
     </select>
 
 

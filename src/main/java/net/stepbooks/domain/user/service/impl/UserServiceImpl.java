@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.email.service.EmailService;
 import net.stepbooks.domain.email.service.impl.EmailServiceImpl;
-import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.media.service.FileService;
 import net.stepbooks.domain.sms.service.SmsService;
 import net.stepbooks.domain.user.entity.AuthHistory;
@@ -34,7 +33,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -469,17 +467,6 @@ public class UserServiceImpl implements UserService {
     public void sendLoginVerificationSms(String phone) {
         String verifyCode = generateVerifyCode();
         smsService.sendSms(SmsType.VERIFICATION, phone, verifyCode);
-    }
-
-    @Override
-    public Media uploadImg(MultipartFile file, String userId) {
-        String filename = file.getOriginalFilename();
-        Media media = privateFileServiceImpl.upload(file, filename, STORE_PATH);
-        User user = User.builder()
-                .avatarImgId(media.getId())
-                .avatarImgUrl(media.getObjectUrl()).build();
-        updateUserById(userId, user);
-        return media;
     }
 
 }

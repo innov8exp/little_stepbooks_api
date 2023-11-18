@@ -1,6 +1,7 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.history.service.FinishHistoryService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.util.ContextManager;
@@ -13,16 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/finish-histories")
 @SecurityRequirement(name = "Client Authentication")
+@RequiredArgsConstructor
 public class FinishHistoryController {
 
     private final FinishHistoryService finishHistoryService;
     private final ContextManager contextManager;
-
-    public FinishHistoryController(FinishHistoryService finishHistoryService, ContextManager contextManager) {
-        this.finishHistoryService = finishHistoryService;
-        this.contextManager = contextManager;
-    }
-
 
     @GetMapping("/user")
     public ResponseEntity<List<BookDto>> getUserFinishBooks() {

@@ -17,7 +17,9 @@ logging:
 aws:
   s3:
     bucket: stepbook.stage
-  cdn: https://ds2rcorotrbeb.cloudfront.net
+    public-bucket: stepbook.public
+  cdn:
+#  cdn: https://ds2rcorotrbeb.cloudfront.net
 
 stepbooks:
   mnp-qrcode-host: https://api-stage.stepbooks.net/mnp-qrcode

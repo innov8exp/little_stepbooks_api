@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
-import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.book.entity.BookClassificationRef;
@@ -16,15 +14,15 @@ import net.stepbooks.domain.book.mapper.BookClassificationRefMapper;
 import net.stepbooks.domain.book.mapper.BookMapper;
 import net.stepbooks.domain.book.service.BookService;
 import net.stepbooks.domain.classification.entity.Classification;
-import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.media.service.FileService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.admin.dto.BookDto;
+import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,15 +94,6 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
         bookClassificationRefMapper.delete(Wrappers.<BookClassificationRef>lambdaQuery()
                 .eq(BookClassificationRef::getBookId, id));
         bookMapper.deleteById(id);
-    }
-
-    @Override
-    public Media uploadCoverImg(MultipartFile file) {
-        String filename = file.getOriginalFilename();
-        Media media = publicFileServiceImpl.upload(file, filename, STORE_PATH);
-        String url = cdnUrl + "/" + media.getS3ObjectId();
-        media.setObjectUrl(url);
-        return media;
     }
 
     @Override

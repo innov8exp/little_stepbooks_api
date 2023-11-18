@@ -5,7 +5,6 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
-import com.amazonaws.services.s3.transfer.MultipleFileUpload;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
@@ -15,9 +14,12 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.media.service.FileService;
 import net.stepbooks.domain.media.service.MediaService;
+import net.stepbooks.infrastructure.enums.AccessPermission;
 import net.stepbooks.infrastructure.enums.MediaType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.interfaces.admin.dto.UploadDto;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -44,13 +47,15 @@ public class PrivateFileServiceImpl implements FileService {
     private String bucketName;
     @Value("${aws.s3.public-bucket}")
     private String publicBucketName;
-    @Value("${aws.s3.pre-signed-url-expire-time}")
-    private long expireTime;
+    @Value("${aws.s3.pre-signed-url-expire-hour}")
+    private int expireHour;
     @Value("${aws.cdn}")
     private String cdnUrl;
 
-    public Media upload(MultipartFile file, String filename, String path) {
-        String objectName = UUID.randomUUID().toString();
+    public Media upload(MultipartFile file, String filename, UploadDto uploadDto) {
+        String path = uploadDto.getDomain().getPath();
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String objectName = UUID.randomUUID() + "." + extension;
         AmazonS3 s3Client = this.getS3Client();
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(file.getContentType());
@@ -67,17 +72,20 @@ public class PrivateFileServiceImpl implements FileService {
             throw new BusinessException(ErrorCode.UPLOAD_FILE_FAILED);
         }
         Media media = Media.builder().objectName(objectName).fileName(filename)
-                .fileSize(file.getSize()).objectType(MediaType.IMAGE).s3ObjectId(objectKey).publicAccess(false)
-                .s3Bucket(bucketName).storePath(path).build();
+                .fileSize(file.getSize()).objectType(MediaType.IMAGE).objectKey(objectKey)
+                .accessPermission(AccessPermission.PRIVATE)
+                .assetDomain(uploadDto.getDomain())
+                .bucketName(bucketName).storePath(path).build();
         mediaService.save(media);
-        Media one = mediaService.getOne(Wrappers.<Media>lambdaQuery().eq(Media::getS3ObjectId, objectKey));
-        one.setObjectUrl(getUrl(objectKey));
-        return one;
+        media.setObjectUrl(getUrl(objectKey));
+        return media;
     }
 
     @Override
-    public Media upload(File file, String filename, String path) {
-        String objectName = UUID.randomUUID().toString();
+    public Media upload(File file, String filename, UploadDto uploadDto) {
+        String path = uploadDto.getDomain().getPath();
+        String extension = FilenameUtils.getExtension(file.getName());
+        String objectName = UUID.randomUUID() + "." + extension;
         AmazonS3 s3Client = this.getS3Client();
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, path + objectName, file);
         TransferManager transferManager = TransferManagerBuilder.standard().withS3Client(s3Client).build();
@@ -92,27 +100,13 @@ public class PrivateFileServiceImpl implements FileService {
             transferManager.shutdownNow();
         }
         Media media = Media.builder().objectName(objectName).fileName(filename)
-                .fileSize(file.length()).objectType(MediaType.IMAGE).s3ObjectId(objectKey).publicAccess(false)
-                .s3Bucket(bucketName).storePath(path).build();
+                .fileSize(file.length()).objectType(MediaType.IMAGE).objectKey(objectKey)
+                .accessPermission(AccessPermission.PRIVATE)
+                .assetDomain(uploadDto.getDomain())
+                .bucketName(bucketName).storePath(path).build();
         mediaService.save(media);
-        Media one = mediaService.getOne(Wrappers.<Media>lambdaQuery().eq(Media::getS3ObjectId, objectKey));
-        one.setObjectUrl(getUrl(objectKey));
-        return one;
-    }
-
-    @Override
-    public void batchUpload(String path, List<File> fileList) {
-        AmazonS3 s3Client = this.getS3Client();
-        TransferManager transferManager = TransferManagerBuilder.standard().withS3Client(s3Client).build();
-        MultipleFileUpload multipleFileUpload = transferManager
-                .uploadFileList(bucketName, path, new File("."), fileList);
-        try {
-            multipleFileUpload.waitForCompletion();
-        } catch (InterruptedException e) {
-            throw new BusinessException(ErrorCode.UPLOAD_FILE_FAILED);
-        } finally {
-            transferManager.shutdownNow();
-        }
+        media.setObjectUrl(getUrl(objectKey));
+        return media;
     }
 
     @Override
@@ -138,7 +132,7 @@ public class PrivateFileServiceImpl implements FileService {
 
     public void delete(String key) {
         this.getS3Client().deleteObject(bucketName, key);
-        mediaService.remove(Wrappers.<Media>lambdaQuery().eq(Media::getS3ObjectId, key));
+        mediaService.remove(Wrappers.<Media>lambdaQuery().eq(Media::getObjectKey, key));
     }
 
     @Override
@@ -148,21 +142,19 @@ public class PrivateFileServiceImpl implements FileService {
                 .map(DeleteObjectsRequest.KeyVersion::new).collect(Collectors.toList());
         deleteObjectsRequest.withKeys(keyVersions);
         getS3Client().deleteObjects(deleteObjectsRequest);
-        mediaService.remove(Wrappers.<Media>lambdaQuery().in(Media::getS3ObjectId, keys));
+        mediaService.remove(Wrappers.<Media>lambdaQuery().in(Media::getObjectKey, keys));
     }
 
     public String getUrl(String key) {
         try {
             AmazonS3 s3Client = this.getS3Client();
             // Set the pre-signed URL to expire after two hour.
-            Date expiration = new Date();
-            long expTimeMillis = expiration.getTime();
-            expTimeMillis += expireTime;
-            expiration.setTime(expTimeMillis);
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.HOUR_OF_DAY, expireHour);
             // Generate the pre-signed URL.
             GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, key)
                     .withMethod(HttpMethod.GET)
-                    .withExpiration(expiration);
+                    .withExpiration(calendar.getTime());
             URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
             return url.toString();
         } catch (SdkClientException e) {

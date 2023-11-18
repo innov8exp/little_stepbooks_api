@@ -2,6 +2,7 @@ package net.stepbooks.interfaces.client.controller.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.bookshelf.entity.BookshelfAddLog;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Bookshelf", description = "书架相关接口")
 @RestController
 @RequestMapping("/v1/bookshelf")
 @RequiredArgsConstructor

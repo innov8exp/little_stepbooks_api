@@ -4,13 +4,14 @@
 create TABLE STEP_MEDIA
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
-    file_name VARCHAR(200) NOT NULL,
+    file_name TEXT NOT NULL,
     file_size BIGINT,
-    public_access BOOLEAN DEFAULT (false),
+    access_permission VARCHAR(100),
+    asset_domain VARCHAR(100),
     object_name VARCHAR(200) NOT NULL UNIQUE,
     object_type VARCHAR(100), -- IMAGE, AUDIO, VIDEO
-    s3_object_id VARCHAR(200) NOT NULL UNIQUE,
-    s3_bucket VARCHAR(200),
+    object_key VARCHAR(200) NOT NULL UNIQUE,
+    bucket_name VARCHAR(200),
     store_path VARCHAR(200),
     object_url TEXT,
     created_at TIMESTAMP,

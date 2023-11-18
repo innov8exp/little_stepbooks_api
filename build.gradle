@@ -52,6 +52,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
     implementation 'com.alibaba.cola:cola-component-statemachine:4.3.2'
     implementation 'org.redisson:redisson-spring-boot-starter:3.23.5'
+    implementation 'org.apache.tika:tika-core:2.9.1'
     implementation 'com.auth0:java-jwt:4.3.0'
     implementation 'org.modelmapper:modelmapper:2.4.0'
     implementation 'com.github.wechatpay-apiv3:wechatpay-java:0.2.12'
