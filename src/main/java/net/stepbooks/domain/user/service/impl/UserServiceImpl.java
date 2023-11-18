@@ -405,9 +405,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String id) {
+    public void changeUserStatus(String id, Boolean active) {
         User user = userMapper.selectById(id);
-        user.setActive(false);
+        user.setActive(active);
         userMapper.updateById(user);
     }
 

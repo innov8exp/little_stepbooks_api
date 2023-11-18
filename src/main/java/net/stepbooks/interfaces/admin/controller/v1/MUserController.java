@@ -6,6 +6,7 @@ import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.admin.dto.MUserDto;
+import net.stepbooks.interfaces.admin.dto.UserStatusDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +20,9 @@ public class MUserController {
 
     private final UserService userService;
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable String id) {
-        userService.deleteUser(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> changeUserStatus(@PathVariable String id, @RequestBody UserStatusDto userStatusDto) {
+        userService.changeUserStatus(id, userStatusDto.getActive());
         return ResponseEntity.ok().build();
     }
 

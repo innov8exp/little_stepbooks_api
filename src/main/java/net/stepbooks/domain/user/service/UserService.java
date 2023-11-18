@@ -50,7 +50,7 @@ public interface UserService {
 
     User findUser(String id);
 
-    void deleteUser(String id);
+    void changeUserStatus(String id, Boolean active);
 
     void sendRegisterVerificationEmail(String email);
 
