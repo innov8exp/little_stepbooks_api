@@ -15,7 +15,8 @@ public class MUserDto extends BaseDto {
     private String nickname;
     private String phone;
     private String role;
-    private String avatarImg;
+    private String avatarImgId;
+    private String avatarImgKey;
     private String gender;
     private String deviceId;
     private Boolean active;

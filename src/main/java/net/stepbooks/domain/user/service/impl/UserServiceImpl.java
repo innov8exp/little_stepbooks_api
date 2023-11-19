@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.email.service.EmailService;
 import net.stepbooks.domain.email.service.impl.EmailServiceImpl;
-import net.stepbooks.domain.media.service.FileService;
 import net.stepbooks.domain.sms.service.SmsService;
 import net.stepbooks.domain.user.entity.AuthHistory;
 import net.stepbooks.domain.user.entity.User;
@@ -45,12 +44,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    public static final String STORE_PATH = "user/avatar/images/";
     private final UserMapper userMapper;
     private final UserJwtTokenProvider jwtTokenProvider;
     private final EmailService emailService;
     private final AuthHistoryMapper authHistoryMapper;
-    private final FileService privateFileServiceImpl;
     private final FacebookClient facebookClient;
     private final GoogleClient googleClient;
     private final SmsService smsService;

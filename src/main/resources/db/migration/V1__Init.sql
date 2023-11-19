@@ -40,7 +40,8 @@ create TABLE STEP_ADMIN_USER
     role          VARCHAR(100) NOT NULL,
     nickname      VARCHAR(255),
     phone         VARCHAR(100),
-    avatar_img    VARCHAR(200),
+    avatar_img_id    VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    avatar_img_url  TEXT,
     active        BOOLEAN DEFAULT (true),
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
@@ -63,7 +64,7 @@ create TABLE STEP_USER
     nickname      VARCHAR(255),
     phone         VARCHAR(100),
     avatar_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
-    avatar_img_url    TEXT,
+    avatar_img_url  TEXT,
     child_gender        VARCHAR(100),
     child_classification_id VARCHAR(100) REFERENCES STEP_CLASSIFICATION(id),
     child_min_age        INTEGER,
@@ -94,7 +95,7 @@ create TABLE STEP_BOOK
     book_name           VARCHAR(200) NOT NULL UNIQUE,
     author              VARCHAR(200),
     book_img_id         VARCHAR(100) REFERENCES STEP_MEDIA(id),
-    book_img_url       TEXT,
+    book_img_url    TEXT,
     description        TEXT,
     total_page_number   INTEGER,
     created_at          TIMESTAMP,
@@ -172,7 +173,7 @@ create TABLE STEP_PRODUCT
     sales_platforms INT, -- 0: NONE, 1: MINI_PROGRAM, 2: APP, 3: MINI_PROGRAM + APP
     product_nature VARCHAR(100), -- PHYSICAL, VIRTUAL
     description TEXT,
-    price MONEY,
+    price DECIMAL,
     materials INT, -- 0: NONE, 1: AUDIO, 2: COURSE, 4: EXERCISE, 3: AUDIO + COURSE, 5: AUDIO + EXERCISE, 6: COURSE + EXERCISE, 7: AUDIO + COURSE + EXERCISE
     cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     cover_img_url TEXT,
@@ -196,7 +197,8 @@ create TABLE STEP_PRODUCT_MEDIA_REF
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
     product_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
-    media_id VARCHAR(100) REFERENCES STEP_MEDIA(id) NOT NULL
+    media_id VARCHAR(100) REFERENCES STEP_MEDIA(id) NOT NULL,
+    media_url TEXT
 );
 
 -- 库存信息

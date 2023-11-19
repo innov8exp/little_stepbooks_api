@@ -24,6 +24,7 @@ import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import net.stepbooks.interfaces.client.dto.PlaceOrderDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,6 +50,9 @@ public class OrderController {
         CreateOrderDto orderDto = BaseAssembler.convert(placeOrderDto, CreateOrderDto.class);
         orderDto.setUserId(user.getId());
         Product product = productService.getProductBySkuCode(orderDto.getSkuCode());
+        if (ObjectUtils.isEmpty(product)) {
+            throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
+        }
         if (ProductNature.PHYSICAL.equals(product.getProductNature())) {
             physicalOrderServiceImpl.createOrder(orderDto);
             // 虚拟产品

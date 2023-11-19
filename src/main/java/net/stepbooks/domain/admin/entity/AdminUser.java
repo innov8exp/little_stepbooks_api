@@ -17,7 +17,8 @@ public class AdminUser extends BaseEntity {
     private String password;
     private String nickname;
     private String phone;
-    private String avatarImg;
+    private String avatarImgId;
+    private String avatarImgUrl;
     private Boolean active;
     private String role;
 }

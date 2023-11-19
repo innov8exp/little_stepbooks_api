@@ -6,6 +6,7 @@ import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.product.entity.ProductMedia;
 import net.stepbooks.domain.product.mapper.ProductMediaMapper;
 import net.stepbooks.domain.product.service.ProductMediaService;
+import net.stepbooks.interfaces.admin.dto.ProductMediaDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ProductMediaServiceImpl extends ServiceImpl<ProductMediaMapper, Pro
     private final ProductMediaMapper productMediaMapper;
 
     @Override
-    public List<Media> findMediasByProductId(String productId) {
+    public List<ProductMediaDto> findMediasByProductId(String productId) {
         return productMediaMapper.findMediasByProductId(productId);
     }
 }

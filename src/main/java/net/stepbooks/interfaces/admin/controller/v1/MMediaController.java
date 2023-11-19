@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.media.service.FileService;
+import net.stepbooks.domain.media.service.MediaOpsService;
 import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.infrastructure.enums.AccessPermission;
 import net.stepbooks.infrastructure.enums.AssetDomain;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Tag(name = "Media", description = "媒体资源相关接口")
 @RestController
@@ -38,10 +40,9 @@ public class MMediaController {
     private String[] allowedFileTypes;
     @Value("${allowed-files}")
     private String[] allowedFiles;
-    @Value("${aws.cdn}")
-    private String cdnHost;
 
     private final MediaService mediaService;
+    private final MediaOpsService mediaOpsService;
     private final FileService publicFileServiceImpl;
     private final FileService privateFileServiceImpl;
 
@@ -87,10 +88,16 @@ public class MMediaController {
         if (AccessPermission.PRIVATE.equals(media.getAccessPermission())) {
             url = privateFileServiceImpl.getUrl(media.getObjectKey());
         } else {
-            url = cdnHost + "/" + media.getObjectKey();
+            url = publicFileServiceImpl.getUrl(media.getObjectKey());
         }
         media.setObjectUrl(url);
         return ResponseEntity.ok(media);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Media>> getMedias(@RequestParam String[] ids) {
+        List<Media> medias = mediaOpsService.getByIds(ids);
+        return ResponseEntity.ok(medias);
     }
 
 }

@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.product.mapper.ProductMediaMapper">
 
-    <select id="findMediasByProductId" resultType="net.stepbooks.domain.media.entity.Media">
-        select m.* from step_product_media_ref pm left join step_media m on pm.media_id = m.id
+    <select id="findMediasByProductId" resultType="net.stepbooks.interfaces.admin.dto.ProductMediaDto">
+        select pm.* from step_product_media_ref pm
         where pm.product_id = #{productId}
     </select>
 </mapper>

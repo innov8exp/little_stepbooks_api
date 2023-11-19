@@ -12,5 +12,6 @@
             <bind name="pattern" value="'%' + skuName + '%'"/>
             AND p.sku_name ILIKE #{pattern}
         </if>
+        order by p.modified_at desc
     </select>
 </mapper>

@@ -1,11 +1,13 @@
 package net.stepbooks.infrastructure.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Component
 public class EntityMetaHandler implements MetaObjectHandler {
     @Override
@@ -16,6 +18,8 @@ public class EntityMetaHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.strictUpdateFill(metaObject, "modifiedAt", LocalDateTime::now, LocalDateTime.class);
+        log.debug("start update fill ....");
+//        this.strictUpdateFill(metaObject, "modifiedAt", LocalDateTime.class, LocalDateTime.now());
+        setFieldValByName("modifiedAt", LocalDateTime.now(), metaObject);
     }
 }

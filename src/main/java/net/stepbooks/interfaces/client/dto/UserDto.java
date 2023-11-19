@@ -18,7 +18,8 @@ public class UserDto {
     private String nickname;
     private String phone;
     private String role;
-    private String avatarImg;
+    private String avatarImgId;
+    private String avatarImgUrl;
     private String gender;
     private String deviceId;
     private String googleId;

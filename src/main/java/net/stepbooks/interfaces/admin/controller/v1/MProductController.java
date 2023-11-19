@@ -23,15 +23,14 @@ public class MProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<?> createProduct(@RequestBody Product product) {
-        productService.createProduct(product);
+    public ResponseEntity<?> createProduct(@RequestBody ProductDto productDto) {
+        productService.createProduct(productDto);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable String id, @RequestBody Product product) {
-        product.setId(id);
-        productService.updateById(product);
+    public ResponseEntity<?> updateProduct(@PathVariable String id, @RequestBody ProductDto productDto) {
+        productService.updateProduct(id, productDto);
         return ResponseEntity.ok().build();
     }
 

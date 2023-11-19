@@ -23,6 +23,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -49,7 +50,7 @@ public class PrivateFileServiceImpl implements FileService {
     @Value("${aws.s3.pre-signed-url-expire-hour}")
     private int expireHour;
     @Value("${aws.cdn}")
-    private String cdnUrl;
+    private String cdnHost;
 
     public Media upload(MultipartFile file, String filename, UploadDto uploadDto) {
         String path = uploadDto.getDomain().getPath();
@@ -151,9 +152,16 @@ public class PrivateFileServiceImpl implements FileService {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.HOUR_OF_DAY, expireHour);
             // Generate the pre-signed URL.
-            GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, key)
-                    .withMethod(HttpMethod.GET)
-                    .withExpiration(calendar.getTime());
+            GeneratePresignedUrlRequest generatePresignedUrlRequest;
+            if (ObjectUtils.isEmpty(cdnHost)) {
+                generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, key)
+                        .withMethod(HttpMethod.GET)
+                        .withExpiration(calendar.getTime());
+            } else {
+                generatePresignedUrlRequest = new GeneratePresignedUrlRequest(cdnHost, key)
+                        .withMethod(HttpMethod.GET)
+                        .withExpiration(calendar.getTime());
+            }
             URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
             return url.toString();
         } catch (SdkClientException e) {

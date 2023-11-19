@@ -134,13 +134,10 @@ admin:
       secret: jCqdfD13l#tT
       expiration: 720000
 
-
 aws:
   region: cn-north-1
   s3:
     pre-signed-url-expire-hour: 2  # 2 hours
-
-
 
 in-app-purchase:
   shared-secret:

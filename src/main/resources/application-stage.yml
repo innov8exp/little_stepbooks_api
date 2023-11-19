@@ -9,10 +9,6 @@ spring:
       cluster:
         nodes:
           - clustercfg.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn:6379
-#          - nonprod-stepbook-redis-cluster-0001-001.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn:6379
-#          - nonprod-stepbook-redis-cluster-0001-002.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn:6379
-#      host: clustercfg.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn
-#      port: 6379
       database: 0
 
 

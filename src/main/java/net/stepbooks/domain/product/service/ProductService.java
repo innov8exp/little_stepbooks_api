@@ -17,7 +17,9 @@ public interface ProductService extends IService<Product> {
 
     Product getProductBySkuCode(String skuCode);
 
-    void createProduct(Product product);
+    void createProduct(ProductDto productDto);
+
+    void updateProduct(String id, ProductDto productDto);
 
     ProductDto findDetailById(String id);
 

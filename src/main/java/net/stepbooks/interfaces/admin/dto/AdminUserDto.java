@@ -18,5 +18,6 @@ public class AdminUserDto {
     private String nickname;
     private String phone;
     private String role;
-    private String avatarImg;
+    private String avatarImgId;
+    private String avatarImgUrl;
 }

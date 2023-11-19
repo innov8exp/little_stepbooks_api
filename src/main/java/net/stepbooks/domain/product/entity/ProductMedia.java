@@ -9,4 +9,5 @@ public class ProductMedia {
     private String id;
     private String productId;
     private String mediaId;
+    private String mediaUrl;
 }
