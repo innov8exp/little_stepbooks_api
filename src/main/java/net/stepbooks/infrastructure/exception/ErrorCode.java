@@ -44,7 +44,8 @@ public enum ErrorCode {
             "The book set is not exists in order, please check again."),
     ORDER_STATE_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "The order state is not support refund"),
     REFUND_REQUEST_EXISTS(HttpStatus.BAD_REQUEST.value(), "The order has refund request, please check again."),
-    VIRTUAL_ORDER_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "The virtual order is not support refund");
+    VIRTUAL_ORDER_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "The virtual order is not support refund"),
+    ONLY_SELF_CAN_UPDATE(HttpStatus.FORBIDDEN.value(), "Only self can update");
 
 
     private final int status;

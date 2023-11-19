@@ -4,6 +4,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.admin.entity.AdminUser;
 import net.stepbooks.domain.admin.service.AdminUserService;
+import net.stepbooks.infrastructure.exception.BusinessException;
+import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.infrastructure.util.ContextManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +19,24 @@ import java.util.List;
 public class MAdminUserController {
 
     private final AdminUserService adminUserService;
+    private final ContextManager contextManager;
+
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestBody AdminUser adminUser) {
+        adminUserService.save(adminUser);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody AdminUser adminUser) {
+        AdminUser user = contextManager.currentAdminUser();
+        if (!user.getId().equals(id)) {
+            throw new BusinessException(ErrorCode.ONLY_SELF_CAN_UPDATE);
+        }
+        adminUser.setId(id);
+        adminUserService.updateById(adminUser);
+        return ResponseEntity.ok().build();
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable String id) {
