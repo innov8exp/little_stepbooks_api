@@ -2,7 +2,6 @@ package net.stepbooks.domain.product.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.product.entity.ProductMedia;
 import net.stepbooks.domain.product.mapper.ProductMediaMapper;
 import net.stepbooks.domain.product.service.ProductMediaService;

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.entity.ProductMedia;

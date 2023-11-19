@@ -1,8 +1,6 @@
 package net.stepbooks.interfaces.admin.dto;
 
 import lombok.Data;
-import net.stepbooks.domain.media.entity.Media;
-import net.stepbooks.domain.product.entity.ProductMedia;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.infrastructure.enums.Material;
