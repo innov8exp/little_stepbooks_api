@@ -18,4 +18,6 @@ public interface BookMapper extends BaseMapper<Book> {
     List<Classification> findClassificationsByBookId(@Param("bookId") String bookId);
 
     BookDto findBookById(@Param("bookId") String bookId);
+
+    List<Book> findBooksByProductId(String productId);
 }

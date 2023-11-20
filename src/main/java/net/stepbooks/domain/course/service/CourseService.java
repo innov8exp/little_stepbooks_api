@@ -8,4 +8,6 @@ import java.util.List;
 public interface CourseService extends IService<Course> {
 
     List<Course> getBookCourses(String bookId);
+
+    List<Course> findCoursesByProductId(String productId);
 }

@@ -26,4 +26,5 @@ public interface BookService extends IService<Book> {
 
     BookDto findBookById(String bookId);
 
+    List<Book> findBooksByProductId(String productId);
 }

@@ -30,4 +30,10 @@ public interface ProductService extends IService<Product> {
     List<Product> findProductsByBookSetIds(Set<String> bookSetIds);
 
     List<Product> findProductsByBookSetCode(String bookSetCode);
+
+    IPage<Product> listRecommendProducts(Page<Product> page);
+
+    IPage<Product> listNewProducts(Page<Product> page);
+
+    IPage<Product> searchProducts(Page<Product> page, String skuName);
 }

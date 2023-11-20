@@ -111,4 +111,9 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
     public BookDto findBookById(String bookId) {
         return bookMapper.findBookById(bookId);
     }
+
+    @Override
+    public List<Book> findBooksByProductId(String productId) {
+        return bookMapper.findBooksByProductId(productId);
+    }
 }

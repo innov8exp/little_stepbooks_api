@@ -105,4 +105,19 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return list(Wrappers.<Product>lambdaQuery().eq(Product::getBookSetCode, bookSetCode));
     }
 
+    @Override
+    public IPage<Product> listRecommendProducts(Page<Product> page) {
+        return productMapper.findRecommendProductsInPaging(page);
+    }
+
+    @Override
+    public IPage<Product> listNewProducts(Page<Product> page) {
+        return productMapper.findProductsInPagingOrderByCreateTime(page);
+    }
+
+    @Override
+    public IPage<Product> searchProducts(Page<Product> page, String skuName) {
+        return productMapper.findProductsInPagingByCriteria(page, skuName);
+    }
+
 }

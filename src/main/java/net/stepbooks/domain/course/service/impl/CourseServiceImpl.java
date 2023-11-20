@@ -14,8 +14,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements CourseService {
 
+    private final CourseMapper courseMapper;
+
     @Override
     public List<Course> getBookCourses(String bookId) {
         return list(Wrappers.<Course>lambdaQuery().eq(Course::getBookId, bookId));
     }
+
+    @Override
+    public List<Course> findCoursesByProductId(String productId) {
+        return courseMapper.findCoursesByProductId(productId);
+    }
+
 }

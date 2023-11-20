@@ -24,8 +24,6 @@
         </if>
         order by b.modified_at desc
     </select>
-
-
     <select id="findClassificationsByBookId"
             resultType="net.stepbooks.domain.classification.entity.Classification">
         select sc.* from step_classification sc
@@ -42,5 +40,11 @@
             (select count(1) from step_book_chapter bc where bc.book_id = b.id) chapter_count
         from step_book b
         where b.id = #{bookId}
+    </select>
+    <select id="findBooksByProductId" resultType="net.stepbooks.domain.book.entity.Book">
+        select b.* from step_book b
+        left join step_book_set_book_ref bsb on bsb.book_id = b.id
+        left join step_product p on p.book_set_id = bsb.book_set_id
+        where p.id = #{productId}
     </select>
 </mapper>

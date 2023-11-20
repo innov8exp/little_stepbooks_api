@@ -14,4 +14,15 @@
         </if>
         order by p.modified_at desc
     </select>
+    <select id="findRecommendProductsInPaging" resultType="net.stepbooks.domain.product.entity.Product">
+        select p.* from step_product p left join step_advertisement a on p.id = a.product_id
+        where p.status = 'ON_SHELF'
+        order by a.sort_index asc
+    </select>
+    <select id="findProductsInPagingOrderByCreateTime"
+            resultType="net.stepbooks.domain.product.entity.Product">
+        select p.* from step_product p where 1=1
+        where p.status = 'ON_SHELF'
+        order by p.created_at desc
+    </select>
 </mapper>
