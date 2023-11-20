@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.order.mapper.OrderProductMapper">
     <select id="findProductDetailsByOrderId" resultType="net.stepbooks.interfaces.admin.dto.OrderProductDto">
-        select p.*, op.quantity from step_order_product_ref op
+        select p.*, op.product_id, op.quantity from step_order_product_ref op
         left join step_product p on op.product_id = p.id
         where op.order_id = #{orderId}
     </select>

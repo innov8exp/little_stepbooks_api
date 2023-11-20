@@ -29,6 +29,6 @@ public class User extends BaseEntity {
     private String openId;
     private String childGender;
     private String childClassificationId;
-    private String childMinAge;
-    private String childMaxAge;
+    private Float childMinAge;
+    private Float childMaxAge;
 }

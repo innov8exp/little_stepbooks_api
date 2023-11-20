@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.domain.product.service.ProductService;
@@ -13,6 +14,8 @@ import net.stepbooks.interfaces.admin.dto.MProductQueryDto;
 import net.stepbooks.interfaces.admin.dto.ProductDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/v1/products")
@@ -53,9 +56,10 @@ public class MProductController {
     @GetMapping
     public ResponseEntity<IPage<Product>> getPagedProducts(@RequestParam int currentPage,
                                                            @RequestParam int pageSize,
-                                                           @RequestParam(required = false) String skuName) {
+                                                           @RequestParam(required = false) String skuName,
+                                                           @RequestParam(required = false) ProductStatus status) {
         Page<Product> page = Page.of(currentPage, pageSize);
-        MProductQueryDto queryDto = MProductQueryDto.builder().skuName(skuName).build();
+        MProductQueryDto queryDto = MProductQueryDto.builder().skuName(skuName).status(status).build();
         IPage<Product> products = productService.findProductsInPagingByCriteria(page, queryDto);
         return ResponseEntity.ok(products);
     }
@@ -64,5 +68,11 @@ public class MProductController {
     public ResponseEntity<ProductDto> getProduct(@PathVariable String id) {
         ProductDto productDto = productService.findDetailById(id);
         return ResponseEntity.ok(productDto);
+    }
+
+    @GetMapping("/{id}/classifications")
+    public ResponseEntity<List<Classification>> getBookClassifications(@PathVariable String id) {
+        List<Classification> classifications = productService.getProductClassifications(id);
+        return ResponseEntity.ok(classifications);
     }
 }

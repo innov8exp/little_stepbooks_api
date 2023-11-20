@@ -13,6 +13,8 @@ public class UserAddress extends BaseEntity {
     private String userId;
     private String recipientName;
     private String recipientPhone;
-    private String recipientLocation;
+    private String recipientProvince;
+    private String recipientCity;
+    private String recipientDistrict;
     private String recipientAddress;
 }

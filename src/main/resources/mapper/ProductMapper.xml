@@ -12,12 +12,21 @@
             <bind name="pattern" value="'%' + skuName + '%'"/>
             AND p.sku_name ILIKE #{pattern}
         </if>
+        <if test="status != null">
+            AND p.status = #{status}
+        </if>
         order by p.modified_at desc
     </select>
     <select id="findRecommendProductsInPaging" resultType="net.stepbooks.domain.product.entity.Product">
-        select p.* from step_product p left join step_advertisement a on p.id = a.product_id
-        where p.status = 'ON_SHELF'
-        order by a.sort_index asc
+        select m.* from (select p.* from step_product p left join step_advertisement a on p.id = a.product_id
+            left join step_product_classification_ref pc on p.id = pc.product_id
+            left join step_classification c on pc.classification_id = c.id
+            where p.status = 'ON_SHELF'
+            order by a.sort_index asc
+        <if test="maxAge != null and minAge != null">
+            , CASE WHEN c.max_age &lt;= #{maxAge} or c.min_age &gt;= #{minAge} THEN 1 ELSE 2 END
+        </if>
+        ) m
     </select>
     <select id="findProductsInPagingOrderByCreateTime"
             resultType="net.stepbooks.domain.product.entity.Product">
@@ -25,4 +34,12 @@
         where p.status = 'ON_SHELF'
         order by p.created_at desc
     </select>
+    <select id="findClassificationsByProductId"
+            resultType="net.stepbooks.domain.classification.entity.Classification">
+        select sc.* from step_classification sc
+        right join step_product_classification_ref pc
+        on sc.id = pc.classification_id
+        where pc.product_id = #{productId}
+    </select>
+
 </mapper>

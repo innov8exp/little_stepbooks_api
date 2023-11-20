@@ -3,6 +3,7 @@ package net.stepbooks.domain.product.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.interfaces.admin.dto.MProductQueryDto;
@@ -31,9 +32,11 @@ public interface ProductService extends IService<Product> {
 
     List<Product> findProductsByBookSetCode(String bookSetCode);
 
-    IPage<Product> listRecommendProducts(Page<Product> page);
+    IPage<Product> listRecommendProducts(Page<Product> page, Float childMinAge, Float childMaxAge);
 
     IPage<Product> listNewProducts(Page<Product> page);
 
     IPage<Product> searchProducts(Page<Product> page, String skuName);
+
+    List<Classification> getProductClassifications(String id);
 }

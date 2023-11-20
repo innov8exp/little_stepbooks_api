@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class MInventoryDto {
 
     private String id;
+    private String productId;
     private String skuCode;
     private String skuName;
     private Integer inventoryQuantity;

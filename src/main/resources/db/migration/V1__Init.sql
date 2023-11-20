@@ -18,13 +18,13 @@ create TABLE STEP_MEDIA
     modified_at TIMESTAMP
 );
 
--- 书籍分级
+-- 分级
 create TABLE STEP_CLASSIFICATION
 (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
     classification_name VARCHAR(200) NOT NULL UNIQUE,
-    min_age       INTEGER,
-    max_age       INTEGER,
+    min_age       REAL,
+    max_age       REAL,
     description   TEXT,
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
@@ -67,8 +67,8 @@ create TABLE STEP_USER
     avatar_img_url  TEXT,
     child_gender        VARCHAR(100),
     child_classification_id VARCHAR(100) REFERENCES STEP_CLASSIFICATION(id),
-    child_min_age        INTEGER,
-    child_max_age        INTEGER,
+    child_min_age        REAL,
+    child_max_age        REAL,
     active        BOOLEAN DEFAULT (true),
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
@@ -81,12 +81,13 @@ create TABLE STEP_USER_ADDRESS
     user_id       VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
     recipient_name VARCHAR(100),
     recipient_phone VARCHAR(100),
-    recipient_location VARCHAR(200),
+    recipient_province VARCHAR(100),
+    recipient_city VARCHAR(100),
+    recipient_district VARCHAR(100),
     recipient_address TEXT,
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );
-
 
 -- 书籍信息
 create TABLE STEP_BOOK
@@ -184,12 +185,12 @@ create TABLE STEP_PRODUCT
     modified_at TIMESTAMP
 );
 
--- 产品SKU与课程关系
-create TABLE STEP_PRODUCT_COURSE_REF
+-- 产品与分级关系
+create TABLE STEP_PRODUCT_CLASSIFICATION_REF
 (
-    id VARCHAR(100) NOT NULL PRIMARY KEY,
-    product_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
-    course_id VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL
+    id            VARCHAR(100) NOT NULL PRIMARY KEY,
+    product_id       VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    classification_id VARCHAR(100) REFERENCES STEP_CLASSIFICATION(id) NOT NULL
 );
 
 -- 产品与媒体关系
@@ -302,7 +303,9 @@ create TABLE STEP_DELIVERY
     delivery_company VARCHAR(200),
     recipient_name  VARCHAR(100),
     recipient_phone VARCHAR(100),
-    recipient_location VARCHAR(200),
+    recipient_province VARCHAR(100),
+    recipient_city VARCHAR(100),
+    recipient_district VARCHAR(100),
     recipient_address TEXT,
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
@@ -327,7 +330,9 @@ create TABLE STEP_REFUND_REQUEST
     delivery_status VARCHAR(100),
     recipient_name  VARCHAR(100),
     recipient_phone VARCHAR(100),
-    recipient_location VARCHAR(200),
+    recipient_province VARCHAR(100),
+    recipient_city VARCHAR(100),
+    recipient_district VARCHAR(100),
     recipient_address TEXT,
     created_at TIMESTAMP,
     modified_at TIMESTAMP

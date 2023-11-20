@@ -28,8 +28,10 @@ public class MInventoryController {
     @GetMapping
     public ResponseEntity<IPage<MInventoryDto>> getPagedInventories(@RequestParam int currentPage,
                                                                     @RequestParam int pageSize,
-                                                                    @RequestParam(required = false) String skuCode) {
-        InventoryQueryDto queryDto = InventoryQueryDto.builder().skuCode(skuCode).build();
+                                                                    @RequestParam(required = false) String skuCode,
+                                                                    @RequestParam(required = false) String skuName) {
+        InventoryQueryDto queryDto = InventoryQueryDto.builder()
+                .skuCode(skuCode).skuName(skuName).build();
         Page<MInventoryDto> page = Page.of(currentPage, pageSize);
         IPage<MInventoryDto> inventories = inventoryService.findInventoriesInPagingByCriteria(page, queryDto);
         return ResponseEntity.ok(inventories);

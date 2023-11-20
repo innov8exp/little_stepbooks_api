@@ -11,7 +11,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 public class Classification extends BaseEntity {
 
     private String classificationName;
-    private Integer maxAge;
-    private Integer minAge;
+    private Float maxAge;
+    private Float minAge;
     private String description;
 }

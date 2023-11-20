@@ -31,6 +31,8 @@ public class RefundRequest extends BaseEntity {
     private DeliveryStatus deliveryStatus;
     private String recipientName;
     private String recipientPhone;
-    private String recipientLocation;
+    private String recipientProvince;
+    private String recipientCity;
+    private String recipientDistrict;
     private String recipientAddress;
 }

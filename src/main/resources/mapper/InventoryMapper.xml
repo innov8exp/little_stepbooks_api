@@ -2,8 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.inventory.mapper.InventoryMapper">
     <select id="findPagedByCriteria" resultType="net.stepbooks.interfaces.admin.dto.MInventoryDto">
-        select i.id, p.sku_code, p.sku_name, COALESCE(i.inventory_quantity, 0) inventory_quantity from step_product p
+        select i.id, p.id product_id, p.sku_code, p.sku_name, COALESCE(i.inventory_quantity, 0) inventory_quantity from step_product p
         left join step_inventory i on p.id = i.product_id
         where p.product_nature = 'PHYSICAL'
+        <if test="skuCode != null">
+            AND p.sku_code = #{skuCode}
+        </if>
+        <if test="skuName != null">
+            <bind name="pattern" value="'%' + skuName + '%'"/>
+            AND p.sku_name ILIKE #{pattern}
+        </if>
     </select>
 </mapper>

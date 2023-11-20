@@ -8,5 +8,5 @@ import net.stepbooks.interfaces.admin.dto.MInventoryDto;
 
 public interface InventoryMapper extends BaseMapper<Inventory> {
 
-    IPage<MInventoryDto> findPagedByCriteria(Page<MInventoryDto> page, String skuCode);
+    IPage<MInventoryDto> findPagedByCriteria(Page<MInventoryDto> page, String skuCode, String skuName);
 }

@@ -280,6 +280,9 @@ public class PhysicalOrderServiceImpl implements OrderService {
                 .deliveryStatus(DeliveryStatus.WAITING)
                 .recipientName(orderDto.getRecipientName())
                 .recipientPhone(orderDto.getRecipientPhone())
+                .recipientProvince(orderDto.getRecipientProvince())
+                .recipientCity(orderDto.getRecipientCity())
+                .recipientDistrict(orderDto.getRecipientDistrict())
                 .recipientAddress(orderDto.getRecipientAddress())
                 .build();
     }

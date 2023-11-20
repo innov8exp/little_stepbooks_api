@@ -8,22 +8,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.book.entity.BookChapter;
-import net.stepbooks.domain.book.entity.BookClassificationRef;
+import net.stepbooks.domain.book.entity.BookClassification;
 import net.stepbooks.domain.book.mapper.BookChapterMapper;
-import net.stepbooks.domain.book.mapper.BookClassificationRefMapper;
 import net.stepbooks.domain.book.mapper.BookMapper;
+import net.stepbooks.domain.book.service.BookClassificationService;
 import net.stepbooks.domain.book.service.BookService;
 import net.stepbooks.domain.classification.entity.Classification;
-import net.stepbooks.domain.media.service.FileService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,13 +31,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements BookService {
 
-    public static final String STORE_PATH = "book-assets/images/";
     private final BookMapper bookMapper;
     private final BookChapterMapper chapterMapper;
-    private final BookClassificationRefMapper bookClassificationRefMapper;
-    private final FileService publicFileServiceImpl;
-    @Value("${aws.cdn}")
-    private String cdnUrl;
+    private final BookClassificationService bookClassificationService;
 
     @Override
     public IPage<BookDto> findBooksInPagingByCriteria(Page<BookDto> page, MBookQueryDto queryDto) {
@@ -50,49 +45,34 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
     public void createBook(BookDto bookDto) {
         Book book = BaseAssembler.convert(bookDto, Book.class);
         bookMapper.insert(book);
-        String[] classifications = bookDto.getClassifications();
-        for (String classification : classifications) {
-            BookClassificationRef bookCategoryRef = BookClassificationRef.builder()
-                    .bookId(book.getId())
-                    .classificationId(classification)
-                    .build();
-            bookClassificationRefMapper.insert(bookCategoryRef);
-        }
+        List<BookClassification> bookClassifications
+                = Arrays.stream(bookDto.getClassifications()).map(classification -> BookClassification.builder()
+                .bookId(book.getId())
+                .classificationId(classification)
+                .build()).toList();
+        bookClassificationService.saveBatch(bookClassifications);
     }
 
-    @Transactional
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateBook(String id, BookDto bookDto) {
-        Book book = this.getById(id);
-        log.debug("bookEntity: {}", book);
-        BeanUtils.copyProperties(bookDto, book);
+        Book book = BaseAssembler.convert(bookDto, Book.class);
         book.setId(id);
-        log.debug("bookEntity-updated: {}", book);
         this.updateById(book);
-
-        List<BookClassificationRef> bookCategoryRefEntities = bookClassificationRefMapper.selectList(Wrappers
-                .<BookClassificationRef>lambdaQuery()
-                .eq(BookClassificationRef::getBookId, id));
-        List<String> ids = bookCategoryRefEntities.stream()
-                .map(BookClassificationRef::getId).collect(Collectors.toList());
-        if (!ObjectUtils.isEmpty(ids)) {
-            bookClassificationRefMapper.deleteBatchIds(ids);
-        }
-        String[] categories = bookDto.getClassifications();
-        for (String category : categories) {
-            BookClassificationRef bookCategoryRefEntity = BookClassificationRef.builder()
-                    .bookId(id)
-                    .classificationId(category)
-                    .build();
-            bookClassificationRefMapper.insert(bookCategoryRefEntity);
-        }
+        bookClassificationService.remove(Wrappers.<BookClassification>lambdaQuery().eq(BookClassification::getBookId, id));
+        List<BookClassification> bookClassifications
+                = Arrays.stream(bookDto.getClassifications()).map(classification -> BookClassification.builder()
+                .bookId(book.getId())
+                .classificationId(classification)
+                .build()).toList();
+        bookClassificationService.saveBatch(bookClassifications);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteBook(String id) {
-        bookClassificationRefMapper.delete(Wrappers.<BookClassificationRef>lambdaQuery()
-                .eq(BookClassificationRef::getBookId, id));
+        bookClassificationService.remove(Wrappers.<BookClassification>lambdaQuery()
+                .eq(BookClassification::getBookId, id));
         bookMapper.deleteById(id);
     }
 

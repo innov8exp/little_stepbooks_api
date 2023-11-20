@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("STEP_PRODUCT_COURSE_REF")
-public class ProductCourse {
+@TableName("STEP_PRODUCT_CLASSIFICATION_REF")
+public class ProductClassification {
     private String id;
     private String productId;
-    private String courseId;
+    private String classificationId;
 }

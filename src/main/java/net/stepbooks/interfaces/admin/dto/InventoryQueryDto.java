@@ -8,5 +8,6 @@ import lombok.Data;
 public class InventoryQueryDto {
 
     private String skuCode;
+    private String skuName;
 
 }

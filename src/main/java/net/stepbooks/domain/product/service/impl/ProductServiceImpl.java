@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.media.service.MediaService;
+import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.product.entity.Product;
+import net.stepbooks.domain.product.entity.ProductClassification;
 import net.stepbooks.domain.product.entity.ProductMedia;
 import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.domain.product.mapper.ProductMapper;
+import net.stepbooks.domain.product.service.ProductClassificationService;
 import net.stepbooks.domain.product.service.ProductMediaService;
 import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
@@ -20,6 +22,7 @@ import net.stepbooks.interfaces.admin.dto.ProductMediaDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -28,12 +31,12 @@ import java.util.Set;
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
 
     private final ProductMapper productMapper;
-    private final MediaService mediaService;
     private final ProductMediaService productMediaService;
+    private final ProductClassificationService productClassificationService;
 
     @Override
     public IPage<Product> findProductsInPagingByCriteria(Page<Product> page, MProductQueryDto queryDto) {
-        return productMapper.findProductsInPagingByCriteria(page, queryDto.getSkuName());
+        return productMapper.findProductsInPagingByCriteria(page, queryDto.getSkuName(), queryDto.getStatus());
     }
 
     @Override
@@ -56,6 +59,14 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             return productMedia;
         }).toList();
         productMediaService.saveBatch(productMedias);
+        List<ProductClassification> productClassifications
+                = Arrays.stream(productDto.getClassificationIds()).map(classificationId -> {
+            ProductClassification productClassification = new ProductClassification();
+            productClassification.setClassificationId(classificationId);
+            productClassification.setProductId(product.getId());
+            return productClassification;
+        }).toList();
+        productClassificationService.saveBatch(productClassifications);
     }
 
     @Override
@@ -73,6 +84,16 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             return productMedia;
         }).toList();
         productMediaService.saveBatch(productMedias);
+        productClassificationService.remove(Wrappers.<ProductClassification>lambdaQuery()
+                .eq(ProductClassification::getProductId, id));
+        List<ProductClassification> productClassifications
+                = Arrays.stream(productDto.getClassificationIds()).map(classificationId -> {
+            ProductClassification productClassification = new ProductClassification();
+            productClassification.setClassificationId(classificationId);
+            productClassification.setProductId(product.getId());
+            return productClassification;
+        }).toList();
+        productClassificationService.saveBatch(productClassifications);
     }
 
     @Override
@@ -106,8 +127,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     @Override
-    public IPage<Product> listRecommendProducts(Page<Product> page) {
-        return productMapper.findRecommendProductsInPaging(page);
+    public IPage<Product> listRecommendProducts(Page<Product> page, Float childMinAge, Float childMaxAge) {
+        return productMapper.findRecommendProductsInPaging(page, childMinAge, childMaxAge);
     }
 
     @Override
@@ -117,7 +138,12 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Override
     public IPage<Product> searchProducts(Page<Product> page, String skuName) {
-        return productMapper.findProductsInPagingByCriteria(page, skuName);
+        return productMapper.findProductsInPagingByCriteria(page, skuName, ProductStatus.ON_SHELF);
+    }
+
+    @Override
+    public List<Classification> getProductClassifications(String id) {
+        return productMapper.findClassificationsByProductId(id);
     }
 
 }

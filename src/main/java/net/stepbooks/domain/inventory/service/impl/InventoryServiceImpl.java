@@ -12,10 +12,11 @@ import net.stepbooks.domain.inventory.service.InventoryService;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
-import net.stepbooks.interfaces.admin.dto.MInventoryDto;
 import net.stepbooks.interfaces.admin.dto.InventoryQueryDto;
+import net.stepbooks.interfaces.admin.dto.MInventoryDto;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Service
@@ -27,9 +28,7 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
 
     @Override
     public void createInventory(Inventory inventory) {
-        Inventory inventoryExists = getOne(Wrappers.<Inventory>lambdaQuery()
-                .eq(Inventory::getProductId, inventory.getProductId()));
-        if (inventoryExists == null) {
+        if (ObjectUtils.isEmpty(inventory.getId())) {
             inventoryMapper.insert(inventory);
             return;
         }
@@ -41,7 +40,7 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
         }
         log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁成功", productId);
         try {
-            inventory.setInventoryQuantity(inventoryExists.getInventoryQuantity() + inventory.getInventoryQuantity());
+            inventory.setInventoryQuantity(inventory.getInventoryQuantity());
             inventoryMapper.updateById(inventory);
         } catch (OptimisticLockingFailureException e) {
             throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED);
@@ -72,6 +71,6 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
 
     @Override
     public IPage<MInventoryDto> findInventoriesInPagingByCriteria(Page<MInventoryDto> page, InventoryQueryDto queryDto) {
-        return inventoryMapper.findPagedByCriteria(page, queryDto.getSkuCode());
+        return inventoryMapper.findPagedByCriteria(page, queryDto.getSkuCode(), queryDto.getSkuName());
     }
 }
