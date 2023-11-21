@@ -237,8 +237,8 @@ create TABLE STEP_ORDER
 create TABLE STEP_ORDER_PRODUCT_REF
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
-    order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
-    product_id      VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) UNIQUE NOT NULL,
+    product_id      VARCHAR(100) REFERENCES STEP_PRODUCT(id) UNIQUE NOT NULL,
     quantity        INTEGER,
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP

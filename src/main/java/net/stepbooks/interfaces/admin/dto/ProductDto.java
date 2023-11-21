@@ -26,7 +26,6 @@ public class ProductDto {
     private List<ProductMediaDto> medias;
     private ProductStatus status;
     private String[] classificationIds;
-    private int sortIndex;
 
     public SalesPlatform[] getParsedSalesPlatforms() {
         return SalesPlatform.parseSalesPlatforms(salesPlatforms);

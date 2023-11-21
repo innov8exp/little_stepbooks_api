@@ -2,6 +2,7 @@ package net.stepbooks.interfaces.admin.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.stepbooks.domain.delivery.entity.Delivery;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
@@ -26,4 +27,7 @@ public class OrderInfoDto extends BaseDto {
     private OrderState state;
     private ProductNature productNature;
     private PaymentStatus paymentStatus;
+
+    private OrderProductDto product;
+    private Delivery delivery;
 }

@@ -17,6 +17,9 @@
     <select id="findPageByUser" resultType="net.stepbooks.interfaces.admin.dto.OrderInfoDto">
         select o.* from step_order o
         where o.user_id = #{userId}
+        <if test="state != null">
+            and o.state = #{state}
+        </if>
         order by o.created_at desc
     </select>
     <select id="findOrderProductByUserIdAndProductIds"

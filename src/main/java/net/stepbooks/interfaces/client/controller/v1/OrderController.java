@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.delivery.entity.Delivery;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.RefundRequest;
+import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.order.service.RefundRequestService;
@@ -21,6 +23,7 @@ import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
+import net.stepbooks.interfaces.admin.dto.OrderProductDto;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import net.stepbooks.interfaces.client.dto.PlaceOrderDto;
 import org.springframework.http.ResponseEntity;
@@ -67,11 +70,38 @@ public class OrderController {
     @Operation(summary = "获取用户订单列表")
     @GetMapping("/user")
     public ResponseEntity<IPage<OrderInfoDto>> getUserOrderHistory(@RequestParam int currentPage,
-                                                                   @RequestParam int pageSize) {
+                                                                   @RequestParam int pageSize,
+                                                                   @RequestParam(required = false) OrderState state) {
         String userId = contextManager.currentUser().getId();
         Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
-        IPage<OrderInfoDto> ordersByCriteria = orderOpsService.findOrdersByUser(page, userId);
+        IPage<OrderInfoDto> ordersByCriteria = orderOpsService.findOrdersByUser(page, userId, state);
         return ResponseEntity.ok(ordersByCriteria);
+    }
+
+    @Operation(summary = "获取订单详情")
+    @GetMapping("/{code}/detail")
+    public ResponseEntity<OrderInfoDto> getOrderDetail(@PathVariable String code) {
+        String userId = contextManager.currentUser().getId();
+        OrderInfoDto order = orderOpsService.findOrderByCodeAndUser(code, userId);
+        return ResponseEntity.ok(order);
+    }
+
+    @Operation(summary = "获取订单产品信息")
+    @GetMapping("/{code}/products")
+    public ResponseEntity<OrderProductDto> getOrderProducts(@PathVariable String code) {
+        String userId = contextManager.currentUser().getId();
+        OrderInfoDto order = orderOpsService.findOrderByCodeAndUser(code, userId);
+        OrderProductDto product = order.getProduct();
+        return ResponseEntity.ok(product);
+    }
+
+    @Operation(summary = "获取订单物流信息")
+    @GetMapping("/{code}/delivery")
+    public ResponseEntity<Delivery> getOrderDelivery(@PathVariable String code) {
+        String userId = contextManager.currentUser().getId();
+        OrderInfoDto order = orderOpsService.findOrderByCodeAndUser(code, userId);
+        Delivery delivery = order.getDelivery();
+        return ResponseEntity.ok(delivery);
     }
 
     @Operation(summary = "获取订单未支付剩余时间")

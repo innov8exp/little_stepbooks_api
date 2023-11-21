@@ -9,15 +9,23 @@ import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.enums.RequestStatus;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.order.service.RefundRequestService;
+import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductNature;
+import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.user.entity.User;
+import net.stepbooks.infrastructure.enums.RefundReason;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
+import net.stepbooks.interfaces.client.dto.RefundReasonDto;
 import net.stepbooks.interfaces.client.dto.RefundRequestCreateDto;
+import net.stepbooks.interfaces.client.dto.RefundRequestDto;
 import net.stepbooks.interfaces.client.dto.ReturnDeliveryInfoDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Tag(name = "Refund Request", description = "退款申请相关接口")
 @RestController
@@ -29,6 +37,20 @@ public class RefundRequestController {
     private final RefundRequestService refundRequestService;
     private final ContextManager contextManager;
     private final OrderOpsService orderOpsService;
+    private final ProductService productService;
+
+    @GetMapping("/reasons")
+    @Operation(summary = "获取退款原因列表")
+    public ResponseEntity<List<RefundReasonDto>> getRefundReasons() {
+        List<RefundReason> refundReasons = Arrays.asList(RefundReason.values());
+        List<RefundReasonDto> refundReasonDtoList = refundReasons.stream().map(reason -> {
+            RefundReasonDto refundReasonDto = new RefundReasonDto();
+            refundReasonDto.setCode(reason.name());
+            refundReasonDto.setDescription(reason.getDescription());
+            return refundReasonDto;
+        }).toList();
+        return ResponseEntity.ok(refundReasonDtoList);
+    }
 
     @PostMapping
     @Operation(summary = "创建退款申请")
@@ -60,9 +82,15 @@ public class RefundRequestController {
 
     @GetMapping("/{id}")
     @Operation(summary = "查询退款申请详情")
-    public ResponseEntity<RefundRequest> getRequest(@PathVariable String id) {
+    public ResponseEntity<RefundRequestDto> getRequest(@PathVariable String id) {
         RefundRequest refundRequest = refundRequestService.getById(id);
-        return ResponseEntity.ok(refundRequest);
+        Order order = orderOpsService.findOrderById(refundRequest.getOrderId());
+        Product product = productService.getProductBySkuCode(order.getOrderCode());
+        RefundRequestDto refundRequestDto = new RefundRequestDto();
+        refundRequestDto.setRefundRequest(refundRequest);
+        refundRequestDto.setOrder(order);
+        refundRequestDto.setProduct(product);
+        return ResponseEntity.ok(refundRequestDto);
     }
 
     @PostMapping("/{id}/delivery")

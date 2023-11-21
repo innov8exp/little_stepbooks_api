@@ -107,8 +107,8 @@ public class MOrderController {
     }
 
     @GetMapping("/{id}/products")
-    public ResponseEntity<List<OrderProductDto>> getOrderProducts(@PathVariable String id) {
-        List<OrderProductDto> orderProducts = orderProductService.findByOrderId(id);
+    public ResponseEntity<OrderProductDto> getOrderProducts(@PathVariable String id) {
+        OrderProductDto orderProducts = orderProductService.findByOrderId(id);
         return ResponseEntity.ok(orderProducts);
     }
 
