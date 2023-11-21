@@ -30,7 +30,7 @@
     </select>
     <select id="findProductsInPagingOrderByCreateTime"
             resultType="net.stepbooks.domain.product.entity.Product">
-        select p.* from step_product p where 1=1
+        select p.* from step_product p
         where p.status = 'ON_SHELF'
         order by p.created_at desc
     </select>
