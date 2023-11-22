@@ -23,7 +23,7 @@ aws:
   s3:
     bucket: stepbook.stage
     public-bucket: stepbook.public
-  cdn: https://d1wf51uw2ybdc9.cloudfront.net
+  cdn:
 
 stepbooks:
   mnp-qrcode-host: https://api-stage.stepbooks.net/mnp-qrcode
