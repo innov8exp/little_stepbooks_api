@@ -22,7 +22,7 @@ aws:
   s3:
     bucket: stepbook.production
     public-bucket: stepbook.production.public
-  cdn: https://novlshared.s3.ap-northeast-1.amazonaws.com
+  cdn: https://asset-stage.stepbooks.net
 
 in-app-purchase:
   verify-host:

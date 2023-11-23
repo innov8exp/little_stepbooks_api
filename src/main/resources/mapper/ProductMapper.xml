@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.product.mapper.ProductMapper">
-    <select id="findDetailById" resultType="net.stepbooks.interfaces.admin.dto.ProductDto">
-        select p.*, bs.code book_set_code, bs.name book_set_name
+    <resultMap id="productResultMap" type="net.stepbooks.interfaces.admin.dto.ProductDto">
+        <result column="classification_names" property="classificationNames"
+                typeHandler="org.apache.ibatis.type.ArrayTypeHandler"/>
+    </resultMap>
+    <select id="findDetailById" resultMap="productResultMap">
+        select p.*, bs.code book_set_code, bs.name book_set_name,
+        (select array_remove(array(select sc.classification_name from step_classification sc
+            right join step_product_classification_ref pc
+            on p.id = pc.product_id
+            and sc.id = pc.classification_id ), null)) classification_names
         from step_product p left join step_book_set bs on p.book_set_id = bs.id
         where p.id = #{id}
     </select>
