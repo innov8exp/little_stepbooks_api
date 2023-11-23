@@ -39,7 +39,9 @@ public class UserSecurityConfig {
                                 mvc.pattern("/actuator/**"),
                                 mvc.pattern("/swagger-ui/**"),
                                 mvc.pattern("/v3/api-docs/**"),
-                                mvc.pattern("/swagger-ui.html"))
+                                mvc.pattern("/swagger-ui.html"),
+                                mvc.pattern("/e4evlW47q4.txt")
+                                )
                         .permitAll()
                         .anyRequest()
                         .authenticated()
