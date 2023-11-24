@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.stepbooks.infrastructure.enums.ChildGender;
 import net.stepbooks.infrastructure.enums.RoleEnum;
 
 
@@ -24,5 +25,5 @@ public class UserDto {
     private String childAgeRange;
     private Float childMinAge;
     private Float childMaxAge;
-    private String childGender;
+    private ChildGender childGender;
 }
