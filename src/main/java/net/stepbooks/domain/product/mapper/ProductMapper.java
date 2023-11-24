@@ -21,4 +21,6 @@ public interface ProductMapper extends BaseMapper<Product> {
     IPage<Product> findProductsInPagingOrderByCreateTime(Page<Product> page);
 
     List<Classification> findClassificationsByProductId(String productId);
+
+    IPage<Product> findDefaultRecommendProductsInPaging(Page<Product> page);
 }

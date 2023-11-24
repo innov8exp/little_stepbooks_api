@@ -39,4 +39,6 @@ public interface ProductService extends IService<Product> {
     IPage<Product> searchProducts(Page<Product> page, String skuName);
 
     List<Classification> getProductClassifications(String id);
+
+    IPage<Product> listDefaultRecommendProducts(Page<Product> page);
 }

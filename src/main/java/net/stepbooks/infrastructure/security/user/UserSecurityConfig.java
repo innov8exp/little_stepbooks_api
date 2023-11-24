@@ -37,6 +37,7 @@ public class UserSecurityConfig {
                 .authorizeHttpRequests((requests) -> requests.requestMatchers(
                                 mvc.pattern("/auth/**"),
                                 mvc.pattern("/v1/products/**"),
+                                mvc.pattern("/v1/advertisements/carousel"),
                                 mvc.pattern("/actuator/**"),
                                 mvc.pattern("/swagger-ui/**"),
                                 mvc.pattern("/v3/api-docs/**"),

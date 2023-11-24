@@ -16,6 +16,7 @@ import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.ProductDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,6 +48,11 @@ public class ProductController {
     public ResponseEntity<IPage<Product>> getRecommendProducts(@RequestParam int currentPage,
                                                                @RequestParam int pageSize) {
         User user = contextManager.currentUser();
+        if (ObjectUtils.isEmpty(user)) {
+            Page<Product> page = Page.of(currentPage, pageSize);
+            IPage<Product> products = productService.listDefaultRecommendProducts(page);
+            return ResponseEntity.ok(products);
+        }
         Float childMaxAge = user.getChildMaxAge();
         Float childMinAge = user.getChildMinAge();
         Page<Product> page = Page.of(currentPage, pageSize);

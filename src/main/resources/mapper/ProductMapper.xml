@@ -49,5 +49,10 @@
         on sc.id = pc.classification_id
         where pc.product_id = #{productId}
     </select>
+    <select id="findDefaultRecommendProductsInPaging" resultType="net.stepbooks.domain.product.entity.Product">
+        select p.* from step_product p left join step_advertisement a on p.id = a.product_id
+        where p.status = 'ON_SHELF'
+        order by a.sort_index asc
+    </select>
 
 </mapper>

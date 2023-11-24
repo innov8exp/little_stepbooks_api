@@ -199,4 +199,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return productMapper.findClassificationsByProductId(id);
     }
 
+    @Override
+    public IPage<Product> listDefaultRecommendProducts(Page<Product> page) {
+        return productMapper.findDefaultRecommendProductsInPaging(page);
+    }
+
 }
