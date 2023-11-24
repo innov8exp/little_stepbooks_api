@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.stepbooks.infrastructure.enums.RoleEnum;
 
 
 @Data
@@ -17,11 +18,11 @@ public class UserDto {
     private String email;
     private String nickname;
     private String phone;
-    private String role;
+    private RoleEnum role;
     private String avatarImgId;
     private String avatarImgUrl;
-    private String gender;
-    private String deviceId;
-    private String googleId;
-    private String facebookId;
+    private String childAgeRange;
+    private Float childMinAge;
+    private Float childMaxAge;
+    private String childGender;
 }

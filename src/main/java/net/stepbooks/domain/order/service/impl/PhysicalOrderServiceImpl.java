@@ -10,22 +10,25 @@ import net.stepbooks.domain.delivery.enums.DeliveryStatus;
 import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.inventory.entity.Inventory;
 import net.stepbooks.domain.inventory.service.InventoryService;
-import net.stepbooks.domain.order.entity.Order;
-import net.stepbooks.domain.order.entity.OrderInventoryLog;
-import net.stepbooks.domain.order.entity.OrderProduct;
+import net.stepbooks.domain.order.entity.*;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.mapper.OrderMapper;
-import net.stepbooks.domain.order.service.OrderInventoryLogService;
-import net.stepbooks.domain.order.service.OrderProductService;
-import net.stepbooks.domain.order.service.OrderService;
+import net.stepbooks.domain.order.service.*;
 import net.stepbooks.domain.order.util.OrderUtil;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.product.entity.Product;
+import net.stepbooks.domain.product.entity.ProductBook;
+import net.stepbooks.domain.product.entity.ProductCourse;
+import net.stepbooks.domain.product.service.ProductBookService;
+import net.stepbooks.domain.product.service.ProductCourseService;
 import net.stepbooks.domain.product.service.ProductService;
-import net.stepbooks.infrastructure.enums.*;
+import net.stepbooks.infrastructure.enums.PaymentStatus;
+import net.stepbooks.infrastructure.enums.PaymentType;
+import net.stepbooks.infrastructure.enums.RefundType;
+import net.stepbooks.infrastructure.enums.TransactionStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
@@ -61,6 +64,10 @@ public class PhysicalOrderServiceImpl implements OrderService {
     private final DeliveryService deliveryService;
     private final PaymentService paymentService;
     private final PaymentOpsService paymentOpsService;
+    private final ProductBookService productBookService;
+    private final ProductCourseService productCourseService;
+    private final OrderCourseService orderCourseService;
+    private final OrderBookService orderBookService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -96,6 +103,27 @@ public class PhysicalOrderServiceImpl implements OrderService {
             // 记录库存变更日志
             OrderInventoryLog orderInventoryLog = buildOrderInventoryLog(orderDto, order, productId, inventory.getId());
             orderInventoryLogService.save(orderInventoryLog);
+            // 建立订单与书籍关系
+            List<OrderBook> orderBooks = productBookService.list(Wrappers.<ProductBook>lambdaQuery()
+                            .eq(ProductBook::getProductId, productId))
+                    .stream().map(productBook -> OrderBook.builder()
+                            .orderId(order.getId())
+                            .productId(productId)
+                            .bookId(productBook.getBookId())
+                            .userId(order.getUserId())
+                            .build()).toList();
+            orderBookService.saveBatch(orderBooks);
+            // 建立订单与课程关系
+            List<OrderCourse> orderCourses = productCourseService.list(Wrappers.<ProductCourse>lambdaQuery()
+                            .eq(ProductCourse::getProductId, productId))
+                    .stream().map(productCourse -> OrderCourse.builder()
+                            .orderId(order.getId())
+                            .productId(productId)
+                            .courseId(productCourse.getCourseId())
+                            .userId(order.getUserId())
+                            .build()).toList();
+            orderCourseService.saveBatch(orderCourses);
+
         } catch (OptimisticLockingFailureException e) {
             throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED);
         } finally {

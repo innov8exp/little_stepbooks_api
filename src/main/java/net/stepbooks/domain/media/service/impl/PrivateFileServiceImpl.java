@@ -23,7 +23,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -45,8 +44,6 @@ public class PrivateFileServiceImpl implements FileService {
     private String region;
     @Value("${aws.s3.bucket}")
     private String bucketName;
-    @Value("${aws.s3.public-bucket}")
-    private String publicBucketName;
     @Value("${aws.s3.pre-signed-url-expire-hour}")
     private int expireHour;
     @Value("${aws.cdn}")
@@ -153,15 +150,9 @@ public class PrivateFileServiceImpl implements FileService {
             calendar.add(Calendar.HOUR_OF_DAY, expireHour);
             // Generate the pre-signed URL.
             GeneratePresignedUrlRequest generatePresignedUrlRequest;
-            if (ObjectUtils.isEmpty(cdnHost)) {
                 generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, key)
                         .withMethod(HttpMethod.GET)
                         .withExpiration(calendar.getTime());
-            } else {
-                generatePresignedUrlRequest = new GeneratePresignedUrlRequest(cdnHost, key)
-                        .withMethod(HttpMethod.GET)
-                        .withExpiration(calendar.getTime());
-            }
             URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
             return url.toString();
         } catch (SdkClientException e) {

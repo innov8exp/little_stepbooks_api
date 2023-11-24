@@ -8,4 +8,9 @@
         where p.id = #{productId}
         order by c.created_at asc
     </select>
+    <select id="getCourseAndMediaById" resultType="net.stepbooks.interfaces.client.dto.CourseDto">
+        select c.*, m.object_key as video_object_key from step_course c
+        left join step_media m on c.video_id = m.id
+        where c.id = #{courseId}
+    </select>
 </mapper>

@@ -3,6 +3,7 @@ package net.stepbooks.domain.user.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+import net.stepbooks.infrastructure.enums.RoleEnum;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
@@ -21,14 +22,15 @@ public class User extends BaseEntity {
     private String avatarImgId;
     private String avatarImgUrl;
     private Boolean active;
-    private String role;
+    private RoleEnum role;
     private String googleId;
     private String facebookId;
     private String wechatId;
     private String alipayId;
-    private String openId;
     private String childGender;
     private String childClassificationId;
     private Float childMinAge;
     private Float childMaxAge;
+    private String openId;
+    private String unionId;
 }

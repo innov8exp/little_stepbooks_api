@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.email.service.EmailService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
@@ -12,15 +13,15 @@ import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
-import net.stepbooks.infrastructure.model.JwtUserDetails;
+import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.client.dto.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 
+@Slf4j
 @Tag(name = "Auth", description = "认证相关接口")
 @RequiredArgsConstructor
 @RestController
@@ -34,6 +35,7 @@ public class AuthController {
 
     private final UserService userService;
     private final EmailService emailService;
+    private final ContextManager contextManager;
 
     @PostMapping("/login")
     @Operation(summary = "使用邮箱和密码登录")
@@ -41,6 +43,14 @@ public class AuthController {
         TokenDto tokenDto = userService.loginWithEmail(loginDto.getEmail(), loginDto.getPassword());
         return ResponseEntity.ok(tokenDto);
     }
+
+    @Operation(summary = "使用微信登录")
+    @PostMapping("/wechat-login")
+    public ResponseEntity<TokenDto> wechatLogin(@Valid @RequestBody WechatAuthDto wechatAuthDto) {
+        TokenDto tokenDto = userService.loginWithWechat(wechatAuthDto);
+        return ResponseEntity.ok(tokenDto);
+    }
+
 
     @PostMapping("/social-login")
     @Operation(summary = "使用第三方登录")
@@ -132,9 +142,12 @@ public class AuthController {
     @GetMapping("/user-info")
     @Operation(summary = "获取用户信息")
     public ResponseEntity<UserDto> userInfo() {
-        JwtUserDetails details = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User userByEmail = userService.findUserByUsername(details.getUsername());
-        UserDto userDto = BaseAssembler.convert(userByEmail, UserDto.class);
-        return ResponseEntity.ok(userDto);
+//        JwtUserDetails details = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = contextManager.currentUser();
+        if (ObjectUtils.isEmpty(user)) {
+            throw new BusinessException(ErrorCode.AUTH_ERROR);
+        }
+        UserDto userInfo = userService.getUserAndChildAgeInfoByUsername(user.getUsername());
+        return ResponseEntity.ok(userInfo);
     }
 }

@@ -42,10 +42,13 @@ public enum ErrorCode {
             "The book set has already exist, please input another one."),
     BOOK_SET_NOT_EXISTS_IN_ORDER_ERROR(HttpStatus.BAD_REQUEST.value(),
             "The book set is not exists in order, please check again."),
+    BOOK_NOT_EXISTS_IN_ORDER_ERROR(HttpStatus.FORBIDDEN.value(), "The book is not exists in order, please check again."),
     ORDER_STATE_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "The order state is not support refund"),
     REFUND_REQUEST_EXISTS(HttpStatus.BAD_REQUEST.value(), "The order has refund request, please check again."),
     VIRTUAL_ORDER_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "The virtual order is not support refund"),
-    ONLY_SELF_CAN_UPDATE(HttpStatus.FORBIDDEN.value(), "Only self can update");
+    ONLY_SELF_CAN_UPDATE(HttpStatus.FORBIDDEN.value(), "Only self can update"),
+    COURSE_NEED_TO_PAY(HttpStatus.FORBIDDEN.value(), "The course need to pay"),
+    COURSE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "The course is not found");
 
 
     private final int status;

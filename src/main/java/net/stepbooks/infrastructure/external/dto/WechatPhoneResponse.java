@@ -10,9 +10,11 @@ public class WechatPhoneResponse {
     private Integer errCode;
     @JsonProperty("errmsg")
     private String errMsg;
+    @JsonProperty("phone_info")
+    private PhoneInfo phoneInfo;
 
     @Data
-    static class PhoneInfo {
+    public static class PhoneInfo {
         private String phoneNumber;
         private String purePhoneNumber;
         private String countryCode;
@@ -20,7 +22,7 @@ public class WechatPhoneResponse {
     }
 
     @Data
-    static class Watermark {
+    public static class Watermark {
         private Long timestamp;
         @JsonProperty("appid")
         private String appId;

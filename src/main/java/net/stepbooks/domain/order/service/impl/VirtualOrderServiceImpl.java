@@ -5,10 +5,14 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.order.entity.Order;
+import net.stepbooks.domain.order.entity.OrderBook;
+import net.stepbooks.domain.order.entity.OrderCourse;
 import net.stepbooks.domain.order.entity.OrderProduct;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.mapper.OrderMapper;
+import net.stepbooks.domain.order.service.OrderBookService;
+import net.stepbooks.domain.order.service.OrderCourseService;
 import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.order.util.OrderUtil;
@@ -16,6 +20,10 @@ import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.product.entity.Product;
+import net.stepbooks.domain.product.entity.ProductBook;
+import net.stepbooks.domain.product.entity.ProductCourse;
+import net.stepbooks.domain.product.service.ProductBookService;
+import net.stepbooks.domain.product.service.ProductCourseService;
 import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.enums.PaymentType;
@@ -48,6 +56,10 @@ public class VirtualOrderServiceImpl implements OrderService {
     private final OrderProductService orderProductService;
     private final PaymentService paymentService;
     private final PaymentOpsService paymentOpsService;
+    private final ProductBookService productBookService;
+    private final ProductCourseService productCourseService;
+    private final OrderCourseService orderCourseService;
+    private final OrderBookService orderBookService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -70,6 +82,27 @@ public class VirtualOrderServiceImpl implements OrderService {
                 .build();
         orderProductService.save(orderProduct);
         updateOrderState(order.getId(), OrderEvent.PLACE_SUCCESS);
+
+        // 建立订单与书籍关系
+        List<OrderBook> orderBooks = productBookService.list(Wrappers.<ProductBook>lambdaQuery()
+                        .eq(ProductBook::getProductId, productId))
+                .stream().map(productBook -> OrderBook.builder()
+                        .orderId(order.getId())
+                        .productId(productId)
+                        .bookId(productBook.getBookId())
+                        .userId(order.getUserId())
+                        .build()).toList();
+        orderBookService.saveBatch(orderBooks);
+        // 建立订单与课程关系
+        List<OrderCourse> orderCourses = productCourseService.list(Wrappers.<ProductCourse>lambdaQuery()
+                        .eq(ProductCourse::getProductId, productId))
+                .stream().map(productCourse -> OrderCourse.builder()
+                        .orderId(order.getId())
+                        .productId(productId)
+                        .courseId(productCourse.getCourseId())
+                        .userId(order.getUserId())
+                        .build()).toList();
+        orderCourseService.saveBatch(orderCourses);
     }
 
     @Override

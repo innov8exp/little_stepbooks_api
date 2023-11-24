@@ -20,4 +20,7 @@ public interface OrderOpsService {
 
     long getUnpaidRemainingTime(String code);
 
+    boolean checkCourseInUserOrder(String userId, String courseId);
+
+    boolean checkBookInUserOrder(String userId, String bookId);
 }

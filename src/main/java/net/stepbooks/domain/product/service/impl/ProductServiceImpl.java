@@ -6,16 +6,18 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.book.service.BookService;
+import net.stepbooks.domain.bookset.service.BookSetService;
 import net.stepbooks.domain.classification.entity.Classification;
-import net.stepbooks.domain.product.entity.Product;
-import net.stepbooks.domain.product.entity.ProductClassification;
-import net.stepbooks.domain.product.entity.ProductMedia;
+import net.stepbooks.domain.course.entity.Course;
+import net.stepbooks.domain.course.service.CourseService;
+import net.stepbooks.domain.product.entity.*;
 import net.stepbooks.domain.product.enums.ProductStatus;
+import net.stepbooks.domain.product.mapper.ProductBookMapper;
 import net.stepbooks.domain.product.mapper.ProductMapper;
-import net.stepbooks.domain.product.service.ProductClassificationService;
-import net.stepbooks.domain.product.service.ProductMediaService;
-import net.stepbooks.domain.product.service.ProductService;
+import net.stepbooks.domain.product.service.*;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.admin.dto.BookSetDto;
 import net.stepbooks.interfaces.admin.dto.MProductQueryDto;
 import net.stepbooks.interfaces.admin.dto.ProductDto;
 import net.stepbooks.interfaces.admin.dto.ProductMediaDto;
@@ -33,6 +35,12 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private final ProductMapper productMapper;
     private final ProductMediaService productMediaService;
     private final ProductClassificationService productClassificationService;
+    private final BookSetService bookSetService;
+    private final ProductBookMapper productBookMapper;
+    private final ProductBookService productBookService;
+    private final ProductCourseService productCourseService;
+    private final BookService bookService;
+    private final CourseService courseService;
 
     @Override
     public IPage<Product> findProductsInPagingByCriteria(Page<Product> page, MProductQueryDto queryDto) {
@@ -67,6 +75,27 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             return productClassification;
         }).toList();
         productClassificationService.saveBatch(productClassifications);
+        // 保存产品与书籍的关系
+        String bookSetId = product.getBookSetId();
+        BookSetDto bookSetDto = bookSetService.findById(bookSetId);
+        List<ProductBook> productBooks = bookSetDto.getBookIds().stream().map(bookId -> {
+            ProductBook productBook = new ProductBook();
+            productBook.setBookId(bookId);
+            productBook.setProductId(product.getId());
+            return productBook;
+        }).toList();
+        productBookService.saveBatch(productBooks);
+        // 保存产品与课程的关系
+        bookSetDto.getBookIds().forEach(bookId -> {
+            List<Course> courses = courseService.getBookCourses(bookId);
+            List<ProductCourse> productCourses = courses.stream().map(course -> {
+                ProductCourse productCourse = new ProductCourse();
+                productCourse.setCourseId(course.getId());
+                productCourse.setProductId(product.getId());
+                return productCourse;
+            }).toList();
+            productCourseService.saveBatch(productCourses);
+        });
     }
 
     @Override
@@ -94,6 +123,30 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             return productClassification;
         }).toList();
         productClassificationService.saveBatch(productClassifications);
+
+        // 保存产品与书籍的关系
+        productBookService.remove(Wrappers.<ProductBook>lambdaQuery().eq(ProductBook::getProductId, id));
+        String bookSetId = product.getBookSetId();
+        BookSetDto bookSetDto = bookSetService.findById(bookSetId);
+        List<ProductBook> productBooks = bookSetDto.getBookIds().stream().map(bookId -> {
+            ProductBook productBook = new ProductBook();
+            productBook.setBookId(bookId);
+            productBook.setProductId(product.getId());
+            return productBook;
+        }).toList();
+        productBookService.saveBatch(productBooks);
+        // 保存产品与课程的关系
+        productCourseService.remove(Wrappers.<ProductCourse>lambdaQuery().eq(ProductCourse::getProductId, id));
+        bookSetDto.getBookIds().forEach(bookId -> {
+            List<Course> courses = courseService.getBookCourses(bookId);
+            List<ProductCourse> productCourses = courses.stream().map(course -> {
+                ProductCourse productCourse = new ProductCourse();
+                productCourse.setCourseId(course.getId());
+                productCourse.setProductId(product.getId());
+                return productCourse;
+            }).toList();
+            productCourseService.saveBatch(productCourses);
+        });
     }
 
     @Override

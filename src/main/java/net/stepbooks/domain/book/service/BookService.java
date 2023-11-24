@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.domain.book.entity.Book;
+import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
@@ -27,4 +28,6 @@ public interface BookService extends IService<Book> {
     BookDto findBookById(String bookId);
 
     List<Book> findBooksByProductId(String productId);
+
+    List<BookChapter> getBookChaptersByUser(String userId, String bookId);
 }

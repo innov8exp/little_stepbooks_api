@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.stepbooks.infrastructure.enums.RoleEnum;
 
 @Data
 @Builder
@@ -23,5 +24,5 @@ public class TokenDto {
     @JsonProperty("refresh_expires_in")
     private Long refreshExpiresIn;
     private Boolean isFirstAuth;
-    private String role;
+    private RoleEnum role;
 }

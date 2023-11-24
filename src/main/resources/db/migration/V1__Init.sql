@@ -52,17 +52,18 @@ create TABLE STEP_USER
 (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
     username      VARCHAR(255) NOT NULL UNIQUE,
+    role          VARCHAR(100) NOT NULL, -- NORMAL_USER, GUEST,
+    phone         VARCHAR(100) NOT NULL UNIQUE,
     email         VARCHAR(100),
     google_id     VARCHAR(100),
     facebook_id   VARCHAR(100),
     wechat_id     VARCHAR(100),
     alipay_id     VARCHAR(100),
     open_id       VARCHAR(255),
+    union_id       VARCHAR(255),
     password      VARCHAR(200),
-    role          VARCHAR(100) NOT NULL, -- NORMAL_USER, GUEST,
-    device_id     VARCHAR(200) NOT NULL,
+    device_id     VARCHAR(200),
     nickname      VARCHAR(255),
-    phone         VARCHAR(100),
     avatar_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     avatar_img_url  TEXT,
     child_gender        VARCHAR(100),
@@ -186,6 +187,23 @@ create TABLE STEP_PRODUCT
     modified_at TIMESTAMP
 );
 
+-- 产品与书籍关系
+create TABLE STEP_PRODUCT_BOOK_REF
+(
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    product_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL
+);
+
+-- 产品与课程关系
+create TABLE STEP_PRODUCT_COURSE_REF
+(
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    product_id VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
+    course_id VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL
+);
+
 -- 产品与分级关系
 create TABLE STEP_PRODUCT_CLASSIFICATION_REF
 (
@@ -243,6 +261,27 @@ create TABLE STEP_ORDER_PRODUCT_REF
     quantity        INTEGER,
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
+);
+
+-- 订单与书籍信息
+create TABLE STEP_ORDER_BOOK_REF
+(
+    id              VARCHAR(100) NOT NULL PRIMARY KEY,
+    order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
+    user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
+    product_id     VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    book_id         VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL
+);
+
+-- 订单与课程信息
+create TABLE STEP_ORDER_COURSE_REF
+(
+    id              VARCHAR(100) NOT NULL PRIMARY KEY,
+    order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
+    user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
+    product_id     VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
+    book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
+    course_id       VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL
 );
 
 -- 订单事件

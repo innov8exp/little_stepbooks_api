@@ -2,8 +2,8 @@
 INSERT INTO STEP_ADMIN_USER (id, username, email, password, nickname, role)
 VALUES ('0', 'admin', 'admin@example.com', '{bcrypt}$2a$10$Mauvb3WBioPsOf9hZHX7l.np69XxobcoDn.kOEvcuu6YSafmqgQ6q', '系统管理员', 'ADMIN');
 
-INSERT INTO STEP_USER (id, username, email, password, nickname, role, device_id)
-VALUES ('0', 'admin', 'admin@example.com', '{bcrypt}$2a$10$Mauvb3WBioPsOf9hZHX7l.np69XxobcoDn.kOEvcuu6YSafmqgQ6q', '系统管理员', 'ADMIN', 'test_device_id_1');
+INSERT INTO STEP_USER (id, username, email, password, nickname, phone, role)
+VALUES ('0', 'admin', 'admin@example.com', '{bcrypt}$2a$10$Mauvb3WBioPsOf9hZHX7l.np69XxobcoDn.kOEvcuu6YSafmqgQ6q', '系统管理员', '133567890897', 'NORMAL_USER');
 
 INSERT INTO STEP_CLASSIFICATION (id, classification_name, min_age, max_age, description)
 VALUES ('0', '0-3岁', 0, 3, '适合0-3岁阅读观看');

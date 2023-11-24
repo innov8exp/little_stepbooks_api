@@ -13,7 +13,7 @@ import net.stepbooks.domain.bookset.mapper.BookSetMapper;
 import net.stepbooks.domain.bookset.service.BookSetBookService;
 import net.stepbooks.domain.bookset.service.BookSetService;
 import net.stepbooks.domain.product.entity.Product;
-import net.stepbooks.domain.product.service.ProductService;
+import net.stepbooks.domain.product.mapper.ProductMapper;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
@@ -32,7 +32,7 @@ public class BookSetServiceImpl extends ServiceImpl<BookSetMapper, BookSet> impl
 
     private final BookSetBookService bookSetBookService;
     private final BookSetMapper bookSetMapper;
-    private final ProductService productService;
+    private final ProductMapper productMapper;
 
     @Override
     public IPage<BookSet> findInPagingByCriteria(Page<BookSet> page, String name) {
@@ -71,7 +71,7 @@ public class BookSetServiceImpl extends ServiceImpl<BookSetMapper, BookSet> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteBookSet(String id) {
-        boolean exists = productService.exists(Wrappers.<Product>lambdaQuery()
+        boolean exists = productMapper.exists(Wrappers.<Product>lambdaQuery()
                 .eq(Product::getBookSetId, id));
         if (exists) {
             throw new BusinessException(ErrorCode.BOOK_SET_HAS_BEEN_USED);

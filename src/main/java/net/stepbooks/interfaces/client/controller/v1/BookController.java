@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
+import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.book.service.BookService;
-import net.stepbooks.domain.comment.service.CommentService;
-import net.stepbooks.domain.comment.service.RatingService;
+import net.stepbooks.domain.course.entity.Course;
+import net.stepbooks.domain.course.service.CourseService;
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.BookDto;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Tag(name = "Book", description = "书籍相关接口")
 @RestController
 @RequestMapping("/v1/books")
@@ -25,9 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
 
     private final BookService bookService;
-    private final CommentService commentService;
-    private final RatingService ratingService;
     private final ContextManager contextManager;
+    private final CourseService courseService;
 
 
     @Operation(summary = "获取书籍详情")
@@ -36,6 +39,20 @@ public class BookController {
         Book book = bookService.getById(id);
         BookDto bookDto = BaseAssembler.convert(book, BookDto.class);
         return ResponseEntity.ok(bookDto);
+    }
+
+    @Operation(summary = "获取书籍图画和音频(包含URL)")
+    @GetMapping("/{id}/chapters")
+    public ResponseEntity<List<BookChapter>> getBookChapters(@PathVariable String id) {
+        User user = contextManager.currentUser();
+        return ResponseEntity.ok(bookService.getBookChaptersByUser(user.getId(), id));
+    }
+
+    @Operation(summary = "获取书籍课程(不包含URL)")
+    @GetMapping("/{id}/courses")
+    public ResponseEntity<List<Course>> getBookCourses(@PathVariable String id) {
+        User user = contextManager.currentUser();
+        return ResponseEntity.ok(courseService.getBookCoursesByUser(user.getId(), id));
     }
 
 //    @Operation(summary = "获取书籍评论")

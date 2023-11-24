@@ -7,8 +7,12 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.delivery.entity.Delivery;
 import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;
+import net.stepbooks.domain.order.entity.OrderBook;
+import net.stepbooks.domain.order.entity.OrderCourse;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.mapper.OrderMapper;
+import net.stepbooks.domain.order.service.OrderBookService;
+import net.stepbooks.domain.order.service.OrderCourseService;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
@@ -32,6 +36,8 @@ public class OrderOpsServiceImpl implements OrderOpsService {
     private final OrderMapper orderMapper;
     private final OrderProductService orderProductService;
     private final DeliveryService deliveryService;
+    private final OrderBookService orderBookService;
+    private final OrderCourseService orderCourseService;
 
     @Override
     public IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderCode, String username) {
@@ -116,6 +122,18 @@ public class OrderOpsServiceImpl implements OrderOpsService {
         Duration duration = Duration.between(createdAt, now);
         long seconds = duration.getSeconds();
         return seconds > ORDER_PAYMENT_TIMEOUT ? 0 : ORDER_PAYMENT_TIMEOUT - seconds;
+    }
+
+    @Override
+    public boolean checkCourseInUserOrder(String userId, String courseId) {
+        return orderCourseService.exists(Wrappers.<OrderCourse>lambdaQuery().eq(OrderCourse::getCourseId, courseId)
+                .eq(OrderCourse::getUserId, userId));
+    }
+
+    @Override
+    public boolean checkBookInUserOrder(String userId, String bookId) {
+        return orderBookService.exists(Wrappers.<OrderBook>lambdaQuery().eq(OrderBook::getBookId, bookId)
+                .eq(OrderBook::getUserId, userId));
     }
 
 }

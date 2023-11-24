@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.stepbooks.domain.user.mapper.UserMapper">
+    <select id="getUserAndChildAgeInfoByUsername" resultType="net.stepbooks.interfaces.client.dto.UserDto">
+        select u.*, c.classification_name as child_age_range, c.min_age as child_min_age, c.max_age as child_max_age
+        from step_user u left join step_classification c on u.child_classification_id = c.id
+        where u.username = #{username}
+    </select>
+</mapper>

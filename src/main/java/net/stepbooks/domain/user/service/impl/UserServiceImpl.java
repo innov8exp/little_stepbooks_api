@@ -21,6 +21,9 @@ import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.external.client.FacebookClient;
 import net.stepbooks.infrastructure.external.client.GoogleClient;
 import net.stepbooks.infrastructure.external.client.WechatClient;
+import net.stepbooks.infrastructure.external.dto.UserPhoneNumberDto;
+import net.stepbooks.infrastructure.external.dto.WechatGetAccessTokenResponse;
+import net.stepbooks.infrastructure.external.dto.WechatPhoneResponse;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.security.user.UserJwtTokenProvider;
 import net.stepbooks.infrastructure.util.CommonUtil;
@@ -58,6 +61,11 @@ public class UserServiceImpl implements UserService {
     private String facebookClientId;
     @Value("${facebook.client-secret}")
     private String facebookClientSecret;
+
+    @Value("${wechat.appId}")
+    private String wechatAppId;
+    @Value("${wechat.secret}")
+    private String wechatAppSecret;
 
     @SuppressWarnings("checkstyle:MagicNumber")
     private static String generateVerifyCode() {
@@ -105,7 +113,7 @@ public class UserServiceImpl implements UserService {
         }
         String password = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword());
         user.setPassword(password);
-        user.setRole(RoleEnum.NORMAL_USER.getValue());
+        user.setRole(RoleEnum.NORMAL_USER);
         user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
         user.setUsername(UUID.randomUUID().toString());
         int insert = userMapper.insert(user);
@@ -124,7 +132,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerWithPhone(User user) {
         String phone = user.getPhone();
-        user.setRole(RoleEnum.NORMAL_USER.getValue());
+        user.setRole(RoleEnum.NORMAL_USER);
         user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
         user.setUsername(UUID.randomUUID().toString());
         int insert = userMapper.insert(user);
@@ -142,19 +150,17 @@ public class UserServiceImpl implements UserService {
     @SuppressWarnings("checkstyle:MagicNumber")
     @Override
     public void registerWithWechat(User user) {
-        String wechatId = user.getWechatId();
-        user.setRole(RoleEnum.NORMAL_USER.getValue());
+        user.setRole(RoleEnum.NORMAL_USER);
         user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
-        user.setUsername(UUID.randomUUID().toString());
         int insert = userMapper.insert(user);
-        AuthHistory authHistory = new AuthHistory();
-        authHistory.setUsername(user.getUsername());
-        authHistory.setAuthType(AuthType.WECHAT);
-        authHistory.setCreatedAt(LocalDateTime.now());
-        authHistoryMapper.insert(authHistory);
         if (insert != 1) {
             throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
         }
+        AuthHistory authHistory = new AuthHistory();
+        authHistory.setUsername(user.getUsername());
+        authHistory.setPhone(user.getPhone());
+        authHistory.setAuthType(AuthType.WECHAT);
+        authHistoryMapper.insert(authHistory);
     }
 
     @Transactional
@@ -199,20 +205,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenDto loginWithWechat(String code, String deviceId) {
-        return null;
+    public TokenDto loginWithWechat(WechatAuthDto wechatAuthDto) {
+        // 获取access_token
+        WechatGetAccessTokenResponse clientCredential = wechatClient.getAccessToken(wechatAppId, wechatAppSecret,
+                "client_credential");
+        String accessToken = clientCredential.getAccessToken();
+        log.debug("accessToken: {}", accessToken);
+        UserPhoneNumberDto userPhoneNumberDto = new UserPhoneNumberDto();
+        userPhoneNumberDto.setCode(wechatAuthDto.getCode());
+        WechatPhoneResponse wechatPhoneResponse = wechatClient.getPhoneNumber(accessToken, userPhoneNumberDto);
+        log.debug("wechatPhoneResponse error code: {}", wechatPhoneResponse.getErrCode());
+        log.debug("wechatPhoneResponse error msg: {}", wechatPhoneResponse.getErrMsg());
+        log.debug("wechatPhoneResponse phone Info: {}", wechatPhoneResponse.getPhoneInfo());
+        WechatPhoneResponse.PhoneInfo phoneInfo = wechatPhoneResponse.getPhoneInfo();
+        if (phoneInfo != null) {
+            String phoneNumber = phoneInfo.getPurePhoneNumber();
+            log.debug("phoneNumber: {}", phoneNumber);
+            User user = findUserByPhone(phoneNumber);
+            if (ObjectUtils.isEmpty(user)) {
+                User newUser = User.builder()
+                        .username(phoneNumber)
+                        .phone(phoneNumber).build();
+                registerWithWechat(newUser);
+                return getTokenDto(0L, newUser, AuthType.WECHAT);
+            }
+            Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistory>lambdaQuery()
+                    .eq(AuthHistory::getPhone, phoneNumber));
+            return getTokenDto(authCount, user, AuthType.WECHAT);
+        }
+        throw new BusinessException(ErrorCode.AUTH_ERROR, "Failed auth with wechat");
     }
 
     @Override
     public TokenDto guestLogin(String deviceId) {
         List<User> userEntities = userMapper.selectList(Wrappers.<User>lambdaQuery().eq(User::getDeviceId, deviceId)
-                .eq(User::getRole, RoleEnum.GUEST.getValue()));
+                .eq(User::getRole, RoleEnum.GUEST));
         User user;
         if (!ObjectUtils.isEmpty(userEntities)) {
             user = userEntities.get(0);
         } else {
             user = User.builder()
-                    .role(RoleEnum.GUEST.getValue())
+                    .role(RoleEnum.GUEST)
                     .deviceId(deviceId)
                     .username(UUID.randomUUID().toString())
                     .nickname("Guest User").build();
@@ -289,7 +322,7 @@ public class UserServiceImpl implements UserService {
 
     private User registerUserFromFacebook(String deviceId, String facebookId, FacebookUserDto facebookUserInfo) {
         User user = User.builder()
-                .role(RoleEnum.NORMAL_USER.getValue())
+                .role(RoleEnum.NORMAL_USER)
                 .username(UUID.randomUUID().toString())
                 .nickname(facebookUserInfo.getName())
                 .facebookId(facebookId)
@@ -311,7 +344,7 @@ public class UserServiceImpl implements UserService {
 
     private User registerUserFromGoogle(String deviceId, String googleId, GoogleUserDto googleUserDto) {
         User user = User.builder()
-                .role(RoleEnum.NORMAL_USER.getValue())
+                .role(RoleEnum.NORMAL_USER)
                 .username(UUID.randomUUID().toString())
                 .nickname(googleUserDto.getName())
 //                .email(googleUserDto.getEmail())
@@ -464,6 +497,11 @@ public class UserServiceImpl implements UserService {
     public void sendLoginVerificationSms(String phone) {
         String verifyCode = generateVerifyCode();
         smsService.sendSms(SmsType.VERIFICATION, phone, verifyCode);
+    }
+
+    @Override
+    public UserDto getUserAndChildAgeInfoByUsername(String username) {
+        return userMapper.getUserAndChildAgeInfoByUsername(username);
     }
 
 }

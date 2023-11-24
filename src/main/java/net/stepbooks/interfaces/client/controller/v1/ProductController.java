@@ -83,4 +83,5 @@ public class ProductController {
         List<Course> courses = courseService.findCoursesByProductId(id);
         return ResponseEntity.ok(courses);
     }
+
 }
