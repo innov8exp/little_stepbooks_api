@@ -26,4 +26,5 @@ public class UserDto {
     private Float childMinAge;
     private Float childMaxAge;
     private ChildGender childGender;
+    private String childClassificationId;
 }
