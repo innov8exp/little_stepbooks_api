@@ -36,6 +36,7 @@ public class UserSecurityConfig {
                         .accessDeniedHandler(restAccessDeniedHandler))
                 .authorizeHttpRequests((requests) -> requests.requestMatchers(
                                 mvc.pattern("/auth/**"),
+                                mvc.pattern("/v1/products/**"),
                                 mvc.pattern("/actuator/**"),
                                 mvc.pattern("/swagger-ui/**"),
                                 mvc.pattern("/v3/api-docs/**"),
