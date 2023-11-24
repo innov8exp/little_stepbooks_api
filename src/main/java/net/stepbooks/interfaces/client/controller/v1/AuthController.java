@@ -1,6 +1,7 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -139,10 +140,10 @@ public class AuthController {
         return ResponseEntity.ok(tokenDto);
     }
 
+    @SecurityRequirement(name = "Client Authentication")
     @GetMapping("/user-info")
     @Operation(summary = "获取用户信息")
     public ResponseEntity<UserDto> userInfo() {
-//        JwtUserDetails details = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = contextManager.currentUser();
         if (ObjectUtils.isEmpty(user)) {
             throw new BusinessException(ErrorCode.AUTH_ERROR);
