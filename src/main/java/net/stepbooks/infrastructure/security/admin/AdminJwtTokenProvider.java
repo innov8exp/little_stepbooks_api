@@ -94,7 +94,27 @@ public class AdminJwtTokenProvider {
         }
     }
 
+    public Boolean verifyRefreshToken(String token, UserDetails userDetails) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(accessTokenSecret);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withIssuer(issuer)
+                    .withSubject(userDetails.getUsername())
+                    .build(); //Reusable verifier instance
+            DecodedJWT jwt = verifier.verify(token);
+            return jwt != null;
+        } catch (JWTVerificationException exception) {
+            //Invalid signature/claims
+            log.info("verification token info: {}", exception.getMessage());
+            return false;
+        }
+    }
+
     public TokenDto refreshToken(JwtUserDetails userDetails, String refreshToken, LocalDateTime lastPasswordReset) {
+        Boolean verified = verifyRefreshToken(refreshToken, userDetails);
+        if (!verified) {
+            throw new BusinessException(ErrorCode.AUTH_ERROR);
+        }
         Boolean canTokenBeRefreshed = canTokenBeRefreshed(refreshToken, lastPasswordReset);
         if (!canTokenBeRefreshed) {
             throw new BusinessException(ErrorCode.AUTH_ERROR);
