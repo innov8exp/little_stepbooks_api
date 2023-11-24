@@ -18,7 +18,7 @@ aws:
   s3:
     bucket: stepbook.stage
     public-bucket: stepbook.public
-  cdn:
+  cdn: https://s3.cn-north-1.amazonaws.com.cn/stepbook.public
 #  cdn: https://ds2rcorotrbeb.cloudfront.net
 
 stepbooks:
