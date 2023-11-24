@@ -57,7 +57,7 @@ public class PublicFileServiceImpl implements FileService {
         try (InputStream inputStream = file.getInputStream()) {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName,
                     path + objectName, inputStream, objectMetadata);
-            putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
+//            putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
             TransferManager transferManager = TransferManagerBuilder.standard().withS3Client(s3Client).build();
             Upload upload = transferManager.upload(putObjectRequest);
             UploadResult uploadResult = upload.waitForUploadResult();

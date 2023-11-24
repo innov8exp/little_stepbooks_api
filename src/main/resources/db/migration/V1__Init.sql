@@ -99,6 +99,7 @@ create TABLE STEP_BOOK
     book_img_url    TEXT,
     description        TEXT,
     total_page_number   INTEGER,
+    duration            VARCHAR(100),
     created_at          TIMESTAMP,
     modified_at         TIMESTAMP
 );
@@ -136,7 +137,7 @@ create TABLE STEP_COURSE
     description TEXT,
     author VARCHAR(200),
     author_introduction VARCHAR(200),
-    duration BIGINT NOT NULL,
+    duration VARCHAR(100),
     cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     cover_img_url TEXT,
     video_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
