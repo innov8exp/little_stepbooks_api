@@ -56,6 +56,9 @@ public class OrderController {
         if (ObjectUtils.isEmpty(product)) {
             throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
         }
+        if (orderDto.getQuantity() == 0) {
+            orderDto.setQuantity(1);
+        }
         if (ProductNature.PHYSICAL.equals(product.getProductNature())) {
             physicalOrderServiceImpl.createOrder(orderDto);
             // 虚拟产品

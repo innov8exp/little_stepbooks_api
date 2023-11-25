@@ -1,6 +1,7 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.address.entity.UserAddress;
@@ -15,6 +16,7 @@ import java.util.List;
 @Tag(name = "User Address", description = "用户地址相关接口")
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Client Authentication")
 @RequestMapping("/v1/users/addresses")
 public class UserAddressController {
 

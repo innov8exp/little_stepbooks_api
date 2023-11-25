@@ -13,10 +13,12 @@
     </select>
     <select id="findProductsDetailsByOrderIds" resultType="net.stepbooks.interfaces.admin.dto.OrderProductDto">
         select p.*, op.product_id, op.quantity, op.order_id from step_order_product_ref op
-        left join step_product p on op.product_id = p.id
-        where op.order_id in
-        <foreach collection="orderIds" item="orderId" open="(" separator="," close=")">
-            #{orderId}
-        </foreach>
+        left join step_product p on op.product_id = p.id where 1=1
+        <if test="orderIds != null and !orderIds.isEmpty()">
+            and op.order_id in
+            <foreach collection="orderIds" item="orderId" open="(" separator="," close=")">
+                #{orderId}
+            </foreach>
+        </if>
     </select>
 </mapper>
