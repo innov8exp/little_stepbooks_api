@@ -20,6 +20,7 @@ import org.springframework.util.ObjectUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -79,8 +80,8 @@ public class UserJwtTokenProvider {
                 .tokenType(tokenType)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .expiresIn(accessTokenExpiration)
-                .refreshExpiresIn(refreshTokenExpiration)
+                .expiresIn(LocalDateTime.now().plusSeconds(accessTokenExpiration).toEpochSecond(ZoneOffset.UTC))
+                .refreshExpiresIn(LocalDateTime.now().plusSeconds(refreshTokenExpiration).toEpochSecond(ZoneOffset.UTC))
                 .build();
     }
 
@@ -135,8 +136,8 @@ public class UserJwtTokenProvider {
                 .tokenType(tokenType)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .expiresIn(accessTokenExpiration)
-                .refreshExpiresIn(refreshTokenExpiration)
+                .expiresIn(LocalDateTime.now().plusSeconds(accessTokenExpiration).toEpochSecond(ZoneOffset.UTC))
+                .refreshExpiresIn(LocalDateTime.now().plusSeconds(refreshTokenExpiration).toEpochSecond(ZoneOffset.UTC))
                 .build();
     }
 

@@ -92,6 +92,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 ProductCourse productCourse = new ProductCourse();
                 productCourse.setCourseId(course.getId());
                 productCourse.setProductId(product.getId());
+                productCourse.setBookId(bookId);
                 return productCourse;
             }).toList();
             productCourseService.saveBatch(productCourses);
@@ -143,6 +144,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 ProductCourse productCourse = new ProductCourse();
                 productCourse.setCourseId(course.getId());
                 productCourse.setProductId(product.getId());
+                productCourse.setBookId(bookId);
                 return productCourse;
             }).toList();
             productCourseService.saveBatch(productCourses);
