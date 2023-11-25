@@ -8,6 +8,7 @@ import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.util.ContextManager;
+import net.stepbooks.interfaces.client.dto.CourseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,15 +31,15 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getById(id));
     }
 
-    @Operation(summary = "获取试看课程链接")
+    @Operation(summary = "获取试看课程信息带视频链接")
     @GetMapping("/{id}/url/trail")
-    public ResponseEntity<String> getTrialCourseUrl(@PathVariable String id) {
+    public ResponseEntity<CourseDto> getTrialCourseUrl(@PathVariable String id) {
         return ResponseEntity.ok(courseService.getTrialCourseUrl(id));
     }
 
-    @Operation(summary = "获取课程链接")
+    @Operation(summary = "获取课程信息带视频链接")
     @GetMapping("/{id}/url")
-    public ResponseEntity<String> getCourseUrl(@PathVariable String id) {
+    public ResponseEntity<CourseDto> getCourseUrl(@PathVariable String id) {
         User user = contextManager.currentUser();
         return ResponseEntity.ok(courseService.getCourseUrl(user.getId(), id));
     }

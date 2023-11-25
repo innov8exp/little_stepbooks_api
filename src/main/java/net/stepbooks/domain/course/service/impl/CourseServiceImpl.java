@@ -36,7 +36,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     }
 
     @Override
-    public String getTrialCourseUrl(String courseId) {
+    public CourseDto getTrialCourseUrl(String courseId) {
         CourseDto courseDto = courseMapper.getCourseAndMediaById(courseId);
         if (ObjectUtils.isEmpty(courseDto)) {
             throw new BusinessException(ErrorCode.COURSE_NOT_FOUND);
@@ -44,18 +44,22 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         if (CourseNature.NEED_TO_PAY.equals(courseDto.getCourseNature())) {
             throw new BusinessException(ErrorCode.COURSE_NEED_TO_PAY);
         }
-        return privateFileService.getUrl(courseDto.getVideoObjectKey());
+        String url = privateFileService.getUrl(courseDto.getVideoObjectKey());
+        courseDto.setVideoUrl(url);
+        return courseDto;
     }
 
     @Override
-    public String getCourseUrl(String userId, String courseId) {
+    public CourseDto getCourseUrl(String userId, String courseId) {
         // check the authority of the user
         boolean exists = orderOpsService.checkCourseInUserOrder(userId, courseId);
         if (!exists) {
             throw new BusinessException(ErrorCode.COURSE_NEED_TO_PAY);
         }
         CourseDto courseDto = courseMapper.getCourseAndMediaById(courseId);
-        return privateFileService.getUrl(courseDto.getVideoObjectKey());
+        String url = privateFileService.getUrl(courseDto.getVideoObjectKey());
+        courseDto.setVideoUrl(url);
+        return courseDto;
     }
 
     @Override
