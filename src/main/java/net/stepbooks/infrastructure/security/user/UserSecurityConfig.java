@@ -38,6 +38,7 @@ public class UserSecurityConfig {
                                 mvc.pattern("/auth/**"),
                                 mvc.pattern("/v1/products/**"),
                                 mvc.pattern("/v1/advertisements/carousel"),
+                                mvc.pattern("/v1/courses/*/url/trail"),
                                 mvc.pattern("/actuator/**"),
                                 mvc.pattern("/swagger-ui/**"),
                                 mvc.pattern("/v3/api-docs/**"),
