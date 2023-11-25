@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.address.entity.UserAddress;
 import net.stepbooks.domain.address.service.UserAddressService;
 import net.stepbooks.domain.email.service.EmailService;
 import net.stepbooks.domain.user.entity.User;
@@ -14,8 +13,6 @@ import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.client.dto.UserDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "User", description = "用户相关接口")
 @RestController
@@ -46,12 +43,6 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/addresses")
-    @Operation(summary = "获取用户地址列表")
-    public ResponseEntity<List<UserAddress>> getUserAddresses() {
-        User user = contextManager.currentUser();
-        return ResponseEntity.ok(userAddressService.findByUserId(user.getId()));
-    }
 
 //    @PostMapping("/link-email")
 //    @Operation(summary = "关联邮箱")

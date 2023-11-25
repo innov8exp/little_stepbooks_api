@@ -17,4 +17,5 @@ public class UserAddress extends BaseEntity {
     private String recipientCity;
     private String recipientDistrict;
     private String recipientAddress;
+    private Boolean isDefault;
 }
