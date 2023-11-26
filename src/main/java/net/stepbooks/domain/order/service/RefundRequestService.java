@@ -27,4 +27,6 @@ public interface RefundRequestService extends IService<RefundRequest> {
     void signRefundDelivery(String id);
 
     boolean existsRefundRequest(String orderCode);
+
+    RefundRequest getLatestRefundRequestByOrderId(String orderId);
 }

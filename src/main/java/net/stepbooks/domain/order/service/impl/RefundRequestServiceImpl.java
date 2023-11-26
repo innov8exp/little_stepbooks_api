@@ -127,5 +127,11 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
         return refundRequestMapper.checkRefundRequestExistsByOrderCode(orderCode);
     }
 
+    @Override
+    public RefundRequest getLatestRefundRequestByOrderId(String orderId) {
+        return getOne(Wrappers.<RefundRequest>lambdaQuery().eq(RefundRequest::getOrderId, orderId)
+                .orderByDesc(RefundRequest::getCreatedAt).last("limit 1"));
+    }
+
 
 }

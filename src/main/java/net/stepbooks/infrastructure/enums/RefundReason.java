@@ -9,6 +9,8 @@ public enum RefundReason {
     PRODUCT_NOT_RECEIVED("未收到货"),
     PRODUCT_NOT_MATCHED("商品与描述不符"),
     DO_NOT_WANT_ANYMORE("不想要了"),
+    PRODUCT_MISS("少件/漏发"),
+    DELIVERY_SLOW("发货太慢"),
     OTHER("其他");
 
     private final String description;

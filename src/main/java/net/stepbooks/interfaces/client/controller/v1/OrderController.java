@@ -135,7 +135,7 @@ public class OrderController {
 
     @Operation(summary = "获取订单退款请求列表")
     @GetMapping("/{code}/refund-requests")
-    public ResponseEntity<?> getOrderRefundRequests(@PathVariable String code) {
+    public ResponseEntity<List<RefundRequest>> getOrderRefundRequests(@PathVariable String code) {
         User user = contextManager.currentUser();
         Order order = orderOpsService.findOrderByCode(code);
         if (!user.getId().equals(order.getUserId())) {
@@ -143,6 +143,18 @@ public class OrderController {
         }
         List<RefundRequest> refundRequests = refundRequestService.getRefundRequestsByOrderId(order.getId());
         return ResponseEntity.ok(refundRequests);
+    }
+
+    @Operation(summary = "获取订单退款最新退款申请")
+    @GetMapping("/{code}/refund-requests/latest")
+    public ResponseEntity<RefundRequest> getOrderLatestRefundRequest(@PathVariable String code) {
+        User user = contextManager.currentUser();
+        Order order = orderOpsService.findOrderByCode(code);
+        if (!user.getId().equals(order.getUserId())) {
+            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+        }
+        RefundRequest refundRequest = refundRequestService.getLatestRefundRequestByOrderId(order.getId());
+        return ResponseEntity.ok(refundRequest);
     }
 
     @PutMapping("/{code}/mock/payment-callback")
