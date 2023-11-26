@@ -27,9 +27,12 @@
         select p.* from step_order o
         left join step_order_product op on o.id = op.order_id
         left join step_product p on op.product_id = p.id
-        where o.user_id = #{userId} and op.product_id in
-        <foreach collection="productIds" item="productId" open="(" separator="," close=")">
-            #{productId}
-        </foreach>
+        where o.user_id = #{userId}
+        <if test="productIds != null and !productIds.isEmpty()">
+            and op.product_id in
+            <foreach collection="productIds" item="productId" open="(" separator="," close=")">
+                #{productId}
+            </foreach>
+        </if>
     </select>
 </mapper>
