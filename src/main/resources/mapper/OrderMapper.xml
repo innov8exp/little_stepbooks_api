@@ -25,7 +25,7 @@
     <select id="findOrderProductByUserIdAndProductIds"
             resultType="net.stepbooks.domain.product.entity.Product">
         select p.* from step_order o
-        left join step_order_product op on o.id = op.order_id
+        left join step_order_product_ref op on o.id = op.order_id
         left join step_product p on op.product_id = p.id
         where o.user_id = #{userId}
         <if test="productIds != null and !productIds.isEmpty()">
