@@ -8,15 +8,18 @@ import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.enums.RequestStatus;
 import net.stepbooks.domain.order.service.OrderOpsService;
+import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.domain.order.service.RefundRequestService;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.user.entity.User;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.RefundReason;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
+import net.stepbooks.interfaces.admin.dto.OrderProductDto;
 import net.stepbooks.interfaces.client.dto.RefundReasonDto;
 import net.stepbooks.interfaces.client.dto.RefundRequestCreateDto;
 import net.stepbooks.interfaces.client.dto.RefundRequestDto;
@@ -38,6 +41,7 @@ public class RefundRequestController {
     private final ContextManager contextManager;
     private final OrderOpsService orderOpsService;
     private final ProductService productService;
+    private final OrderProductService orderProductService;
 
     @GetMapping("/reasons")
     @Operation(summary = "获取退款原因列表")
@@ -85,7 +89,8 @@ public class RefundRequestController {
     public ResponseEntity<RefundRequestDto> getRequest(@PathVariable String id) {
         RefundRequest refundRequest = refundRequestService.getById(id);
         Order order = orderOpsService.findOrderById(refundRequest.getOrderId());
-        Product product = productService.getProductBySkuCode(order.getOrderCode());
+        OrderProductDto orderProduct = orderProductService.findByOrderId(order.getId());
+        Product product = BaseAssembler.convert(orderProduct, Product.class);
         RefundRequestDto refundRequestDto = new RefundRequestDto();
         refundRequestDto.setRefundRequest(refundRequest);
         refundRequestDto.setOrder(order);
