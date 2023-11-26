@@ -77,6 +77,9 @@ public class PhysicalOrderServiceImpl implements OrderService {
         if (product == null) {
             throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
         }
+        if (orderDto.getQuantity() == 0) {
+            throw new BusinessException(ErrorCode.ORDER_QUANTITY_IS_ZERO);
+        }
         // 有库存商品，先锁库存，再下单
         String productId = product.getId();
         boolean res = redisDistributedLocker.tryLock(productId);

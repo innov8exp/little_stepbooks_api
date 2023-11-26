@@ -24,7 +24,7 @@ public class MBookChapterController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BookChapter> getChapter(@PathVariable String id) {
-        BookChapter chapter = bookChapterService.getById(id);
+        BookChapter chapter = bookChapterService.getDetailById(id);
         return ResponseEntity.ok(chapter);
     }
 

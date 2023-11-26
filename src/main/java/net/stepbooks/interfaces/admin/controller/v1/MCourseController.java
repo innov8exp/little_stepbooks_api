@@ -30,6 +30,6 @@ public class MCourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Course> getOne(@PathVariable String id) {
-        return ResponseEntity.ok(courseService.getById(id));
+        return ResponseEntity.ok(courseService.getDetailById(id));
     }
 }

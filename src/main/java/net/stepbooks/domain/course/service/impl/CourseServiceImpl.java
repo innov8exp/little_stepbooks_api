@@ -7,6 +7,9 @@ import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.enums.CourseNature;
 import net.stepbooks.domain.course.mapper.CourseMapper;
 import net.stepbooks.domain.course.service.CourseService;
+import net.stepbooks.domain.media.entity.Media;
+import net.stepbooks.domain.media.service.MediaOpsService;
+import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.infrastructure.exception.BusinessException;
@@ -24,6 +27,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     private final CourseMapper courseMapper;
     private final PrivateFileServiceImpl privateFileService;
     private final OrderOpsService orderOpsService;
+    private final MediaService mediaService;
 
     @Override
     public List<Course> getBookCourses(String bookId) {
@@ -69,6 +73,19 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             throw new BusinessException(ErrorCode.BOOK_NOT_EXISTS_IN_ORDER_ERROR);
         }
         return list(Wrappers.<Course>lambdaQuery().eq(Course::getBookId, bookId));
+    }
+
+    @Override
+    public Course getDetailById(String id) {
+        Course course = getById(id);
+        String videoId = course.getVideoId();
+        Media media = mediaService.getById(videoId);
+        if (ObjectUtils.isEmpty(media)) {
+            throw new BusinessException(ErrorCode.MEDIA_NOT_FOUND);
+        }
+        String videoUrl = privateFileService.getUrl(media.getObjectKey());
+        course.setVideoUrl(videoUrl);
+        return course;
     }
 
 }

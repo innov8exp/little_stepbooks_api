@@ -17,4 +17,6 @@ public interface CourseService extends IService<Course> {
     CourseDto getCourseUrl(String userId, String courseId);
 
     List<Course> getBookCoursesByUser(String userId, String bookId);
+
+    Course getDetailById(String id);
 }

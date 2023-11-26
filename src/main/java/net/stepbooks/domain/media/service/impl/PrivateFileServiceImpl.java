@@ -11,6 +11,7 @@ import com.amazonaws.services.s3.transfer.Upload;
 import com.amazonaws.services.s3.transfer.model.UploadResult;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.media.service.FileService;
 import net.stepbooks.domain.media.service.MediaService;
@@ -28,12 +29,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PrivateFileServiceImpl implements FileService {
@@ -149,11 +152,17 @@ public class PrivateFileServiceImpl implements FileService {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.HOUR_OF_DAY, expireHour);
             // Generate the pre-signed URL.
-            GeneratePresignedUrlRequest generatePresignedUrlRequest;
-                generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, key)
+            GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, key)
                         .withMethod(HttpMethod.GET)
                         .withExpiration(calendar.getTime());
             URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
+            //https://stepbook.stage.s3.cn-north-1.amazonaws.com.cn
+//            https://s3.cn-north-1.amazonaws.com.cn/stepbook.stage
+//            return url.toString();
+            log.debug("原始地址：{}", url.toString());
+            String query = url.getQuery();
+//            String newUrlString = cdnHost + "/" + bucketName + "/" + key + "?" + query;
+//            log.debug("path: {}", newUrlString);
             return url.toString();
         } catch (SdkClientException e) {
             throw new BusinessException(ErrorCode.S3_FAILED);

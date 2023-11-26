@@ -86,6 +86,7 @@ create TABLE STEP_USER_ADDRESS
     recipient_city VARCHAR(100),
     recipient_district VARCHAR(100),
     recipient_address TEXT,
+    is_default BOOLEAN default (false),
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );
@@ -257,7 +258,7 @@ create TABLE STEP_ORDER_PRODUCT_REF
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
     order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) UNIQUE NOT NULL,
-    product_id      VARCHAR(100) REFERENCES STEP_PRODUCT(id) UNIQUE NOT NULL,
+    product_id      VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
     quantity        INTEGER,
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP

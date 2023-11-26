@@ -48,7 +48,9 @@ public enum ErrorCode {
     VIRTUAL_ORDER_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "The virtual order is not support refund"),
     ONLY_SELF_CAN_UPDATE(HttpStatus.FORBIDDEN.value(), "Only self can update"),
     COURSE_NEED_TO_PAY(HttpStatus.FORBIDDEN.value(), "The course need to pay"),
-    COURSE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "The course is not found");
+    COURSE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "The course is not found"),
+    ORDER_QUANTITY_IS_ZERO(HttpStatus.BAD_REQUEST.value(), "The order quantity is zero"),
+    MEDIA_NOT_FOUND(HttpStatus.NO_CONTENT.value(), "The media is not found");
 
 
     private final int status;

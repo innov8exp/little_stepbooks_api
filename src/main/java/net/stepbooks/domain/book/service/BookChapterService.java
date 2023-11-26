@@ -10,4 +10,6 @@ public interface BookChapterService extends IService<BookChapter> {
     List<BookChapter> getBookChapters(String bookId);
 
     Long getMaxChapterNo(String bookId);
+
+    BookChapter getDetailById(String id);
 }

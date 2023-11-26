@@ -147,7 +147,7 @@ public class PublicFileServiceImpl implements FileService {
             URL url = s3Client.getUrl(bucketName, key);
             return url.toString();
         }
-        return cdnHost + "/" + key;
+        return cdnHost + "/" + bucketName + "/" + key;
     }
 
     private AmazonS3 getS3Client() {
