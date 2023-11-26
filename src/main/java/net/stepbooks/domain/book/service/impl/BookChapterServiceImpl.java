@@ -7,7 +7,6 @@ import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.book.mapper.BookChapterMapper;
 import net.stepbooks.domain.book.service.BookChapterService;
 import net.stepbooks.domain.media.entity.Media;
-import net.stepbooks.domain.media.service.MediaOpsService;
 import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.infrastructure.exception.BusinessException;

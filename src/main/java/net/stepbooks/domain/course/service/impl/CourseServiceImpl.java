@@ -8,7 +8,6 @@ import net.stepbooks.domain.course.enums.CourseNature;
 import net.stepbooks.domain.course.mapper.CourseMapper;
 import net.stepbooks.domain.course.service.CourseService;
 import net.stepbooks.domain.media.entity.Media;
-import net.stepbooks.domain.media.service.MediaOpsService;
 import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.domain.order.service.OrderOpsService;
