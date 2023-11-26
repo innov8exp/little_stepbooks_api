@@ -16,5 +16,6 @@ public class OrderCourse {
     private String productId;
     private String userId;
     private String orderId;
+    private String bookId;
     private String courseId;
 }

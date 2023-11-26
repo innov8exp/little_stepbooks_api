@@ -124,6 +124,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
                             .productId(productId)
                             .courseId(productCourse.getCourseId())
                             .userId(order.getUserId())
+                            .bookId(productCourse.getBookId())
                             .build()).toList();
             orderCourseService.saveBatch(orderCourses);
 

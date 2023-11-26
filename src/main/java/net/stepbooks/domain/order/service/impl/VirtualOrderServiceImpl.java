@@ -99,6 +99,7 @@ public class VirtualOrderServiceImpl implements OrderService {
                 .stream().map(productCourse -> OrderCourse.builder()
                         .orderId(order.getId())
                         .productId(productId)
+                        .bookId(productCourse.getBookId())
                         .courseId(productCourse.getCourseId())
                         .userId(order.getUserId())
                         .build()).toList();
