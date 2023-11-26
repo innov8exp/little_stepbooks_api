@@ -123,4 +123,17 @@ public class MOrderController {
         Delivery delivery = deliveryService.getOne(Wrappers.<Delivery>lambdaQuery().eq(Delivery::getOrderId, id));
         return ResponseEntity.ok(delivery);
     }
+
+    @PutMapping("/{id}/mock/refund-callback")
+    public ResponseEntity<?> mockRefundOrder(@PathVariable String id) {
+        Order order = orderOpsService.findOrderById(id);
+        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
+            physicalOrderServiceImpl.refundCallback(order);
+        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
+            virtualOrderServiceImpl.refundCallback(order);
+        } else {
+            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
+        }
+        return ResponseEntity.ok().build();
+    }
 }
