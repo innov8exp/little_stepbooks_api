@@ -38,7 +38,7 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createRefundRequest(RefundRequestCreateDto refundRequestCreateDto, String userId) {
+    public RefundRequest createRefundRequest(RefundRequestCreateDto refundRequestCreateDto, String userId) {
         Order order = orderOpsService.findOrderByCode(refundRequestCreateDto.getOrderCode());
         // 只能申请自己的订单
         if (!userId.equals(order.getUserId())) {
@@ -66,6 +66,7 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
             refundRequest.setRefundType(RefundType.REFUND_AND_RETURN);
         }
         save(refundRequest);
+        return refundRequest;
     }
 
     @Override

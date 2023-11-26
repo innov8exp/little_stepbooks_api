@@ -58,7 +58,7 @@ public class RefundRequestController {
 
     @PostMapping
     @Operation(summary = "创建退款申请")
-    public ResponseEntity<?> createRequest(@RequestBody RefundRequestCreateDto refundRequestCreateDto) {
+    public ResponseEntity<RefundRequest> createRequest(@RequestBody RefundRequestCreateDto refundRequestCreateDto) {
         // 检查是否有未完成的退款申请或已经退款成功的订单
         String orderCode = refundRequestCreateDto.getOrderCode();
         Order order = orderOpsService.findOrderByCode(orderCode);
@@ -71,8 +71,8 @@ public class RefundRequestController {
         }
         User currentUser = contextManager.currentUser();
         String userId = currentUser.getId();
-        refundRequestService.createRefundRequest(refundRequestCreateDto, userId);
-        return ResponseEntity.ok().build();
+        RefundRequest refundRequest = refundRequestService.createRefundRequest(refundRequestCreateDto, userId);
+        return ResponseEntity.ok(refundRequest);
     }
 
     @PutMapping("/{id}")

@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface RefundRequestService extends IService<RefundRequest> {
 
-    void createRefundRequest(RefundRequestCreateDto refundRequestCreateDto, String userId);
+    RefundRequest createRefundRequest(RefundRequestCreateDto refundRequestCreateDto, String userId);
 
     List<RefundRequest> getRefundRequestsByOrderId(String orderId);
 
