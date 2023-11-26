@@ -71,7 +71,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createOrder(CreateOrderDto orderDto) {
+    public String createOrder(CreateOrderDto orderDto) {
 //        entity.setOrderNo(IdWorker.getIdStr());
         Product product = productService.getProductBySkuCode(orderDto.getSkuCode());
         if (product == null) {
@@ -127,7 +127,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
                             .bookId(productCourse.getBookId())
                             .build()).toList();
             orderCourseService.saveBatch(orderCourses);
-
+            return orderCode;
         } catch (OptimisticLockingFailureException e) {
             throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED);
         } finally {

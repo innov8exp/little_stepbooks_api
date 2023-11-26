@@ -63,7 +63,7 @@ public class VirtualOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createOrder(CreateOrderDto orderDto) {
+    public String createOrder(CreateOrderDto orderDto) {
 //        entity.setOrderNo(IdWorker.getIdStr());
         Product product = productService.getProductBySkuCode(orderDto.getSkuCode());
         if (product == null) {
@@ -104,6 +104,7 @@ public class VirtualOrderServiceImpl implements OrderService {
                         .userId(order.getUserId())
                         .build()).toList();
         orderCourseService.saveBatch(orderCourses);
+        return orderCode;
     }
 
     @Override

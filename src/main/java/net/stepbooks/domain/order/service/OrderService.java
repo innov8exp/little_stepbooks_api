@@ -13,7 +13,7 @@ import java.util.Set;
 
 public interface OrderService {
 
-    void createOrder(CreateOrderDto orderDto);
+    String createOrder(CreateOrderDto orderDto);
 
     Order updateOrderState(String id, OrderEvent orderEvent);
 

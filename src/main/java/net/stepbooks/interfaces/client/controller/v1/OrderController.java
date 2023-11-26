@@ -48,7 +48,7 @@ public class OrderController {
 
     @Operation(summary = "下单")
     @PostMapping
-    public ResponseEntity<?> placeOrder(@RequestBody PlaceOrderDto placeOrderDto) {
+    public ResponseEntity<String> placeOrder(@RequestBody PlaceOrderDto placeOrderDto) {
         User user = contextManager.currentUser();
         CreateOrderDto orderDto = BaseAssembler.convert(placeOrderDto, CreateOrderDto.class);
         orderDto.setUserId(user.getId());
@@ -60,14 +60,15 @@ public class OrderController {
             orderDto.setQuantity(1);
         }
         if (ProductNature.PHYSICAL.equals(product.getProductNature())) {
-            physicalOrderServiceImpl.createOrder(orderDto);
+            String orderCode = physicalOrderServiceImpl.createOrder(orderDto);
+            return ResponseEntity.ok(orderCode);
             // 虚拟产品
         } else if (ProductNature.VIRTUAL.equals(product.getProductNature())) {
-            virtualOrderServiceImpl.createOrder(orderDto);
+            String orderCode = virtualOrderServiceImpl.createOrder(orderDto);
+            return ResponseEntity.ok(orderCode);
         } else {
             throw new BusinessException(ErrorCode.PRODUCT_NATURE_NOT_SUPPORT);
         }
-        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "获取用户订单列表")
