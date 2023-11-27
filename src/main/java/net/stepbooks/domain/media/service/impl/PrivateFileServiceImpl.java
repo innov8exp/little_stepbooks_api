@@ -158,8 +158,7 @@ public class PrivateFileServiceImpl implements FileService {
             //https://stepbook.stage.s3.cn-north-1.amazonaws.com.cn
 //            https://s3.cn-north-1.amazonaws.com.cn/stepbook.stage
 //            return url.toString();
-            log.debug("原始地址：{}", url.toString());
-            String query = url.getQuery();
+//            String query = url.getQuery();
 //            String newUrlString = cdnHost + "/" + bucketName + "/" + key + "?" + query;
 //            log.debug("path: {}", newUrlString);
             return url.toString();

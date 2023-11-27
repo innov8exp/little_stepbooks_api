@@ -7,7 +7,6 @@ import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.enums.CourseNature;
 import net.stepbooks.domain.course.mapper.CourseMapper;
 import net.stepbooks.domain.course.service.CourseService;
-import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.domain.order.service.OrderOpsService;
@@ -77,12 +76,12 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     @Override
     public Course getDetailById(String id) {
         Course course = getById(id);
-        String videoId = course.getVideoId();
-        Media media = mediaService.getById(videoId);
-        if (ObjectUtils.isEmpty(media)) {
-            throw new BusinessException(ErrorCode.MEDIA_NOT_FOUND);
-        }
-        String videoUrl = privateFileService.getUrl(media.getObjectKey());
+        String videoObjectKey = course.getVideoUrl();
+//        Media media = mediaService.getById(videoId);
+//        if (ObjectUtils.isEmpty(media)) {
+//            throw new BusinessException(ErrorCode.MEDIA_NOT_FOUND);
+//        }
+        String videoUrl = privateFileService.getUrl(videoObjectKey);
         course.setVideoUrl(videoUrl);
         return course;
     }
