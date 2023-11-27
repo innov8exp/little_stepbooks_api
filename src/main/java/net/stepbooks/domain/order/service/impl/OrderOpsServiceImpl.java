@@ -9,12 +9,10 @@ import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.OrderBook;
 import net.stepbooks.domain.order.entity.OrderCourse;
+import net.stepbooks.domain.order.entity.OrderEventLog;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.mapper.OrderMapper;
-import net.stepbooks.domain.order.service.OrderBookService;
-import net.stepbooks.domain.order.service.OrderCourseService;
-import net.stepbooks.domain.order.service.OrderOpsService;
-import net.stepbooks.domain.order.service.OrderProductService;
+import net.stepbooks.domain.order.service.*;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
@@ -38,6 +36,7 @@ public class OrderOpsServiceImpl implements OrderOpsService {
     private final DeliveryService deliveryService;
     private final OrderBookService orderBookService;
     private final OrderCourseService orderCourseService;
+    private final OrderEventLogService orderEventLogService;
 
     @Override
     public IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderCode, String username) {
@@ -109,6 +108,10 @@ public class OrderOpsServiceImpl implements OrderOpsService {
         Delivery delivery = deliveryService.getOne(Wrappers.<Delivery>lambdaQuery()
                 .eq(Delivery::getOrderId, order.getId()));
         orderInfoDto.setDelivery(delivery);
+
+        // Step 6: Retrieve the event log information for the order
+        List<OrderEventLog> eventLogs = orderEventLogService.findByOrderId(order.getId());
+        orderInfoDto.setEventLogs(eventLogs);
 
         return orderInfoDto;
     }
