@@ -14,11 +14,11 @@ public class BookAndMaterialsDto {
     private String bookId;
     private String bookName;
     private String author;
-    private String coverImgId;
-    private String coverImgUrl;
+    private String bookImgId;
+    private String bookImgUrl;
     private String description;
     private String[] classifications;
-    private Long chapterCount;
-    private Long courseCount;
+    private long chapterCount;
+    private long courseCount;
     private Material[] materials;
 }
