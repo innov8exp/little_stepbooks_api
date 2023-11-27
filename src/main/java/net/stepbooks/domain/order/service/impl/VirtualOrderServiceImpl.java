@@ -198,6 +198,7 @@ public class VirtualOrderServiceImpl implements OrderService {
         payment.setOrderCode(order.getOrderCode());
         payment.setTransactionAmount(order.getPaymentAmount());
         payment.setUserId(order.getUserId());
+        payment.setTransactionStatus(TransactionStatus.SUCCESS);
         //TODO
         payment.setVendorPaymentNo(UUID.randomUUID().toString());
         paymentOpsService.save(payment);
