@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.domain.order.entity.RefundRequest;
+import net.stepbooks.interfaces.admin.dto.RefundRequestDto;
 import net.stepbooks.interfaces.client.dto.RefundRequestCreateDto;
 import net.stepbooks.interfaces.client.dto.ReturnDeliveryInfoDto;
 
@@ -16,7 +17,7 @@ public interface RefundRequestService extends IService<RefundRequest> {
 
     List<RefundRequest> getRefundRequestsByOrderId(String orderId);
 
-    IPage<RefundRequest> getPagedRefundRequests(Page<RefundRequest> page, String orderCode);
+    IPage<RefundRequestDto> getPagedRefundRequests(Page<RefundRequestDto> page, String orderCode);
 
     void approveRefundRequest(String id, BigDecimal refundAmount);
 

@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.service.RefundRequestService;
 import net.stepbooks.interfaces.admin.dto.RefundAmountDto;
+import net.stepbooks.interfaces.admin.dto.RefundRequestDto;
 import net.stepbooks.interfaces.admin.dto.RejectReasonDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +20,11 @@ public class MRefundRequestController {
     private final RefundRequestService refundRequestService;
 
     @GetMapping("/search")
-    public ResponseEntity<IPage<RefundRequest>> searchRefundRequests(@RequestParam int currentPage,
+    public ResponseEntity<IPage<RefundRequestDto>> searchRefundRequests(@RequestParam int currentPage,
                                                                      @RequestParam int pageSize,
                                                                      @RequestParam(required = false) String orderCode) {
-        Page<RefundRequest> page = Page.of(currentPage, pageSize);
-        IPage<RefundRequest> refundRequests = refundRequestService.getPagedRefundRequests(page, orderCode);
+        Page<RefundRequestDto> page = Page.of(currentPage, pageSize);
+        IPage<RefundRequestDto> refundRequests = refundRequestService.getPagedRefundRequests(page, orderCode);
         return ResponseEntity.ok(refundRequests);
     }
 

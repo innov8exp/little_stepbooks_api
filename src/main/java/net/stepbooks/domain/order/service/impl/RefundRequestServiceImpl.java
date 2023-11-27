@@ -19,6 +19,7 @@ import net.stepbooks.infrastructure.enums.RefundStatus;
 import net.stepbooks.infrastructure.enums.RefundType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.interfaces.admin.dto.RefundRequestDto;
 import net.stepbooks.interfaces.client.dto.RefundRequestCreateDto;
 import net.stepbooks.interfaces.client.dto.ReturnDeliveryInfoDto;
 import org.springframework.stereotype.Service;
@@ -75,7 +76,7 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
     }
 
     @Override
-    public IPage<RefundRequest> getPagedRefundRequests(Page<RefundRequest> page, String orderCode) {
+    public IPage<RefundRequestDto> getPagedRefundRequests(Page<RefundRequestDto> page, String orderCode) {
         return refundRequestMapper.getPagedRefundRequests(page, orderCode);
     }
 

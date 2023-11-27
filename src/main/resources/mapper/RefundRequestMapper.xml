@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.order.mapper.RefundRequestMapper">
-    <select id="getPagedRefundRequests" resultType="net.stepbooks.domain.order.entity.RefundRequest">
-        select * from step_refund_request r where 1=1
+    <select id="getPagedRefundRequests" resultType="net.stepbooks.interfaces.admin.dto.RefundRequestDto">
+        select r.*, u.username, u.phone, u.nickname from step_refund_request r left join step_user u on r.user_id = u.id
+        where 1=1
         <if test="orderCode != null and orderCode != ''">
             and r.order_code = #{orderCode}
         </if>
