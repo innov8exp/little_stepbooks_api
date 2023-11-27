@@ -1,4 +1,4 @@
-package net.stepbooks.interfaces.admin.controller.v1;
+package net.stepbooks.interfaces.client.controller.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,13 +22,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @Tag(name = "Media", description = "媒体资源相关接口")
 @RestController
-@RequestMapping("/admin/v1/medias")
 @RequiredArgsConstructor
-public class MMediaController {
+@RequestMapping("/v1/medias")
+public class MediaController {
 
     @Value("${file-unit}")
     private String fileUnit;
@@ -70,13 +69,13 @@ public class MMediaController {
         return ResponseEntity.ok(media);
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "删除文件")
-    public ResponseEntity<?> deleteFile(@PathVariable String id) {
-        Media media = mediaService.getById(id);
-        privateFileServiceImpl.delete(media.getObjectKey());
-        return ResponseEntity.ok().build();
-    }
+//    @DeleteMapping("/{id}")
+//    @Operation(summary = "删除文件")
+//    public ResponseEntity<?> deleteFile(@PathVariable String id) {
+//        Media media = mediaService.getById(id);
+//        privateFileServiceImpl.delete(media.getObjectKey());
+//        return ResponseEntity.ok().build();
+//    }
 
     @GetMapping("/{id}")
     @Operation(summary = "获取文件信息")
@@ -92,10 +91,11 @@ public class MMediaController {
         return ResponseEntity.ok(media);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<Media>> getMedias(@RequestParam String[] ids) {
-        List<Media> medias = mediaOpsService.getByIds(ids);
-        return ResponseEntity.ok(medias);
-    }
+//    @GetMapping("/list")
+//    public ResponseEntity<List<Media>> getMedias(@RequestParam String[] ids) {
+//        List<Media> medias = mediaOpsService.getByIds(ids);
+//        return ResponseEntity.ok(medias);
+//    }
+
 
 }
