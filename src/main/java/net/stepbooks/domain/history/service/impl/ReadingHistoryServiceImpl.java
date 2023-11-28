@@ -13,7 +13,7 @@ import net.stepbooks.interfaces.client.dto.ReadHistoryForm;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,12 +26,12 @@ public class ReadingHistoryServiceImpl extends ServiceImpl<ReadingHistoryMapper,
 
     @Override
     public List<LearnReportDto> getUserTodayReports(String userId) {
-        return readingHistoryMapper.getUserReportsByDay(userId, LocalDate.now());
+        return readingHistoryMapper.getUserReportsByDay(userId, LocalDateTime.now());
     }
 
     @Override
     public List<LearnReportDto> getUserYesterdayReports(String userId) {
-        LocalDate yesterday = LocalDate.now().minusDays(1L);
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1L);
         return readingHistoryMapper.getUserReportsByDay(userId, yesterday);
     }
 
