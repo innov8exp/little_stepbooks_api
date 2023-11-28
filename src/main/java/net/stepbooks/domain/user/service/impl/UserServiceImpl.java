@@ -229,6 +229,9 @@ public class UserServiceImpl implements UserService {
                 registerWithWechat(newUser);
                 return getTokenDto(0L, newUser, AuthType.WECHAT);
             }
+            if (!user.getActive()) {
+                throw new BusinessException(ErrorCode.USER_NOT_ACTIVE);
+            }
             Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistory>lambdaQuery()
                     .eq(AuthHistory::getPhone, phoneNumber));
             return getTokenDto(authCount, user, AuthType.WECHAT);

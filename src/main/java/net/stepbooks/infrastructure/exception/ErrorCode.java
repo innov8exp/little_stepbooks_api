@@ -50,7 +50,8 @@ public enum ErrorCode {
     COURSE_NEED_TO_PAY(HttpStatus.FORBIDDEN.value(), "The course need to pay"),
     COURSE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "The course is not found"),
     ORDER_QUANTITY_IS_ZERO(HttpStatus.BAD_REQUEST.value(), "The order quantity is zero"),
-    MEDIA_NOT_FOUND(HttpStatus.NO_CONTENT.value(), "The media is not found");
+    MEDIA_NOT_FOUND(HttpStatus.NO_CONTENT.value(), "The media is not found"),
+    USER_NOT_ACTIVE(HttpStatus.FORBIDDEN.value(), "The user is not active");
 
 
     private final int status;

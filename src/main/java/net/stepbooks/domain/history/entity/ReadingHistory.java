@@ -9,8 +9,9 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@TableName("STEP_LIKE_HISTORY")
-public class LikeHistoryEntity extends BaseEntity {
+@TableName("STEP_READING_HISTORY")
+public class ReadingHistory extends BaseEntity {
     private String bookId;
     private String userId;
+    private Integer maxChapterNo;
 }

@@ -1,49 +1,62 @@
 package net.stepbooks.domain.history.service.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.interfaces.client.dto.ChapterWithHistoryDto;
-import net.stepbooks.domain.book.entity.Book;
-import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
+import net.stepbooks.domain.book.entity.BookChapter;
+import net.stepbooks.domain.book.service.BookChapterService;
+import net.stepbooks.domain.history.entity.ReadingHistory;
 import net.stepbooks.domain.history.mapper.ReadingHistoryMapper;
 import net.stepbooks.domain.history.service.ReadingHistoryService;
+import net.stepbooks.interfaces.client.dto.LearnReportDto;
+import net.stepbooks.interfaces.client.dto.ReadHistoryForm;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ReadingHistoryServiceImpl implements ReadingHistoryService {
+public class ReadingHistoryServiceImpl extends ServiceImpl<ReadingHistoryMapper, ReadingHistory>
+        implements ReadingHistoryService {
 
     private final ReadingHistoryMapper readingHistoryMapper;
+    private final BookChapterService bookChapterService;
 
     @Override
-    public void createOrUpdateReadingHistory(ReadingHistoryEntity readingHistoryEntity) {
-        ReadingHistoryEntity historyEntity = readingHistoryMapper.selectOne(Wrappers.<ReadingHistoryEntity>lambdaQuery()
-                .eq(ReadingHistoryEntity::getBookId, readingHistoryEntity.getBookId())
-                .eq(ReadingHistoryEntity::getUserId, readingHistoryEntity.getUserId()));
-        if (ObjectUtils.isEmpty(historyEntity)) {
-            readingHistoryEntity.setCreatedAt(LocalDateTime.now());
-            readingHistoryMapper.insert(readingHistoryEntity);
+    public List<LearnReportDto> getUserTodayReports(String userId) {
+        return readingHistoryMapper.getUserReportsByDay(userId, LocalDate.now());
+    }
+
+    @Override
+    public List<LearnReportDto> getUserYesterdayReports(String userId) {
+        LocalDate yesterday = LocalDate.now().minusDays(1L);
+        return readingHistoryMapper.getUserReportsByDay(userId, yesterday);
+    }
+
+    @Override
+    public List<LearnReportDto> getUserHistoryReports(String userId) {
+        return readingHistoryMapper.getUserReportsByDay(userId, null);
+    }
+
+    @Override
+    public void createReadingHistory(String userId, String bookId, ReadHistoryForm form) {
+        BookChapter bookChapter = bookChapterService.getById(form.getChapterId());
+        ReadingHistory readingHistory = getOne(Wrappers.<ReadingHistory>lambdaQuery().eq(ReadingHistory::getUserId, userId)
+                .eq(ReadingHistory::getBookId, bookId));
+        if (ObjectUtils.isEmpty(readingHistory)) {
+            readingHistory = new ReadingHistory();
+            readingHistory.setUserId(userId);
+            readingHistory.setBookId(bookId);
+            readingHistory.setMaxChapterNo(bookChapter.getChapterNo());
+            save(readingHistory);
             return;
         }
-        readingHistoryEntity.setId(historyEntity.getId());
-        readingHistoryEntity.setModifiedAt(LocalDateTime.now());
-        readingHistoryMapper.updateById(readingHistoryEntity);
-    }
-
-    @Override
-    public List<ChapterWithHistoryDto> getReadingHistory(String bookId, String userId) {
-        //todo: implement me
-        return null;
-    }
-
-    @Override
-    public IPage<Book> getUserReadBooks(Page<Book> page, String userId) {
-        return readingHistoryMapper.findUserReadBooks(page, userId);
+        if (bookChapter.getChapterNo() > readingHistory.getMaxChapterNo()) {
+            readingHistory.setMaxChapterNo(bookChapter.getChapterNo());
+        }
+        updateById(readingHistory);
     }
 }

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.book.entity.Book;
+import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.delivery.entity.Delivery;
 import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;
@@ -137,6 +139,16 @@ public class OrderOpsServiceImpl implements OrderOpsService {
     public boolean checkBookInUserOrder(String userId, String bookId) {
         return orderBookService.exists(Wrappers.<OrderBook>lambdaQuery().eq(OrderBook::getBookId, bookId)
                 .eq(OrderBook::getUserId, userId));
+    }
+
+    @Override
+    public List<Book> getUserBooks(String userId) {
+        return orderBookService.findUserOrderBooks(userId);
+    }
+
+    @Override
+    public List<Course> getUserCourses(String userId) {
+        return orderCourseService.findUserOrderCourses(userId);
     }
 
 }

@@ -9,15 +9,14 @@ import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.book.service.BookService;
 import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
+import net.stepbooks.domain.history.service.ReadingHistoryService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.BookDto;
+import net.stepbooks.interfaces.client.dto.ReadHistoryForm;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +30,7 @@ public class BookController {
     private final BookService bookService;
     private final ContextManager contextManager;
     private final CourseService courseService;
+    private final ReadingHistoryService readingHistoryService;
 
 
     @Operation(summary = "获取书籍详情")
@@ -53,6 +53,14 @@ public class BookController {
     public ResponseEntity<List<Course>> getBookCourses(@PathVariable String id) {
         User user = contextManager.currentUser();
         return ResponseEntity.ok(courseService.getBookCoursesByUser(user.getId(), id));
+    }
+
+    @Operation(summary = "创建阅读记录")
+    @PostMapping("/{id}/reading-history")
+    public ResponseEntity<?> createReadingHistory(@PathVariable String id, @RequestBody ReadHistoryForm form) {
+        User user = contextManager.currentUser();
+        readingHistoryService.createReadingHistory(user.getId(), id, form);
+        return ResponseEntity.ok().build();
     }
 
 //    @Operation(summary = "获取书籍评论")

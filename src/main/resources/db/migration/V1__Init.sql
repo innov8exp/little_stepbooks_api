@@ -384,12 +384,13 @@ create TABLE STEP_BOOKSHELF
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    book_id         VARCHAR(100) REFERENCES STEP_BOOK(id),
+    book_id         VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
     book_set_id     VARCHAR(100) REFERENCES STEP_BOOK_SET(id),
     book_set_code   VARCHAR(100),
     sort_index      SERIAL,
     created_at      TIMESTAMP,
-    modified_at     TIMESTAMP
+    modified_at     TIMESTAMP,
+    UNIQUE (book_id, user_id)
 );
 
 -- 套装激活记录
@@ -423,9 +424,10 @@ create TABLE STEP_READING_HISTORY
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
     book_id       VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
     user_id       VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    paragraph_number BIGINT,
+    max_chapter_no    INT,
     created_at    TIMESTAMP,
-    modified_at   TIMESTAMP
+    modified_at   TIMESTAMP,
+    UNIQUE(book_id, user_id)
 );
 
 -- 用户学习时长
@@ -433,8 +435,10 @@ create TABLE STEP_LEARN_TIME
 (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
     user_id       VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
+    book_id       VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
+    course_id     VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL,
     duration      BIGINT,
-    learn_date_time    TIMESTAMP,
+    learn_date    DATE,
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );
@@ -485,10 +489,10 @@ create TABLE STEP_AUTH_HISTORY (
     modified_at     TIMESTAMP
 );
 
+create index step_product_sku_name_index on STEP_PRODUCT (sku_name);
+create index step_course_name_index on STEP_COURSE (name);
 create index step_book_name_index on STEP_BOOK (book_name);
 create index step_author_index on STEP_BOOK (author);
-
-alter table STEP_BOOKSHELF add constraint uk_bookshelf_book_user unique (book_id, user_id);
 
 --
 ---- 促销信息

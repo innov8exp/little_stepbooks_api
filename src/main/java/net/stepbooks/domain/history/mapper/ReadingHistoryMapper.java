@@ -1,16 +1,13 @@
 package net.stepbooks.domain.history.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import net.stepbooks.interfaces.client.dto.ChapterWithHistoryDto;
-import net.stepbooks.domain.book.entity.Book;
-import net.stepbooks.domain.history.entity.ReadingHistoryEntity;
-import org.apache.ibatis.annotations.Param;
+import net.stepbooks.domain.history.entity.ReadingHistory;
+import net.stepbooks.interfaces.client.dto.LearnReportDto;
 
-public interface ReadingHistoryMapper extends BaseMapper<ReadingHistoryEntity> {
+import java.time.LocalDate;
+import java.util.List;
 
-    ChapterWithHistoryDto findBookLastChapterRecordByUser(@Param("bookId") String bookId, @Param("userId") String userId);
+public interface ReadingHistoryMapper extends BaseMapper<ReadingHistory> {
 
-    IPage<Book> findUserReadBooks(Page<Book> page, String userId);
+    List<LearnReportDto> getUserReportsByDay(String userId, LocalDate date);
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 public class LearnTime extends BaseEntity {
 
     private String userId;
+    private String bookId;
+    private String courseId;
     private Long duration;
-    private LocalDateTime learnDateTime;
-
+    private Date learnDate;
 }

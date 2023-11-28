@@ -6,14 +6,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
+import net.stepbooks.domain.history.service.LearnTimeService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.client.dto.CourseDto;
+import net.stepbooks.interfaces.client.dto.LearnHistoryForm;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Course", description = "课程相关接口")
 @RestController
@@ -24,6 +23,7 @@ public class CourseController {
 
     private final CourseService courseService;
     private final ContextManager contextManager;
+    private final LearnTimeService learnTimeService;
 
     @Operation(summary = "获取课程详情")
     @GetMapping("/{id}")
@@ -43,4 +43,13 @@ public class CourseController {
         User user = contextManager.currentUser();
         return ResponseEntity.ok(courseService.getCourseUrl(user.getId(), id));
     }
+
+    @Operation(summary = "创建学习记录")
+    @PostMapping("/{id}/learning-history")
+    public ResponseEntity<?> createLearningHistory(@PathVariable String id, @RequestBody LearnHistoryForm form) {
+        User user = contextManager.currentUser();
+        learnTimeService.createLearningTime(user.getId(), id, form);
+        return ResponseEntity.ok().build();
+    }
+
 }

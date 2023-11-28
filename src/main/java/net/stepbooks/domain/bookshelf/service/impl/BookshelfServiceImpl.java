@@ -72,9 +72,6 @@ public class BookshelfServiceImpl extends ServiceImpl<BookshelfMapper, Bookshelf
 
     @Override
     public List<Book> listBooksInBookshelf(String userId) {
-        //        if (ObjectUtils.isEmpty(books)) {
-//            return recommendMapper.findDefaultRecommendBooks();
-//        }
         return bookshelfMapper.findBooksInBookshelfByUser(userId);
     }
 
