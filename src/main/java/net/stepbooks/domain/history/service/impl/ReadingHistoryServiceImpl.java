@@ -26,18 +26,23 @@ public class ReadingHistoryServiceImpl extends ServiceImpl<ReadingHistoryMapper,
 
     @Override
     public List<LearnReportDto> getUserTodayReports(String userId) {
-        return readingHistoryMapper.getUserReportsByDay(userId, LocalDateTime.now());
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime yesterday = today.minusDays(1L);
+        return readingHistoryMapper.getUserReportsByDay(userId, today, today, yesterday);
     }
 
     @Override
     public List<LearnReportDto> getUserYesterdayReports(String userId) {
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1L);
-        return readingHistoryMapper.getUserReportsByDay(userId, yesterday);
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime yesterday = today.minusDays(1L);
+        return readingHistoryMapper.getUserReportsByDay(userId, yesterday, today, yesterday);
     }
 
     @Override
     public List<LearnReportDto> getUserHistoryReports(String userId) {
-        return readingHistoryMapper.getUserReportsByDay(userId, null);
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime yesterday = today.minusDays(1L);
+        return readingHistoryMapper.getUserReportsByDay(userId, null, today, yesterday);
     }
 
     @Override
