@@ -28,17 +28,17 @@ VALUES ('4', 'color_bg__gluvmsph8ymy_large_2x.jpg', 'PUBLIC', 'BOOK', '8c4b408f-
 
 -- 内容配图，音频和课程
 INSERT INTO STEP_MEDIA(id, file_name, access_permission, asset_domain, object_name, object_key, bucket_name, store_path, object_url)
-VALUES ('00', 'Astronomia-Vicetone_Tony_Igy.mp3', 'PRIVATE', 'BOOK', 'book/c4c36839-11ae-4a4d-b5d4-18bc0e7c3446.mp3', 'book/c4c36839-11ae-4a4d-b5d4-18bc0e7c3446.mp3', 'stepbook.stage', 'book/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook.stage/book/c4c36839-11ae-4a4d-b5d4-18bc0e7c3446.mp3');
+VALUES ('00', 'Astronomia-Vicetone_Tony_Igy.mp3', 'PRIVATE', 'BOOK', 'book/c4c36839-11ae-4a4d-b5d4-18bc0e7c3446.mp3', 'book/c4c36839-11ae-4a4d-b5d4-18bc0e7c3446.mp3', 'stepbook-stage', 'book/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-stage/book/c4c36839-11ae-4a4d-b5d4-18bc0e7c3446.mp3');
 INSERT INTO STEP_MEDIA(id, file_name, access_permission, asset_domain, object_name, object_key, bucket_name, store_path, object_url)
-VALUES ('01', 'Alone-Alan_Walker.mp3', 'PRIVATE', 'BOOK', 'e614f8e5-f4f8-4d04-90e2-a88b363e2426.mp3', 'book/e614f8e5-f4f8-4d04-90e2-a88b363e2426.mp3', 'stepbook.stage', 'book/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook.stage/book/e614f8e5-f4f8-4d04-90e2-a88b363e2426.mp3');
+VALUES ('01', 'Alone-Alan_Walker.mp3', 'PRIVATE', 'BOOK', 'e614f8e5-f4f8-4d04-90e2-a88b363e2426.mp3', 'book/e614f8e5-f4f8-4d04-90e2-a88b363e2426.mp3', 'stepbook-stage', 'book/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-stage/book/e614f8e5-f4f8-4d04-90e2-a88b363e2426.mp3');
 INSERT INTO STEP_MEDIA(id, file_name, access_permission, asset_domain, object_name, object_key, bucket_name, store_path, object_url)
-VALUES ('02', '4.mp4', 'PRIVATE', 'COURSE', '60e58a1a-687c-40fa-9e12-a780480f2898.mp4', 'course/60e58a1a-687c-40fa-9e12-a780480f2898.mp4', 'stepbook.stage', 'course/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook.stage/course/60e58a1a-687c-40fa-9e12-a780480f2898.mp4');
+VALUES ('02', '4.mp4', 'PRIVATE', 'COURSE', '60e58a1a-687c-40fa-9e12-a780480f2898.mp4', 'course/60e58a1a-687c-40fa-9e12-a780480f2898.mp4', 'stepbook-stage', 'course/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-stage/course/60e58a1a-687c-40fa-9e12-a780480f2898.mp4');
 INSERT INTO STEP_MEDIA(id, file_name, access_permission, asset_domain, object_name, object_key, bucket_name, store_path, object_url)
-VALUES ('03', 'large_2x.mp4', 'PRIVATE', 'COURSE', 'd25f4648-4650-4dc7-b52a-3521da510519.mp4', 'course/d25f4648-4650-4dc7-b52a-3521da510519.mp4', 'stepbook.stage', 'course/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook.stage/course/d25f4648-4650-4dc7-b52a-3521da510519.mp4');
+VALUES ('03', 'large_2x.mp4', 'PRIVATE', 'COURSE', 'd25f4648-4650-4dc7-b52a-3521da510519.mp4', 'course/d25f4648-4650-4dc7-b52a-3521da510519.mp4', 'stepbook-stage', 'course/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-stage/course/d25f4648-4650-4dc7-b52a-3521da510519.mp4');
 INSERT INTO STEP_MEDIA(id, file_name, access_permission, asset_domain, object_name, object_key, bucket_name, store_path, object_url)
-VALUES ('04', 'WX20231124-231217@2x.png', 'PRIVATE', 'BOOK', 'f47d587a-696a-4f05-85e1-d14c24a7b917.png', 'book/f47d587a-696a-4f05-85e1-d14c24a7b917.png', 'stepbook.stage', 'book/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook.stage/book/f47d587a-696a-4f05-85e1-d14c24a7b917.png');
+VALUES ('04', 'WX20231124-231217@2x.png', 'PRIVATE', 'BOOK', 'f47d587a-696a-4f05-85e1-d14c24a7b917.png', 'book/f47d587a-696a-4f05-85e1-d14c24a7b917.png', 'stepbook-stage', 'book/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-stage/book/f47d587a-696a-4f05-85e1-d14c24a7b917.png');
 INSERT INTO STEP_MEDIA(id, file_name, access_permission, asset_domain, object_name, object_key, bucket_name, store_path, object_url)
-VALUES ('05', 'test2.jpg', 'PRIVATE', 'BOOK', 'd2ccd3d4-17d8-45d7-be84-45bcfe63778c.jpg', 'book/d2ccd3d4-17d8-45d7-be84-45bcfe63778c.jpg', 'stepbook.stage', 'book/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook.stage/book/d2ccd3d4-17d8-45d7-be84-45bcfe63778c.jpg');
+VALUES ('05', 'test2.jpg', 'PRIVATE', 'BOOK', 'd2ccd3d4-17d8-45d7-be84-45bcfe63778c.jpg', 'book/d2ccd3d4-17d8-45d7-be84-45bcfe63778c.jpg', 'stepbook-stage', 'book/', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-stage/book/d2ccd3d4-17d8-45d7-be84-45bcfe63778c.jpg');
 
 -- 产品配图
 INSERT INTO STEP_MEDIA(id, file_name, access_permission, asset_domain, object_name, object_key, bucket_name, store_path, object_url)
