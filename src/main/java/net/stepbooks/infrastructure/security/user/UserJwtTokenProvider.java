@@ -199,8 +199,9 @@ public class UserJwtTokenProvider {
 
     private Boolean canTokenBeRefreshed(String refreshToken, LocalDateTime lastPasswordReset) {
         final LocalDateTime created = getCreatedDateFromToken(refreshToken);
-        return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
-                && (!isTokenExpired(refreshToken));
+//        return !isCreatedBeforeLastPasswordReset(created, lastPasswordReset)
+//                && (!isTokenExpired(refreshToken));
+        return !isTokenExpired(refreshToken);
     }
 
 
