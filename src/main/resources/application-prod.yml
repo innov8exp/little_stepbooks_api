@@ -20,8 +20,8 @@ logging:
 
 aws:
   s3:
-    bucket: stepbook.production
-    public-bucket: stepbook.production.public
+    bucket: stepbook
+    public-bucket: stepbook-public
   cdn: https://asset-stage.stepbooks.net
 
 in-app-purchase:

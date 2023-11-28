@@ -21,8 +21,8 @@ logging:
 
 aws:
   s3:
-    bucket: stepbook.stage
-    public-bucket: stepbook.public
+    bucket: stepbook-stage
+    public-bucket: stepbook-public
   cdn: https://s3.cn-north-1.amazonaws.com.cn
 
 stepbooks:
