@@ -3,6 +3,6 @@
 <mapper namespace="net.stepbooks.domain.order.mapper.OrderCourseMapper">
     <select id="findUserOrderCourses" resultType="net.stepbooks.domain.course.entity.Course">
         select co.* from step_course co right join step_order_course_ref oco on co.id = oco.course_id
-        where oco.order_id = #{orderId}
+        where oco.user_id = #{userId}
     </select>
 </mapper>
