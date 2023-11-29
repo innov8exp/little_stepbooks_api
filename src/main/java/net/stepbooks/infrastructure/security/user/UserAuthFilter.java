@@ -44,19 +44,19 @@ public class UserAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-            UserDetails userDetails;
-            try {
-                userDetails = endUserDetailsService.loadUserByUsername(username);
-            } catch (UsernameNotFoundException e) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-            if (jwtTokenProvider.verifyToken(accessToken, userDetails)) {
-                var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            }
+        UserDetails userDetails;
+        try {
+            userDetails = endUserDetailsService.loadUserByUsername(username);
+        } catch (UsernameNotFoundException e) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if (jwtTokenProvider.verifyToken(accessToken, userDetails)) {
+            var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        }
         filterChain.doFilter(request, response);
     }
 }

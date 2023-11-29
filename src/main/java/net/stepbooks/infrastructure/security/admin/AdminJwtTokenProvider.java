@@ -65,7 +65,7 @@ public class AdminJwtTokenProvider {
 
     public TokenDto generateToken(JwtUserDetails jwtUserDetails) {
         var accessToken = generateAccessToken(jwtUserDetails);
-        var refreshToken = generateRefreshToken();
+        var refreshToken = generateRefreshToken(jwtUserDetails);
         return TokenDto.builder()
                 .tokenType(tokenType)
                 .accessToken(accessToken)
@@ -96,7 +96,7 @@ public class AdminJwtTokenProvider {
 
     public Boolean verifyRefreshToken(String token, UserDetails userDetails) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(accessTokenSecret);
+            Algorithm algorithm = Algorithm.HMAC256(refreshTokenSecret);
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer(issuer)
                     .withSubject(userDetails.getUsername())
@@ -120,7 +120,7 @@ public class AdminJwtTokenProvider {
             throw new BusinessException(ErrorCode.AUTH_ERROR);
         }
         String accessToken = generateAccessToken(userDetails);
-        refreshToken = generateRefreshToken();
+        refreshToken = generateRefreshToken(userDetails);
         return TokenDto.builder()
                 .tokenType(tokenType)
                 .accessToken(accessToken)
@@ -147,7 +147,7 @@ public class AdminJwtTokenProvider {
 
     }
 
-    private String generateRefreshToken() {
+    private String generateRefreshToken(JwtUserDetails userDetails) {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         LocalDateTime expire = LocalDateTime.now(ZoneOffset.UTC).plusSeconds(refreshTokenExpiration);
 
@@ -156,6 +156,7 @@ public class AdminJwtTokenProvider {
 
         Algorithm algorithmHS = Algorithm.HMAC256(refreshTokenSecret);
         return JWT.create().withIssuer(issuer)
+                .withSubject(userDetails.getUsername())
                 .withIssuedAt(createdDate)
                 .withExpiresAt(expirationDate)
                 .sign(algorithmHS);

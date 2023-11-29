@@ -74,7 +74,7 @@ public class UserJwtTokenProvider {
 
     public TokenDto generateToken(JwtUserDetails jwtUserDetails, AuthType authType) {
         var accessToken = generateAccessToken(jwtUserDetails, authType);
-        var refreshToken = generateRefreshToken();
+        var refreshToken = generateRefreshToken(jwtUserDetails);
         return TokenDto.builder()
                 .tokenType(tokenType)
                 .accessToken(accessToken)
@@ -105,7 +105,7 @@ public class UserJwtTokenProvider {
 
     public Boolean verifyRefreshToken(String token, UserDetails userDetails) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(accessTokenSecret);
+            Algorithm algorithm = Algorithm.HMAC256(refreshTokenSecret);
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer(issuer)
                     .withSubject(userDetails.getUsername())
@@ -130,7 +130,7 @@ public class UserJwtTokenProvider {
             throw new BusinessException(ErrorCode.AUTH_ERROR);
         }
         String accessToken = generateAccessToken(userDetails, authType);
-        refreshToken = generateRefreshToken();
+        refreshToken = generateRefreshToken(userDetails);
         return TokenDto.builder()
                 .tokenType(tokenType)
                 .accessToken(accessToken)
@@ -166,7 +166,7 @@ public class UserJwtTokenProvider {
 
     }
 
-    private String generateRefreshToken() {
+    private String generateRefreshToken(JwtUserDetails userDetails) {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         LocalDateTime expire = LocalDateTime.now(ZoneOffset.UTC).plusSeconds(refreshTokenExpiration);
 
@@ -175,6 +175,7 @@ public class UserJwtTokenProvider {
 
         Algorithm algorithmHS = Algorithm.HMAC256(refreshTokenSecret);
         return JWT.create().withIssuer(issuer)
+                .withSubject(userDetails.getUsername())
                 .withIssuedAt(createdDate)
                 .withExpiresAt(expirationDate)
                 .sign(algorithmHS);
