@@ -9,10 +9,10 @@
         left join STEP_LEARN_TIME lt on b.id = lt.book_id and rh.user_id = lt.user_id
         where rh.user_id = #{userId}
         <if test="date != null">
-            and rh.created_at = #{date}
+            and DATE_FORMAT(rh.created_at, '%Y-%m-%d') = #{date}
         </if>
         <if test="date == null">
-            and rh.created_at != #{today} and rh.created_at != #{yesterday}
+            and DATE_FORMAT(rh.created_at, '%Y-%m-%d') != #{today} and DATE_FORMAT(rh.created_at, '%Y-%m-%d') != #{yesterday}
         </if>
         group by rh.created_at, rh.book_id, b.book_name, b.description, b.book_img_id, b.book_img_url, rh.max_chapter_no
         order by rh.created_at desc

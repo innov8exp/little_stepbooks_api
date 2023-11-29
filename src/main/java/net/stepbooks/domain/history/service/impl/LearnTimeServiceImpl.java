@@ -10,6 +10,8 @@ import net.stepbooks.interfaces.client.dto.LearnReportSummaryDto;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class LearnTimeServiceImpl extends ServiceImpl<LearnTimeMapper, LearnTime> implements LearnTimeService {
@@ -23,6 +25,7 @@ public class LearnTimeServiceImpl extends ServiceImpl<LearnTimeMapper, LearnTime
         learnTime.setCourseId(courseId);
         learnTime.setBookId(form.getBookId());
         learnTime.setDuration(form.getDuration());
+        learnTime.setLearnDate(new Date());
         save(learnTime);
     }
 
