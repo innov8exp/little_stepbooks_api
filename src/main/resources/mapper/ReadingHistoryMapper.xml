@@ -9,10 +9,10 @@
         left join STEP_LEARN_TIME lt on b.id = lt.book_id and rh.user_id = lt.user_id
         where rh.user_id = #{userId}
         <if test="date != null">
-            and DATE(rh.created_at) = #{date}
+            and DATE(rh.created_at) = #{date, jdbcType=DATE}
         </if>
         <if test="date == null">
-            and DATE(rh.created_at) != #{today} and DATE(rh.created_at) != #{yesterday}
+            and DATE(rh.created_at) != #{today, jdbcType=DATE} and DATE(rh.created_at) != #{yesterday, jdbcType=DATE}
         </if>
         group by rh.created_at, rh.book_id, b.book_name, b.description, b.book_img_id, b.book_img_url, rh.max_chapter_no
         order by rh.created_at desc

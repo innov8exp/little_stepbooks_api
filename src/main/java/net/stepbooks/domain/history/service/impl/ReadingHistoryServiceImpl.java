@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -27,22 +26,22 @@ public class ReadingHistoryServiceImpl extends ServiceImpl<ReadingHistoryMapper,
 
     @Override
     public List<LearnReportDto> getUserTodayReports(String userId) {
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String yesterday = LocalDate.now().minusDays(1L).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate today = LocalDate.now();
+        LocalDate yesterday = today.minusDays(1L);
         return readingHistoryMapper.getUserReportsByDay(userId, today, today, yesterday);
     }
 
     @Override
     public List<LearnReportDto> getUserYesterdayReports(String userId) {
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String yesterday = LocalDate.now().minusDays(1L).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate today = LocalDate.now();
+        LocalDate yesterday = today.minusDays(1L);
         return readingHistoryMapper.getUserReportsByDay(userId, yesterday, today, yesterday);
     }
 
     @Override
     public List<LearnReportDto> getUserHistoryReports(String userId) {
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String yesterday = LocalDate.now().minusDays(1L).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate today = LocalDate.now();
+        LocalDate yesterday = today.minusDays(1L);
         return readingHistoryMapper.getUserReportsByDay(userId, null, today, yesterday);
     }
 
