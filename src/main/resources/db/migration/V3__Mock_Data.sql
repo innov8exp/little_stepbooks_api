@@ -84,31 +84,31 @@ VALUES ('8', '睡前小故事(安全篇)','睡前小故事(安全篇)', '湖南�
 INSERT INTO STEP_BOOK(id, book_name,description, author, book_img_id, book_img_url, duration)
 VALUES ('9', '睡前小故事(生活篇)','睡前小故事(生活篇)', '湖南少年儿童出版社', '3', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/book/efaff571-8ab2-4ac0-8732-dd7f97fcda75.png', '03:00');
 
-INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id)
-VALUES ('0', '0', '0', '第一页', '04', '00');
-INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id)
-VALUES ('1', '0', '1', '第二页', '05', '01');
-INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id)
-VALUES ('2', '0', '2', '第三页', '04', '00');
-INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id)
-VALUES ('3', '0', '3', '第四页', '05', '01');
-INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id)
-VALUES ('4', '1', '1', '第一页', '04', '00');
-INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id)
-VALUES ('5', '1', '2', '第二页', '05', '01');
-INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id)
-VALUES ('6', '1', '3', '第三页', '04', '00');
-INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id)
-VALUES ('7', '1', '4', '第四页', '05', '01');
+INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id, img_url, audio_url)
+VALUES ('0', '0', '0', '第一页', '04', '00', 'book/f47d587a-696a-4f05-85e1-d14c24a7b917.png', 'book/c4c36839-11ae-4a4d-b5d4-18bc0e7c3446.mp3');
+INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id, img_url, audio_url)
+VALUES ('1', '0', '1', '第二页', '05', '01', 'book/d2ccd3d4-17d8-45d7-be84-45bcfe63778c.jpg', 'book/e614f8e5-f4f8-4d04-90e2-a88b363e2426.mp3');
+INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id, img_url, audio_url)
+VALUES ('2', '0', '2', '第三页', '04', '00', 'book/f47d587a-696a-4f05-85e1-d14c24a7b917.png', 'book/c4c36839-11ae-4a4d-b5d4-18bc0e7c3446.mp3');
+INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id, img_url, audio_url)
+VALUES ('3', '0', '3', '第四页', '05', '01', 'book/d2ccd3d4-17d8-45d7-be84-45bcfe63778c.jpg', 'book/e614f8e5-f4f8-4d04-90e2-a88b363e2426.mp3');
+INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id, img_url, audio_url)
+VALUES ('4', '1', '1', '第一页', '04', '00', 'book/f47d587a-696a-4f05-85e1-d14c24a7b917.png', 'book/c4c36839-11ae-4a4d-b5d4-18bc0e7c3446.mp3');
+INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id, img_url, audio_url)
+VALUES ('5', '1', '2', '第二页', '05', '01', 'book/d2ccd3d4-17d8-45d7-be84-45bcfe63778c.jpg', 'book/e614f8e5-f4f8-4d04-90e2-a88b363e2426.mp3');
+INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id, img_url, audio_url)
+VALUES ('6', '1', '3', '第三页', '04', '00', 'book/f47d587a-696a-4f05-85e1-d14c24a7b917.png', 'book/c4c36839-11ae-4a4d-b5d4-18bc0e7c3446.mp3');
+INSERT INTO STEP_BOOK_CHAPTER(id, book_id, chapter_no, chapter_name, img_id, audio_id, img_url, audio_url)
+VALUES ('7', '1', '4', '第四页', '05', '01', 'book/d2ccd3d4-17d8-45d7-be84-45bcfe63778c.jpg', 'book/e614f8e5-f4f8-4d04-90e2-a88b363e2426.mp3');
 
-INSERT INTO STEP_COURSE(id, book_id, name, author, duration, cover_img_id, cover_img_url, video_id, course_nature)
-VALUES ('0', '0', '霸王龙试听', '宫西达也', '03:00', '0', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/book/041961e3-25b6-4d29-a6a6-60a69adb5185.jpg', '02', 'TRIAL');
-INSERT INTO STEP_COURSE(id, book_id, name, author, duration, cover_img_id, cover_img_url, video_id, course_nature)
-VALUES ('1', '0', '霸王龙精讲', '宫西达也', '03:00', '1', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/book/53f36f41-7780-4625-8e95-ab40e3fffacc.png', '03', 'NEED_TO_PAY');
-INSERT INTO STEP_COURSE(id, book_id, name, author, duration, cover_img_id, cover_img_url, video_id, course_nature)
-VALUES ('2', '1', '你看起来好像很好吃试听', '宫西达也', '03:00', '2', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/book/be4dd540-2caf-437a-a4f0-d1b0e73d4784.jpg', '03', 'TRIAL');
-INSERT INTO STEP_COURSE(id, book_id, name, author, duration, cover_img_id, cover_img_url, video_id, course_nature)
-VALUES ('3', '1', '你看起来好像很好吃精讲', '宫西达也', '03:00', '3', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/book/efaff571-8ab2-4ac0-8732-dd7f97fcda75.png', '02', 'NEED_TO_PAY');
+INSERT INTO STEP_COURSE(id, book_id, name, author, duration, cover_img_id, cover_img_url, video_id, course_nature, video_url)
+VALUES ('0', '0', '霸王龙试听', '宫西达也', '03:00', '0', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/book/041961e3-25b6-4d29-a6a6-60a69adb5185.jpg', '02', 'TRIAL', 'course/60e58a1a-687c-40fa-9e12-a780480f2898.mp4');
+INSERT INTO STEP_COURSE(id, book_id, name, author, duration, cover_img_id, cover_img_url, video_id, course_nature, video_url)
+VALUES ('1', '0', '霸王龙精讲', '宫西达也', '03:00', '1', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/book/53f36f41-7780-4625-8e95-ab40e3fffacc.png', '03', 'NEED_TO_PAY', 'course/d25f4648-4650-4dc7-b52a-3521da510519.mp4');
+INSERT INTO STEP_COURSE(id, book_id, name, author, duration, cover_img_id, cover_img_url, video_id, course_nature, video_url)
+VALUES ('2', '1', '你看起来好像很好吃试听', '宫西达也', '03:00', '2', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/book/be4dd540-2caf-437a-a4f0-d1b0e73d4784.jpg', '03', 'TRIAL', 'course/d25f4648-4650-4dc7-b52a-3521da510519.mp4');
+INSERT INTO STEP_COURSE(id, book_id, name, author, duration, cover_img_id, cover_img_url, video_id, course_nature, video_url)
+VALUES ('3', '1', '你看起来好像很好吃精讲', '宫西达也', '03:00', '3', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/book/efaff571-8ab2-4ac0-8732-dd7f97fcda75.png', '02', 'NEED_TO_PAY', 'course/60e58a1a-687c-40fa-9e12-a780480f2898.mp4');
 
 INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
 VALUES ('0', '0', '0');

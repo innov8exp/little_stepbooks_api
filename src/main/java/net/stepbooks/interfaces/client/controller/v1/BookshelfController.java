@@ -1,11 +1,12 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
-import net.stepbooks.domain.bookshelf.entity.BookshelfAddLog;
 import net.stepbooks.domain.bookshelf.service.BookshelfAddLogService;
 import net.stepbooks.domain.bookshelf.service.BookshelfService;
 import net.stepbooks.domain.order.service.OrderService;
@@ -15,6 +16,7 @@ import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.interfaces.client.dto.BookAndMaterialsDto;
+import net.stepbooks.interfaces.client.dto.BookshelfAddLogDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,9 +95,12 @@ public class BookshelfController {
 
     @GetMapping("/book-active-logs")
     @Operation(summary = "获取激活记录")
-    public ResponseEntity<List<BookshelfAddLog>> findActiveLogs() {
+    public ResponseEntity<IPage<BookshelfAddLogDto>> findActiveLogs(@RequestParam int currentPage,
+                                                                   @RequestParam int pageSize,
+                                                                   @RequestParam(required = false) String keyword) {
         String userId = contextManager.currentUser().getId();
-        List<BookshelfAddLog> bookshelfAddLogs = bookshelfAddLogService.pagedFindByUserId(userId);
+        Page<BookshelfAddLogDto> page = Page.of(currentPage, pageSize);
+        IPage<BookshelfAddLogDto> bookshelfAddLogs = bookshelfAddLogService.pagedFindByUserId(userId, page, keyword);
         return ResponseEntity.ok(bookshelfAddLogs);
     }
 }

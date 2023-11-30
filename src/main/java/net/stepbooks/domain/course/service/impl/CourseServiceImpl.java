@@ -10,8 +10,10 @@ import net.stepbooks.domain.course.service.CourseService;
 import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.domain.order.service.OrderOpsService;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.interfaces.admin.dto.MCourseDto;
 import net.stepbooks.interfaces.client.dto.CourseDto;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -74,16 +76,14 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     }
 
     @Override
-    public Course getDetailById(String id) {
+    public MCourseDto getDetailById(String id) {
         Course course = getById(id);
         String videoObjectKey = course.getVideoUrl();
-//        Media media = mediaService.getById(videoId);
-//        if (ObjectUtils.isEmpty(media)) {
-//            throw new BusinessException(ErrorCode.MEDIA_NOT_FOUND);
-//        }
         String videoUrl = privateFileService.getUrl(videoObjectKey);
         course.setVideoUrl(videoUrl);
-        return course;
+        MCourseDto courseDto = BaseAssembler.convert(course, MCourseDto.class);
+        courseDto.setVideoKey(videoObjectKey);
+        return courseDto;
     }
 
 }

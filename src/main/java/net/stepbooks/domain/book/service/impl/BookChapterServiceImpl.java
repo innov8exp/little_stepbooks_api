@@ -8,6 +8,8 @@ import net.stepbooks.domain.book.mapper.BookChapterMapper;
 import net.stepbooks.domain.book.service.BookChapterService;
 import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.admin.dto.BookChapterDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,22 +36,17 @@ public class BookChapterServiceImpl extends ServiceImpl<BookChapterMapper, BookC
     }
 
     @Override
-    public BookChapter getDetailById(String id) {
+    public BookChapterDto getDetailById(String id) {
         BookChapter chapter = getById(id);
         String imgObjectKey = chapter.getImgUrl();
         String audioObjectKey = chapter.getAudioUrl();
-//        Media imgMedia = mediaService.getById(imgId);
-//        if (ObjectUtils.isEmpty(imgMedia)) {
-//            throw new BusinessException(ErrorCode.MEDIA_NOT_FOUND);
-//        }
-//        Media audioMedia = mediaService.getById(audioId);
-//        if (ObjectUtils.isEmpty(audioMedia)) {
-//            throw new BusinessException(ErrorCode.MEDIA_NOT_FOUND);
-//        }
         String imgUrl = privateFileService.getUrl(imgObjectKey);
         String audioUrl = privateFileService.getUrl(audioObjectKey);
         chapter.setImgUrl(imgUrl);
         chapter.setAudioUrl(audioUrl);
-        return chapter;
+        BookChapterDto bookChapterDto = BaseAssembler.convert(chapter, BookChapterDto.class);
+        bookChapterDto.setImgKey(imgObjectKey);
+        bookChapterDto.setAudioKey(audioObjectKey);
+        return bookChapterDto;
     }
 }

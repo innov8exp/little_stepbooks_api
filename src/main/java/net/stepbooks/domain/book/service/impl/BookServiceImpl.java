@@ -9,9 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.book.entity.BookClassification;
+import net.stepbooks.domain.book.entity.BookMedia;
 import net.stepbooks.domain.book.mapper.BookChapterMapper;
 import net.stepbooks.domain.book.mapper.BookMapper;
 import net.stepbooks.domain.book.service.BookClassificationService;
+import net.stepbooks.domain.book.service.BookMediaService;
 import net.stepbooks.domain.book.service.BookService;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.media.service.MediaService;
@@ -39,13 +41,14 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
     private final PrivateFileServiceImpl privateFileService;
     private final OrderOpsService orderOpsService;
     private final MediaService mediaService;
+    private final BookMediaService bookMediaService;
 
     @Override
     public IPage<BookDto> findBooksInPagingByCriteria(Page<BookDto> page, MBookQueryDto queryDto) {
         return bookMapper.findAllByCriteria(page, queryDto.getBookName(), queryDto.getAuthor());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void createBook(BookDto bookDto) {
         Book book = BaseAssembler.convert(bookDto, Book.class);
@@ -56,6 +59,9 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
                 .classificationId(classification)
                 .build()).toList();
         bookClassificationService.saveBatch(bookClassifications);
+        List<BookMedia> productMedias = bookDto.getMedias().stream().peek(bookMedia ->
+                bookMedia.setBookId(book.getId())).toList();
+        bookMediaService.saveBatch(productMedias);
     }
 
     @Override
@@ -71,6 +77,10 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
                 .classificationId(classification)
                 .build()).toList();
         bookClassificationService.saveBatch(bookClassifications);
+        bookMediaService.remove(Wrappers.<BookMedia>lambdaQuery().eq(BookMedia::getBookId, id));
+        List<BookMedia> productMedias = bookDto.getMedias().stream().peek(bookMedia ->
+                bookMedia.setBookId(id)).toList();
+        bookMediaService.saveBatch(productMedias);
     }
 
     @Override
@@ -79,6 +89,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
         bookClassificationService.remove(Wrappers.<BookClassification>lambdaQuery()
                 .eq(BookClassification::getBookId, id));
         bookMapper.deleteById(id);
+        bookMediaService.remove(Wrappers.<BookMedia>lambdaQuery().eq(BookMedia::getBookId, id));
     }
 
     @Override
@@ -94,7 +105,11 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
 
     @Override
     public BookDto findBookById(String bookId) {
-        return bookMapper.findBookById(bookId);
+        BookDto book = bookMapper.findBookById(bookId);
+        List<BookMedia> bookMedias = bookMediaService.list(Wrappers.<BookMedia>lambdaQuery()
+                .eq(BookMedia::getBookId, bookId));
+        book.setMedias(bookMedias);
+        return book;
     }
 
     @Override

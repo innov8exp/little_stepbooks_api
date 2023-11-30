@@ -1,7 +1,10 @@
 package net.stepbooks.interfaces.admin.dto;
 
 import lombok.*;
+import net.stepbooks.domain.book.entity.BookMedia;
 import net.stepbooks.infrastructure.model.BaseDto;
+
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -18,4 +21,5 @@ public class BookDto extends BaseDto {
     private Long chapterCount;
     private Long courseCount;
     private String duration;
+    private List<BookMedia> medias;
 }

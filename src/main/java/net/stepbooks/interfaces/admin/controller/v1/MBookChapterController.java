@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.book.service.BookChapterService;
+import net.stepbooks.interfaces.admin.dto.BookChapterDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,8 @@ public class MBookChapterController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookChapter> getChapter(@PathVariable String id) {
-        BookChapter chapter = bookChapterService.getDetailById(id);
+    public ResponseEntity<BookChapterDto> getChapter(@PathVariable String id) {
+        BookChapterDto chapter = bookChapterService.getDetailById(id);
         return ResponseEntity.ok(chapter);
     }
 

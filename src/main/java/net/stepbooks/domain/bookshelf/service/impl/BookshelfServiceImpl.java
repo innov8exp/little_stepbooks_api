@@ -106,6 +106,7 @@ public class BookshelfServiceImpl extends ServiceImpl<BookshelfMapper, Bookshelf
     public void activeBookSet(String bookSetCode, String userId) {
         BookSet bookSet = bookSetService.findByCode(bookSetCode);
         List<Book> books = bookSetService.findBooksByBookSetId(bookSet.getId());
+
         // 拆书包，将书包中的书籍添加到书架
         saveBatch(books.stream().map(book -> Bookshelf.builder()
                         .bookSetId(bookSet.getId())

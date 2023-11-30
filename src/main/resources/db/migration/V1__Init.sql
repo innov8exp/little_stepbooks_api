@@ -106,6 +106,15 @@ create TABLE STEP_BOOK
     modified_at         TIMESTAMP
 );
 
+-- 书籍与媒体信息
+create TABLE STEP_BOOK_MEDIA_REF
+(
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
+    media_id VARCHAR(100) REFERENCES STEP_MEDIA(id) NOT NULL,
+    media_url TEXT
+);
+
 -- 书籍分级与书籍关系
 create TABLE STEP_BOOK_CLASSIFICATION_REF
 (
@@ -398,8 +407,8 @@ create TABLE STEP_BOOKSHELF_ADD_LOG
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    book_set_id     VARCHAR(100) REFERENCES STEP_BOOK_SET(id),
-    book_set_code   VARCHAR(100),
+    book_set_id     VARCHAR(100) REFERENCES STEP_BOOK_SET(id) NOT NULL,
+    book_set_code   VARCHAR(100) NOT NULL,
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
 );

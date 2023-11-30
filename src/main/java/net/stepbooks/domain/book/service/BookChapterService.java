@@ -2,6 +2,7 @@ package net.stepbooks.domain.book.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.domain.book.entity.BookChapter;
+import net.stepbooks.interfaces.admin.dto.BookChapterDto;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ public interface BookChapterService extends IService<BookChapter> {
 
     Long getMaxChapterNo(String bookId);
 
-    BookChapter getDetailById(String id);
+    BookChapterDto getDetailById(String id);
 }
