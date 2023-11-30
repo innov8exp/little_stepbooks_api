@@ -2,19 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.history.mapper.ReadingHistoryMapper">
     <select id="getUserReportsByDay" resultType="net.stepbooks.interfaces.client.dto.LearnReportDto">
-        select rh.created_at, rh.book_id, b.book_name, b.description book_description, b.book_img_id, b.book_img_url,
+        select rh.modified_at, rh.book_id, b.book_name, b.description book_description, b.book_img_id, b.book_img_url,
         rh.max_chapter_no, max(bc.chapter_no) total_chapter_no, sum(lt.duration) learn_duration
         from STEP_READING_HISTORY rh left join STEP_BOOK b on rh.book_id = b.id
         left join STEP_BOOK_CHAPTER bc on b.id = bc.book_id
         left join STEP_LEARN_TIME lt on b.id = lt.book_id and rh.user_id = lt.user_id
         where rh.user_id = #{userId}
         <if test="date != null">
-            and DATE(rh.created_at) = #{date, jdbcType=DATE}
+            and DATE(rh.modified_at) = #{date, jdbcType=DATE}
         </if>
         <if test="date == null">
-            and DATE(rh.created_at) != #{today, jdbcType=DATE} and DATE(rh.created_at) != #{yesterday, jdbcType=DATE}
+            and DATE(rh.modified_at) != #{today, jdbcType=DATE} and DATE(rh.modified_at) != #{yesterday, jdbcType=DATE}
         </if>
-        group by rh.created_at, rh.book_id, b.book_name, b.description, b.book_img_id, b.book_img_url, rh.max_chapter_no
-        order by rh.created_at desc
+        group by rh.modified_at, rh.book_id, b.book_name, b.description, b.book_img_id, b.book_img_url, rh.max_chapter_no
+        order by rh.modified_at desc
     </select>
 </mapper>
