@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.stepbooks.domain.book.entity.BookMedia;
 import net.stepbooks.infrastructure.enums.Material;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -20,5 +23,6 @@ public class BookAndMaterialsDto {
     private String[] classifications;
     private long chapterCount;
     private long courseCount;
+    private List<BookMedia> medias;
     private Material[] materials;
 }
