@@ -7,7 +7,7 @@ import net.stepbooks.interfaces.client.dto.CourseDto;
 import java.util.List;
 
 public interface CourseMapper extends BaseMapper<Course> {
-    List<Course> findCoursesByProductId(String productId);
+    List<CourseDto> findCoursesByProductId(String productId);
 
     CourseDto getCourseAndMediaById(String courseId);
 }

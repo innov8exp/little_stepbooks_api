@@ -35,7 +35,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     }
 
     @Override
-    public List<Course> findCoursesByProductId(String productId) {
+    public List<CourseDto> findCoursesByProductId(String productId) {
         return courseMapper.findCoursesByProductId(productId);
     }
 

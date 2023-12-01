@@ -12,7 +12,6 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @Builder
 @TableName("STEP_COURSE")
 public class Course extends BaseEntity {
-
     private String bookId;
     private String name;
     private String description;

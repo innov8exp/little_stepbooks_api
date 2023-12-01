@@ -9,6 +9,7 @@ import net.stepbooks.infrastructure.model.BaseDto;
 @Data
 public class CourseDto extends BaseDto {
     private String bookId;
+    private String bookName;
     private String name;
     private String description;
     private String author;

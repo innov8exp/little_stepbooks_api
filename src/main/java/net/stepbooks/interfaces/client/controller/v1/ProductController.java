@@ -8,13 +8,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.book.service.BookService;
-import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.ProductDto;
+import net.stepbooks.interfaces.client.dto.CourseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -85,8 +85,8 @@ public class ProductController {
 
     @GetMapping("/{id}/courses")
     @Operation(summary = "获取产品的课程")
-    public ResponseEntity<List<Course>> getProductCourses(@PathVariable String id) {
-        List<Course> courses = courseService.findCoursesByProductId(id);
+    public ResponseEntity<List<CourseDto>> getProductCourses(@PathVariable String id) {
+        List<CourseDto> courses = courseService.findCoursesByProductId(id);
         return ResponseEntity.ok(courses);
     }
 
