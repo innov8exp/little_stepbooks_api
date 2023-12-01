@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.order.mapper.OrderInventoryLogMapper">
     <select id="findInPagingByCriteria" resultType="net.stepbooks.interfaces.admin.dto.OrderInventoryLogDto">
-        select il.*, p.skuName from step_order_inventory_log il left join step_product p on il.product_id = p.id
+        select il.*, p.sku_name from step_order_inventory_log il left join step_product p on il.product_id = p.id
         where 1=1
         <if test="skuCode != null">
             and sku_code = #{skuCode}
