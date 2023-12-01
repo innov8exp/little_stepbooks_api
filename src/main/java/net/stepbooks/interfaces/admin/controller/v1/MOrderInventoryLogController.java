@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.order.entity.OrderInventoryLog;
 import net.stepbooks.domain.order.service.OrderInventoryLogService;
+import net.stepbooks.interfaces.admin.dto.OrderInventoryLogDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +17,12 @@ public class MOrderInventoryLogController {
     private final OrderInventoryLogService orderInventoryLogService;
 
     @GetMapping
-    public ResponseEntity<IPage<OrderInventoryLog>> getPagedOrderInventoryLogs(@RequestParam int currentPage,
-                                                                               @RequestParam int pageSize,
-                                                                               @RequestParam(required = false) String skuCode,
-                                                                               @RequestParam(required = false) String orderCode) {
-        Page<OrderInventoryLog> page = Page.of(currentPage, pageSize);
-        IPage<OrderInventoryLog> inventories = orderInventoryLogService.findInPagingByCriteria(page, skuCode, orderCode);
+    public ResponseEntity<IPage<OrderInventoryLogDto>> getPagedOrderInventoryLogs(@RequestParam int currentPage,
+                                   @RequestParam int pageSize,
+                                   @RequestParam(required = false) String skuCode,
+                                   @RequestParam(required = false) String orderCode) {
+        Page<OrderInventoryLogDto> page = Page.of(currentPage, pageSize);
+        IPage<OrderInventoryLogDto> inventories = orderInventoryLogService.findInPagingByCriteria(page, skuCode, orderCode);
         return ResponseEntity.ok(inventories);
     }
 

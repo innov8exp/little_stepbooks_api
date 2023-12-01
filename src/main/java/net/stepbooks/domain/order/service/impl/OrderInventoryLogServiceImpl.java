@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.order.entity.OrderInventoryLog;
 import net.stepbooks.domain.order.mapper.OrderInventoryLogMapper;
 import net.stepbooks.domain.order.service.OrderInventoryLogService;
+import net.stepbooks.interfaces.admin.dto.OrderInventoryLogDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +17,8 @@ public class OrderInventoryLogServiceImpl extends ServiceImpl<OrderInventoryLogM
     private final OrderInventoryLogMapper orderInventoryLogMapper;
 
     @Override
-    public IPage<OrderInventoryLog> findInPagingByCriteria(IPage<OrderInventoryLog> page, String skuCode, String orderCode) {
+    public IPage<OrderInventoryLogDto> findInPagingByCriteria(IPage<OrderInventoryLogDto> page, String skuCode,
+                                                              String orderCode) {
         return orderInventoryLogMapper.findInPagingByCriteria(page, skuCode, orderCode);
     }
 }
