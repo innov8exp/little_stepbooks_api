@@ -75,10 +75,11 @@ public class OrderController {
     @GetMapping("/user")
     public ResponseEntity<IPage<OrderInfoDto>> getUserOrderHistory(@RequestParam int currentPage,
                                                                    @RequestParam int pageSize,
-                                                                   @RequestParam(required = false) OrderState state) {
+                                                                   @RequestParam(required = false) OrderState state,
+                                                                   @RequestParam(required = false) String keyword) {
         String userId = contextManager.currentUser().getId();
         Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
-        IPage<OrderInfoDto> ordersByCriteria = orderOpsService.findOrdersByUser(page, userId, state);
+        IPage<OrderInfoDto> ordersByCriteria = orderOpsService.findOrdersByUser(page, userId, state, keyword);
         return ResponseEntity.ok(ordersByCriteria);
     }
 

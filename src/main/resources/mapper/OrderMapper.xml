@@ -15,10 +15,13 @@
         order by o.modified_at desc
     </select>
     <select id="findPageByUser" resultType="net.stepbooks.interfaces.admin.dto.OrderInfoDto">
-        select o.* from step_order o
+        select o.* from step_order o left join step_product p on o.product_id = p.id
         where o.user_id = #{userId}
         <if test="state != null">
             and o.state = #{state}
+        </if>
+        <if test="skuName != null and skuName != ''">
+            and p.sku_name like concat('%', #{skuName}, '%')
         </if>
         order by o.created_at desc
     </select>

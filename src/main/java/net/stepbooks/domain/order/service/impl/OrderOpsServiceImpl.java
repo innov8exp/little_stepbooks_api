@@ -46,9 +46,9 @@ public class OrderOpsServiceImpl implements OrderOpsService {
     }
 
     @Override
-    public IPage<OrderInfoDto> findOrdersByUser(Page<OrderInfoDto> page, String userId, OrderState state) {
+    public IPage<OrderInfoDto> findOrdersByUser(Page<OrderInfoDto> page, String userId, OrderState state, String keyword) {
         // Step 1: Retrieve orders based on user and state
-        IPage<OrderInfoDto> orderInfoDto = orderMapper.findPageByUser(page, userId, state);
+        IPage<OrderInfoDto> orderInfoDto = orderMapper.findPageByUser(page, userId, state, keyword);
 
         // Step 2: Extract order IDs from the retrieved orders
         List<String> orderIds = orderInfoDto.getRecords().stream()
