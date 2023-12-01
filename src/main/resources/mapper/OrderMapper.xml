@@ -15,7 +15,8 @@
         order by o.modified_at desc
     </select>
     <select id="findPageByUser" resultType="net.stepbooks.interfaces.admin.dto.OrderInfoDto">
-        select o.* from step_order o left join step_product p on o.product_id = p.id
+        select o.* from step_order o left join step_order_product_ref op on o.id = op.order_id
+        left join step_product p on op.product_id = p.id
         where o.user_id = #{userId}
         <if test="state != null">
             and o.state = #{state}
