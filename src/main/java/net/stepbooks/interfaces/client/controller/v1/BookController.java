@@ -36,9 +36,8 @@ public class BookController {
     @Operation(summary = "获取书籍详情")
     @GetMapping("/{id}")
     public ResponseEntity<BookDto> findBook(@PathVariable String id) {
-        Book book = bookService.getById(id);
-        BookDto bookDto = BaseAssembler.convert(book, BookDto.class);
-        return ResponseEntity.ok(bookDto);
+        BookDto book = bookService.findBookById(id);
+        return ResponseEntity.ok(book);
     }
 
     @Operation(summary = "获取书籍图画和音频(包含URL)")
