@@ -11,6 +11,8 @@ import net.stepbooks.domain.bookset.service.BookSetService;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
+import net.stepbooks.domain.inventory.entity.Inventory;
+import net.stepbooks.domain.inventory.service.InventoryService;
 import net.stepbooks.domain.product.entity.*;
 import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.domain.product.mapper.ProductBookMapper;
@@ -41,6 +43,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private final ProductCourseService productCourseService;
     private final BookService bookService;
     private final CourseService courseService;
+    private final InventoryService inventoryService;
 
     @Override
     public IPage<Product> findProductsInPagingByCriteria(Page<Product> page, MProductQueryDto queryDto) {
@@ -215,6 +218,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 .eq(ProductClassification::getProductId, id));
         productBookService.remove(Wrappers.<ProductBook>lambdaQuery().eq(ProductBook::getProductId, id));
         productCourseService.remove(Wrappers.<ProductCourse>lambdaQuery().eq(ProductCourse::getProductId, id));
+        inventoryService.remove(Wrappers.<Inventory>lambdaQuery().eq(Inventory::getProductId, id));
     }
 
 }
