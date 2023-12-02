@@ -5,10 +5,10 @@
         select il.*, p.sku_name from step_order_inventory_log il left join step_product p on il.product_id = p.id
         where 1=1
         <if test="skuCode != null">
-            and sku_code = #{skuCode}
+            and il.sku_code = #{skuCode}
         </if>
         <if test="orderCode != null">
-            and order_code = #{orderCode}
+            and il.order_code = #{orderCode}
         </if>
     </select>
 </mapper>

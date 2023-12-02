@@ -133,7 +133,7 @@ admin:
     refresh-token:
       cookie-name: refresh_token
       secret: jCqdfD13l#tT
-      expiration: 720000
+      expiration: 604800
 
 aws:
   region: cn-north-1
