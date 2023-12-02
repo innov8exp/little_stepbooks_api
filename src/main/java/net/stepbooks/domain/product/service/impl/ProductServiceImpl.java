@@ -206,4 +206,15 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return productMapper.findDefaultRecommendProductsInPaging(page);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteById(String id) {
+        removeById(id);
+        productMediaService.remove(Wrappers.<ProductMedia>lambdaQuery().eq(ProductMedia::getProductId, id));
+        productClassificationService.remove(Wrappers.<ProductClassification>lambdaQuery()
+                .eq(ProductClassification::getProductId, id));
+        productBookService.remove(Wrappers.<ProductBook>lambdaQuery().eq(ProductBook::getProductId, id));
+        productCourseService.remove(Wrappers.<ProductCourse>lambdaQuery().eq(ProductCourse::getProductId, id));
+    }
+
 }

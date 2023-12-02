@@ -41,4 +41,6 @@ public interface ProductService extends IService<Product> {
     List<Classification> getProductClassifications(String id);
 
     IPage<Product> listDefaultRecommendProducts(Page<Product> page);
+
+    void deleteById(String id);
 }

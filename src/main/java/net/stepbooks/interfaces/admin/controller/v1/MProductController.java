@@ -49,7 +49,7 @@ public class MProductController {
         if (ProductStatus.ON_SHELF.equals(product.getStatus())) {
             throw new BusinessException(ErrorCode.PRODUCT_ON_SHELF_CANNOT_BE_DELETED);
         }
-        productService.removeById(id);
+        productService.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
