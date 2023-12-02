@@ -92,7 +92,7 @@ public class MBookController {
     @PostMapping("/{id}/chapters")
     public ResponseEntity<?> createBookChapter(@PathVariable String id, @RequestBody BookChapter bookChapter) {
         bookChapter.setBookId(id);
-        bookChapterService.save(bookChapter);
+        bookChapterService.createBookChapter(bookChapter);
         return ResponseEntity.ok().build();
     }
 
@@ -117,7 +117,7 @@ public class MBookController {
     @PostMapping("/{id}/courses")
     public ResponseEntity<?> createBookCourse(@PathVariable String id, @RequestBody Course course) {
         course.setBookId(id);
-        courseService.save(course);
+        courseService.createCourse(course);
         return ResponseEntity.ok().build();
     }
 

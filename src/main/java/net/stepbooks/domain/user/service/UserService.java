@@ -1,12 +1,12 @@
 package net.stepbooks.domain.user.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.interfaces.client.dto.SocialAuthDto;
 import net.stepbooks.interfaces.client.dto.TokenDto;
 import net.stepbooks.interfaces.client.dto.UserDto;
 import net.stepbooks.interfaces.client.dto.WechatAuthDto;
-
-import java.util.List;
 
 public interface UserService {
 
@@ -46,7 +46,7 @@ public interface UserService {
 
     void updateUserById(String id, User user);
 
-    List<User> findUsers();
+    IPage<User> findUsers(Page<User> page, String username, String nickname);
 
     User findUser(String id);
 

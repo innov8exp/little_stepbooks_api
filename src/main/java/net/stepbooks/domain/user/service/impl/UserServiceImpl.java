@@ -1,7 +1,9 @@
 package net.stepbooks.domain.user.service.impl;
 
 import com.auth0.jwt.interfaces.Claim;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.email.service.EmailService;
@@ -426,8 +428,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findUsers() {
-        return userMapper.selectList(Wrappers.emptyWrapper());
+    public IPage<User> findUsers(Page<User> page, String username, String nickname) {
+        return userMapper.selectPage(page, Wrappers.<User>lambdaQuery()
+                .eq(!ObjectUtils.isEmpty(username), User::getUsername, username)
+                .like(!ObjectUtils.isEmpty(nickname), User::getNickname, nickname)
+                .orderByDesc(User::getCreatedAt));
     }
 
     @Override

@@ -7,9 +7,11 @@ import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.enums.CourseNature;
 import net.stepbooks.domain.course.mapper.CourseMapper;
 import net.stepbooks.domain.course.service.CourseService;
-import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.domain.order.service.OrderOpsService;
+import net.stepbooks.domain.product.entity.ProductCourse;
+import net.stepbooks.domain.product.service.ProductBookService;
+import net.stepbooks.domain.product.service.ProductCourseService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
@@ -27,7 +29,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     private final CourseMapper courseMapper;
     private final PrivateFileServiceImpl privateFileService;
     private final OrderOpsService orderOpsService;
-    private final MediaService mediaService;
+    private final ProductCourseService productCourseService;
+    private final ProductBookService productBookService;
 
     @Override
     public List<Course> getBookCourses(String bookId) {
@@ -84,6 +87,27 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         MCourseDto courseDto = BaseAssembler.convert(course, MCourseDto.class);
         courseDto.setVideoKey(videoObjectKey);
         return courseDto;
+    }
+
+    @Override
+    public void updateCourse(Course course) {
+        updateById(course);
+    }
+
+    @Override
+    public void createCourse(Course course) {
+        save(course);
+        String bookId = course.getBookId();
+        List<ProductCourse> productCourses = productBookService.getProductBooksByBookId(bookId)
+                .stream().map(productBook -> {
+            String productId = productBook.getProductId();
+            ProductCourse productCourse = new ProductCourse();
+            productCourse.setBookId(bookId);
+            productCourse.setCourseId(course.getId());
+            productCourse.setProductId(productId);
+            return productCourse;
+        }).toList();
+        productCourseService.saveBatch(productCourses);
     }
 
 }

@@ -19,7 +19,7 @@ public class MCourseController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOne(@PathVariable String id, @RequestBody Course entity) {
         entity.setId(id);
-        courseService.updateById(entity);
+        courseService.updateCourse(entity);
         return ResponseEntity.ok().build();
     }
 

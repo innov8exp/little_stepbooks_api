@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.book.mapper.BookChapterMapper;
 import net.stepbooks.domain.book.service.BookChapterService;
-import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.admin.dto.BookChapterDto;
@@ -20,7 +19,6 @@ public class BookChapterServiceImpl extends ServiceImpl<BookChapterMapper, BookC
 
     private final BookChapterMapper bookChapterMapper;
     private final PrivateFileServiceImpl privateFileService;
-    private final MediaService mediaService;
 
 
     @Override
@@ -48,5 +46,10 @@ public class BookChapterServiceImpl extends ServiceImpl<BookChapterMapper, BookC
         bookChapterDto.setImgKey(imgObjectKey);
         bookChapterDto.setAudioKey(audioObjectKey);
         return bookChapterDto;
+    }
+
+    @Override
+    public void createBookChapter(BookChapter bookChapter) {
+        save(bookChapter);
     }
 }

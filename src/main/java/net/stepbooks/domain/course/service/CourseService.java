@@ -20,4 +20,8 @@ public interface CourseService extends IService<Course> {
     List<Course> getBookCoursesByUser(String userId, String bookId);
 
     MCourseDto getDetailById(String id);
+
+    void updateCourse(Course course);
+
+    void createCourse(Course course);
 }

@@ -13,4 +13,6 @@ public interface BookChapterService extends IService<BookChapter> {
     Long getMaxChapterNo(String bookId);
 
     BookChapterDto getDetailById(String id);
+
+    void createBookChapter(BookChapter bookChapter);
 }
