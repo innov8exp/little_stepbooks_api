@@ -57,13 +57,12 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteAddress(String id) {
-        removeById(id);
+    public void deleteAddress(String id, String userId) {
         long count = count();
-        if (count == 1) {
-            UserAddress userAddress = list().get(0);
-            userAddress.setIsDefault(true);
-            updateById(userAddress);
+        if (count == 2) {
+            update(Wrappers.<UserAddress>lambdaUpdate().eq(UserAddress::getUserId, userId)
+                    .set(UserAddress::getIsDefault, false));
         }
+        removeById(id);
     }
 }
