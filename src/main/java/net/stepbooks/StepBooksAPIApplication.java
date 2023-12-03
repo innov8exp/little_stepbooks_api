@@ -1,5 +1,6 @@
 package net.stepbooks;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -18,9 +19,12 @@ import java.util.TimeZone;
 @EnableTransactionManagement
 public class StepBooksAPIApplication {
 
+    @PostConstruct
+    void started() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
+
     public static void main(String[] args) {
-        TimeZone timeZone = TimeZone.getTimeZone("UTC");
-        TimeZone.setDefault(timeZone);
         SpringApplication.run(StepBooksAPIApplication.class, args);
     }
 
