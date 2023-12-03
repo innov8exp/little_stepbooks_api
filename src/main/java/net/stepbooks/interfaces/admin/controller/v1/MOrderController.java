@@ -11,6 +11,7 @@ import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.OrderEventLog;
 import net.stepbooks.domain.order.enums.DeliveryCompany;
+import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.service.OrderEventLogService;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.order.service.OrderProductService;
@@ -93,6 +94,12 @@ public class MOrderController {
         BeanUtils.copyProperties(deliveryDetail, delivery);
         deliveryService.updateById(delivery);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/states")
+    public ResponseEntity<OrderState[]> getStates() {
+        OrderState[] values = OrderState.values();
+        return ResponseEntity.ok(values);
     }
 
     @GetMapping("/ship-companies")
