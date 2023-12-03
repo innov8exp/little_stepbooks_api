@@ -18,7 +18,7 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
 
     @Override
     public List<UserAddress> findByUserId(String userId) {
-        return list(Wrappers.<UserAddress>lambdaQuery().eq(UserAddress::getUserId, userId));
+        return list(Wrappers.<UserAddress>lambdaQuery().eq(UserAddress::getUserId, userId).orderByDesc(UserAddress::getIsDefault));
     }
 
     @Override

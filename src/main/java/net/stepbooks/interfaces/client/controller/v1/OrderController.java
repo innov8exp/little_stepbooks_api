@@ -1,12 +1,14 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.delivery.entity.Delivery;
+import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.enums.OrderState;
@@ -26,6 +28,8 @@ import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 import net.stepbooks.interfaces.admin.dto.OrderProductDto;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 import net.stepbooks.interfaces.client.dto.PlaceOrderDto;
+import net.stepbooks.interfaces.client.dto.RecipientInfoDto;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +49,7 @@ public class OrderController {
     private final OrderOpsService orderOpsService;
     private final ProductService productService;
     private final RefundRequestService refundRequestService;
+    private final DeliveryService deliveryService;
 
     @Operation(summary = "下单")
     @PostMapping
@@ -69,6 +74,24 @@ public class OrderController {
         } else {
             throw new BusinessException(ErrorCode.PRODUCT_NATURE_NOT_SUPPORT);
         }
+    }
+
+    @Operation(summary = "修改配送信息")
+    @PutMapping("/{code}/delivery")
+    public ResponseEntity<?> updateDeliveryInfo(@PathVariable String code, @RequestBody RecipientInfoDto recipient) {
+        User user = contextManager.currentUser();
+        Order order = orderOpsService.findOrderByCode(code);
+        if (!user.getId().equals(order.getUserId())) {
+            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+        }
+        if (!OrderState.PLACED.equals(order.getState()) && !OrderState.PAID.equals(order.getState())) {
+            throw new BusinessException(ErrorCode.ORDER_STATE_NOT_SUPPORT);
+        }
+        Delivery delivery = deliveryService.getOne(Wrappers.<Delivery>lambdaQuery()
+                .eq(Delivery::getOrderId, order.getId()));
+        BeanUtils.copyProperties(recipient, delivery);
+        deliveryService.updateById(delivery);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "获取用户订单列表")

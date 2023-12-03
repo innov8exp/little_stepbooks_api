@@ -21,10 +21,8 @@ import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.interfaces.admin.dto.DeliveryCompanyDto;
-import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
-import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
-import net.stepbooks.interfaces.admin.dto.OrderProductDto;
+import net.stepbooks.interfaces.admin.dto.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,6 +87,14 @@ public class MOrderController {
         return ResponseEntity.ok(order);
     }
 
+    @PutMapping("/{id}/delivery")
+    public ResponseEntity<?> updateDelivery(@PathVariable String id, @RequestBody DeliveryDetailDto deliveryDetail) {
+        Delivery delivery = deliveryService.getOne(Wrappers.<Delivery>lambdaQuery().eq(Delivery::getOrderId, id));
+        BeanUtils.copyProperties(deliveryDetail, delivery);
+        deliveryService.updateById(delivery);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/ship-companies")
     public ResponseEntity<List<DeliveryCompanyDto>> getShipCompanies() {
         ArrayList<DeliveryCompanyDto> deliveryCompanies = new ArrayList<>();
@@ -136,4 +142,5 @@ public class MOrderController {
         }
         return ResponseEntity.ok().build();
     }
+
 }
