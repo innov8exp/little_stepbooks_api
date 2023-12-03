@@ -6,6 +6,6 @@
         inner join STEP_BOOKSHELF s
         on b.id = s.book_id
         where s.user_id = #{userId}
-        order by s.sort_index asc
+        order by s.created_at desc
     </select>
 </mapper>

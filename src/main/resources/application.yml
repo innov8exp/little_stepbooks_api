@@ -1,6 +1,7 @@
 server:
   port: 8081
 
+
 spring:
   servlet:
     multipart:
@@ -14,6 +15,10 @@ spring:
       validation-query: SELECT 1
       test-while-idle: true
   #      time-between-eviction-runs-millis: 3600000
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
   mail:
     host: email-smtp.us-east-2.amazonaws.com

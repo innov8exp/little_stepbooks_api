@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import java.util.TimeZone;
+
 @EnableAsync
 @EnableScheduling
 @EnableFeignClients
@@ -17,6 +19,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class StepBooksAPIApplication {
 
     public static void main(String[] args) {
+        TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        TimeZone.setDefault(timeZone);
         SpringApplication.run(StepBooksAPIApplication.class, args);
     }
 
