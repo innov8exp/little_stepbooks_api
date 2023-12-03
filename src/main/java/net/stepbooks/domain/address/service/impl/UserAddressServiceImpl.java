@@ -18,7 +18,8 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
 
     @Override
     public List<UserAddress> findByUserId(String userId) {
-        return list(Wrappers.<UserAddress>lambdaQuery().eq(UserAddress::getUserId, userId).orderByDesc(UserAddress::getIsDefault));
+        return list(Wrappers.<UserAddress>lambdaQuery().eq(UserAddress::getUserId, userId)
+                .orderByDesc(UserAddress::getIsDefault));
     }
 
     @Override
@@ -52,5 +53,17 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
                     .set(UserAddress::getIsDefault, false));
         }
         updateById(userAddress);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteAddress(String id) {
+        removeById(id);
+        long count = count();
+        if (count == 1) {
+            UserAddress userAddress = list().get(0);
+            userAddress.setIsDefault(true);
+            updateById(userAddress);
+        }
     }
 }

@@ -14,4 +14,6 @@ public interface UserAddressService extends IService<UserAddress> {
     void createUserAddress(UserAddress userAddress);
 
     void updateUserAddress(UserAddress userAddress);
+
+    void deleteAddress(String id);
 }

@@ -50,7 +50,7 @@ public class UserAddressController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除用户地址")
     public ResponseEntity<?> deleteById(@PathVariable String id) {
-        userAddressService.removeById(id);
+        userAddressService.deleteAddress(id);
         return ResponseEntity.ok().build();
     }
 
