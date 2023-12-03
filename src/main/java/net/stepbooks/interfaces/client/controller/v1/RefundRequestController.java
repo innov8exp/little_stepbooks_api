@@ -16,6 +16,7 @@ import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.RefundReason;
+import net.stepbooks.infrastructure.enums.RefundStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
@@ -80,6 +81,7 @@ public class RefundRequestController {
     public ResponseEntity<?> cancelRequest(@PathVariable String id) {
         RefundRequest refundRequest = refundRequestService.getById(id);
         refundRequest.setRequestStatus(RequestStatus.CANCELLED);
+        refundRequest.setRefundStatus(RefundStatus.REFUND_CANCELLED);
         refundRequestService.updateById(refundRequest);
         return ResponseEntity.ok().build();
     }
