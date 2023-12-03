@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.order.mapper.OrderBookMapper">
     <select id="findUserOrderBooks" resultType="net.stepbooks.domain.book.entity.Book">
-        select bk.* from step_book bk right join step_order_book_ref ob on bk.id = ob.book_id
+        select distinct bk.* from step_book bk right join step_order_book_ref ob on bk.id = ob.book_id
         where ob.user_id = #{userId}
     </select>
 </mapper>

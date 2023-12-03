@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.order.mapper.OrderCourseMapper">
     <select id="findUserOrderCourses" resultType="net.stepbooks.domain.course.entity.Course">
-        select co.* from step_course co right join step_order_course_ref oco on co.id = oco.course_id
+        select distinct co.* from step_course co right join step_order_course_ref oco on co.id = oco.course_id
         where oco.user_id = #{userId}
     </select>
 </mapper>
