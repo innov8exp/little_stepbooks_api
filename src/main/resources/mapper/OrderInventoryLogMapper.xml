@@ -10,5 +10,6 @@
         <if test="orderCode != null">
             and il.order_code = #{orderCode}
         </if>
+        order by il.created_at desc
     </select>
 </mapper>
