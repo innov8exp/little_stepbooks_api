@@ -70,6 +70,21 @@ public class InventoryServiceImpl extends ServiceImpl<InventoryMapper, Inventory
     }
 
     @Override
+    public Inventory releaseInventory(String productId, int quantity) {
+        Inventory inventory = getOne(Wrappers.<Inventory>lambdaQuery().eq(Inventory::getProductId, productId));
+        if (inventory == null) {
+            throw new BusinessException(ErrorCode.STOCK_NOT_EXISTS);
+        }
+        inventory.setInventoryQuantity(inventory.getInventoryQuantity() + quantity);
+        int row = inventoryMapper.updateById(inventory);
+        if (row == 0) {
+            throw new BusinessException(ErrorCode.STOCK_NOT_EXISTS);
+        }
+        log.info("释放库存成功，商品ID：{}，释放数量：{}", productId, quantity);
+        return inventory;
+    }
+
+    @Override
     public IPage<MInventoryDto> findInventoriesInPagingByCriteria(Page<MInventoryDto> page, InventoryQueryDto queryDto) {
         return inventoryMapper.findPagedByCriteria(page, queryDto.getSkuCode(), queryDto.getSkuName());
     }

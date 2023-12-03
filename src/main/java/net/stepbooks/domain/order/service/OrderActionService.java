@@ -15,4 +15,6 @@ public interface OrderActionService {
     void updateDeliveryStatus(Order order, DeliveryStatus deliveryStatus);
 
     void updateRequestRefundStatus(Order order, RefundStatus refundStatus);
+
+    void releaseStock(Order order);
 }

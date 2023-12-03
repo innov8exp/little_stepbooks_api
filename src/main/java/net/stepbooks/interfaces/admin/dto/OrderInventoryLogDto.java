@@ -2,6 +2,7 @@ package net.stepbooks.interfaces.admin.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.stepbooks.infrastructure.enums.InventoryChangeType;
 import net.stepbooks.infrastructure.model.BaseDto;
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,4 +16,5 @@ public class OrderInventoryLogDto extends BaseDto {
     private String skuName;
     private String inventoryId;
     private Integer quantity;
+    private InventoryChangeType changeType;
 }

@@ -13,5 +13,7 @@ public interface InventoryService extends IService<Inventory> {
 
     Inventory decreaseInventory(String productId, int quantity);
 
+    Inventory releaseInventory(String productId, int quantity);
+
     IPage<MInventoryDto> findInventoriesInPagingByCriteria(Page<MInventoryDto> page, InventoryQueryDto queryDto);
 }

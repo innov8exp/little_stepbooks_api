@@ -25,10 +25,7 @@ import net.stepbooks.domain.product.entity.ProductCourse;
 import net.stepbooks.domain.product.service.ProductBookService;
 import net.stepbooks.domain.product.service.ProductCourseService;
 import net.stepbooks.domain.product.service.ProductService;
-import net.stepbooks.infrastructure.enums.PaymentStatus;
-import net.stepbooks.infrastructure.enums.PaymentType;
-import net.stepbooks.infrastructure.enums.RefundType;
-import net.stepbooks.infrastructure.enums.TransactionStatus;
+import net.stepbooks.infrastructure.enums.*;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
@@ -293,6 +290,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
                 .productId(productId)
                 .skuCode(orderDto.getSkuCode())
                 .quantity(orderDto.getQuantity())
+                .changeType(InventoryChangeType.DECREASE)
                 .build();
     }
 

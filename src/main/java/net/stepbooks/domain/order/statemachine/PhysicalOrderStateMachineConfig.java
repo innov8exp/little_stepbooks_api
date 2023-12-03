@@ -52,14 +52,20 @@ public class PhysicalOrderStateMachineConfig {
                 .to(OrderState.CLOSED)
                 .on(OrderEvent.USER_MANUAL_CANCEL)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.releaseStock(context);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                });
 
         builder.externalTransition()
                 .from(OrderState.PLACED)
                 .to(OrderState.CLOSED)
                 .on(OrderEvent.PAYMENT_TIMEOUT)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.releaseStock(context);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                });
 
         builder.externalTransition()
                 .from(OrderState.PAID)
@@ -84,6 +90,7 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.REFUND_SUCCESS)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.releaseStock(context);
                     orderActionService.updateDeliveryStatus(context, DeliveryStatus.CANCELED);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                     orderActionService.updateRequestRefundStatus(context, RefundStatus.REFUNDED);
@@ -112,28 +119,40 @@ public class PhysicalOrderStateMachineConfig {
                 .to(OrderState.CLOSED)
                 .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.releaseStock(context);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                });
 
         builder.externalTransition()
                 .from(OrderState.PLACED)
                 .to(OrderState.CLOSED)
                 .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.releaseStock(context);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                });
 
         builder.externalTransition()
                 .from(OrderState.PAID)
                 .to(OrderState.CLOSED)
                 .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.releaseStock(context);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                });
 
         builder.externalTransition()
                 .from(OrderState.SHIPPED)
                 .to(OrderState.CLOSED)
                 .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.releaseStock(context);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                });
 
         StateMachine<OrderState, OrderEvent, Order> orderStateMachine = builder.build(PHYSICAL_ORDER_STATE_MACHINE_ID);
         orderStateMachine.showStateMachine();

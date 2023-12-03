@@ -2,6 +2,7 @@ package net.stepbooks.domain.order.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+import net.stepbooks.infrastructure.enums.InventoryChangeType;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
@@ -18,4 +19,5 @@ public class OrderInventoryLog extends BaseEntity {
     private String skuCode;
     private String inventoryId;
     private Integer quantity;
+    private InventoryChangeType changeType;
 }
