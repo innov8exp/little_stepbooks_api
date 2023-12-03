@@ -1,7 +1,7 @@
 # DataSource Config
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:65432/stepbook
+    url: jdbc:postgresql://localhost:65432/stepbook?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: stepbook_user
     password: stepbook
   data:
