@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface OrderOpsService {
 
-    IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderNo, String username);
+    IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderNo, String username, String state);
 
     IPage<OrderInfoDto> findOrdersByUser(Page<OrderInfoDto> page, String userId, OrderState state, String keyword);
 

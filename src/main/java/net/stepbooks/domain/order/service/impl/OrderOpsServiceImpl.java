@@ -41,8 +41,8 @@ public class OrderOpsServiceImpl implements OrderOpsService {
     private final OrderEventLogService orderEventLogService;
 
     @Override
-    public IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderCode, String username) {
-        return orderMapper.findByCriteria(page, orderCode, username);
+    public IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderCode, String username, String state) {
+        return orderMapper.findByCriteria(page, orderCode, username, state);
     }
 
     @Override

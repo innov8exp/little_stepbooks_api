@@ -76,9 +76,10 @@ public class MOrderController {
     public ResponseEntity<IPage<OrderInfoDto>> getAllOrders(@RequestParam int currentPage,
                                                             @RequestParam int pageSize,
                                                             @RequestParam(required = false) String orderCode,
-                                                            @RequestParam(required = false) String username) {
+                                                            @RequestParam(required = false) String username,
+                                                            @RequestParam(required = false) String state) {
         Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
-        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username);
+        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username, state);
         return ResponseEntity.ok(orders);
     }
 
