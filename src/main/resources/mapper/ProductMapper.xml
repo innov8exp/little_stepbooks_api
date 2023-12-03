@@ -29,7 +29,7 @@
         select distinct r.* from (select pr.*, ad.sort_index from step_product pr left join step_advertisement ad on pr.id = ad.product_id
         left join step_product_classification_ref pc on pr.id = pc.product_id
         left join step_classification cl on pc.classification_id = cl.id
-        where pr.status = 'ON_SHELF'
+        where pr.status = 'ON_SHELF' and COALESCE(ad.ads_type, 'RECOMMEND') = 'RECOMMEND'
         <if test="maxAge != null and minAge != null">
             order by CASE WHEN cl.max_age &lt;= #{maxAge} or cl.min_age &gt;= #{minAge} THEN 1 ELSE 2 END
         </if>
