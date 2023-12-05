@@ -47,9 +47,10 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateUserAddress(UserAddress userAddress) {
+        UserAddress address = getById(userAddress.getId());
         // 更改其它地址为非默认
         if (userAddress.getIsDefault()) {
-            update(Wrappers.<UserAddress>lambdaUpdate().eq(UserAddress::getUserId, userAddress.getUserId())
+            update(Wrappers.<UserAddress>lambdaUpdate().eq(UserAddress::getUserId, address.getUserId())
                     .set(UserAddress::getIsDefault, false));
         }
         updateById(userAddress);
