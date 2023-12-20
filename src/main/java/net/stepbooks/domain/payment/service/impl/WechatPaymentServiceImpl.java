@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.mapper.PaymentMapper;
 import net.stepbooks.domain.payment.service.PaymentService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -20,13 +21,19 @@ import org.springframework.stereotype.Service;
 public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment> implements PaymentService {
 
     /** 商户号 */
-    private static final String MERCHANT_ID = "190000****";
+    @Value("${wechat.merchant.id}")
+    private String merchantId;
     /** 商户API私钥路径 */
-    private static final String PRIVATE_KEY_PATH = "/Users/yourname/your/path/apiclient_key.pem";
+    @Value("${wechat.merchant.private-key-path}")
+    private String privateKeyPath;
     /** 商户证书序列号 */
-    private static final String MERCHANT_SERIAL_NUMBER = "5157F09EFDC096DE15EBE81A47057A72********";
+    @Value("${wechat.merchant.serial-number}")
+    private String merchantSerialNumber;
     /** 商户APIV3密钥 */
-    private static final String API_V_3_KEY = "...";
+    @Value("${wechat.merchant.api-v3-key}")
+    private String apiV3Key;
+    @Value("${wechat.appId}")
+    private String appId;
 
 
     @SuppressWarnings("checkstyle:MagicNumber")
@@ -38,10 +45,10 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
         // 一个商户号只能初始化一个配置，否则会因为重复的下载任务报错
         Config config =
                 new RSAAutoCertificateConfig.Builder()
-                        .merchantId(MERCHANT_ID)
-                        .privateKeyFromPath(PRIVATE_KEY_PATH)
-                        .merchantSerialNumber(MERCHANT_SERIAL_NUMBER)
-                        .apiV3Key(API_V_3_KEY)
+                        .merchantId(merchantId)
+                        .privateKeyFromPath(privateKeyPath)
+                        .merchantSerialNumber(merchantSerialNumber)
+                        .apiV3Key(apiV3Key)
                         .build();
         // 构建service
         JsapiService service = new JsapiService.Builder().config(config).build();
@@ -50,8 +57,8 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
         Amount amount = new Amount();
         amount.setTotal(100);
         request.setAmount(amount);
-        request.setAppid("wxa9d9651ae******");
-        request.setMchid("190000****");
+        request.setAppid(appId);
+        request.setMchid(merchantId);
         request.setDescription("测试商品标题");
         request.setNotifyUrl("https://notify_url");
         request.setOutTradeNo("out_trade_no_001");

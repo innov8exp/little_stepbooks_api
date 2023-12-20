@@ -121,6 +121,11 @@ wechat:
   host: https://api.weixin.qq.com
   appId: wx132bc1c2f65e1494
   secret: de2bbd1c4111df343dfa027669057a27
+  merchant:
+    id: 1662669891
+    serial-number: 4F4F2B9EC442D68E8A9C21F21166EC3580F51963
+    api-v3-key: 20231215XIxi05051820231215XIxi05
+    private-key-path: classpath:cert/apiclient_key.pem
 
 admin:
   jwt:
