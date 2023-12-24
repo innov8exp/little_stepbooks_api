@@ -126,6 +126,9 @@ wechat:
     serial-number: 4F4F2B9EC442D68E8A9C21F21166EC3580F51963
     api-v3-key: 20231215XIxi05051820231215XIxi05
     private-key-path: classpath:cert/apiclient_key.pem
+    cert-pem-path: classpath:cert/apiclient_cert.pem
+    pay-notify-url: https://XXXX/api/callback/wechat/pay/callback
+    refund-notify-url: https://XXXX/api/callback/wechat/pay/callback
 
 admin:
   jwt:
