@@ -71,12 +71,12 @@ public class OrderController {
     }
 
     private PrepayWithRequestPaymentResponse preparePayment(Order order, List<SkuDto> skus, User user) {
-        StringBuilder payContent = new StringBuilder("orderCode:").append(order.getOrderCode()).append("sku:[");
+        StringBuilder payContent = new StringBuilder("【 ");
         for (SkuDto sku : skus) {
-            payContent.append("skuCode:").append(sku.getSkuCode())
-                    .append(", quantity:").append(sku.getQuantity()).append(", ");
+            Product product = productService.getProductBySkuCode(sku.getSkuCode());
+            payContent.append(product.getSkuName()).append(" ");
         }
-        payContent.append("], ");
+        payContent.append("】");
         WechatPayPrePayRequest payPrePayRequest = new WechatPayPrePayRequest();
         payPrePayRequest.setOutTradeNo(order.getOrderCode());
         payPrePayRequest.setOpenId(user.getOpenId());

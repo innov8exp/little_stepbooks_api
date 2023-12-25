@@ -27,7 +27,6 @@ import net.stepbooks.domain.product.service.ProductCourseService;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.enums.PaymentType;
 import net.stepbooks.infrastructure.enums.RefundType;
-import net.stepbooks.infrastructure.enums.TransactionStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
@@ -247,7 +246,7 @@ public class VirtualOrderServiceImpl implements OrderService {
         paymentOpsService.update(Wrappers.<Payment>lambdaUpdate()
                 .eq(Payment::getOrderCode, order.getOrderCode())
                 .eq(Payment::getPaymentType, PaymentType.REFUND_PAYMENT)
-                .set(Payment::getTransactionStatus, TransactionStatus.SUCCESS.name()));
+                .setEntity(payment));
     }
 
 }

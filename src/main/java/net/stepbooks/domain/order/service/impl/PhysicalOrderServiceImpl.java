@@ -317,7 +317,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
         paymentOpsService.update(Wrappers.<Payment>lambdaUpdate()
                 .eq(Payment::getOrderCode, order.getOrderCode())
                 .eq(Payment::getPaymentType, PaymentType.REFUND_PAYMENT)
-                .set(Payment::getTransactionStatus, TransactionStatus.SUCCESS.name()));
+                .setEntity(payment));
     }
 
     private Delivery buildDelivery(Order order, CreateOrderDto orderDto) {
