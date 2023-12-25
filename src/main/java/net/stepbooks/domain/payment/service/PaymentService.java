@@ -1,9 +1,8 @@
 package net.stepbooks.domain.payment.service;
 
+import com.wechat.pay.java.core.notification.RequestParam;
 import com.wechat.pay.java.service.payments.jsapi.model.PrepayWithRequestPaymentResponse;
 import com.wechat.pay.java.service.payments.model.Transaction;
-import jakarta.servlet.http.HttpServletRequest;
-import net.stepbooks.domain.payment.vo.WechatPayPreNotifyRequest;
 import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundResponse;
@@ -36,12 +35,12 @@ public interface PaymentService {
      * 预支付回调
      * 官网地址：<a href="https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_1.shtml">...</a>
      *
-     * @param wechatPayCallBackRequest 回调信息请求体
+     * @param requestParam 回调信息请求体
      * @param clazz 返回类
      * @param <T> 返回范型
      * @return 结果
      */
-    <T> T prePayNotify(WechatPayPreNotifyRequest wechatPayCallBackRequest, Class<T> clazz);
+    <T> T prePayNotify(RequestParam requestParam, Class<T> clazz);
 
     /**
      * 退款
@@ -54,11 +53,11 @@ public interface PaymentService {
     /**
      * 退款回调
      *
-     * @param request 回调信息请求体
+     * @param requestParam 回调信息请求体
      * @param clazz 返回类
      * @param <T> 返回范型
      * @return 结果
      */
-    <T> T refundNotify(HttpServletRequest request, Class<T> clazz) throws Exception;
+    <T> T refundNotify(RequestParam requestParam, Class<T> clazz) throws Exception;
 
 }

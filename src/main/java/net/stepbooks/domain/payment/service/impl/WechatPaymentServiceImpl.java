@@ -16,15 +16,12 @@ import com.wechat.pay.java.service.refund.model.AmountReq;
 import com.wechat.pay.java.service.refund.model.CreateRequest;
 import com.wechat.pay.java.service.refund.model.Refund;
 import jakarta.annotation.Resource;
-import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.payment.config.WechatPayProperties;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.mapper.PaymentMapper;
 import net.stepbooks.domain.payment.service.PaymentService;
-import net.stepbooks.domain.payment.vo.WechatPayPreNotifyRequest;
 import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundResponse;
@@ -34,14 +31,10 @@ import net.stepbooks.infrastructure.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import static com.wechat.pay.java.core.http.Constant.*;
 
 @Slf4j
 @Service
@@ -138,23 +131,15 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
     }
 
     @Override
-    public <T> T prePayNotify(WechatPayPreNotifyRequest wechatPayCallBackRequest, Class<T> clazz) {
+    public <T> T prePayNotify(RequestParam requestParam, Class<T> clazz) {
         log.debug("支付成功的回调。。。。。。。。。");
         log.info("prePayNotify");
         PrivacyEncryptor privacyEncryptor = config.createEncryptor();
         String weChatPayCertificateSerialNumber = privacyEncryptor.getWechatpaySerial();
-        if (!wechatPayCallBackRequest.getSerial().equals(weChatPayCertificateSerialNumber)) {
+        if (!requestParam.getSerialNumber().equals(weChatPayCertificateSerialNumber)) {
             log.error("证书不一致");
             throw new BusinessException(ErrorCode.PAYMENT_ERROR, "证书不一致");
         }
-        RequestParam requestParam = new RequestParam.Builder()
-                .serialNumber(wechatPayCallBackRequest.getSerial())
-                .nonce(wechatPayCallBackRequest.getNonce())
-                .signType(wechatPayCallBackRequest.getSignatureType())
-                .signature(wechatPayCallBackRequest.getSignature())
-                .timestamp(wechatPayCallBackRequest.getTimestamp())
-                .body(wechatPayCallBackRequest.getBody())
-                .build();
         return notificationParser.parse(requestParam, clazz);
     }
 
@@ -182,34 +167,17 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
     }
 
     @Override
-    public <T> T refundNotify(HttpServletRequest request, Class<T> clazz) throws Exception {
+    public <T> T refundNotify(RequestParam requestParam, Class<T> clazz) throws Exception {
         log.info("refundNotify");
         try {
-            //读取请求体的信息
-            ServletInputStream inputStream = request.getInputStream();
-            StringBuilder stringBuffer = new StringBuilder();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String s;
-            //读取回调请求体
-            while ((s = bufferedReader.readLine()) != null) {
-                stringBuffer.append(s);
+            log.debug("支付成功的回调。。。。。。。。。");
+            log.info("prePayNotify");
+            PrivacyEncryptor privacyEncryptor = config.createEncryptor();
+            String weChatPayCertificateSerialNumber = privacyEncryptor.getWechatpaySerial();
+            if (!requestParam.getSerialNumber().equals(weChatPayCertificateSerialNumber)) {
+                log.error("证书不一致");
+                throw new BusinessException(ErrorCode.PAYMENT_ERROR, "证书不一致");
             }
-            String s1 = stringBuffer.toString();
-            String timestamp = request.getHeader(WECHAT_PAY_TIMESTAMP);
-            String nonce = request.getHeader(WECHAT_PAY_NONCE);
-            String signType = request.getHeader("Wechatpay-Signature-Type");
-            String serialNo = request.getHeader(WECHAT_PAY_SERIAL);
-            String signature = request.getHeader(WECHAT_PAY_SIGNATURE);
-
-            RequestParam requestParam = new RequestParam.Builder()
-                    .serialNumber(serialNo)
-                    .nonce(nonce)
-                    .signature(signature)
-                    .timestamp(timestamp)
-                    // 若未设置signType，默认值为 WECHATPAY2-SHA256-RSA2048
-                    .signType(signType)
-                    .body(s1)
-                    .build();
             return notificationParser.parse(requestParam, clazz);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

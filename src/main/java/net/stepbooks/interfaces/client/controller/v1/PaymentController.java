@@ -1,6 +1,7 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.wechat.pay.java.core.notification.RequestParam;
 import com.wechat.pay.java.service.wexinpayscoreparking.model.Transaction;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +13,6 @@ import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.payment.service.PaymentService;
-import net.stepbooks.domain.payment.vo.WechatPayPreNotifyRequest;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentType;
@@ -48,23 +48,11 @@ public class PaymentController {
     @PostMapping("/wechat/pay/callback")
     public ResponseEntity<Transaction> handleWechatPaymentNotify(@RequestBody String body,
                                                                  HttpServletRequest request) {
-        String timestamp = request.getHeader(WECHAT_PAY_TIMESTAMP);
-        String nonce = request.getHeader(WECHAT_PAY_NONCE);
-        String signature = request.getHeader(WECHAT_PAY_SIGNATURE);
-        String signatureType = request.getHeader("Wechatpay-Signature-Type");
-        String serial = request.getHeader(WECHAT_PAY_SERIAL);
-        WechatPayPreNotifyRequest preNotifyRequest = new WechatPayPreNotifyRequest();
-        preNotifyRequest.setTimestamp(timestamp);
-        preNotifyRequest.setNonce(nonce);
-        preNotifyRequest.setSignature(signature);
-        preNotifyRequest.setSignatureType(signatureType);
-        preNotifyRequest.setSerial(serial);
-        preNotifyRequest.setBody(body);
-
+        RequestParam requestParam = buildRequestParam(body, request);
         log.info("callbackData: {}", body);
-        log.info("callback header: {}", preNotifyRequest);
+        log.info("callback header: {}", requestParam);
         log.info("start payment callback");
-        Transaction transaction = paymentService.prePayNotify(preNotifyRequest, Transaction.class);
+        Transaction transaction = paymentService.prePayNotify(requestParam, Transaction.class);
         log.info("transaction: {}", transaction);
         Order order = orderOpsService.findOrderByCode(transaction.getOutTradeNo());
         Payment payment = new Payment();
@@ -88,7 +76,8 @@ public class PaymentController {
     public ResponseEntity<Transaction> handleWechatRefundNotify(@RequestBody String body,
                                                                 HttpServletRequest request) throws Exception {
         log.info("refund callbackData: {}", body);
-        Transaction transaction = paymentService.refundNotify(request, Transaction.class);
+        RequestParam requestParam = buildRequestParam(body, request);
+        Transaction transaction = paymentService.refundNotify(requestParam, Transaction.class);
         Order order = orderOpsService.findOrderByCode(transaction.getOutTradeNo());
         Payment payment = paymentOpsService.getOne(Wrappers.<Payment>lambdaQuery()
                 .eq(Payment::getOrderId, order.getId())
@@ -108,5 +97,21 @@ public class PaymentController {
             throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
         }
         return ResponseEntity.ok(transaction);
+    }
+
+    private static RequestParam buildRequestParam(String body, HttpServletRequest request) {
+        String timestamp = request.getHeader(WECHAT_PAY_TIMESTAMP);
+        String nonce = request.getHeader(WECHAT_PAY_NONCE);
+        String signature = request.getHeader(WECHAT_PAY_SIGNATURE);
+        String signatureType = request.getHeader("Wechatpay-Signature-Type");
+        String serial = request.getHeader(WECHAT_PAY_SERIAL);
+        return new RequestParam.Builder()
+                .serialNumber(serial)
+                .nonce(nonce)
+                .signType(signatureType)
+                .signature(signature)
+                .timestamp(timestamp)
+                .body(body)
+                .build();
     }
 }
