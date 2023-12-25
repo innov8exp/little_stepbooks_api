@@ -35,7 +35,7 @@ public class UserSecurityConfig {
                         .authenticationEntryPoint(entryPointUnauthorizedHandler)
                         .accessDeniedHandler(restAccessDeniedHandler))
                 .authorizeHttpRequests((requests) -> requests.requestMatchers(
-                                mvc.pattern("/admin/auth/**"),
+                                mvc.pattern("/admin/**"),
                                 mvc.pattern("/auth/**"),
                                 mvc.pattern("/v1/products/**"),
                                 mvc.pattern("/v1/advertisements/carousel"),
