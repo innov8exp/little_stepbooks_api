@@ -91,7 +91,6 @@ public class PaymentController {
                 .eq(Payment::getOrderId, order.getId())
                 .eq(Payment::getPaymentMethod, PaymentMethod.WECHAT_PAY)
                 .eq(Payment::getPaymentType, PaymentType.REFUND_PAYMENT));
-        payment.setVendorPaymentNo(transaction.getTransactionId());
         payment.setPaymentMethod(PaymentMethod.WECHAT_PAY);
         payment.setPaymentType(PaymentType.REFUND_PAYMENT);
         payment.setReceipt(transaction.getDescription());
