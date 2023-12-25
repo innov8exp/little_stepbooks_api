@@ -89,7 +89,9 @@ public class PaymentController {
         Order order = orderOpsService.findOrderByCode(transaction.getOutTradeNo());
         Payment payment = paymentOpsService.getOne(Wrappers.<Payment>lambdaQuery()
                 .eq(Payment::getOrderId, order.getId())
-                .eq(Payment::getVendorPaymentNo, transaction.getTransactionId()));
+                .eq(Payment::getPaymentMethod, PaymentMethod.WECHAT_PAY)
+                .eq(Payment::getPaymentType, PaymentType.REFUND_PAYMENT));
+        payment.setVendorPaymentNo(transaction.getTransactionId());
         payment.setPaymentMethod(PaymentMethod.WECHAT_PAY);
         payment.setPaymentType(PaymentType.REFUND_PAYMENT);
         payment.setReceipt(transaction.getDescription());

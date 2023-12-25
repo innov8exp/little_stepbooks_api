@@ -28,10 +28,7 @@ import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductBookService;
 import net.stepbooks.domain.product.service.ProductCourseService;
 import net.stepbooks.domain.product.service.ProductService;
-import net.stepbooks.infrastructure.enums.InventoryChangeType;
-import net.stepbooks.infrastructure.enums.PaymentStatus;
-import net.stepbooks.infrastructure.enums.PaymentType;
-import net.stepbooks.infrastructure.enums.RefundType;
+import net.stepbooks.infrastructure.enums.*;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
@@ -285,7 +282,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
             throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
         }
         Payment refundPayment = new Payment();
-        refundPayment.setPaymentMethod(order.getPaymentMethod());
+        refundPayment.setPaymentMethod(PaymentMethod.WECHAT_PAY);
         refundPayment.setPaymentType(PaymentType.REFUND_PAYMENT);
         refundPayment.setOrderId(order.getId());
         refundPayment.setOrderCode(order.getOrderCode());
