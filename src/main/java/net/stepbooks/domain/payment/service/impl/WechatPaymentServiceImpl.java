@@ -29,6 +29,7 @@ import net.stepbooks.domain.payment.vo.WechatPayPreNotifyRequest;
 import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundResponse;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
@@ -168,11 +169,12 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
             // 调用微信sdk接口
             Refund refund = refundService.create(request);
             //接收退款返回参数
-            Refund refundResponse = new Refund();
-            refundResponse.setStatus(refund.getStatus());
-            if (refundResponse.getStatus().equals(Status.SUCCESS)) {
+            if (Status.SUCCESS.equals(refund.getStatus())) {
                 //退款成功
-                return new WechatPayRefundResponse();
+                return BaseAssembler.convert(refund, WechatPayRefundResponse.class);
+            } else {
+                //退款失败
+                throw new BusinessException(ErrorCode.PAYMENT_ERROR, "退款失败");
             }
         } catch (ServiceException e) {
             log.error("退款失败，返回码：{},返回信息：{}", e.getErrorCode(), e.getErrorMessage());
@@ -180,7 +182,6 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
-        return null;
     }
 
     @Override
@@ -229,14 +230,18 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
         //构建订单金额信息
         AmountReq amountReq = new AmountReq();
         //退款金额
-        amountReq.setRefund(Long.valueOf(refundOrder.getRefundMoney()));
+        amountReq.setRefund(refundOrder.getRefundMoney());
         //原订单金额
-        amountReq.setTotal(Long.valueOf(refundOrder.getTotalMoney()));
+        amountReq.setTotal(refundOrder.getTotalMoney());
         //货币类型(默认人民币)
         amountReq.setCurrency("CNY");
         request.setAmount(amountReq);
         //商户退款单号
-        request.setOutRefundNo(String.valueOf(refundOrder.getOutRefundNo()));
+        request.setOutRefundNo(refundOrder.getOutRefundNo());
+        request.setTransactionId(refundOrder.getTransactionId());
+        request.setOutTradeNo(refundOrder.getOrderId());
+        request.setReason(refundOrder.getReason());
+
         //退款通知回调地址
         request.setNotifyUrl(wechatPayProperties.getRefundNotifyUrl());
         return request;

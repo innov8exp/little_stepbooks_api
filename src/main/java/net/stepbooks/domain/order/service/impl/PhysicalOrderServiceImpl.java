@@ -269,14 +269,14 @@ public class PhysicalOrderServiceImpl implements OrderService {
         wechatPayRefundRequest.setOrderId(order.getOrderCode());
         wechatPayRefundRequest.setTransactionId(payment.getVendorPaymentNo());
         BigDecimal totalAmount = order.getPaymentAmount();
-        int amount = totalAmount.multiply(new BigDecimal(ONE_HUNDRED)).intValue();
+        long amount = totalAmount.multiply(new BigDecimal(ONE_HUNDRED)).longValue();
         wechatPayRefundRequest.setTotalMoney(amount);
         BigDecimal refundAmountBig = refundRequest.getRefundAmount();
-        int refundAmount = refundAmountBig.multiply(new BigDecimal(ONE_HUNDRED)).intValue();
+        long refundAmount = refundAmountBig.multiply(new BigDecimal(ONE_HUNDRED)).longValue();
         wechatPayRefundRequest.setRefundMoney(refundAmount);
         wechatPayRefundRequest.setOutRefundNo(order.getOrderCode());
         wechatPayRefundRequest.setReason(refundRequest.getRejectReason());
-        WechatPayRefundResponse refund = null;
+        WechatPayRefundResponse refund;
         try {
             refund = paymentService.refund(wechatPayRefundRequest);
         } catch (Exception e) {

@@ -32,10 +32,10 @@ public class WechatPayRefundRequest {
     /**
      * 退款金额
      */
-    private Integer refundMoney;
+    private Long refundMoney;
 
     /**
      * 原订单金额，必填
      */
-    private Integer totalMoney;
+    private Long totalMoney;
 }
