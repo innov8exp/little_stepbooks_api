@@ -16,6 +16,7 @@ import net.stepbooks.domain.payment.vo.WechatPayPreNotifyRequest;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentType;
+import net.stepbooks.infrastructure.enums.TransactionStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
@@ -84,7 +85,9 @@ public class PaymentController {
     }
 
     @PostMapping("/wechat/refund/callback")
-    public ResponseEntity<Transaction> handleWechatRefundNotify(HttpServletRequest request) throws Exception {
+    public ResponseEntity<Transaction> handleWechatRefundNotify(@RequestBody String body,
+                                                                HttpServletRequest request) throws Exception {
+        log.info("refund callbackData: {}", body);
         Transaction transaction = paymentService.refundNotify(request, Transaction.class);
         Order order = orderOpsService.findOrderByCode(transaction.getOutTradeNo());
         Payment payment = paymentOpsService.getOne(Wrappers.<Payment>lambdaQuery()
@@ -96,7 +99,7 @@ public class PaymentController {
         payment.setReceipt(transaction.getDescription());
         BigDecimal fen = new BigDecimal(transaction.getAmount().getTotal());
         payment.setTransactionAmount(fen.divide(new BigDecimal(ONE_HUNDRED)));
-        payment.setTransactionStatus(transaction.getTradeState());
+        payment.setTransactionStatus(TransactionStatus.SUCCESS.name());
         if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
             physicalOrderServiceImpl.refundCallback(order, payment);
         } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
