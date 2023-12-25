@@ -39,7 +39,6 @@ import org.springframework.util.ObjectUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import static net.stepbooks.infrastructure.AppConstants.*;
 
@@ -158,19 +157,16 @@ public class VirtualOrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void paymentCallback(Order order, Payment payment) {
+        log.info("payment callback invoked");
         Order updatedOrder = updateOrderState(order.getId(), OrderEvent.PAYMENT_SUCCESS);
         updatedOrder.setPaymentStatus(PaymentStatus.PAID);
         updatedOrder.setPaymentMethod(order.getPaymentMethod());
-        // TODO
         updatedOrder.setPaymentAmount(order.getTotalAmount());
         orderMapper.updateById(updatedOrder);
-        payment.setPaymentMethod(updatedOrder.getPaymentMethod());
         payment.setPaymentType(PaymentType.ORDER_PAYMENT);
         payment.setOrderId(updatedOrder.getId());
         payment.setOrderCode(updatedOrder.getOrderCode());
         payment.setUserId(updatedOrder.getUserId());
-        //TODO
-        payment.setVendorPaymentNo(UUID.randomUUID().toString());
         paymentOpsService.save(payment);
     }
 
