@@ -19,9 +19,12 @@ import net.stepbooks.domain.order.util.OrderUtil;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.payment.service.PaymentService;
+import net.stepbooks.domain.payment.vo.WechatPayRefundRequest;
+import net.stepbooks.domain.payment.vo.WechatPayRefundResponse;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.entity.ProductBook;
 import net.stepbooks.domain.product.entity.ProductCourse;
+import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductBookService;
 import net.stepbooks.domain.product.service.ProductCourseService;
 import net.stepbooks.domain.product.service.ProductService;
@@ -31,6 +34,7 @@ import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
 import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
+import net.stepbooks.interfaces.client.dto.SkuDto;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,11 +43,9 @@ import org.springframework.util.ObjectUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import static net.stepbooks.infrastructure.AppConstants.ORDER_PAYMENT_TIMEOUT_BUFFER;
-import static net.stepbooks.infrastructure.AppConstants.PHYSICAL_ORDER_CODE_PREFIX;
+import static net.stepbooks.infrastructure.AppConstants.*;
 
 @Slf4j
 @Service
@@ -66,70 +68,98 @@ public class PhysicalOrderServiceImpl implements OrderService {
     private final OrderCourseService orderCourseService;
     private final OrderBookService orderBookService;
 
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String createOrder(CreateOrderDto orderDto) {
-//        entity.setOrderNo(IdWorker.getIdStr());
-        Product product = productService.getProductBySkuCode(orderDto.getSkuCode());
-        if (product == null) {
+    public Order createOrder(CreateOrderDto orderDto) {
+        List<SkuDto> skus = orderDto.getSkus();
+        if (ObjectUtils.isEmpty(skus)) {
             throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
         }
-        if (orderDto.getQuantity() == 0) {
-            throw new BusinessException(ErrorCode.ORDER_QUANTITY_IS_ZERO);
-        }
-        // 有库存商品，先锁库存，再下单
-        String productId = product.getId();
-        boolean res = redisDistributedLocker.tryLock(productId);
-        if (!res) {
-            log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁失败", productId);
-            throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED, "Server is busy, please try again later");
-        }
-        log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁成功", productId);
         try {
-            // 锁库存
-            Inventory inventory = inventoryService.decreaseInventory(productId, orderDto.getQuantity());
             // 创建订单
             String orderCode = OrderUtil.generateOrderNo(PHYSICAL_ORDER_CODE_PREFIX);
-            Order order = OrderUtil.buildOrder(orderDto, product, orderCode);
+            Order order = OrderUtil.buildOrder(orderDto, skus, orderCode, ProductNature.PHYSICAL);
             log.info("OrderNo:" + order.getOrderCode());
             orderMapper.insert(order);
-            // 创建订单商品
-            OrderProduct orderProduct = buildOrderProduct(orderDto, order, productId);
-            orderProductService.save(orderProduct);
-            updateOrderState(order.getId(), OrderEvent.PLACE_SUCCESS);
+            // 有库存商品，先锁库存，再下单
+            for (SkuDto sku : skus) {
+                if (sku == null) {
+                    throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
+                }
+                if (sku.getQuantity() == 0) {
+                    throw new BusinessException(ErrorCode.ORDER_QUANTITY_IS_ZERO);
+                }
+                Product product = sku.getProduct();
+                String productId = product.getId();
+                boolean res = redisDistributedLocker.tryLock(productId);
+                if (!res) {
+                    log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁失败", productId);
+                    throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED, "Server is busy, please try again later");
+                }
+                log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁成功", productId);
+
+                // 锁库存
+                Inventory inventory = inventoryService.decreaseInventory(productId, sku.getQuantity());
+
+                // 记录库存变更日志
+                OrderInventoryLog orderInventoryLog = OrderInventoryLog.builder()
+                        .orderId(order.getId())
+                        .orderCode(order.getOrderCode())
+                        .inventoryId(inventory.getId())
+                        .productId(productId)
+                        .skuCode(product.getSkuCode())
+                        .quantity(sku.getQuantity())
+                        .changeType(InventoryChangeType.DECREASE)
+                        .build();
+                orderInventoryLogService.save(orderInventoryLog);
+
+                // 创建订单商品
+                OrderProduct orderProduct = OrderProduct.builder()
+                        .orderId(order.getId())
+                        .productId(productId)
+                        .quantity(sku.getQuantity())
+                        .build();
+                orderProductService.save(orderProduct);
+
+                // 建立订单与书籍关系
+                List<OrderBook> orderBooks = productBookService.list(Wrappers.<ProductBook>lambdaQuery()
+                                .eq(ProductBook::getProductId, productId))
+                        .stream().map(productBook -> OrderBook.builder()
+                                .orderId(order.getId())
+                                .productId(productId)
+                                .bookId(productBook.getBookId())
+                                .userId(order.getUserId())
+                                .build()).toList();
+                orderBookService.saveBatch(orderBooks);
+                // 建立订单与课程关系
+                List<OrderCourse> orderCourses = productCourseService.list(Wrappers.<ProductCourse>lambdaQuery()
+                                .eq(ProductCourse::getProductId, productId))
+                        .stream().map(productCourse -> OrderCourse.builder()
+                                .orderId(order.getId())
+                                .productId(productId)
+                                .courseId(productCourse.getCourseId())
+                                .userId(order.getUserId())
+                                .bookId(productCourse.getBookId())
+                                .build()).toList();
+                orderCourseService.saveBatch(orderCourses);
+            }
+
             // 创建物流信息
             Delivery delivery = buildDelivery(order, orderDto);
             deliveryService.save(delivery);
-            // 记录库存变更日志
-            OrderInventoryLog orderInventoryLog = buildOrderInventoryLog(orderDto, order, productId, inventory.getId());
-            orderInventoryLogService.save(orderInventoryLog);
-            // 建立订单与书籍关系
-            List<OrderBook> orderBooks = productBookService.list(Wrappers.<ProductBook>lambdaQuery()
-                            .eq(ProductBook::getProductId, productId))
-                    .stream().map(productBook -> OrderBook.builder()
-                            .orderId(order.getId())
-                            .productId(productId)
-                            .bookId(productBook.getBookId())
-                            .userId(order.getUserId())
-                            .build()).toList();
-            orderBookService.saveBatch(orderBooks);
-            // 建立订单与课程关系
-            List<OrderCourse> orderCourses = productCourseService.list(Wrappers.<ProductCourse>lambdaQuery()
-                            .eq(ProductCourse::getProductId, productId))
-                    .stream().map(productCourse -> OrderCourse.builder()
-                            .orderId(order.getId())
-                            .productId(productId)
-                            .courseId(productCourse.getCourseId())
-                            .userId(order.getUserId())
-                            .bookId(productCourse.getBookId())
-                            .build()).toList();
-            orderCourseService.saveBatch(orderCourses);
-            return orderCode;
+
+            // 更新订单状态
+            updateOrderState(order.getId(), OrderEvent.PLACE_SUCCESS);
+            return order;
         } catch (OptimisticLockingFailureException e) {
             throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED);
         } finally {
-            redisDistributedLocker.unlock(productId);
-            log.info("线程 PRODUCT_STOCK_LOCK_{} 释放锁成功", productId);
+            for (SkuDto sku : skus) {
+                String productId = sku.getProduct().getId();
+                redisDistributedLocker.unlock(productId);
+                log.info("线程 PRODUCT_STOCK_LOCK_{} 释放锁成功", productId);
+            }
         }
     }
 
@@ -177,20 +207,17 @@ public class PhysicalOrderServiceImpl implements OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void paymentCallback(Order order) {
+    public void paymentCallback(Order order, Payment payment) {
         Order updatedOrder = updateOrderState(order.getId(), OrderEvent.PAYMENT_SUCCESS);
         updatedOrder.setPaymentStatus(PaymentStatus.PAID);
         updatedOrder.setPaymentMethod(order.getPaymentMethod());
         // TODO
         updatedOrder.setPaymentAmount(order.getTotalAmount());
         orderMapper.updateById(updatedOrder);
-        Payment payment = new Payment();
         payment.setPaymentMethod(updatedOrder.getPaymentMethod());
         payment.setPaymentType(PaymentType.ORDER_PAYMENT);
         payment.setOrderId(updatedOrder.getId());
         payment.setOrderCode(updatedOrder.getOrderCode());
-        payment.setTransactionAmount(updatedOrder.getPaymentAmount());
-        payment.setTransactionStatus(TransactionStatus.SUCCESS);
         payment.setUserId(updatedOrder.getUserId());
         //TODO
         payment.setVendorPaymentNo(UUID.randomUUID().toString());
@@ -217,13 +244,13 @@ public class PhysicalOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void refundRequest(String id) {
+    public void refundRequest(String id, RefundRequest refundRequest) {
         updateOrderState(id, OrderEvent.REFUND_REQUEST);
         Order order = orderMapper.selectById(id);
         order.setRefundType(RefundType.ONLY_REFUND);
         orderMapper.updateById(order);
         // 发起退款支付
-        refundPayment(id);
+        refundPayment(id, refundRequest);
     }
 
     @Override
@@ -237,26 +264,45 @@ public class PhysicalOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void refundPayment(String id) {
+    public void refundPayment(String id, RefundRequest refundRequest) {
         // TODO 发起退款支付
         // 获取退款金额
         Order order = orderMapper.selectById(id);
-        Payment payment = new Payment();
+        Payment payment = paymentOpsService.getOne(Wrappers.<Payment>lambdaQuery().eq(Payment::getOrderId, id)
+                .eq(Payment::getPaymentType, PaymentType.ORDER_PAYMENT).orderByDesc(Payment::getCreatedAt));
+        WechatPayRefundRequest wechatPayRefundRequest = new WechatPayRefundRequest();
+        wechatPayRefundRequest.setOrderId(order.getOrderCode());
+        wechatPayRefundRequest.setTransactionId(payment.getVendorPaymentNo());
+        BigDecimal totalAmount = order.getPaymentAmount();
+        int amount = totalAmount.multiply(new BigDecimal(ONE_HUNDRED)).intValue();
+        wechatPayRefundRequest.setTotalMoney(amount);
+        BigDecimal refundAmountBig = refundRequest.getRefundAmount();
+        int refundAmount = refundAmountBig.multiply(new BigDecimal(ONE_HUNDRED)).intValue();
+        wechatPayRefundRequest.setRefundMoney(refundAmount);
+        wechatPayRefundRequest.setOutRefundNo(order.getOrderCode());
+        wechatPayRefundRequest.setReason(refundRequest.getRejectReason());
+        WechatPayRefundResponse refund = null;
+        try {
+            refund = paymentService.refund(wechatPayRefundRequest);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
+        }
+
         payment.setPaymentMethod(order.getPaymentMethod());
         payment.setPaymentType(PaymentType.REFUND_PAYMENT);
         payment.setOrderId(order.getId());
         payment.setOrderCode(order.getOrderCode());
-        payment.setTransactionAmount(order.getPaymentAmount());
+        payment.setTransactionAmount(refundAmountBig);
         payment.setUserId(order.getUserId());
-        payment.setTransactionStatus(TransactionStatus.SUCCESS);
+        payment.setVendorPaymentNo(refund.getRefundId());
+        payment.setTransactionStatus(refund.getStatus());
         //TODO
-        payment.setVendorPaymentNo(UUID.randomUUID().toString());
         paymentOpsService.save(payment);
     }
 
     @Override
-    public boolean existsBookSetInOrder(String bookSetCode, String userId) {
-        List<Product> products = productService.findProductsByBookSetCode(bookSetCode);
+    public boolean existsBookInOrder(String bookId, String userId) {
+        List<Product> products = productService.findProductsByBookId(bookId);
         // 筛选出在用户中的订单产品集合
         List<Product> filteredProducts = orderMapper.findOrderProductByUserIdAndProductIds(userId,
                 products.stream().map(Product::getId).toList());
@@ -264,42 +310,20 @@ public class PhysicalOrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Product> findOrderProductByUserIdAndBookSetIds(String userId, Set<String> bookSetIds) {
-        List<Product> products = productService.findProductsByBookSetIds(bookSetIds);
+    public List<Product> findOrderProductByUserIdAndBookId(String userId, String bookId) {
+        List<Product> products = productService.findProductsByBookId(bookId);
         // 筛选出在用户中的订单产品集合
         return orderMapper.findOrderProductByUserIdAndProductIds(userId,
                 products.stream().map(Product::getId).toList());
     }
 
     @Override
-    public void refundCallback(Order order) {
+    public void refundCallback(Order order, Payment payment) {
         updateOrderState(order.getId(), OrderEvent.REFUND_SUCCESS);
         paymentOpsService.update(Wrappers.<Payment>lambdaUpdate()
                 .eq(Payment::getOrderCode, order.getOrderCode())
                 .eq(Payment::getPaymentType, PaymentType.REFUND_PAYMENT)
-                .set(Payment::getTransactionStatus, TransactionStatus.SUCCESS));
-    }
-
-
-    private OrderInventoryLog buildOrderInventoryLog(CreateOrderDto orderDto, Order order,
-                                                     String productId, String inventoryId) {
-        return OrderInventoryLog.builder()
-                .orderId(order.getId())
-                .orderCode(order.getOrderCode())
-                .inventoryId(inventoryId)
-                .productId(productId)
-                .skuCode(orderDto.getSkuCode())
-                .quantity(orderDto.getQuantity())
-                .changeType(InventoryChangeType.DECREASE)
-                .build();
-    }
-
-    private OrderProduct buildOrderProduct(CreateOrderDto orderDto, Order order, String productId) {
-        return OrderProduct.builder()
-                .orderId(order.getId())
-                .productId(productId)
-                .quantity(orderDto.getQuantity())
-                .build();
+                .set(Payment::getTransactionStatus, TransactionStatus.SUCCESS.name()));
     }
 
     private Delivery buildDelivery(Order order, CreateOrderDto orderDto) {

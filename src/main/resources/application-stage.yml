@@ -27,3 +27,9 @@ aws:
 
 stepbooks:
   mnp-qrcode-host: https://api-stage.stepbooks.net/mnp-qrcode
+
+
+wechat:
+  merchant:
+    pay-notify-url: https://api-stage.stepbooks.net/v1/payments/wechat/pay/callback
+    refund-notify-url: https://api-stage.stepbooks.net/v1/payments/wechat/refund/callback

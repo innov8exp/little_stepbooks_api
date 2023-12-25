@@ -160,54 +160,24 @@ VALUES ('18', '8', '0');
 INSERT INTO STEP_BOOK_CLASSIFICATION_REF(id, book_id, classification_id)
 VALUES ('19', '9', '0');
 
-INSERT INTO STEP_BOOK_SET(id, code, name)
-VALUES ('1', 'bs001', '宫西达也恐龙系列(全5册)');
-INSERT INTO STEP_BOOK_SET(id, code, name)
-VALUES ('2', 'bs002', '睡前小故事(3册)');
-INSERT INTO STEP_BOOK_SET(id, code, name)
-VALUES ('3', 'bs003', '数学思维(2册)');
-
-INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
-VALUES ('1', '1', '0');
-INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
-VALUES ('2', '1', '1');
-INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
-VALUES ('3', '1', '2');
-INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
-VALUES ('4', '1', '3');
-INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
-VALUES ('5', '1', '4');
-
-INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
-VALUES ('6', '2', '7');
-INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
-VALUES ('7', '2', '8');
-INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
-VALUES ('8', '2', '9');
-
-INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
-VALUES ('9', '3', '5');
-INSERT INTO STEP_BOOK_SET_BOOK_REF(id, book_set_id, book_id)
-VALUES ('10', '3', '6');
-
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, book_set_id, cover_img_id, cover_img_url, status, materials, sales_platforms)
-VALUES ('0', '001', '宫西达也恐龙系列(全5册)', '', 39.00, 'PHYSICAL', '1', '001', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/981ec323-12d1-4088-a1ba-461ac0de89e8.jpg', 'ON_SHELF', 1, 1);
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, book_set_id, cover_img_id, cover_img_url, status, materials, sales_platforms)
-VALUES ('1', '002', '宫西达也恐龙系列(全5册)+课程', '宫西达也恐龙系列(全5册)+课程', 29.00, 'PHYSICAL', '1', '002', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/fc8b7ed7-2b53-49be-8b4d-cd4c2d9ff15a.jpg', 'ON_SHELF', 3, 1);
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, book_set_id, cover_img_id, cover_img_url, status, materials, sales_platforms)
-VALUES ('2', '003', '宫西达也恐龙系列课程', '宫西达也恐龙系列课程', 19.00, 'VIRTUAL', '1', '003', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/d86913e9-3a44-4b29-9403-bd16ac2b8584.jpg', 'ON_SHELF', 4, 1);
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, book_set_id, cover_img_id, cover_img_url, status, materials, sales_platforms)
-VALUES ('3', '004', '睡前小故事(3册)', '睡前小故事(3册)', 29.00, 'PHYSICAL', '2', '004', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/d86913e9-3a44-4b29-9403-bd16ac2b8584.jpg', 'ON_SHELF', 1, 1);
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, book_set_id, cover_img_id, cover_img_url, status, materials, sales_platforms)
-VALUES ('4', '005', '睡前小故事(3册)+课程', '睡前小故事(3册)+课程', 19.00, 'PHYSICAL', '2', '005', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/e0ff2c40-fab6-4be0-b549-f1cc79aa78a8.jpg', 'ON_SHELF', 3, 1);
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, book_set_id, cover_img_id, cover_img_url, status, materials, sales_platforms)
-VALUES ('5', '006', '睡前小故事课程', '睡前小故事课程', 9.00, 'VIRTUAL', '2', '006', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/ee248eac-b3f6-4953-bcad-271cb6e52653.jpg', 'ON_SHELF', 4, 1);
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, book_set_id, cover_img_id, cover_img_url, status, materials, sales_platforms)
-VALUES ('6', '007', '数学思维(2册)', '数学思维(2册)', 29.00, 'PHYSICAL', '3', '001', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/981ec323-12d1-4088-a1ba-461ac0de89e8.jpg', 'ON_SHELF', 1, 1);
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, book_set_id, cover_img_id, cover_img_url, status, materials, sales_platforms)
-VALUES ('7', '008', '数学思维(2册)+课程', '数学思维(2册)+课程', 19.00, 'PHYSICAL', '3', '002', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/fc8b7ed7-2b53-49be-8b4d-cd4c2d9ff15a.jpg', 'ON_SHELF', 3, 1);
-INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, book_set_id, cover_img_id, cover_img_url, status, materials, sales_platforms)
-VALUES ('8', '009', '数学思维课程', '', 9.00, 'VIRTUAL', '3', '003', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/d86913e9-3a44-4b29-9403-bd16ac2b8584.jpg', 'ON_SHELF', 4, 1);
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, cover_img_id, cover_img_url, status, materials, sales_platforms)
+VALUES ('0', '001', '宫西达也恐龙系列(全5册)', '', 39.00, 'PHYSICAL', '001', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/981ec323-12d1-4088-a1ba-461ac0de89e8.jpg', 'ON_SHELF', 1, 1);
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, cover_img_id, cover_img_url, status, materials, sales_platforms)
+VALUES ('1', '002', '宫西达也恐龙系列(全5册)+课程', '宫西达也恐龙系列(全5册)+课程', 29.00, 'PHYSICAL', '002', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/fc8b7ed7-2b53-49be-8b4d-cd4c2d9ff15a.jpg', 'ON_SHELF', 3, 1);
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, cover_img_id, cover_img_url, status, materials, sales_platforms)
+VALUES ('2', '003', '宫西达也恐龙系列课程', '宫西达也恐龙系列课程', 19.00, 'VIRTUAL', '003', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/d86913e9-3a44-4b29-9403-bd16ac2b8584.jpg', 'ON_SHELF', 4, 1);
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, cover_img_id, cover_img_url, status, materials, sales_platforms)
+VALUES ('3', '004', '睡前小故事(3册)', '睡前小故事(3册)', 29.00, 'PHYSICAL', '004', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/d86913e9-3a44-4b29-9403-bd16ac2b8584.jpg', 'ON_SHELF', 1, 1);
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, cover_img_id, cover_img_url, status, materials, sales_platforms)
+VALUES ('4', '005', '睡前小故事(3册)+课程', '睡前小故事(3册)+课程', 19.00, 'PHYSICAL', '005', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/e0ff2c40-fab6-4be0-b549-f1cc79aa78a8.jpg', 'ON_SHELF', 3, 1);
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, cover_img_id, cover_img_url, status, materials, sales_platforms)
+VALUES ('5', '006', '睡前小故事课程', '睡前小故事课程', 9.00, 'VIRTUAL', '006', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/ee248eac-b3f6-4953-bcad-271cb6e52653.jpg', 'ON_SHELF', 4, 1);
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, cover_img_id, cover_img_url, status, materials, sales_platforms)
+VALUES ('6', '007', '数学思维(2册)', '数学思维(2册)', 29.00, 'PHYSICAL', '001', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/981ec323-12d1-4088-a1ba-461ac0de89e8.jpg', 'ON_SHELF', 1, 1);
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, cover_img_id, cover_img_url, status, materials, sales_platforms)
+VALUES ('7', '008', '数学思维(2册)+课程', '数学思维(2册)+课程', 19.00, 'PHYSICAL', '002', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/fc8b7ed7-2b53-49be-8b4d-cd4c2d9ff15a.jpg', 'ON_SHELF', 3, 1);
+INSERT INTO STEP_PRODUCT(id, sku_code, sku_name, description, price, product_nature, cover_img_id, cover_img_url, status, materials, sales_platforms)
+VALUES ('8', '009', '数学思维课程', '', 9.00, 'VIRTUAL', '003', 'https://s3.cn-north-1.amazonaws.com.cn/stepbook-public-stage/product/d86913e9-3a44-4b29-9403-bd16ac2b8584.jpg', 'ON_SHELF', 4, 1);
 
 INSERT INTO STEP_PRODUCT_BOOK_REF(id, product_id, book_id)
 VALUES ('0', '0', '0');

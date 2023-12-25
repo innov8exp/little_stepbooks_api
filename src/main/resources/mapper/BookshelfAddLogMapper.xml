@@ -5,7 +5,6 @@
             resultType="net.stepbooks.interfaces.client.dto.BookshelfAddLogDto">
         select bdl.*, bsb.book_id, bk.book_name, bk.book_img_url
         from STEP_BOOKSHELF_ADD_LOG bdl
-        left join STEP_BOOK_SET_BOOK_REF bsb on bdl.book_set_id = bsb.book_set_id
         left join STEP_BOOK bk on bk.id = bsb.book_id
         where bdl.USER_ID = #{userId}
         <if test="keyword != null and keyword != ''">

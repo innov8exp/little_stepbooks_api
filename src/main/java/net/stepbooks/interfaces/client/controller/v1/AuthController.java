@@ -52,6 +52,16 @@ public class AuthController {
         return ResponseEntity.ok(tokenDto);
     }
 
+    @Operation(summary = "绑定微信openid")
+    @PostMapping("/openid")
+    public ResponseEntity<?> bindOpenId(@Valid @RequestBody WechatAuthDto wechatAuthDto) {
+        User user = contextManager.currentUser();
+        if (ObjectUtils.isEmpty(user.getOpenId())) {
+            userService.assignOpenId(wechatAuthDto, user);
+        }
+        return ResponseEntity.ok().build();
+    }
+
 
     @PostMapping("/social-login")
     @Operation(summary = "使用第三方登录")

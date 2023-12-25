@@ -5,10 +5,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.book.service.BookService;
-import net.stepbooks.domain.bookset.entity.BookSet;
-import net.stepbooks.domain.bookset.entity.BookSetBook;
-import net.stepbooks.domain.bookset.service.BookSetBookService;
-import net.stepbooks.domain.bookset.service.BookSetService;
 import net.stepbooks.domain.bookshelf.entity.Bookshelf;
 import net.stepbooks.domain.bookshelf.entity.BookshelfAddLog;
 import net.stepbooks.domain.bookshelf.mapper.BookshelfMapper;
@@ -30,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,13 +33,11 @@ public class BookshelfServiceImpl extends ServiceImpl<BookshelfMapper, Bookshelf
 
     private final BookshelfMapper bookshelfMapper;
     private final RecommendationMapper recommendationMapper;
-    private final BookSetService bookSetService;
     private final BookshelfAddLogService bookshelfAddLogService;
     private final ProductService productService;
     private final OrderService physicalOrderServiceImpl;
     private final OrderOpsService orderOpsService;
     private final BookService bookService;
-    private final BookSetBookService bookSetBookService;
 
     @Override
     public Bookshelf findBookInBookshelf(String bookId, String userId) {
@@ -96,28 +89,19 @@ public class BookshelfServiceImpl extends ServiceImpl<BookshelfMapper, Bookshelf
     }
 
     @Override
-    public boolean existsBookSetInBookshelf(String bookSetCode, String userId) {
-        return exists(Wrappers.<Bookshelf>lambdaQuery().eq(Bookshelf::getBookSetCode, bookSetCode)
+    public boolean existsBookInBookshelf(String bookId, String userId) {
+        return exists(Wrappers.<Bookshelf>lambdaQuery().eq(Bookshelf::getBookId, bookId)
                 .eq(Bookshelf::getUserId, userId));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void activeBookSet(String bookSetCode, String userId) {
-        BookSet bookSet = bookSetService.findByCode(bookSetCode);
-        List<Book> books = bookSetService.findBooksByBookSetId(bookSet.getId());
-
-        // 拆书包，将书包中的书籍添加到书架
-        saveBatch(books.stream().map(book -> Bookshelf.builder()
-                        .bookSetId(bookSet.getId())
-                        .bookSetCode(bookSetCode)
-                        .bookId(book.getId())
-                        .userId(userId)
-                        .build())
-                .collect(Collectors.toList()));
+    public void activeBook(String bookId, String userId) {
+        // 激活书籍到书架中
+        Bookshelf bookshelf = Bookshelf.builder().bookId(bookId).userId(userId).build();
+        save(bookshelf);
         BookshelfAddLog addLog = BookshelfAddLog.builder()
-                .bookSetId(bookSet.getId())
-                .bookSetCode(bookSetCode)
+                .bookId(bookId)
                 .userId(userId)
                 .build();
         bookshelfAddLogService.save(addLog);
@@ -128,10 +112,8 @@ public class BookshelfServiceImpl extends ServiceImpl<BookshelfMapper, Bookshelf
         BookDto book = bookService.findBookById(bookId);
         BookAndMaterialsDto bookAndMaterials = BaseAssembler.convert(book, BookAndMaterialsDto.class);
         Set<Material> mergedMaterials = new HashSet<>();
-        List<BookSetBook> bookSetBooks = bookSetBookService.findByBookId(bookId);
-        // 根据激活码获取订单中的产品信息
-        List<Product> products = physicalOrderServiceImpl.findOrderProductByUserIdAndBookSetIds(userId,
-                bookSetBooks.stream().map(BookSetBook::getBookSetId).collect(Collectors.toSet()));
+        // 根据bookId获取订单中的产品信息
+        List<Product> products = physicalOrderServiceImpl.findOrderProductByUserIdAndBookId(userId, bookId);
         products.forEach(product -> {
             Material[] materials = product.getParsedMaterials();
             mergedMaterials.addAll(Arrays.asList(materials));

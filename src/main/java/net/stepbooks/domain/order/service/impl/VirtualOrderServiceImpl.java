@@ -4,10 +4,7 @@ import com.alibaba.cola.statemachine.StateMachine;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.domain.order.entity.Order;
-import net.stepbooks.domain.order.entity.OrderBook;
-import net.stepbooks.domain.order.entity.OrderCourse;
-import net.stepbooks.domain.order.entity.OrderProduct;
+import net.stepbooks.domain.order.entity.*;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.mapper.OrderMapper;
@@ -19,12 +16,14 @@ import net.stepbooks.domain.order.util.OrderUtil;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.payment.service.PaymentService;
+import net.stepbooks.domain.payment.vo.WechatPayRefundRequest;
+import net.stepbooks.domain.payment.vo.WechatPayRefundResponse;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.entity.ProductBook;
 import net.stepbooks.domain.product.entity.ProductCourse;
+import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductBookService;
 import net.stepbooks.domain.product.service.ProductCourseService;
-import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.enums.PaymentType;
 import net.stepbooks.infrastructure.enums.TransactionStatus;
@@ -32,17 +31,17 @@ import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
+import net.stepbooks.interfaces.client.dto.SkuDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import static net.stepbooks.infrastructure.AppConstants.ORDER_PAYMENT_TIMEOUT_BUFFER;
-import static net.stepbooks.infrastructure.AppConstants.VIRTUAL_ORDER_CODE_PREFIX;
+import static net.stepbooks.infrastructure.AppConstants.*;
 
 @Slf4j
 @Service
@@ -52,7 +51,6 @@ public class VirtualOrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final StateMachine<OrderState, OrderEvent, Order> virtualOrderStateMachine;
 
-    private final ProductService productService;
     private final OrderProductService orderProductService;
     private final PaymentService paymentService;
     private final PaymentOpsService paymentOpsService;
@@ -63,48 +61,57 @@ public class VirtualOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String createOrder(CreateOrderDto orderDto) {
-//        entity.setOrderNo(IdWorker.getIdStr());
-        Product product = productService.getProductBySkuCode(orderDto.getSkuCode());
-        if (product == null) {
+    public Order createOrder(CreateOrderDto orderDto) {
+        List<SkuDto> skus = orderDto.getSkus();
+        if (ObjectUtils.isEmpty(skus)) {
             throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
         }
-        // 无库存商品直接下单
-        String productId = product.getId();
-        String orderCode = OrderUtil.generateOrderNo(VIRTUAL_ORDER_CODE_PREFIX);
-        Order order = OrderUtil.buildOrder(orderDto, product, orderCode);
+        // 创建订单
+        String orderCode = OrderUtil.generateOrderNo(PHYSICAL_ORDER_CODE_PREFIX);
+        Order order = OrderUtil.buildOrder(orderDto, skus, orderCode, ProductNature.PHYSICAL);
         log.info("OrderNo:" + order.getOrderCode());
         orderMapper.insert(order);
-        OrderProduct orderProduct = OrderProduct.builder()
-                .orderId(order.getId())
-                .productId(productId)
-                .quantity(orderDto.getQuantity())
-                .build();
-        orderProductService.save(orderProduct);
+        for (SkuDto sku : skus) {
+            if (sku == null) {
+                throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
+            }
+            if (sku.getQuantity() == 0) {
+                throw new BusinessException(ErrorCode.ORDER_QUANTITY_IS_ZERO);
+            }
+            Product product = sku.getProduct();
+            String productId = product.getId();
+            // 创建订单商品
+            OrderProduct orderProduct = OrderProduct.builder()
+                    .orderId(order.getId())
+                    .productId(productId)
+                    .quantity(sku.getQuantity())
+                    .build();
+            orderProductService.save(orderProduct);
+            // 建立订单与书籍关系
+            List<OrderBook> orderBooks = productBookService.list(Wrappers.<ProductBook>lambdaQuery()
+                            .eq(ProductBook::getProductId, productId))
+                    .stream().map(productBook -> OrderBook.builder()
+                            .orderId(order.getId())
+                            .productId(productId)
+                            .bookId(productBook.getBookId())
+                            .userId(order.getUserId())
+                            .build()).toList();
+            orderBookService.saveBatch(orderBooks);
+            // 建立订单与课程关系
+            List<OrderCourse> orderCourses = productCourseService.list(Wrappers.<ProductCourse>lambdaQuery()
+                            .eq(ProductCourse::getProductId, productId))
+                    .stream().map(productCourse -> OrderCourse.builder()
+                            .orderId(order.getId())
+                            .productId(productId)
+                            .courseId(productCourse.getCourseId())
+                            .userId(order.getUserId())
+                            .bookId(productCourse.getBookId())
+                            .build()).toList();
+            orderCourseService.saveBatch(orderCourses);
+        }
+        // 更新订单状态
         updateOrderState(order.getId(), OrderEvent.PLACE_SUCCESS);
-
-        // 建立订单与书籍关系
-        List<OrderBook> orderBooks = productBookService.list(Wrappers.<ProductBook>lambdaQuery()
-                        .eq(ProductBook::getProductId, productId))
-                .stream().map(productBook -> OrderBook.builder()
-                        .orderId(order.getId())
-                        .productId(productId)
-                        .bookId(productBook.getBookId())
-                        .userId(order.getUserId())
-                        .build()).toList();
-        orderBookService.saveBatch(orderBooks);
-        // 建立订单与课程关系
-        List<OrderCourse> orderCourses = productCourseService.list(Wrappers.<ProductCourse>lambdaQuery()
-                        .eq(ProductCourse::getProductId, productId))
-                .stream().map(productCourse -> OrderCourse.builder()
-                        .orderId(order.getId())
-                        .productId(productId)
-                        .bookId(productCourse.getBookId())
-                        .courseId(productCourse.getCourseId())
-                        .userId(order.getUserId())
-                        .build()).toList();
-        orderCourseService.saveBatch(orderCourses);
-        return orderCode;
+        return order;
     }
 
     @Override
@@ -150,20 +157,17 @@ public class VirtualOrderServiceImpl implements OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void paymentCallback(Order order) {
+    public void paymentCallback(Order order, Payment payment) {
         Order updatedOrder = updateOrderState(order.getId(), OrderEvent.PAYMENT_SUCCESS);
         updatedOrder.setPaymentStatus(PaymentStatus.PAID);
         updatedOrder.setPaymentMethod(order.getPaymentMethod());
         // TODO
         updatedOrder.setPaymentAmount(order.getTotalAmount());
         orderMapper.updateById(updatedOrder);
-        Payment payment = new Payment();
         payment.setPaymentMethod(updatedOrder.getPaymentMethod());
         payment.setPaymentType(PaymentType.ORDER_PAYMENT);
         payment.setOrderId(updatedOrder.getId());
         payment.setOrderCode(updatedOrder.getOrderCode());
-        payment.setTransactionAmount(updatedOrder.getPaymentAmount());
-        payment.setTransactionStatus(TransactionStatus.SUCCESS);
         payment.setUserId(updatedOrder.getUserId());
         //TODO
         payment.setVendorPaymentNo(UUID.randomUUID().toString());
@@ -177,7 +181,7 @@ public class VirtualOrderServiceImpl implements OrderService {
     public void shipOrder(String id, DeliveryInfoDto deliveryInfoDto) { }
 
     @Override
-    public void refundRequest(String id) {
+    public void refundRequest(String id, RefundRequest refundRequest) {
         updateOrderState(id, OrderEvent.REFUND_REQUEST);
     }
 
@@ -187,42 +191,61 @@ public class VirtualOrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void refundPayment(String id) {
-        // TODO 发起付款支付
+    public void refundPayment(String id, RefundRequest refundRequest) {
+        // TODO 发起退款支付
         // 获取退款金额
         Order order = orderMapper.selectById(id);
-        Payment payment = new Payment();
+        Payment payment = paymentOpsService.getOne(Wrappers.<Payment>lambdaQuery().eq(Payment::getOrderId, id)
+                .eq(Payment::getPaymentType, PaymentType.ORDER_PAYMENT).orderByDesc(Payment::getCreatedAt));
+        WechatPayRefundRequest wechatPayRefundRequest = new WechatPayRefundRequest();
+        wechatPayRefundRequest.setOrderId(order.getOrderCode());
+        wechatPayRefundRequest.setTransactionId(payment.getVendorPaymentNo());
+        BigDecimal totalAmount = order.getPaymentAmount();
+        int amount = totalAmount.multiply(new BigDecimal(ONE_HUNDRED)).intValue();
+        wechatPayRefundRequest.setTotalMoney(amount);
+        BigDecimal refundAmountBig = refundRequest.getRefundAmount();
+        int refundAmount = refundAmountBig.multiply(new BigDecimal(ONE_HUNDRED)).intValue();
+        wechatPayRefundRequest.setRefundMoney(refundAmount);
+        wechatPayRefundRequest.setOutRefundNo(order.getOrderCode());
+        wechatPayRefundRequest.setReason(refundRequest.getRejectReason());
+        WechatPayRefundResponse refund = null;
+        try {
+            refund = paymentService.refund(wechatPayRefundRequest);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
+        }
+
         payment.setPaymentMethod(order.getPaymentMethod());
         payment.setPaymentType(PaymentType.REFUND_PAYMENT);
         payment.setOrderId(order.getId());
         payment.setOrderCode(order.getOrderCode());
-        payment.setTransactionAmount(order.getPaymentAmount());
+        payment.setTransactionAmount(refundAmountBig);
         payment.setUserId(order.getUserId());
-        payment.setTransactionStatus(TransactionStatus.SUCCESS);
+        payment.setVendorPaymentNo(refund.getRefundId());
+        payment.setTransactionStatus(refund.getStatus());
         //TODO
-        payment.setVendorPaymentNo(UUID.randomUUID().toString());
         paymentOpsService.save(payment);
     }
 
     // 物理订单中的逻辑处理，不需要实现
     @Override
-    public boolean existsBookSetInOrder(String bookSetCode, String userId) {
+    public boolean existsBookInOrder(String bookId, String userId) {
         return false;
     }
 
     // 物理订单中的逻辑处理，不需要实现
     @Override
-    public List<Product> findOrderProductByUserIdAndBookSetIds(String userId, Set<String> bookSetIds) {
+    public List<Product> findOrderProductByUserIdAndBookId(String userId, String bookId) {
         return null;
     }
 
     @Override
-    public void refundCallback(Order order) {
+    public void refundCallback(Order order, Payment payment) {
         updateOrderState(order.getId(), OrderEvent.REFUND_SUCCESS);
         paymentOpsService.update(Wrappers.<Payment>lambdaUpdate()
                 .eq(Payment::getOrderCode, order.getOrderCode())
                 .eq(Payment::getPaymentType, PaymentType.REFUND_PAYMENT)
-                .set(Payment::getTransactionStatus, TransactionStatus.SUCCESS));
+                .set(Payment::getTransactionStatus, TransactionStatus.SUCCESS.name()));
     }
 
 }

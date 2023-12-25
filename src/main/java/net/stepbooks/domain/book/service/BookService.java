@@ -30,4 +30,6 @@ public interface BookService extends IService<Book> {
     List<Book> findBooksByProductId(String productId);
 
     List<BookChapter> getBookChaptersByUser(String userId, String bookId);
+
+    Book findBookByQRCode(String qrCode);
 }

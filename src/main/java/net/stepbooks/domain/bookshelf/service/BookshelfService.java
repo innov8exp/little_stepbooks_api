@@ -19,9 +19,9 @@ public interface BookshelfService extends IService<Bookshelf> {
 
     void setTopBooksFromBookshelf(List<String> bookIds, String userId);
 
-    boolean existsBookSetInBookshelf(String bookSetCode, String userId);
+    boolean existsBookInBookshelf(String bookId, String userId);
 
-    void activeBookSet(String bookSetCode, String userId);
+    void activeBook(String bookId, String userId);
 
     BookAndMaterialsDto getBookAndMaterialsDto(String bookId, String userId);
 }

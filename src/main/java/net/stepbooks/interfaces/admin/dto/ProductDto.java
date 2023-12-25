@@ -20,13 +20,11 @@ public class ProductDto {
     private BigDecimal price;
     private String coverImgId;
     private String coverImgUrl;
-    private String bookSetId;
-    private String bookSetCode;
-    private String bookSetName;
     private List<ProductMediaDto> medias;
     private ProductStatus status;
     private String[] classificationIds;
     private String[] classificationNames;
+    private List<String> bookIds;
 
     public SalesPlatform[] getParsedSalesPlatforms() {
         return SalesPlatform.parseSalesPlatforms(salesPlatforms);

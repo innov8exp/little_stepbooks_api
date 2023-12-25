@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.BookChapter;
 import net.stepbooks.domain.book.service.BookChapterService;
 import net.stepbooks.domain.book.service.BookService;
-import net.stepbooks.domain.bookset.entity.BookSetBook;
-import net.stepbooks.domain.bookset.service.BookSetBookService;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
@@ -30,7 +28,6 @@ public class MBookController {
     private final BookService bookService;
     private final BookChapterService bookChapterService;
     private final CourseService courseService;
-    private final BookSetBookService bookSetBookService;
 
     @PostMapping
     public ResponseEntity<?> createBook(@RequestBody BookDto bookDto) {
@@ -53,10 +50,6 @@ public class MBookController {
         List<BookChapter> bookChapters = bookChapterService.getBookChapters(id);
         if (!bookChapters.isEmpty()) {
             throw new BusinessException(ErrorCode.BOOK_HAS_CHAPTER);
-        }
-        List<BookSetBook> bookSetBooks = bookSetBookService.findByBookId(id);
-        if (!bookSetBooks.isEmpty()) {
-            throw new BusinessException(ErrorCode.BOOK_HAS_BOOKSET);
         }
         bookService.deleteBook(id);
         return ResponseEntity.ok().build();

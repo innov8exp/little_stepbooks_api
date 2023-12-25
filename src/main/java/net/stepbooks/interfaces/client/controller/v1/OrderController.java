@@ -3,6 +3,7 @@ package net.stepbooks.interfaces.client.controller.v1;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wechat.pay.java.service.payments.jsapi.model.PrepayWithRequestPaymentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,27 +14,28 @@ import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.service.OrderOpsService;
+import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.order.service.RefundRequestService;
+import net.stepbooks.domain.payment.service.PaymentService;
+import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
-import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 import net.stepbooks.interfaces.admin.dto.OrderProductDto;
-import net.stepbooks.interfaces.client.dto.CreateOrderDto;
-import net.stepbooks.interfaces.client.dto.PlaceOrderDto;
-import net.stepbooks.interfaces.client.dto.RecipientInfoDto;
+import net.stepbooks.interfaces.client.dto.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Tag(name = "Order", description = "订单相关接口")
@@ -50,30 +52,92 @@ public class OrderController {
     private final ProductService productService;
     private final RefundRequestService refundRequestService;
     private final DeliveryService deliveryService;
+    private final PaymentService paymentService;
+    private final OrderProductService orderProductService;
 
-    @Operation(summary = "下单")
-    @PostMapping
-    public ResponseEntity<String> placeOrder(@RequestBody PlaceOrderDto placeOrderDto) {
-        User user = contextManager.currentUser();
+    private CreateOrderDto prepareOrder(PlaceOrderDto placeOrderDto, User user) {
         CreateOrderDto orderDto = BaseAssembler.convert(placeOrderDto, CreateOrderDto.class);
         orderDto.setUserId(user.getId());
-        Product product = productService.getProductBySkuCode(orderDto.getSkuCode());
-        if (ObjectUtils.isEmpty(product)) {
-            throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
+        List<SkuDto> skus = orderDto.getSkus();
+        skus = skus.stream().peek(sku -> {
+            Product product = productService.getProductBySkuCode(sku.getSkuCode());
+            if (ObjectUtils.isEmpty(product)) {
+                throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
+            }
+            sku.setProduct(product);
+        }).toList();
+        orderDto.setSkus(skus);
+        return orderDto;
+    }
+
+    private PrepayWithRequestPaymentResponse preparePayment(Order order, List<SkuDto> skus, User user) {
+        StringBuilder payContent = new StringBuilder("orderCode:").append(order.getOrderCode()).append("sku:[");
+        for (SkuDto sku : skus) {
+            payContent.append("skuCode:").append(sku.getSkuCode())
+                    .append(", quantity:").append(sku.getQuantity()).append(", ");
         }
-        if (orderDto.getQuantity() == 0) {
-            orderDto.setQuantity(1);
+        payContent.append("], ");
+        WechatPayPrePayRequest payPrePayRequest = new WechatPayPrePayRequest();
+        payPrePayRequest.setOutTradeNo(order.getOrderCode());
+        payPrePayRequest.setOpenId(user.getOpenId());
+        payPrePayRequest.setPayMoney(order.getTotalAmount());
+        payPrePayRequest.setPayContent(payContent.toString());
+        // remove this after debug
+        payPrePayRequest.setPayMoney(new BigDecimal("0.01"));
+        return paymentService.prepayWithRequestPayment(payPrePayRequest);
+    }
+
+    @Operation(summary = "实体产品下单")
+    @PostMapping("/physical")
+    public ResponseEntity<OrderAndPaymentDto> placePhysicalOrder(@RequestBody PlaceOrderDto placeOrderDto) {
+        User user = contextManager.currentUser();
+        CreateOrderDto orderDto = prepareOrder(placeOrderDto, user);
+        Order order = physicalOrderServiceImpl.createOrder(orderDto);
+        PrepayWithRequestPaymentResponse paymentResponse = preparePayment(order, orderDto.getSkus(), user);
+        OrderAndPaymentDto orderAndPaymentDto = new OrderAndPaymentDto();
+        orderAndPaymentDto.setOrder(order);
+        orderAndPaymentDto.setPaymentResponse(paymentResponse);
+        return ResponseEntity.ok(orderAndPaymentDto);
+    }
+
+    @Operation(summary = "虚拟产品下单")
+    @PostMapping("/virtual")
+    public ResponseEntity<OrderAndPaymentDto> placeVirtualOrder(@RequestBody PlaceOrderDto placeOrderDto) {
+        User user = contextManager.currentUser();
+        CreateOrderDto orderDto = prepareOrder(placeOrderDto, user);
+        Order order = virtualOrderServiceImpl.createOrder(orderDto);
+        PrepayWithRequestPaymentResponse paymentResponse = preparePayment(order, orderDto.getSkus(), user);
+        OrderAndPaymentDto orderAndPaymentDto = new OrderAndPaymentDto();
+        orderAndPaymentDto.setOrder(order);
+        orderAndPaymentDto.setPaymentResponse(paymentResponse);
+        return ResponseEntity.ok(orderAndPaymentDto);
+    }
+
+    @Operation(summary = "支付订单")
+    @PostMapping("/{code}/payment")
+    public ResponseEntity<OrderAndPaymentDto> payOrder(@PathVariable String code) {
+        Order order = orderOpsService.findOrderByCode(code);
+        User user = contextManager.currentUser();
+        if (!user.getId().equals(order.getUserId())) {
+            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
         }
-        if (ProductNature.PHYSICAL.equals(product.getProductNature())) {
-            String orderCode = physicalOrderServiceImpl.createOrder(orderDto);
-            return ResponseEntity.ok(orderCode);
-            // 虚拟产品
-        } else if (ProductNature.VIRTUAL.equals(product.getProductNature())) {
-            String orderCode = virtualOrderServiceImpl.createOrder(orderDto);
-            return ResponseEntity.ok(orderCode);
-        } else {
-            throw new BusinessException(ErrorCode.PRODUCT_NATURE_NOT_SUPPORT);
+        if (!OrderState.PLACED.equals(order.getState())) {
+            throw new BusinessException(ErrorCode.ORDER_STATE_NOT_SUPPORT);
         }
+        List<OrderProductDto> orderProducts = orderProductService.findByOrderId(order.getId());
+        List<SkuDto> skus = orderProducts.stream().map(orderProduct -> {
+            String skuCode = orderProduct.getSkuCode();
+            int quantity = orderProduct.getQuantity();
+            SkuDto skuDto = new SkuDto();
+            skuDto.setSkuCode(skuCode);
+            skuDto.setQuantity(quantity);
+            return skuDto;
+        }).toList();
+        PrepayWithRequestPaymentResponse paymentResponse = preparePayment(order, skus, user);
+        OrderAndPaymentDto orderAndPaymentDto = new OrderAndPaymentDto();
+        orderAndPaymentDto.setOrder(order);
+        orderAndPaymentDto.setPaymentResponse(paymentResponse);
+        return ResponseEntity.ok(orderAndPaymentDto);
     }
 
     @Operation(summary = "修改配送信息")
@@ -116,11 +180,11 @@ public class OrderController {
 
     @Operation(summary = "获取订单产品信息")
     @GetMapping("/{code}/products")
-    public ResponseEntity<OrderProductDto> getOrderProducts(@PathVariable String code) {
+    public ResponseEntity<List<OrderProductDto>> getOrderProducts(@PathVariable String code) {
         String userId = contextManager.currentUser().getId();
         OrderInfoDto order = orderOpsService.findOrderByCodeAndUser(code, userId);
-        OrderProductDto product = order.getProduct();
-        return ResponseEntity.ok(product);
+        List<OrderProductDto> products = order.getProducts();
+        return ResponseEntity.ok(products);
     }
 
     @Operation(summary = "获取订单物流信息")
@@ -181,42 +245,42 @@ public class OrderController {
         return ResponseEntity.ok(refundRequest);
     }
 
-    @PutMapping("/{code}/mock/payment-callback")
-    public ResponseEntity<?> mockPayOrder(@PathVariable String code) {
-        User user = contextManager.currentUser();
-        Order order = orderOpsService.findOrderByCode(code);
-        if (!user.getId().equals(order.getUserId())) {
-            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
-        }
-        order.setPaymentMethod(PaymentMethod.WECHAT_PAY);
-        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
-            physicalOrderServiceImpl.paymentCallback(order);
-        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
-            virtualOrderServiceImpl.paymentCallback(order);
-        } else {
-            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
-        }
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/{code}/mock/refund-callback")
-    public ResponseEntity<?> mockRefundOrder(@PathVariable String code) {
-        User user = contextManager.currentUser();
-        Order order = orderOpsService.findOrderByCode(code);
-        if (!user.getId().equals(order.getUserId())) {
-            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
-        }
-        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
-            physicalOrderServiceImpl.refundCallback(order);
-        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
-            virtualOrderServiceImpl.refundCallback(order);
-        } else {
-            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
-        }
-
-        return ResponseEntity.ok().build();
-    }
+//    @PutMapping("/{code}/payment-callback")
+//    public ResponseEntity<?> paymentCallback(@PathVariable String code) {
+//        User user = contextManager.currentUser();
+//        Order order = orderOpsService.findOrderByCode(code);
+//        if (!user.getId().equals(order.getUserId())) {
+//            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+//        }
+//        order.setPaymentMethod(PaymentMethod.WECHAT_PAY);
+//        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
+//            physicalOrderServiceImpl.paymentCallback(order, );
+//        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
+//            virtualOrderServiceImpl.paymentCallback(order, );
+//        } else {
+//            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
+//        }
+//
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    @PutMapping("/{code}/mock/refund-callback")
+//    public ResponseEntity<?> mockRefundOrder(@PathVariable String code) {
+//        User user = contextManager.currentUser();
+//        Order order = orderOpsService.findOrderByCode(code);
+//        if (!user.getId().equals(order.getUserId())) {
+//            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+//        }
+//        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
+//            physicalOrderServiceImpl.refundCallback(order, );
+//        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
+//            virtualOrderServiceImpl.refundCallback(order, );
+//        } else {
+//            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
+//        }
+//
+//        return ResponseEntity.ok().build();
+//    }
 
 
 }

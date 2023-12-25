@@ -98,10 +98,20 @@ create TABLE STEP_BOOK
     book_name           VARCHAR(200) NOT NULL UNIQUE,
     author              VARCHAR(200),
     book_img_id         VARCHAR(100) REFERENCES STEP_MEDIA(id),
-    book_img_url    TEXT,
-    description        TEXT,
+    book_img_url        TEXT,
+    description         TEXT,
     total_page_number   INTEGER,
     duration            VARCHAR(100),
+    created_at          TIMESTAMP,
+    modified_at         TIMESTAMP
+);
+
+-- 二维码信息
+create TABLE STEP_BOOK_QR_CODE
+(
+    id                  VARCHAR(100) NOT NULL PRIMARY KEY,
+    book_id             VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
+    qr_code             TEXT NOT NULL UNIQUE,
     created_at          TIMESTAMP,
     modified_at         TIMESTAMP
 );
@@ -158,25 +168,6 @@ create TABLE STEP_COURSE
     modified_at TIMESTAMP
 );
 
--- 书籍套装
-create TABLE STEP_BOOK_SET
-(
-    id VARCHAR(100) NOT NULL PRIMARY KEY,
-    code VARCHAR(200) NOT NULL UNIQUE,
-    name VARCHAR(200) NOT NULL,
-    description TEXT,
-    created_at TIMESTAMP,
-    modified_at TIMESTAMP
-);
-
--- 书籍套装与书籍关系
-create TABLE STEP_BOOK_SET_BOOK_REF
-(
-    id VARCHAR(100) NOT NULL PRIMARY KEY,
-    book_set_id VARCHAR(100) REFERENCES STEP_BOOK_SET(id) NOT NULL,
-    book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL
-);
-
 -- 产品SKU信息
 create TABLE STEP_PRODUCT
 (
@@ -190,8 +181,6 @@ create TABLE STEP_PRODUCT
     materials INT, -- 0: NONE, 1: AUDIO, 2: COURSE, 4: EXERCISE, 3: AUDIO + COURSE, 5: AUDIO + EXERCISE, 6: COURSE + EXERCISE, 7: AUDIO + COURSE + EXERCISE
     cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     cover_img_url TEXT,
-    book_set_id VARCHAR(100) REFERENCES STEP_BOOK_SET(id),
-    book_set_code VARCHAR(100),
     status VARCHAR(100) default ('OFF_SHELF'), -- ON_SHELF, OFF_SHELF
     created_at TIMESTAMP,
     modified_at TIMESTAMP
@@ -266,7 +255,7 @@ create TABLE STEP_ORDER
 create TABLE STEP_ORDER_PRODUCT_REF
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
-    order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) UNIQUE NOT NULL,
+    order_id        VARCHAR(100) REFERENCES STEP_ORDER(id) NOT NULL,
     product_id      VARCHAR(100) REFERENCES STEP_PRODUCT(id) NOT NULL,
     quantity        INTEGER,
     created_at      TIMESTAMP,
@@ -318,6 +307,7 @@ create TABLE STEP_ORDER_INVENTORY_LOG
     sku_code       VARCHAR(100) NOT NULL,
     inventory_id   VARCHAR(100) REFERENCES STEP_INVENTORY(id) NOT NULL,
     quantity       INTEGER,
+    CHANGE_TYPE    VARCHAR(100) DEFAULT 'DECREASE',   --变更类型: INCREASE 增加, DECREASE 减少
     created_at     TIMESTAMP,
     modified_at    TIMESTAMP
 );
@@ -394,21 +384,18 @@ create TABLE STEP_BOOKSHELF
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
     book_id         VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
-    book_set_id     VARCHAR(100) REFERENCES STEP_BOOK_SET(id),
-    book_set_code   VARCHAR(100),
     sort_index      SERIAL,
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP,
     UNIQUE (book_id, user_id)
 );
 
--- 套装激活记录
+-- 书籍激活记录
 create TABLE STEP_BOOKSHELF_ADD_LOG
 (
     id              VARCHAR(100) NOT NULL PRIMARY KEY,
     user_id         VARCHAR(100) REFERENCES STEP_USER(id) NOT NULL,
-    book_set_id     VARCHAR(100) REFERENCES STEP_BOOK_SET(id) NOT NULL,
-    book_set_code   VARCHAR(100) NOT NULL,
+    book_id         VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
     created_at      TIMESTAMP,
     modified_at     TIMESTAMP
 );
@@ -502,6 +489,9 @@ create index step_product_sku_name_index on STEP_PRODUCT (sku_name);
 create index step_course_name_index on STEP_COURSE (name);
 create index step_book_name_index on STEP_BOOK (book_name);
 create index step_author_index on STEP_BOOK (author);
+create index step_order_inventory_log_sku_code_index on STEP_ORDER_INVENTORY_LOG (sku_code);
+create index step_order_inventory_log_order_code_index on STEP_ORDER_INVENTORY_LOG (order_code);
+create index step_refund_requset_order_code_index on STEP_REFUND_REQUEST (order_code);
 
 --
 ---- 促销信息

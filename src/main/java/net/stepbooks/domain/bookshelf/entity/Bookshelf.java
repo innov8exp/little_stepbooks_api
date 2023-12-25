@@ -13,7 +13,5 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 public class Bookshelf extends BaseEntity {
     private String bookId;
     private String userId;
-    private String bookSetId;
-    private String bookSetCode;
     private Integer sortIndex;
 }

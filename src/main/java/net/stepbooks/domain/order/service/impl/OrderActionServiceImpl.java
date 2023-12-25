@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static net.stepbooks.infrastructure.AppConstants.ORDER_PAYMENT_TIMEOUT_QUEUE;
@@ -96,35 +97,41 @@ public class OrderActionServiceImpl implements OrderActionService {
     public void releaseStock(Order order) {
         // 有库存商品，先锁库存，再下单
         String orderId = order.getId();
-        OrderProductDto orderProductDto = orderProductService.findByOrderId(orderId);
-        String productId = orderProductDto.getProductId();
-        boolean res = redisDistributedLocker.tryLock(productId);
-        if (!res) {
-            log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁失败", productId);
-            throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED, "Server is busy, please try again later");
-        }
-        log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁成功", productId);
+        List<OrderProductDto> orderProducts = orderProductService.findByOrderId(orderId);
         try {
-            // 锁库存
-            Inventory inventory = inventoryService.releaseInventory(productId, orderProductDto.getQuantity());
-            String inventoryId = inventory.getId();
-            log.info("OrderNo:" + order.getOrderCode());
-            // 记录库存变更日志
-            OrderInventoryLog orderInventoryLog = OrderInventoryLog.builder()
-                    .orderId(order.getId())
-                    .orderCode(order.getOrderCode())
-                    .inventoryId(inventoryId)
-                    .productId(productId)
-                    .skuCode(orderProductDto.getSkuCode())
-                    .quantity(orderProductDto.getQuantity())
-                    .changeType(InventoryChangeType.INCREASE)
-                    .build();
-            orderInventoryLogService.save(orderInventoryLog);
+            for (OrderProductDto orderProductDto: orderProducts) {
+                String productId = orderProductDto.getProductId();
+                boolean res = redisDistributedLocker.tryLock(productId);
+                if (!res) {
+                    log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁失败", productId);
+                    throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED, "Server is busy, please try again later");
+                }
+                log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁成功", productId);
+                // 锁库存
+                Inventory inventory = inventoryService.releaseInventory(productId, orderProductDto.getQuantity());
+                String inventoryId = inventory.getId();
+                log.info("OrderNo:" + order.getOrderCode());
+                // 记录库存变更日志
+                OrderInventoryLog orderInventoryLog = OrderInventoryLog.builder()
+                        .orderId(order.getId())
+                        .orderCode(order.getOrderCode())
+                        .inventoryId(inventoryId)
+                        .productId(productId)
+                        .skuCode(orderProductDto.getSkuCode())
+                        .quantity(orderProductDto.getQuantity())
+                        .changeType(InventoryChangeType.INCREASE)
+                        .build();
+                orderInventoryLogService.save(orderInventoryLog);
+            }
+
         } catch (OptimisticLockingFailureException e) {
             throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED);
         } finally {
-            redisDistributedLocker.unlock(productId);
-            log.info("线程 PRODUCT_STOCK_LOCK_{} 释放锁成功", productId);
+            for (OrderProductDto orderProductDto: orderProducts) {
+                String productId = orderProductDto.getProductId();
+                redisDistributedLocker.unlock(productId);
+                log.info("线程 PRODUCT_STOCK_LOCK_{} 释放锁成功", productId);
+            }
         }
     }
 

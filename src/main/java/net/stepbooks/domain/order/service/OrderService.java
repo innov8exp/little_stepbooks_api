@@ -2,18 +2,19 @@ package net.stepbooks.domain.order.service;
 
 
 import net.stepbooks.domain.order.entity.Order;
+import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.enums.OrderEvent;
+import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 public interface OrderService {
 
-    String createOrder(CreateOrderDto orderDto);
+    Order createOrder(CreateOrderDto orderDto);
 
     Order updateOrderState(String id, OrderEvent orderEvent);
 
@@ -26,8 +27,8 @@ public interface OrderService {
 
     void cancelOrder(String id);
 
-    // 付款回掉
-    void paymentCallback(Order order);
+    // 付款回调
+    void paymentCallback(Order order, Payment payment);
 
     // 发货
     void shipOrder(String id, DeliveryInfoDto deliveryInfoDto);
@@ -36,18 +37,18 @@ public interface OrderService {
     void signOrder(String id);
 
     // 申请退款
-    void refundRequest(String id);
+    void refundRequest(String id, RefundRequest refundRequest);
 
     // 同意退款
     void refundApprove(String id, BigDecimal refundAmount);
 
     // 发起退款支付
-    void refundPayment(String id);
+    void refundPayment(String id, RefundRequest refundRequest);
 
-    boolean existsBookSetInOrder(String bookSetCode, String userId);
+    boolean existsBookInOrder(String bookId, String userId);
 
-    List<Product> findOrderProductByUserIdAndBookSetIds(String userId, Set<String> bookSetIds);
+    List<Product> findOrderProductByUserIdAndBookId(String userId, String bookId);
 
     // 退款回调
-    void refundCallback(Order order);
+    void refundCallback(Order order, Payment payment);
 }

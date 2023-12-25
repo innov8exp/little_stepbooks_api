@@ -6,12 +6,12 @@
                 typeHandler="org.apache.ibatis.type.ArrayTypeHandler"/>
     </resultMap>
     <select id="findDetailById" resultMap="productResultMap">
-        select p.*, bs.code book_set_code, bs.name book_set_name,
+        select p.*,
         (select array_remove(array(select sc.classification_name from step_classification sc
             right join step_product_classification_ref pc
             on p.id = pc.product_id
             and sc.id = pc.classification_id ), null)) classification_names
-        from step_product p left join step_book_set bs on p.book_set_id = bs.id
+        from step_product p
         where p.id = #{id}
     </select>
     <select id="findProductsInPagingByCriteria" resultType="net.stepbooks.domain.product.entity.Product">
@@ -51,6 +51,12 @@
     <select id="findDefaultRecommendProductsInPaging" resultType="net.stepbooks.domain.product.entity.Product">
         select distinct r.* from (select pr.*, ad.sort_index from step_product pr left join step_advertisement ad
         on pr.id = ad.product_id where pr.status = 'ON_SHELF' ) r order by r.sort_index asc
+    </select>
+    <select id="findBookByProductId" resultType="net.stepbooks.domain.book.entity.Book">
+        select b.* from step_book b
+        right join step_product_book_ref pb
+        on b.id = pb.book_id
+        where pb.product_id = #{productId}
     </select>
 
 </mapper>

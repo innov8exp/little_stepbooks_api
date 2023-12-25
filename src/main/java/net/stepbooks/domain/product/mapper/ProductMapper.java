@@ -3,6 +3,7 @@ package net.stepbooks.domain.product.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductStatus;
@@ -23,4 +24,6 @@ public interface ProductMapper extends BaseMapper<Product> {
     List<Classification> findClassificationsByProductId(String productId);
 
     IPage<Product> findDefaultRecommendProductsInPaging(Page<Product> page);
+
+    List<Book> findBookByProductId(String productId);
 }

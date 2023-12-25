@@ -3,14 +3,12 @@ package net.stepbooks.domain.payment.service;
 import com.wechat.pay.java.service.payments.jsapi.model.PrepayWithRequestPaymentResponse;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import jakarta.servlet.http.HttpServletRequest;
-import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.payment.vo.WechatPayPreNotifyRequest;
+import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundResponse;
 
 public interface PaymentService {
-
-    void payment();
 
     /**
      * 预支付

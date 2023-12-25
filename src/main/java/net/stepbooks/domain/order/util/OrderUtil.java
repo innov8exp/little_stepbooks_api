@@ -5,14 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.product.entity.Product;
+import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.util.RandomNumberUtils;
 import net.stepbooks.infrastructure.util.RedisLockUtils;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
+import net.stepbooks.interfaces.client.dto.SkuDto;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import static net.stepbooks.infrastructure.AppConstants.ORDER_CODE_RANDOM_LENGTH;
 import static net.stepbooks.infrastructure.AppConstants.ORDER_PAYMENT_TIMEOUT;
@@ -21,14 +24,20 @@ import static net.stepbooks.infrastructure.AppConstants.ORDER_PAYMENT_TIMEOUT;
 @UtilityClass
 public class OrderUtil {
 
-    public static Order buildOrder(CreateOrderDto orderDto, Product product, String orderCode) {
-        BigDecimal totalAmount = product.getPrice().multiply(new BigDecimal(orderDto.getQuantity()));
+    public static Order buildOrder(CreateOrderDto orderDto, List<SkuDto> skus, String orderCode,
+                                   ProductNature productNature) {
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        for (SkuDto sku: skus) {
+            Product product = sku.getProduct();
+            BigDecimal price = product.getPrice().multiply(new BigDecimal(sku.getQuantity()));
+            totalAmount = totalAmount.add(price);
+        }
         return Order.builder()
                 .orderCode(orderCode)
                 .userId(orderDto.getUserId())
                 .recipientPhone(orderDto.getRecipientPhone())
                 .totalAmount(totalAmount)
-                .productNature(product.getProductNature())
+                .productNature(productNature)
                 .paymentStatus(PaymentStatus.UNPAID)
                 .state(OrderState.INIT)
                 .paymentTimeoutDuration(ORDER_PAYMENT_TIMEOUT)

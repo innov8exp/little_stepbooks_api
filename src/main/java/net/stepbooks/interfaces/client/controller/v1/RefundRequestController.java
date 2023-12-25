@@ -91,12 +91,12 @@ public class RefundRequestController {
     public ResponseEntity<RefundRequestDto> getRequest(@PathVariable String id) {
         RefundRequest refundRequest = refundRequestService.getById(id);
         Order order = orderOpsService.findOrderById(refundRequest.getOrderId());
-        OrderProductDto orderProduct = orderProductService.findByOrderId(order.getId());
-        Product product = BaseAssembler.convert(orderProduct, Product.class);
+        List<OrderProductDto> orderProducts = orderProductService.findByOrderId(order.getId());
+        List<Product> products = BaseAssembler.convert(orderProducts, Product.class);
         RefundRequestDto refundRequestDto = new RefundRequestDto();
         refundRequestDto.setRefundRequest(refundRequest);
         refundRequestDto.setOrder(order);
-        refundRequestDto.setProduct(product);
+        refundRequestDto.setProducts(products);
         return ResponseEntity.ok(refundRequestDto);
     }
 

@@ -25,6 +25,7 @@ import net.stepbooks.infrastructure.external.client.GoogleClient;
 import net.stepbooks.infrastructure.external.client.WechatClient;
 import net.stepbooks.infrastructure.external.dto.UserPhoneNumberDto;
 import net.stepbooks.infrastructure.external.dto.WechatGetAccessTokenResponse;
+import net.stepbooks.infrastructure.external.dto.WechatLoginResponse;
 import net.stepbooks.infrastructure.external.dto.WechatPhoneResponse;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.security.user.UserJwtTokenProvider;
@@ -510,6 +511,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserAndChildAgeInfoByUsername(String username) {
         return userMapper.getUserAndChildAgeInfoByUsername(username);
+    }
+
+    @Override
+    public User assignOpenId(WechatAuthDto wechatAuthDto, User user) {
+        WechatLoginResponse wechatLogin = wechatClient
+                .wechatLogin(wechatAppId, wechatAppSecret, wechatAuthDto.getCode(), "authorization_code");
+        user.setOpenId(wechatLogin.getOpenId());
+        userMapper.updateById(user);
+        return user;
     }
 
 }

@@ -6,10 +6,10 @@ import java.math.BigDecimal;
 
 @Data
 public class WechatPayPrePayRequest {
-    /**
-     * 主键id
-     */
-    private Long id;
+//    /**
+//     * 订单编号
+//     */
+//    private String orderCode;
 
     /**
      * 商户支付no 和微信交互 查询订单使用（outTradeNo）

@@ -7,7 +7,7 @@ import net.stepbooks.interfaces.admin.dto.OrderProductDto;
 import java.util.List;
 
 public interface OrderProductService extends IService<OrderProduct> {
-    OrderProductDto findByOrderId(String orderId);
+    List<OrderProductDto> findByOrderId(String orderId);
 
     List<OrderProductDto> findByOrderIds(List<String> orderIds);
 }

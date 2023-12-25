@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.book.service.BookService;
-import net.stepbooks.domain.bookset.service.BookSetService;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
@@ -19,7 +19,6 @@ import net.stepbooks.domain.product.mapper.ProductBookMapper;
 import net.stepbooks.domain.product.mapper.ProductMapper;
 import net.stepbooks.domain.product.service.*;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
-import net.stepbooks.interfaces.admin.dto.BookSetDto;
 import net.stepbooks.interfaces.admin.dto.MProductQueryDto;
 import net.stepbooks.interfaces.admin.dto.ProductDto;
 import net.stepbooks.interfaces.admin.dto.ProductMediaDto;
@@ -28,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +35,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private final ProductMapper productMapper;
     private final ProductMediaService productMediaService;
     private final ProductClassificationService productClassificationService;
-    private final BookSetService bookSetService;
     private final ProductBookMapper productBookMapper;
     private final ProductBookService productBookService;
     private final ProductCourseService productCourseService;
@@ -79,9 +76,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         }).toList();
         productClassificationService.saveBatch(productClassifications);
         // 保存产品与书籍的关系
-        String bookSetId = product.getBookSetId();
-        BookSetDto bookSetDto = bookSetService.findById(bookSetId);
-        List<ProductBook> productBooks = bookSetDto.getBookIds().stream().map(bookId -> {
+        List<ProductBook> productBooks = productDto.getBookIds().stream().map(bookId -> {
             ProductBook productBook = new ProductBook();
             productBook.setBookId(bookId);
             productBook.setProductId(product.getId());
@@ -89,7 +84,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         }).toList();
         productBookService.saveBatch(productBooks);
         // 保存产品与课程的关系
-        bookSetDto.getBookIds().forEach(bookId -> {
+        productDto.getBookIds().forEach(bookId -> {
             List<Course> courses = courseService.getBookCourses(bookId);
             List<ProductCourse> productCourses = courses.stream().map(course -> {
                 ProductCourse productCourse = new ProductCourse();
@@ -130,9 +125,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
         // 保存产品与书籍的关系
         productBookService.remove(Wrappers.<ProductBook>lambdaQuery().eq(ProductBook::getProductId, id));
-        String bookSetId = product.getBookSetId();
-        BookSetDto bookSetDto = bookSetService.findById(bookSetId);
-        List<ProductBook> productBooks = bookSetDto.getBookIds().stream().map(bookId -> {
+        List<ProductBook> productBooks = productDto.getBookIds().stream().map(bookId -> {
             ProductBook productBook = new ProductBook();
             productBook.setBookId(bookId);
             productBook.setProductId(product.getId());
@@ -141,7 +134,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         productBookService.saveBatch(productBooks);
         // 保存产品与课程的关系
         productCourseService.remove(Wrappers.<ProductCourse>lambdaQuery().eq(ProductCourse::getProductId, id));
-        bookSetDto.getBookIds().forEach(bookId -> {
+        productDto.getBookIds().forEach(bookId -> {
             List<Course> courses = courseService.getBookCourses(bookId);
             List<ProductCourse> productCourses = courses.stream().map(course -> {
                 ProductCourse productCourse = new ProductCourse();
@@ -170,18 +163,10 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     @Override
-    public List<Product> getProductsByBookSetId(String bookSetId) {
-        return list(Wrappers.<Product>lambdaQuery().eq(Product::getBookSetId, bookSetId));
-    }
-
-    @Override
-    public List<Product> findProductsByBookSetIds(Set<String> bookSetIds) {
-        return list(Wrappers.<Product>lambdaQuery().in(Product::getBookSetId, bookSetIds));
-    }
-
-    @Override
-    public List<Product> findProductsByBookSetCode(String bookSetCode) {
-        return list(Wrappers.<Product>lambdaQuery().eq(Product::getBookSetCode, bookSetCode));
+    public List<Product> findProductsByBookId(String bookId) {
+        List<ProductBook> productBooks = productBookService.getProductBooksByBookId(bookId);
+        return list(Wrappers.<Product>lambdaQuery()
+                .in(Product::getId, productBooks.stream().map(ProductBook::getProductId).toList()));
     }
 
     @Override
@@ -219,6 +204,16 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         productCourseService.remove(Wrappers.<ProductCourse>lambdaQuery().eq(ProductCourse::getProductId, id));
         inventoryService.remove(Wrappers.<Inventory>lambdaQuery().eq(Inventory::getProductId, id));
         removeById(id);
+    }
+
+    @Override
+    public List<Book> findBookByProductId(String id) {
+        return productMapper.findBookByProductId(id);
+    }
+
+    @Override
+    public List<Product> findProductsBySkuCodes(List<String> skuCodes) {
+        return list(Wrappers.<Product>lambdaQuery().in(Product::getSkuCode, skuCodes));
     }
 
 }

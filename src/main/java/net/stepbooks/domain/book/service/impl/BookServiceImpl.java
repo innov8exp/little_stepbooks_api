@@ -6,12 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.domain.book.entity.Book;
-import net.stepbooks.domain.book.entity.BookChapter;
-import net.stepbooks.domain.book.entity.BookClassification;
-import net.stepbooks.domain.book.entity.BookMedia;
+import net.stepbooks.domain.book.entity.*;
 import net.stepbooks.domain.book.mapper.BookChapterMapper;
 import net.stepbooks.domain.book.mapper.BookMapper;
+import net.stepbooks.domain.book.mapper.BookQRCodeMapper;
 import net.stepbooks.domain.book.service.BookClassificationService;
 import net.stepbooks.domain.book.service.BookMediaService;
 import net.stepbooks.domain.book.service.BookService;
@@ -42,6 +40,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
     private final OrderOpsService orderOpsService;
     private final MediaService mediaService;
     private final BookMediaService bookMediaService;
+    private final BookQRCodeMapper bookQRCodeMapper;
 
     @Override
     public IPage<BookDto> findBooksInPagingByCriteria(Page<BookDto> page, MBookQueryDto queryDto) {
@@ -135,5 +134,15 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
             bookChapter.setImgUrl(imgUrl);
             bookChapter.setAudioUrl(audioUrl);
         }).toList();
+    }
+
+    @Override
+    public Book findBookByQRCode(String qrCode) {
+        BookQRCode bookQRCode = bookQRCodeMapper
+                .selectOne(Wrappers.<BookQRCode>lambdaQuery().eq(BookQRCode::getQrCode, qrCode));
+        if (bookQRCode != null) {
+            return bookMapper.selectById(bookQRCode.getBookId());
+        }
+        return null;
     }
 }

@@ -18,7 +18,7 @@ public class OrderProductServiceImpl extends ServiceImpl<OrderProductMapper, Ord
     private final OrderProductMapper orderProductMapper;
 
     @Override
-    public OrderProductDto findByOrderId(String orderId) {
+    public List<OrderProductDto> findByOrderId(String orderId) {
         return orderProductMapper.findProductDetailsByOrderId(orderId);
     }
 

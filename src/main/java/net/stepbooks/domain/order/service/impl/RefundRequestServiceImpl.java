@@ -60,7 +60,11 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
         if (OrderState.PAID.equals(order.getState())) {
             refundRequest.setRequestStatus(RequestStatus.APPROVED);
             refundRequest.setRefundType(RefundType.ONLY_REFUND);
-            physicalOrderServiceImpl.refundRequest(order.getId());
+            try {
+                physicalOrderServiceImpl.refundRequest(order.getId(), refundRequest);
+            } catch (Exception e) {
+                throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
+            }
         } else {
         // 已发货的订单退货退款
             refundRequest.setRequestStatus(RequestStatus.PENDING);
@@ -121,7 +125,11 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
         refundRequest.setDeliveryStatus(DeliveryStatus.DELIVERED);
         refundRequest.setRefundStatus(RefundStatus.REFUNDING_WAIT_PAYMENT);
         updateById(refundRequest);
-        physicalOrderServiceImpl.refundPayment(refundRequest.getOrderId());
+        try {
+            physicalOrderServiceImpl.refundPayment(refundRequest.getOrderId(), refundRequest);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
+        }
     }
 
     @Override

@@ -1,4 +1,0 @@
-
-create index step_order_inventory_log_sku_code_index on STEP_ORDER_INVENTORY_LOG (sku_code);
-create index step_order_inventory_log_order_code_index on STEP_ORDER_INVENTORY_LOG (order_code);
-create index step_refund_requset_order_code_index on STEP_REFUND_REQUEST (order_code);

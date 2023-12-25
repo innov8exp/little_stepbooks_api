@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "wechatClient", url = "${wechat.host}")
 public interface WechatClient {
 
-    @GetMapping(value = "/sns/jscode2session")
+    @GetMapping(value = "/sns/jscode2session", consumes = "application/json")
     WechatLoginResponse wechatLogin(
             @RequestParam("appid") String appId,
             @RequestParam("secret") String secret,

@@ -121,8 +121,8 @@ public class MOrderController {
     }
 
     @GetMapping("/{id}/products")
-    public ResponseEntity<OrderProductDto> getOrderProducts(@PathVariable String id) {
-        OrderProductDto orderProducts = orderProductService.findByOrderId(id);
+    public ResponseEntity<List<OrderProductDto>> getOrderProducts(@PathVariable String id) {
+        List<OrderProductDto> orderProducts = orderProductService.findByOrderId(id);
         return ResponseEntity.ok(orderProducts);
     }
 
@@ -138,17 +138,17 @@ public class MOrderController {
         return ResponseEntity.ok(delivery);
     }
 
-    @PutMapping("/{id}/mock/refund-callback")
-    public ResponseEntity<?> mockRefundOrder(@PathVariable String id) {
-        Order order = orderOpsService.findOrderById(id);
-        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
-            physicalOrderServiceImpl.refundCallback(order);
-        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
-            virtualOrderServiceImpl.refundCallback(order);
-        } else {
-            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
-        }
-        return ResponseEntity.ok().build();
-    }
+//    @PutMapping("/{id}/mock/refund-callback")
+//    public ResponseEntity<?> mockRefundOrder(@PathVariable String id) {
+//        Order order = orderOpsService.findOrderById(id);
+//        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
+//            physicalOrderServiceImpl.refundCallback(order, );
+//        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
+//            virtualOrderServiceImpl.refundCallback(order, );
+//        } else {
+//            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
+//        }
+//        return ResponseEntity.ok().build();
+//    }
 
 }

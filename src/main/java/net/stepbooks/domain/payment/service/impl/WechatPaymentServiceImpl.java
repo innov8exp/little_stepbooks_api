@@ -2,20 +2,20 @@ package net.stepbooks.domain.payment.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wechat.pay.java.core.Config;
-import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.cipher.PrivacyEncryptor;
 import com.wechat.pay.java.core.exception.HttpException;
 import com.wechat.pay.java.core.exception.MalformedMessageException;
 import com.wechat.pay.java.core.exception.ServiceException;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
-import com.wechat.pay.java.service.payments.jsapi.JsapiService;
 import com.wechat.pay.java.service.payments.jsapi.JsapiServiceExtension;
 import com.wechat.pay.java.service.payments.jsapi.model.*;
-import com.wechat.pay.java.service.payments.jsapi.model.Amount;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import com.wechat.pay.java.service.refund.RefundService;
-import com.wechat.pay.java.service.refund.model.*;
+import com.wechat.pay.java.service.refund.model.AmountReq;
+import com.wechat.pay.java.service.refund.model.CreateRequest;
+import com.wechat.pay.java.service.refund.model.Refund;
+import com.wechat.pay.java.service.refund.model.Status;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,10 +25,12 @@ import net.stepbooks.domain.payment.config.WechatPayProperties;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.mapper.PaymentMapper;
 import net.stepbooks.domain.payment.service.PaymentService;
-import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.payment.vo.WechatPayPreNotifyRequest;
+import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundResponse;
+import net.stepbooks.infrastructure.exception.BusinessException;
+import net.stepbooks.infrastructure.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -84,39 +86,6 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
     @Resource
     private NotificationParser notificationParser;
 
-
-    @SuppressWarnings("checkstyle:MagicNumber")
-    @Override
-    public void payment() {
-        System.out.println("Wechat payment");
-
-        // 使用自动更新平台证书的RSA配置
-        // 一个商户号只能初始化一个配置，否则会因为重复的下载任务报错
-        Config config =
-                new RSAAutoCertificateConfig.Builder()
-                        .merchantId(merchantId)
-                        .privateKeyFromPath(privateKeyPath)
-                        .merchantSerialNumber(merchantSerialNumber)
-                        .apiV3Key(apiV3Key)
-                        .build();
-        // 构建service
-        JsapiService service = new JsapiService.Builder().config(config).build();
-        // request.setXxx(val)设置所需参数，具体参数可见Request定义
-        PrepayRequest request = new PrepayRequest();
-        Amount amount = new Amount();
-        amount.setTotal(100);
-        request.setAmount(amount);
-        request.setAppid(appId);
-        request.setMchid(merchantId);
-        request.setDescription("测试商品标题");
-        request.setNotifyUrl("https://notify_url");
-        request.setOutTradeNo("out_trade_no_001");
-        // 调用下单方法，得到应答
-        PrepayResponse response = service.prepay(request);
-        // 使用微信扫描 code_url 对应的二维码，即可体验Native支付
-        System.out.println(response.getPrepayId());
-    }
-
     @Override
     public PrepayWithRequestPaymentResponse prepayWithRequestPayment(WechatPayPrePayRequest createOrderPay) {
         log.info("prepayWithRequestPayment");
@@ -126,15 +95,15 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
             result = jsapiServiceExtension.prepayWithRequestPayment(request);
         } catch (HttpException e) {
             log.error("微信下单发送HTTP请求失败，错误信息：{}", e.getHttpRequest());
-            throw new RuntimeException("微信下单发送HTTP请求失败", e);
+            throw new BusinessException(ErrorCode.PAYMENT_ERROR, "微信下单发送HTTP请求失败");
         } catch (ServiceException e) {
             // 服务返回状态小于200或大于等于300，例如500
             log.error("微信下单服务状态错误，错误信息：{}", e.getErrorMessage());
-            throw new RuntimeException("微信下单服务状态错误", e);
+            throw new BusinessException(ErrorCode.PAYMENT_ERROR, "微信下单服务状态错误");
         } catch (MalformedMessageException e) {
             // 服务返回成功，返回体类型不合法，或者解析返回体失败
             log.error("服务返回成功，返回体类型不合法，或者解析返回体失败，错误信息：{}", e.getMessage());
-            throw new RuntimeException("服务返回成功，返回体类型不合法，或者解析返回体失败", e);
+            throw new BusinessException(ErrorCode.PAYMENT_ERROR, "服务返回成功，返回体类型不合法，或者解析返回体失败");
         }
         log.info("prepayWithRequestPayment end");
         return result;
@@ -149,7 +118,7 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
             return jsapiServiceExtension.queryOrderByOutTradeNo(request);
         } catch (ServiceException e) {
             log.error("订单查询失败，返回码：{},返回信息：{}", e.getErrorCode(), e.getErrorMessage());
-            throw new RuntimeException("订单查询失败", e);
+            throw new BusinessException(ErrorCode.PAYMENT_ERROR, "订单查询失败");
         }
     }
 
@@ -164,18 +133,19 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
             jsapiServiceExtension.closeOrder(closeRequest);
         } catch (ServiceException e) {
             log.error("订单关闭失败，返回码：{},返回信息：{}", e.getErrorCode(), e.getErrorMessage());
-            throw new RuntimeException("订单关闭失败", e);
+            throw new BusinessException(ErrorCode.PAYMENT_ERROR, "订单关闭失败");
         }
     }
 
     @Override
     public <T> T prePayNotify(WechatPayPreNotifyRequest wechatPayCallBackRequest, Class<T> clazz) {
+        log.debug("支付成功的回调。。。。。。。。。");
         log.info("prePayNotify");
         PrivacyEncryptor privacyEncryptor = config.createEncryptor();
         String weChatPayCertificateSerialNumber = privacyEncryptor.getWechatpaySerial();
         if (!wechatPayCallBackRequest.getSerial().equals(weChatPayCertificateSerialNumber)) {
             log.error("证书不一致");
-            throw new RuntimeException("证书不一致");
+            throw new BusinessException(ErrorCode.PAYMENT_ERROR, "证书不一致");
         }
         RequestParam requestParam = new RequestParam.Builder()
                 .serialNumber(wechatPayCallBackRequest.getSerial())
@@ -206,7 +176,7 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
             }
         } catch (ServiceException e) {
             log.error("退款失败，返回码：{},返回信息：{}", e.getErrorCode(), e.getErrorMessage());
-            throw new RuntimeException("退款失败", e);
+            throw new BusinessException(ErrorCode.PAYMENT_ERROR, "退款失败");
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -291,11 +261,11 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
         request.setTimeExpire(getExpiredTimeStr());
         request.setAppid(wechatPayProperties.getAppId());
         request.setMchid(wechatPayProperties.getMerchantId());
-        request.setAttach(String.valueOf(createOrderPay.getId()));
+        request.setOutTradeNo(createOrderPay.getOutTradeNo());
+//        request.setAttach(String.valueOf(createOrderPay.getOrderCode()));
         request.setDescription(createOrderPay.getPayContent());
         request.setNotifyUrl(wechatPayProperties.getPayNotifyUrl());
         //这里生成流水号，后续用这个流水号与微信交互，查询订单状态
-        request.setOutTradeNo(createOrderPay.getOutTradeNo());
         return request;
     }
 

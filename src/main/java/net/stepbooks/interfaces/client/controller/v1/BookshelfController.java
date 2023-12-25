@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
+import net.stepbooks.domain.book.service.BookService;
 import net.stepbooks.domain.bookshelf.service.BookshelfAddLogService;
 import net.stepbooks.domain.bookshelf.service.BookshelfService;
 import net.stepbooks.domain.order.service.OrderService;
@@ -18,6 +19,7 @@ import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.interfaces.client.dto.BookAndMaterialsDto;
 import net.stepbooks.interfaces.client.dto.BookshelfAddLogDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +35,7 @@ public class BookshelfController {
     private final ContextManager contextManager;
     private final BookshelfAddLogService bookshelfAddLogService;
     private final OrderService physicalOrderServiceImpl;
+    private final BookService bookService;
 
 //    @PostMapping
 //    @Operation(summary = "添加书籍到书架")
@@ -77,19 +80,24 @@ public class BookshelfController {
 
     @PostMapping("/book-active")
     @Operation(summary = "扫码激活书籍")
-    public ResponseEntity<?> activeBooks(@RequestParam String bookSetCode) {
+    public ResponseEntity<?> activeBooks(@RequestParam String qrCode) {
         String userId = contextManager.currentUser().getId();
-        // check if the book set is already in the bookshelf
-        boolean exists = bookshelfService.existsBookSetInBookshelf(bookSetCode, userId);
+        Book book = bookService.findBookByQRCode(qrCode);
+        if (ObjectUtils.isEmpty(book)) {
+            throw new BusinessException(ErrorCode.BOOK_NOT_EXISTS_ERROR);
+        }
+        String bookId = book.getId();
+        // check if the book is already in the bookshelf
+        boolean exists = bookshelfService.existsBookInBookshelf(bookId, userId);
         if (exists) {
             throw new BusinessException(ErrorCode.BOOK_SET_EXISTS_ERROR);
         }
         // check if the book set is in the order
-        boolean existsInOrder = physicalOrderServiceImpl.existsBookSetInOrder(bookSetCode, userId);
+        boolean existsInOrder = physicalOrderServiceImpl.existsBookInOrder(bookId, userId);
         if (!existsInOrder) {
             throw new BusinessException(ErrorCode.BOOK_SET_NOT_EXISTS_IN_ORDER_ERROR);
         }
-        bookshelfService.activeBookSet(bookSetCode, userId);
+        bookshelfService.activeBook(bookId, userId);
         return ResponseEntity.ok().build();
     }
 

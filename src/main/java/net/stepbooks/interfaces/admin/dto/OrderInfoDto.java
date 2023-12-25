@@ -30,7 +30,7 @@ public class OrderInfoDto extends BaseDto {
     private ProductNature productNature;
     private PaymentStatus paymentStatus;
 
-    private OrderProductDto product;
+    private List<OrderProductDto> products;
     private Delivery delivery;
     private List<OrderEventLog> eventLogs;
 }

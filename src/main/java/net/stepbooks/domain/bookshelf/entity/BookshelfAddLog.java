@@ -13,6 +13,5 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 public class BookshelfAddLog extends BaseEntity {
 
     private String userId;
-    private String bookSetId;
-    private String bookSetCode;
+    private String bookId;
 }

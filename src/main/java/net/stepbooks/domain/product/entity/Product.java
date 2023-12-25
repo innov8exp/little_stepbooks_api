@@ -27,8 +27,6 @@ public class Product extends BaseEntity {
     private String coverImgId;
     private String coverImgUrl;
     private int materials;
-    private String bookSetId;
-    private String bookSetCode;
     private ProductStatus status;
 
     public SalesPlatform[] getParsedSalesPlatforms() {

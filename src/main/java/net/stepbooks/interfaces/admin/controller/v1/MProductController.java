@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductStatus;
@@ -74,5 +75,11 @@ public class MProductController {
     public ResponseEntity<List<Classification>> getBookClassifications(@PathVariable String id) {
         List<Classification> classifications = productService.getProductClassifications(id);
         return ResponseEntity.ok(classifications);
+    }
+
+    @GetMapping("/{id}/books")
+    public ResponseEntity<List<Book>> getBooksByProductId(@PathVariable String id) {
+        List<Book> books = productService.findBookByProductId(id);
+        return ResponseEntity.ok(books);
     }
 }

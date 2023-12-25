@@ -2,6 +2,8 @@ package net.stepbooks.interfaces.client.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class CreateOrderDto {
 
@@ -12,7 +14,6 @@ public class CreateOrderDto {
     private String recipientCity;
     private String recipientDistrict;
     private String recipientAddress;
-    private String skuCode;
-    private int quantity;
+    private List<SkuDto> skus;
 
 }

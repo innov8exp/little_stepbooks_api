@@ -62,4 +62,5 @@ public interface UserService {
 
     UserDto getUserAndChildAgeInfoByUsername(String username);
 
+    User assignOpenId(WechatAuthDto wechatAuthDto, User user);
 }

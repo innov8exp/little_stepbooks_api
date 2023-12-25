@@ -23,9 +23,6 @@ public class OrderProductDto {
     private String description;
     private String coverImgId;
     private String coverImgUrl;
-    private String bookSetId;
-    private String bookSetCode;
-    private String bookSetName;
     private ProductStatus status;
 
     public SalesPlatform[] getParsedSalesPlatforms() {

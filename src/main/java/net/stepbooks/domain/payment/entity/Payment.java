@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentType;
-import net.stepbooks.infrastructure.enums.TransactionStatus;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 import java.math.BigDecimal;
@@ -23,6 +22,6 @@ public class Payment extends BaseEntity {
     private BigDecimal transactionAmount;
     private String vendorPaymentNo;
     private String receipt;
-    private TransactionStatus transactionStatus;
+    private String transactionStatus;
 
 }
