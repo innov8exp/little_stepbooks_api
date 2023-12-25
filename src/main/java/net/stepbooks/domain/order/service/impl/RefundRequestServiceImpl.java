@@ -126,7 +126,8 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
         refundRequest.setRefundStatus(RefundStatus.REFUNDING_WAIT_PAYMENT);
         updateById(refundRequest);
         try {
-            physicalOrderServiceImpl.refundPayment(refundRequest.getOrderId(), refundRequest);
+            Order order = orderOpsService.findOrderById(refundRequest.getOrderId());
+            physicalOrderServiceImpl.refundPayment(order, refundRequest);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
         }

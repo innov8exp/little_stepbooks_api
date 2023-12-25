@@ -245,7 +245,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
         order.setRefundType(RefundType.ONLY_REFUND);
         orderMapper.updateById(order);
         // 发起退款支付
-        refundPayment(id, refundRequest);
+        refundPayment(order, refundRequest);
     }
 
     @Override
@@ -259,11 +259,10 @@ public class PhysicalOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void refundPayment(String id, RefundRequest refundRequest) {
+    public void refundPayment(Order order, RefundRequest refundRequest) {
         // TODO 发起退款支付
         // 获取退款金额
-        Order order = orderMapper.selectById(id);
-        Payment payment = paymentOpsService.getOne(Wrappers.<Payment>lambdaQuery().eq(Payment::getOrderId, id)
+        Payment payment = paymentOpsService.getOne(Wrappers.<Payment>lambdaQuery().eq(Payment::getOrderId, order)
                 .eq(Payment::getPaymentType, PaymentType.ORDER_PAYMENT).orderByDesc(Payment::getCreatedAt));
         WechatPayRefundRequest wechatPayRefundRequest = new WechatPayRefundRequest();
         wechatPayRefundRequest.setOrderId(order.getOrderCode());
@@ -282,17 +281,17 @@ public class PhysicalOrderServiceImpl implements OrderService {
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
         }
-
-        payment.setPaymentMethod(order.getPaymentMethod());
-        payment.setPaymentType(PaymentType.REFUND_PAYMENT);
-        payment.setOrderId(order.getId());
-        payment.setOrderCode(order.getOrderCode());
-        payment.setTransactionAmount(refundAmountBig);
-        payment.setUserId(order.getUserId());
-        payment.setVendorPaymentNo(refund.getRefundId());
-        payment.setTransactionStatus(refund.getStatus());
+        Payment refundPayment = new Payment();
+        refundPayment.setPaymentMethod(order.getPaymentMethod());
+        refundPayment.setPaymentType(PaymentType.REFUND_PAYMENT);
+        refundPayment.setOrderId(order.getId());
+        refundPayment.setOrderCode(order.getOrderCode());
+        refundPayment.setTransactionAmount(refundAmountBig);
+        refundPayment.setUserId(order.getUserId());
+        refundPayment.setVendorPaymentNo(refund.getRefundId());
+        refundPayment.setTransactionStatus(refund.getStatus());
         //TODO
-        paymentOpsService.save(payment);
+        paymentOpsService.save(refundPayment);
     }
 
     @Override

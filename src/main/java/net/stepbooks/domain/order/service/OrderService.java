@@ -43,7 +43,7 @@ public interface OrderService {
     void refundApprove(String id, BigDecimal refundAmount);
 
     // 发起退款支付
-    void refundPayment(String id, RefundRequest refundRequest);
+    void refundPayment(Order order, RefundRequest refundRequest);
 
     boolean existsBookInOrder(String bookId, String userId);
 
