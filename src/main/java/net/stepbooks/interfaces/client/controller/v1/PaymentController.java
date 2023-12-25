@@ -16,7 +16,6 @@ import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.infrastructure.util.JsonUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 
+import static com.wechat.pay.java.core.http.Constant.*;
 import static net.stepbooks.infrastructure.AppConstants.ONE_HUNDRED;
 
 @Slf4j
@@ -41,11 +41,25 @@ public class PaymentController {
     private final OrderOpsService orderOpsService;
 
     @PostMapping("/wechat/pay/callback")
-    public ResponseEntity<Transaction> handleWechatPaymentNotify(@RequestBody String callbackData) {
-        log.info("callbackData: {}", callbackData);
+    public ResponseEntity<Transaction> handleWechatPaymentNotify(@RequestBody String body,
+                                                                 HttpServletRequest request) {
+        String timestamp = request.getHeader(WECHAT_PAY_TIMESTAMP);
+        String nonce = request.getHeader(WECHAT_PAY_NONCE);
+        String signature = request.getHeader(WECHAT_PAY_SIGNATURE);
+        String signatureType = request.getHeader("Wechatpay-Signature-Type");
+        String serial = request.getHeader(WECHAT_PAY_SERIAL);
+        WechatPayPreNotifyRequest preNotifyRequest = new WechatPayPreNotifyRequest();
+        preNotifyRequest.setTimestamp(timestamp);
+        preNotifyRequest.setNonce(nonce);
+        preNotifyRequest.setSignature(signature);
+        preNotifyRequest.setSignatureType(signatureType);
+        preNotifyRequest.setSerial(serial);
+        preNotifyRequest.setBody(body);
+
+        log.info("callbackData: {}", body);
+        log.info("callback header: {}", preNotifyRequest);
         log.info("start payment callback");
-        WechatPayPreNotifyRequest preRequest = JsonUtils.fromJson(callbackData, WechatPayPreNotifyRequest.class);
-        Transaction transaction = paymentService.prePayNotify(preRequest, Transaction.class);
+        Transaction transaction = paymentService.prePayNotify(preNotifyRequest, Transaction.class);
         log.info("transaction: {}", transaction);
         Order order = orderOpsService.findOrderByCode(transaction.getOutTradeNo());
         Payment payment = new Payment();
