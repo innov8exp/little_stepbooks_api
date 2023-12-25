@@ -262,7 +262,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
     public void refundPayment(Order order, RefundRequest refundRequest) {
         // TODO 发起退款支付
         // 获取退款金额
-        Payment payment = paymentOpsService.getOne(Wrappers.<Payment>lambdaQuery().eq(Payment::getOrderId, order)
+        Payment payment = paymentOpsService.getOne(Wrappers.<Payment>lambdaQuery().eq(Payment::getOrderId, order.getId())
                 .eq(Payment::getPaymentType, PaymentType.ORDER_PAYMENT).orderByDesc(Payment::getCreatedAt));
         WechatPayRefundRequest wechatPayRefundRequest = new WechatPayRefundRequest();
         wechatPayRefundRequest.setOrderId(order.getOrderCode());
