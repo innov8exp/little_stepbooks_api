@@ -20,7 +20,7 @@ class WechatPaymentServiceImplTest {
     @SuppressWarnings("checkstyle:MagicNumber")
     void prepayWithRequestPayment() {
         WechatPayPrePayRequest createOrderRequest = new WechatPayPrePayRequest();
-        createOrderRequest.setId(1001L);
+//        createOrderRequest.setId(1001L);
         createOrderRequest.setOutTradeNo("100000001");
         createOrderRequest.setOpenId("o0mCV6-PMibNScBhWZb2tOa4Whvg");
         createOrderRequest.setPayMoney(new BigDecimal("0.01"));
