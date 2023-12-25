@@ -161,6 +161,8 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
 
     @Override
     public WechatPayRefundResponse refund(WechatPayRefundRequest refundOrder) throws Exception {
+        // TODO remove this after release
+        refundOrder.setTotalMoney(1L);
         log.info("refund");
         try {
             //构建退款请求
