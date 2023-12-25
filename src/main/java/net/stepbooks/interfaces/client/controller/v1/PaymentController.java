@@ -4,6 +4,7 @@ import com.wechat.pay.java.service.wexinpayscoreparking.model.Transaction;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.order.service.OrderService;
@@ -25,6 +26,7 @@ import java.math.BigDecimal;
 
 import static net.stepbooks.infrastructure.AppConstants.ONE_HUNDRED;
 
+@Slf4j
 @RestController
 @RequestMapping("/v1/payments")
 @RequiredArgsConstructor
@@ -39,7 +41,9 @@ public class PaymentController {
 
     @PostMapping("/wechat/pay/callback")
     public ResponseEntity<Transaction> handleWechatPaymentNotify(@RequestBody WechatPayPreNotifyRequest preRequest) {
+        log.info("start payment callback");
         Transaction transaction = paymentService.prePayNotify(preRequest, Transaction.class);
+        log.info("transaction: {}", transaction);
         Order order = orderOpsService.findOrderByCode(transaction.getOutTradeNo());
         Payment payment = new Payment();
         payment.setVendorPaymentNo(transaction.getTransactionId());

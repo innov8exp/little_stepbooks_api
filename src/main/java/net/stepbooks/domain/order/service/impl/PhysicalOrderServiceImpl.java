@@ -208,6 +208,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void paymentCallback(Order order, Payment payment) {
+        log.info("payment callback invoked");
         Order updatedOrder = updateOrderState(order.getId(), OrderEvent.PAYMENT_SUCCESS);
         updatedOrder.setPaymentStatus(PaymentStatus.PAID);
         updatedOrder.setPaymentMethod(order.getPaymentMethod());
