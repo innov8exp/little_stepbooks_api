@@ -172,14 +172,8 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
             // 调用退款方法，得到应答
             // 调用微信sdk接口
             Refund refund = refundService.create(request);
-            //接收退款返回参数
-            if (Status.SUCCESS.equals(refund.getStatus())) {
-                //退款成功
-                return BaseAssembler.convert(refund, WechatPayRefundResponse.class);
-            } else {
-                //退款失败
-                throw new BusinessException(ErrorCode.PAYMENT_ERROR, "退款失败");
-            }
+            // 退款成功
+            return BaseAssembler.convert(refund, WechatPayRefundResponse.class);
         } catch (ServiceException e) {
             log.error("退款失败，返回码：{},返回信息：{}", e.getErrorCode(), e.getErrorMessage());
             throw new BusinessException(ErrorCode.PAYMENT_ERROR, "退款失败");
