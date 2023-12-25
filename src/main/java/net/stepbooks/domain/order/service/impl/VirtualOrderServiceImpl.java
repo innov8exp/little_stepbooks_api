@@ -241,12 +241,10 @@ public class VirtualOrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void refundCallback(Order order, Payment payment) {
         updateOrderState(order.getId(), OrderEvent.REFUND_SUCCESS);
-        paymentOpsService.update(Wrappers.<Payment>lambdaUpdate()
-                .eq(Payment::getOrderCode, order.getOrderCode())
-                .eq(Payment::getPaymentType, PaymentType.REFUND_PAYMENT)
-                .setEntity(payment));
+        paymentOpsService.updateById(payment);
     }
 
 }

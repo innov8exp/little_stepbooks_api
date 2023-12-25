@@ -28,7 +28,10 @@ import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductBookService;
 import net.stepbooks.domain.product.service.ProductCourseService;
 import net.stepbooks.domain.product.service.ProductService;
-import net.stepbooks.infrastructure.enums.*;
+import net.stepbooks.infrastructure.enums.InventoryChangeType;
+import net.stepbooks.infrastructure.enums.PaymentStatus;
+import net.stepbooks.infrastructure.enums.PaymentType;
+import net.stepbooks.infrastructure.enums.RefundType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
@@ -312,12 +315,10 @@ public class PhysicalOrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void refundCallback(Order order, Payment payment) {
         updateOrderState(order.getId(), OrderEvent.REFUND_SUCCESS);
-        paymentOpsService.update(Wrappers.<Payment>lambdaUpdate()
-                .eq(Payment::getOrderCode, order.getOrderCode())
-                .eq(Payment::getPaymentType, PaymentType.REFUND_PAYMENT)
-                .setEntity(payment));
+        paymentOpsService.updateById(payment);
     }
 
     private Delivery buildDelivery(Order order, CreateOrderDto orderDto) {
