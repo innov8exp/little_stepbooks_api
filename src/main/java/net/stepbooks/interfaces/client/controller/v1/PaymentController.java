@@ -16,7 +16,6 @@ import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.infrastructure.util.JsonUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,10 +40,9 @@ public class PaymentController {
     private final OrderOpsService orderOpsService;
 
     @PostMapping("/wechat/pay/callback")
-    public ResponseEntity<Transaction> handleWechatPaymentNotify(@RequestBody String callbackData) {
-        log.info("callbackData: {}", callbackData);
+    public ResponseEntity<Transaction> handleWechatPaymentNotify(@RequestBody WechatPayPreNotifyRequest preRequest) {
+        log.info("callbackData: {}", preRequest);
         log.info("start payment callback");
-        WechatPayPreNotifyRequest preRequest = JsonUtils.fromJson(callbackData, WechatPayPreNotifyRequest.class);
         Transaction transaction = paymentService.prePayNotify(preRequest, Transaction.class);
         log.info("transaction: {}", transaction);
         Order order = orderOpsService.findOrderByCode(transaction.getOutTradeNo());
