@@ -1,7 +1,9 @@
 package net.stepbooks.domain.book.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -15,6 +17,8 @@ import net.stepbooks.domain.book.service.BookQRCodeService;
 import net.stepbooks.domain.book.vo.BookQRCodeResponse;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.interfaces.admin.dto.BookQRCodeCreateDto;
+import net.stepbooks.interfaces.admin.dto.BookQRCodeDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +33,32 @@ public class BookQRCodeServiceImpl extends ServiceImpl<BookQRCodeMapper, BookQRC
 
     @Value("${wechat.official-account-link}")
     private String officialAccountLink;
+
+    @Override
+    public void createBookQRCode(BookQRCodeCreateDto createDto) throws IOException {
+        this.generateBatch(createDto.getBookId(), createDto.getSize());
+    }
+
+    @Override
+    public IPage<BookQRCodeDto> getPage(Page<BookQRCode> page, String bookId) throws IOException {
+        LambdaQueryWrapper<BookQRCode> wrapper = Wrappers.lambdaQuery();
+        Page<BookQRCode> bookQRCodePage = this.baseMapper.selectPage(page, wrapper);
+
+        Page<BookQRCodeDto> dtoPage = new Page<>();
+        ArrayList<BookQRCodeDto> bookQRCodeDtos = new ArrayList<>();
+        for (BookQRCode record : bookQRCodePage.getRecords()) {
+            BookQRCodeDto dto = new BookQRCodeDto();
+            dto.setBookQRCode(record);
+            dto.setQrImageData(this.generateQRImage(record.getBookId(), record.getQrCode()));
+            bookQRCodeDtos.add(dto);
+        }
+        dtoPage.setRecords(bookQRCodeDtos);
+        dtoPage.setTotal(bookQRCodePage.getTotal());
+        dtoPage.setSize(bookQRCodePage.getSize());
+        dtoPage.setCurrent(bookQRCodePage.getCurrent());
+        dtoPage.setPages(bookQRCodePage.getPages());
+        return dtoPage;
+    }
 
     @SuppressWarnings("checkstyle:MagicNumber")
     @Override
