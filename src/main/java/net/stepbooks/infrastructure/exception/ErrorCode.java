@@ -55,7 +55,8 @@ public enum ErrorCode {
     ORDER_STATE_NOT_SUPPORT(HttpStatus.BAD_REQUEST.value(), "The order state is not support"),
     BOOK_NOT_EXISTS_ERROR(HttpStatus.BAD_REQUEST.value(), "The book is not exists"),
     PAYMENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The payment is error"),
-    REFUND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The refund is error");
+    REFUND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The refund is error"),
+    CODE_NOT_EXISTS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The code is not exists");
 
 
     private final int status;

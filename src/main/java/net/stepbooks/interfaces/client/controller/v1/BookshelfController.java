@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
+import net.stepbooks.domain.book.service.BookQRCodeService;
 import net.stepbooks.domain.book.service.BookService;
 import net.stepbooks.domain.bookshelf.service.BookshelfAddLogService;
 import net.stepbooks.domain.bookshelf.service.BookshelfService;
@@ -36,6 +37,7 @@ public class BookshelfController {
     private final BookshelfAddLogService bookshelfAddLogService;
     private final OrderService physicalOrderServiceImpl;
     private final BookService bookService;
+    private final BookQRCodeService bookQRCodeService;
 
 //    @PostMapping
 //    @Operation(summary = "添加书籍到书架")
@@ -98,6 +100,8 @@ public class BookshelfController {
             throw new BusinessException(ErrorCode.BOOK_SET_NOT_EXISTS_IN_ORDER_ERROR);
         }
         bookshelfService.activeBook(bookId, userId);
+        // 激活后删除qrCode，qrCode仅使用一次
+        bookQRCodeService.deleteByQrCode(qrCode);
         return ResponseEntity.ok().build();
     }
 
