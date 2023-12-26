@@ -129,6 +129,7 @@ wechat:
     cert-pem-path: classpath:cert/apiclient_cert.pem
     pay-notify-url: https://api.stepbooks.net/v1/payments/wechat/pay/callback
     refund-notify-url: https://api.stepbooks.net/v1/payments/wechat/refund/callback
+  official-account-link: http://weixin.qq.com/r/nnWPirXEX30jKPHpbyAa
 
 admin:
   jwt:
