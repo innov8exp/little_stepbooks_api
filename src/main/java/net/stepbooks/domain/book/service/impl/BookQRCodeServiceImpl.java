@@ -35,14 +35,14 @@ public class BookQRCodeServiceImpl extends ServiceImpl<BookQRCodeMapper, BookQRC
     public byte[] generateQRImage(String bookId, String qrCode) throws IOException {
         int size = 300;
         String format = "png";
-        String QrData = officialAccountLink + "?code=" + qrCode;
+        String qrData = officialAccountLink + "?code=" + qrCode;
 
         BitMatrix bitMatrix = null;
         try {
             Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
             hints.put(EncodeHintType.MARGIN, 0);
 
-            bitMatrix = new MultiFormatWriter().encode(QrData, BarcodeFormat.QR_CODE, size, size, hints);
+            bitMatrix = new MultiFormatWriter().encode(qrData, BarcodeFormat.QR_CODE, size, size, hints);
         } catch (WriterException e) {
             throw new RuntimeException(e);
         }

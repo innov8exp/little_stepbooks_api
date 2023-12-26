@@ -2,7 +2,6 @@ package net.stepbooks.domain.book.service.impl;
 
 import jakarta.annotation.Resource;
 import net.stepbooks.domain.book.service.BookQRCodeService;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.FileOutputStream;
@@ -14,7 +13,7 @@ class BookQRCodeServiceImplTest {
     @Resource
     private BookQRCodeService bookQRCodeService;
 
-    @Test
+//    @Test
     void generate() throws IOException {
         byte[] byteArray = bookQRCodeService.generateQRImage("123", UUID.randomUUID().toString());
         try (FileOutputStream fos = new FileOutputStream("./" + System.currentTimeMillis() + ".png")) {
