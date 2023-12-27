@@ -131,7 +131,7 @@ public class MAuthController {
         ResponseCookie accessTokenCookie = ResponseCookie.from(accessTokenCookieName, token.getAccessToken())
 //                .sameSite("Strict")
                 .httpOnly(true)
-                .secure(false)  // TODO for production env should be true
+                .secure(true)  // TODO for production env should be true
                 .maxAge(token.getRefreshExpiresIn())
                 .path("/")
                 .build();
@@ -139,7 +139,7 @@ public class MAuthController {
         ResponseCookie refreshTokenCookie = ResponseCookie.from(refreshTokenCookieName, token.getRefreshToken())
 //                .sameSite("Strict")
                 .httpOnly(true)
-                .secure(false) // TODO for production env should be true
+                .secure(true) // TODO for production env should be true
                 .maxAge(token.getRefreshExpiresIn())
                 .path("/")
                 .build();

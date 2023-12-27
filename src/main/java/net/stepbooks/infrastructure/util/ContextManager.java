@@ -20,20 +20,20 @@ public class ContextManager {
 
     public User currentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.debug("principal: {}", principal);
         if ("anonymousUser".equals(principal)) {
             return null;
         }
-        log.debug("principal: {}", principal);
         JwtUserDetails details = (JwtUserDetails) principal;
         return userService.findUserByUsername(details.getUsername());
     }
 
     public AdminUser currentAdminUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.debug("principal: {}", principal);
         if ("anonymousUser".equals(principal)) {
             return null;
         }
-        log.debug("principal: {}", principal);
         JwtUserDetails details = (JwtUserDetails) principal;
         return adminUserService.findUserByUsername(details.getUsername());
     }

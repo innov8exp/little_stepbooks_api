@@ -88,10 +88,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         if (userEntity == null) {
             throw new BusinessException(ErrorCode.AUTH_ERROR);
         }
-        JwtUserDetails userDetails = JwtUserDetails.builder().email(userEntity.getEmail())
-                .username(userEntity.getUsername())
-                .nickname(userEntity.getNickname())
-                .build();
+        JwtUserDetails userDetails = AdminAuthAssembler.adminUserEntityToJwtUserDetails(userEntity);
         return adminJwtTokenProvider.refreshToken(userDetails, refreshToken, userEntity.getModifiedAt());
     }
 
