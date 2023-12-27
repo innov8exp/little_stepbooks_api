@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.BookQRCode;
 import net.stepbooks.domain.book.service.BookQRCodeService;
-import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.interfaces.admin.dto.BookQRCodeCreateDto;
 import net.stepbooks.interfaces.admin.dto.BookQRCodeDto;
 import org.springframework.http.ResponseEntity;

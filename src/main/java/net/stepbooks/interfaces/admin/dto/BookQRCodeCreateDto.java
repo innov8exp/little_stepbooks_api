@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.stepbooks.domain.book.entity.BookQRCode;
 
 @Data
 @AllArgsConstructor

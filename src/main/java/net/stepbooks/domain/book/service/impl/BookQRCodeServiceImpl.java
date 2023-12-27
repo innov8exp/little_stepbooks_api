@@ -106,7 +106,7 @@ public class BookQRCodeServiceImpl extends ServiceImpl<BookQRCodeMapper, BookQRC
         List<BookQRCodeResponse> bookQRCodeResponses = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
-            String qrCode = this.linkQrCode(bookId);
+            String qrCode = UUID.randomUUID().toString();
             BookQRCode bookQRCode = new BookQRCode();
             bookQRCode.setBookId(bookId);
             bookQRCode.setQrCode(qrCode);
