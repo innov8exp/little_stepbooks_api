@@ -42,6 +42,7 @@ public class BookQRCodeServiceImpl extends ServiceImpl<BookQRCodeMapper, BookQRC
     @Override
     public IPage<BookQRCodeDto> getPage(Page<BookQRCode> page, String bookId) throws IOException {
         LambdaQueryWrapper<BookQRCode> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(BookQRCode::getBookId, bookId);
         Page<BookQRCode> bookQRCodePage = this.baseMapper.selectPage(page, wrapper);
 
         Page<BookQRCodeDto> dtoPage = new Page<>();
