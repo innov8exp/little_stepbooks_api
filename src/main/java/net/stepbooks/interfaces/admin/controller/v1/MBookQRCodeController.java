@@ -25,8 +25,9 @@ public class MBookQRCodeController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{bookId}/{qrcode}")
-    public ResponseEntity<List<BookQRCodeDto>> getBookQRCodes(@PathVariable String bookId, @PathVariable String qrcode) {
+    @GetMapping("/list")
+    public ResponseEntity<List<BookQRCodeDto>> getBookQRCodes(@RequestParam(required = false) String bookId,
+                                                              @RequestParam(required = false) String qrcode) {
         List<BookQRCodeDto> list = bookQRCodeService.listByBookId(bookId, qrcode);
         return ResponseEntity.ok(list);
     }
