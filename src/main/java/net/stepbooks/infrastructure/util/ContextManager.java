@@ -28,7 +28,7 @@ public class ContextManager {
         }
         log.debug("principal: {}", principal);
         if ("anonymousUser".equals(principal)) {
-            return null;
+            throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot get the current user.");
         }
         JwtUserDetails details = (JwtUserDetails) principal;
         return userService.findUserByUsername(details.getUsername());
@@ -41,7 +41,7 @@ public class ContextManager {
         }
         log.debug("principal: {}", principal);
         if ("anonymousUser".equals(principal)) {
-            return null;
+            throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot get the current user.");
         }
         JwtUserDetails details = (JwtUserDetails) principal;
         return adminUserService.findUserByUsername(details.getUsername());

@@ -34,6 +34,7 @@ public class AdminSecurityConfig {
 //                                mvc.pattern("/admin/auth/refresh"),
 //                                mvc.pattern("/admin/auth/logout")))
                 .csrf(AbstractHttpConfigurer::disable)
+                .anonymous(AbstractHttpConfigurer::disable)
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(adminAuthFilter, UsernamePasswordAuthenticationFilter.class)
