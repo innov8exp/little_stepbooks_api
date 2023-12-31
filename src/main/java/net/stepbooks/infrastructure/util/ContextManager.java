@@ -6,7 +6,10 @@ import net.stepbooks.domain.admin.entity.AdminUser;
 import net.stepbooks.domain.admin.service.AdminUserService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
+import net.stepbooks.infrastructure.exception.BusinessException;
+import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +23,9 @@ public class ContextManager {
 
     public User currentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (ObjectUtils.isEmpty(principal)) {
+            throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot get the current user.");
+        }
         log.debug("principal: {}", principal);
         if ("anonymousUser".equals(principal)) {
             return null;
@@ -30,6 +36,9 @@ public class ContextManager {
 
     public AdminUser currentAdminUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (ObjectUtils.isEmpty(principal)) {
+            throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot get the current user.");
+        }
         log.debug("principal: {}", principal);
         if ("anonymousUser".equals(principal)) {
             return null;
