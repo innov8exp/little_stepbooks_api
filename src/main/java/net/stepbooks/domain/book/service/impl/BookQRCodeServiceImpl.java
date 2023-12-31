@@ -1,30 +1,19 @@
 package net.stepbooks.domain.book.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
 import net.stepbooks.domain.book.entity.BookQRCode;
 import net.stepbooks.domain.book.mapper.BookQRCodeMapper;
 import net.stepbooks.domain.book.service.BookQRCodeService;
-import net.stepbooks.domain.book.vo.BookQRCodeResponse;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.BookQRCodeCreateDto;
 import net.stepbooks.interfaces.admin.dto.BookQRCodeDto;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -40,55 +29,11 @@ public class BookQRCodeServiceImpl extends ServiceImpl<BookQRCodeMapper, BookQRC
     }
 
     @Override
-    public IPage<BookQRCodeDto> getPage(Page<BookQRCode> page, String bookId) throws IOException {
-        LambdaQueryWrapper<BookQRCode> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(BookQRCode::getBookId, bookId);
-        Page<BookQRCode> bookQRCodePage = this.baseMapper.selectPage(page, wrapper);
-
-        Page<BookQRCodeDto> dtoPage = new Page<>();
-        ArrayList<BookQRCodeDto> bookQRCodeDtos = new ArrayList<>();
-        for (BookQRCode record : bookQRCodePage.getRecords()) {
-            BookQRCodeDto dto = new BookQRCodeDto();
-            dto.setBookQRCode(record);
-            dto.setQrImageData(this.generateQRImage(record.getBookId(), record.getQrCode()));
-            bookQRCodeDtos.add(dto);
-        }
-        dtoPage.setRecords(bookQRCodeDtos);
-        dtoPage.setTotal(bookQRCodePage.getTotal());
-        dtoPage.setSize(bookQRCodePage.getSize());
-        dtoPage.setCurrent(bookQRCodePage.getCurrent());
-        dtoPage.setPages(bookQRCodePage.getPages());
-        return dtoPage;
-    }
-
-    @SuppressWarnings("checkstyle:MagicNumber")
-    @Override
-    public byte[] generateQRImage(String bookId, String qrCode) throws IOException {
-        int size = 300;
-        String format = "png";
-        String qrData = officialAccountLink + "?code=" + qrCode;
-
-        BitMatrix bitMatrix = null;
-        try {
-            Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
-            hints.put(EncodeHintType.MARGIN, 0);
-
-            bitMatrix = new MultiFormatWriter().encode(qrData, BarcodeFormat.QR_CODE, size, size, hints);
-        } catch (WriterException e) {
-            throw new RuntimeException(e);
-        }
-        BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix);
-        ByteArrayOutputStream outPutStream = new ByteArrayOutputStream();
-        ImageIO.write(image, format, outPutStream);
-        return outPutStream.toByteArray();
-    }
-
-    @Override
     public String linkQrCode(String bookId) throws IOException {
         String qrCode = UUID.randomUUID().toString();
         BookQRCode bookQRCode = new BookQRCode();
-        bookQRCode.setBookId(bookId);
-        bookQRCode.setQrCode(qrCode);
+        bookQRCode.setBookId(bookId)
+                .setQrCode(qrCode);
         this.save(bookQRCode);
         return qrCode;
     }
@@ -102,24 +47,36 @@ public class BookQRCodeServiceImpl extends ServiceImpl<BookQRCodeMapper, BookQRC
     }
 
     @Override
-    public List<BookQRCodeResponse> generateBatch(String bookId, int size) throws IOException {
+    public void generateBatch(String bookId, int size) throws IOException {
         List<BookQRCode> bookQRCodes = new ArrayList<>();
-        List<BookQRCodeResponse> bookQRCodeResponses = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
             String qrCode = UUID.randomUUID().toString();
             BookQRCode bookQRCode = new BookQRCode();
-            bookQRCode.setBookId(bookId);
-            bookQRCode.setQrCode(qrCode);
+            bookQRCode.setBookId(bookId)
+                    .setQrCode(qrCode);
             bookQRCodes.add(bookQRCode);
-
-            BookQRCodeResponse qrCodeResponse = new BookQRCodeResponse();
-            qrCodeResponse.setBookQRCode(bookQRCode);
-            qrCodeResponse.setQrImageData(this.generateQRImage(bookId, qrCode));
-            bookQRCodeResponses.add(qrCodeResponse);
         }
         this.saveBatch(bookQRCodes);
-        return bookQRCodeResponses;
+    }
+
+    @Override
+    public List<BookQRCodeDto> listByBookId(String bookId, String qrcode) {
+        LambdaQueryWrapper<BookQRCode> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(ObjectUtils.isNotEmpty(bookId), BookQRCode::getBookId, bookId);
+        wrapper.eq(ObjectUtils.isNotEmpty(qrcode), BookQRCode::getQrCode, qrcode);
+        List<BookQRCode> bookQRCodes = this.baseMapper.selectList(wrapper);
+
+        ArrayList<BookQRCodeDto> qrCodeDtos = new ArrayList<>();
+        for (BookQRCode bookQRCode : bookQRCodes) {
+            BookQRCodeDto bookQRCodeDto = new BookQRCodeDto();
+            bookQRCodeDto.setBookId(bookQRCode.getBookId())
+                    .setQrCode(bookQRCode.getQrCode())
+                    .setUrl(officialAccountLink + "?code=" + bookQRCode.getQrCode());
+            qrCodeDtos.add(bookQRCodeDto);
+        }
+
+        return qrCodeDtos;
     }
 
     private void verifyExists(String qrcode) {

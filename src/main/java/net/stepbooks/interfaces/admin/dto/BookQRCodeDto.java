@@ -1,13 +1,15 @@
 package net.stepbooks.interfaces.admin.dto;
 
 import lombok.*;
-import net.stepbooks.domain.book.entity.BookQRCode;
+import lombok.experimental.Accessors;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Accessors(chain = true)
 public class BookQRCodeDto {
-    private BookQRCode bookQRCode;
-    private byte[] qrImageData;
+    private String bookId;
+    private String qrCode;
+    private String url;
 }
