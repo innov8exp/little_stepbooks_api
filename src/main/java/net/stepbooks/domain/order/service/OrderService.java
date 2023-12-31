@@ -3,7 +3,6 @@ package net.stepbooks.domain.order.service;
 
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.RefundRequest;
-import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
@@ -15,8 +14,6 @@ import java.util.List;
 public interface OrderService {
 
     Order createOrder(CreateOrderDto orderDto);
-
-    Order updateOrderState(String id, OrderEvent orderEvent);
 
     void cancelTimeoutOrders();
 
@@ -51,4 +48,8 @@ public interface OrderService {
 
     // 退款回调
     void refundCallback(Order order, Payment payment);
+
+    // 用户提交付款
+    void paymentSubmit(Order order);
+
 }

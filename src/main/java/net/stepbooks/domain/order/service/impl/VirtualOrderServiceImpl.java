@@ -109,23 +109,25 @@ public class VirtualOrderServiceImpl implements OrderService {
             orderCourseService.saveBatch(orderCourses);
         }
         // 更新订单状态
-        updateOrderState(order.getId(), OrderEvent.PLACE_SUCCESS);
+//        updateOrderState(order.getId(), OrderEvent.PLACE_SUCCESS);
+        virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.PLACE_SUCCESS, order);
         return order;
     }
+
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public Order updateOrderState(String id, OrderEvent orderEvent) {
+//        String machineId = virtualOrderStateMachine.getMachineId();
+//        log.debug("订单状态机：{}", machineId);
+//        Order order = orderMapper.selectById(id);
+//        OrderState state = virtualOrderStateMachine.fireEvent(order.getState(), orderEvent, order);
+//        order.setState(state);
+//        orderMapper.updateById(order);
+//        return order;
+//    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Order updateOrderState(String id, OrderEvent orderEvent) {
-        String machineId = virtualOrderStateMachine.getMachineId();
-        log.debug("订单状态机：{}", machineId);
-        Order order = orderMapper.selectById(id);
-        OrderState state = virtualOrderStateMachine.fireEvent(order.getState(), orderEvent, order);
-        order.setState(state);
-        orderMapper.updateById(order);
-        return order;
-    }
-
-    @Override
     public void cancelTimeoutOrders() {
         orderMapper.selectList(Wrappers.<Order>lambdaQuery().eq(Order::getState, OrderState.PLACED))
                 .forEach(order -> {
@@ -134,39 +136,48 @@ public class VirtualOrderServiceImpl implements OrderService {
                             .plusSeconds(ORDER_PAYMENT_TIMEOUT_BUFFER)
                             .isBefore(LocalDateTime.now())) {
                         log.info("Find already payment timeout and uncancelled order [{}], start to cancel it...", order.getId());
-                        updateOrderState(order.getId(), OrderEvent.PAYMENT_TIMEOUT);
+//                        updateOrderState(order.getId(), OrderEvent.PAYMENT_TIMEOUT);
+                        virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_TIMEOUT, order);
                     }
                 });
     }
 
     @Override
-    public void autoCancelWhenPaymentTimeout(String recordId) {
-        updateOrderState(recordId, OrderEvent.PAYMENT_TIMEOUT);
-    }
-
-    @Override
-    public void closeOrder(String id) {
-        updateOrderState(id, OrderEvent.ADMIN_MANUAL_CLOSE);
-    }
-
-    @Override
-    public void cancelOrder(String id) {
-        updateOrderState(id, OrderEvent.USER_MANUAL_CANCEL);
-    }
-
     @Transactional(rollbackFor = Exception.class)
+    public void autoCancelWhenPaymentTimeout(String recordId) {
+//        updateOrderState(recordId, OrderEvent.PAYMENT_TIMEOUT);
+        Order order = orderMapper.selectById(recordId);
+        virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_TIMEOUT, order);
+    }
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void closeOrder(String id) {
+//        updateOrderState(id, OrderEvent.ADMIN_MANUAL_CLOSE);
+        Order order = orderMapper.selectById(id);
+        virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.ADMIN_MANUAL_CLOSE, order);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void cancelOrder(String id) {
+//        updateOrderState(id, OrderEvent.USER_MANUAL_CANCEL);
+        Order order = orderMapper.selectById(id);
+        virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.USER_MANUAL_CANCEL, order);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void paymentCallback(Order order, Payment payment) {
         log.info("payment callback invoked");
-        Order updatedOrder = updateOrderState(order.getId(), OrderEvent.PAYMENT_SUCCESS);
-        updatedOrder.setPaymentStatus(PaymentStatus.PAID);
-        updatedOrder.setPaymentMethod(order.getPaymentMethod());
-        updatedOrder.setPaymentAmount(order.getTotalAmount());
-        orderMapper.updateById(updatedOrder);
+        virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_SUCCESS, order);
+//        Order updatedOrder = updateOrderState(order.getId(), OrderEvent.PAYMENT_SUCCESS);
+//        order.setPaymentStatus(PaymentStatus.PAID);
+//        orderMapper.updateById(order);
         payment.setPaymentType(PaymentType.ORDER_PAYMENT);
-        payment.setOrderId(updatedOrder.getId());
-        payment.setOrderCode(updatedOrder.getOrderCode());
-        payment.setUserId(updatedOrder.getUserId());
+        payment.setOrderId(order.getId());
+        payment.setOrderCode(order.getOrderCode());
+        payment.setUserId(order.getUserId());
         paymentOpsService.save(payment);
     }
 
@@ -177,9 +188,11 @@ public class VirtualOrderServiceImpl implements OrderService {
     public void shipOrder(String id, DeliveryInfoDto deliveryInfoDto) { }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void refundRequest(String id, RefundRequest refundRequest) {
-        updateOrderState(id, OrderEvent.REFUND_REQUEST);
+//        updateOrderState(id, OrderEvent.REFUND_REQUEST);
         Order order = orderMapper.selectById(id);
+        virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.REFUND_REQUEST, order);
         order.setRefundType(RefundType.ONLY_REFUND);
         orderMapper.updateById(order);
         // 发起退款支付
@@ -187,8 +200,11 @@ public class VirtualOrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void refundApprove(String id, BigDecimal refundAmount) {
-        updateOrderState(id, OrderEvent.REFUND_APPROVE);
+//        updateOrderState(id, OrderEvent.REFUND_APPROVE);
+        Order order = orderMapper.selectById(id);
+        virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.REFUND_APPROVE, order);
     }
 
     @Override
@@ -243,8 +259,17 @@ public class VirtualOrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void refundCallback(Order order, Payment payment) {
-        updateOrderState(order.getId(), OrderEvent.REFUND_SUCCESS);
+//        updateOrderState(order.getId(), OrderEvent.REFUND_SUCCESS);
+        virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.REFUND_SUCCESS, order);
         paymentOpsService.updateById(payment);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void paymentSubmit(Order order) {
+        if (!PaymentStatus.PAID.equals(order.getPaymentStatus())) {
+            virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_SUBMIT, order);
+        }
     }
 
 }

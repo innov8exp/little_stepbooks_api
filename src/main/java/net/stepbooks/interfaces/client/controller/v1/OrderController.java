@@ -140,6 +140,27 @@ public class OrderController {
         return ResponseEntity.ok(orderAndPaymentDto);
     }
 
+    @Operation(summary = "已提交支付")
+    @PutMapping("/{code}/payment/submit")
+    public ResponseEntity<?> paymentSubmit(@PathVariable String code) {
+        Order order = orderOpsService.findOrderByCode(code);
+        User user = contextManager.currentUser();
+        if (!user.getId().equals(order.getUserId())) {
+            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+        }
+        if (!OrderState.PLACED.equals(order.getState())) {
+            throw new BusinessException(ErrorCode.ORDER_STATE_NOT_SUPPORT);
+        }
+        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
+            physicalOrderServiceImpl.paymentSubmit(order);
+        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
+            virtualOrderServiceImpl.paymentSubmit(order);
+        } else {
+            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
+        }
+        return ResponseEntity.ok().build();
+    }
+
     @Operation(summary = "修改配送信息")
     @PutMapping("/{code}/delivery")
     public ResponseEntity<?> updateDeliveryInfo(@PathVariable String code, @RequestBody RecipientInfoDto recipient) {
@@ -244,43 +265,6 @@ public class OrderController {
         RefundRequest refundRequest = refundRequestService.getLatestRefundRequestByOrderId(order.getId());
         return ResponseEntity.ok(refundRequest);
     }
-
-//    @PutMapping("/{code}/payment-callback")
-//    public ResponseEntity<?> paymentCallback(@PathVariable String code) {
-//        User user = contextManager.currentUser();
-//        Order order = orderOpsService.findOrderByCode(code);
-//        if (!user.getId().equals(order.getUserId())) {
-//            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
-//        }
-//        order.setPaymentMethod(PaymentMethod.WECHAT_PAY);
-//        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
-//            physicalOrderServiceImpl.paymentCallback(order, );
-//        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
-//            virtualOrderServiceImpl.paymentCallback(order, );
-//        } else {
-//            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
-//        }
-//
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @PutMapping("/{code}/mock/refund-callback")
-//    public ResponseEntity<?> mockRefundOrder(@PathVariable String code) {
-//        User user = contextManager.currentUser();
-//        Order order = orderOpsService.findOrderByCode(code);
-//        if (!user.getId().equals(order.getUserId())) {
-//            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
-//        }
-//        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
-//            physicalOrderServiceImpl.refundCallback(order, );
-//        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
-//            virtualOrderServiceImpl.refundCallback(order, );
-//        } else {
-//            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
-//        }
-//
-//        return ResponseEntity.ok().build();
-//    }
 
 
 }

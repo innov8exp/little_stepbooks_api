@@ -4,6 +4,7 @@ import net.stepbooks.domain.delivery.enums.DeliveryStatus;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
+import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.enums.RefundStatus;
 
 public interface OrderActionService {
@@ -17,4 +18,8 @@ public interface OrderActionService {
     void updateRequestRefundStatus(Order order, RefundStatus refundStatus);
 
     void releaseStock(Order order);
+
+    void updateOrderState(Order order, OrderState orderState);
+
+    void updatePaymentStatus(Order order, PaymentStatus paymentStatus);
 }

@@ -12,6 +12,7 @@ import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.service.OrderActionService;
+import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.enums.RefundStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ public class PhysicalOrderStateMachineConfig {
 
     private final OrderActionService orderActionService;
 
+    @SuppressWarnings("checkstyle:MethodLength")
     @Bean
     public StateMachine<OrderState, OrderEvent, Order> physicalOrderStateMachine() {
         StateMachineBuilder<OrderState, OrderEvent, Order> builder = StateMachineBuilderFactory.create();
@@ -36,8 +38,34 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.PLACE_SUCCESS)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.startPaymentTimeoutCountDown(from, to, event, context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
+                });
+
+        builder.externalTransition()
+                .from(OrderState.PLACED)
+                .to(OrderState.PAYING)
+                .on(OrderEvent.PAYMENT_SUBMIT)
+                .when(checkCondition())
+                .perform(doAction());
+
+        builder.externalTransition()
+                .from(OrderState.PAYING)
+                .to(OrderState.PLACED)
+                .on(OrderEvent.PAYMENT_FAIL)
+                .when(checkCondition())
+                .perform(doAction());
+
+        builder.externalTransition()
+                .from(OrderState.PAYING)
+                .to(OrderState.PAID)
+                .on(OrderEvent.PAYMENT_SUCCESS)
+                .when(checkCondition())
+                .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                    orderActionService.updatePaymentStatus(context, PaymentStatus.PAID);
                 });
 
         builder.externalTransition()
@@ -45,7 +73,11 @@ public class PhysicalOrderStateMachineConfig {
                 .to(OrderState.PAID)
                 .on(OrderEvent.PAYMENT_SUCCESS)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                    orderActionService.updatePaymentStatus(context, PaymentStatus.PAID);
+                });
 
         builder.externalTransition()
                 .from(OrderState.PLACED)
@@ -53,6 +85,7 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.USER_MANUAL_CANCEL)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
@@ -63,6 +96,7 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.PAYMENT_TIMEOUT)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
@@ -73,6 +107,7 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.SHIP_SUCCESS)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.updateDeliveryStatus(context, DeliveryStatus.DELIVERING);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
@@ -90,6 +125,7 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.REFUND_SUCCESS)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.releaseStock(context);
                     orderActionService.updateDeliveryStatus(context, DeliveryStatus.CANCELED);
                     orderActionService.saveOrderEventLog(from, to, event, context);
@@ -102,6 +138,7 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.SIGN_SUCCESS)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.updateDeliveryStatus(context, DeliveryStatus.DELIVERED);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
@@ -120,6 +157,7 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
@@ -130,6 +168,7 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
@@ -140,6 +179,7 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
@@ -150,6 +190,7 @@ public class PhysicalOrderStateMachineConfig {
                 .on(OrderEvent.ADMIN_MANUAL_CLOSE)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
@@ -168,6 +209,7 @@ public class PhysicalOrderStateMachineConfig {
     private Action<OrderState, OrderEvent, Order> doAction() {
         return (from, to, event, context) -> {
             log.info("doAction: from: {}, to: {}, event: {}, context: {}", from, to, event, context);
+            orderActionService.updateOrderState(context, to);
             orderActionService.saveOrderEventLog(from, to, event, context);
         };
     }

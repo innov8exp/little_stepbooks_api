@@ -15,6 +15,7 @@ import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.event.DelayQueueMessageProducer;
+import net.stepbooks.domain.order.mapper.OrderMapper;
 import net.stepbooks.domain.order.mapper.RefundRequestMapper;
 import net.stepbooks.domain.order.service.OrderActionService;
 import net.stepbooks.domain.order.service.OrderEventLogService;
@@ -23,6 +24,7 @@ import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.sms.service.SmsService;
 import net.stepbooks.infrastructure.enums.InventoryChangeType;
+import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.enums.RefundStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
@@ -53,6 +55,7 @@ public class OrderActionServiceImpl implements OrderActionService {
     private final OrderProductService orderProductService;
     private final InventoryService inventoryService;
     private final OrderInventoryLogService orderInventoryLogService;
+    private final OrderMapper orderMapper;
 
 
     @Override
@@ -133,6 +136,18 @@ public class OrderActionServiceImpl implements OrderActionService {
                 log.info("线程 PRODUCT_STOCK_LOCK_{} 释放锁成功", productId);
             }
         }
+    }
+
+    @Override
+    public void updateOrderState(Order order, OrderState orderState) {
+        order.setState(orderState);
+        orderMapper.updateById(order);
+    }
+
+    @Override
+    public void updatePaymentStatus(Order order, PaymentStatus paymentStatus) {
+        order.setPaymentStatus(paymentStatus);
+        orderMapper.updateById(order);
     }
 
 }

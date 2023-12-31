@@ -1,8 +1,10 @@
 package net.stepbooks.domain.order.service.impl;
 
+import com.alibaba.cola.statemachine.StateMachine;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wechat.pay.java.service.payments.model.Transaction;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.course.entity.Course;
@@ -12,15 +14,19 @@ import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.OrderBook;
 import net.stepbooks.domain.order.entity.OrderCourse;
 import net.stepbooks.domain.order.entity.OrderEventLog;
+import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.mapper.OrderMapper;
 import net.stepbooks.domain.order.service.*;
+import net.stepbooks.domain.payment.service.PaymentService;
+import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 import net.stepbooks.interfaces.admin.dto.OrderProductDto;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -38,6 +44,9 @@ public class OrderOpsServiceImpl implements OrderOpsService {
     private final OrderBookService orderBookService;
     private final OrderCourseService orderCourseService;
     private final OrderEventLogService orderEventLogService;
+    private final PaymentService paymentService;
+    private final StateMachine<OrderState, OrderEvent, Order> physicalOrderStateMachine;
+    private final StateMachine<OrderState, OrderEvent, Order> virtualOrderStateMachine;
 
     @Override
     public IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderCode, String username, String state) {
@@ -68,6 +77,7 @@ public class OrderOpsServiceImpl implements OrderOpsService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public OrderInfoDto findOrderByCodeAndUser(String code, String userId) {
         // Step 1: Retrieve the order based on order code and user ID
         Order order = orderMapper.selectOne(Wrappers.<Order>lambdaQuery()
@@ -79,6 +89,18 @@ public class OrderOpsServiceImpl implements OrderOpsService {
             throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
         }
 
+        if (order.getState() == OrderState.PLACED || order.getState() == OrderState.PAYING) {
+            Transaction transaction = paymentService.queryStatus(order.getOrderCode());
+            if (transaction != null && transaction.getTradeState().equals(Transaction.TradeStateEnum.SUCCESS)) {
+                if (order.getProductNature().equals(ProductNature.PHYSICAL)) {
+                    physicalOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_SUCCESS, order);
+                } else if (order.getProductNature().equals(ProductNature.VIRTUAL)) {
+                    virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_SUCCESS, order);
+                } else {
+                    throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+                }
+            }
+        }
         // Step 3: Retrieve order products for the order
         List<OrderProductDto> products = orderProductService.findByOrderId(order.getId());
 

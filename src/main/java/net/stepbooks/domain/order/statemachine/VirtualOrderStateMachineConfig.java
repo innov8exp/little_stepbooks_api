@@ -11,6 +11,7 @@ import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.service.OrderActionService;
+import net.stepbooks.infrastructure.enums.PaymentStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ObjectUtils;
@@ -34,8 +35,34 @@ public class VirtualOrderStateMachineConfig {
                 .on(OrderEvent.PLACE_SUCCESS)
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
                     orderActionService.startPaymentTimeoutCountDown(from, to, event, context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
+                });
+
+        builder.externalTransition()
+                .from(OrderState.PLACED)
+                .to(OrderState.PAYING)
+                .on(OrderEvent.PAYMENT_SUBMIT)
+                .when(checkCondition())
+                .perform(doAction());
+
+        builder.externalTransition()
+                .from(OrderState.PAYING)
+                .to(OrderState.PLACED)
+                .on(OrderEvent.PAYMENT_FAIL)
+                .when(checkCondition())
+                .perform(doAction());
+
+        builder.externalTransition()
+                .from(OrderState.PAYING)
+                .to(OrderState.FINISHED)
+                .on(OrderEvent.PAYMENT_SUCCESS)
+                .when(checkCondition())
+                .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                    orderActionService.updatePaymentStatus(context, PaymentStatus.PAID);
                 });
 
         builder.externalTransition()
@@ -43,7 +70,11 @@ public class VirtualOrderStateMachineConfig {
                 .to(OrderState.FINISHED)
                 .on(OrderEvent.PAYMENT_SUCCESS)
                 .when(checkCondition())
-                .perform(doAction());
+                .perform((from, to, event, context) -> {
+                    orderActionService.updateOrderState(context, to);
+                    orderActionService.saveOrderEventLog(from, to, event, context);
+                    orderActionService.updatePaymentStatus(context, PaymentStatus.PAID);
+                });
 
         builder.externalTransition()
                 .from(OrderState.FINISHED)
@@ -102,6 +133,7 @@ public class VirtualOrderStateMachineConfig {
     private Action<OrderState, OrderEvent, Order> doAction() {
         return (from, to, event, context) -> {
             log.info("doAction: from: {}, to: {}, event: {}, context: {}", from, to, event, context);
+            orderActionService.updateOrderState(context, to);
             orderActionService.saveOrderEventLog(from, to, event, context);
         };
     }
