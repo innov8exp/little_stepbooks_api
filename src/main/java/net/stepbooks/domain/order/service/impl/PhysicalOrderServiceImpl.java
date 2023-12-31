@@ -212,6 +212,9 @@ public class PhysicalOrderServiceImpl implements OrderService {
         log.info("payment callback invoked");
         physicalOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_SUCCESS, order);
 //        Order updatedOrder = updateOrderState(order.getId(), OrderEvent.PAYMENT_SUCCESS);
+        order.setPaymentAmount(payment.getTransactionAmount());
+        order.setPaymentMethod(payment.getPaymentMethod());
+        orderMapper.updateById(order);
         payment.setPaymentType(PaymentType.ORDER_PAYMENT);
         payment.setOrderId(order.getId());
         payment.setOrderCode(order.getOrderCode());

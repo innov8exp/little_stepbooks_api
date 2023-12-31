@@ -173,6 +173,9 @@ public class VirtualOrderServiceImpl implements OrderService {
 //        Order updatedOrder = updateOrderState(order.getId(), OrderEvent.PAYMENT_SUCCESS);
 //        order.setPaymentStatus(PaymentStatus.PAID);
 //        orderMapper.updateById(order);
+        order.setPaymentAmount(payment.getTransactionAmount());
+        order.setPaymentMethod(payment.getPaymentMethod());
+        orderMapper.updateById(order);
         payment.setPaymentType(PaymentType.ORDER_PAYMENT);
         payment.setOrderId(order.getId());
         payment.setOrderCode(order.getOrderCode());
