@@ -11,6 +11,7 @@ import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.security.admin.AdminJwtTokenProvider;
+import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.AdminUserDto;
 import net.stepbooks.interfaces.admin.dto.LoginDto;
 import net.stepbooks.interfaces.client.dto.TokenDto;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +29,7 @@ public class MAuthController {
 
     private final AdminUserService adminUserService;
     private final AdminJwtTokenProvider adminJwtTokenProvider;
+    private final ContextManager contextManager;
     @Value("${admin.jwt.access-token.cookie-name}")
     private String accessTokenCookieName;
     @Value("${admin.jwt.refresh-token.cookie-name}")
@@ -79,8 +80,7 @@ public class MAuthController {
 
     @GetMapping("/user-info")
     public ResponseEntity<AdminUserDto> userInfo() {
-        JwtUserDetails details = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        AdminUser adminUser = adminUserService.findUserByUsername(details.getUsername());
+        AdminUser adminUser = contextManager.currentAdminUser();
         AdminUserDto userDto = BaseAssembler.convert(adminUser, AdminUserDto.class);
         return ResponseEntity.ok(userDto);
     }
