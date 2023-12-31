@@ -42,31 +42,6 @@ public class VirtualOrderStateMachineConfig {
 
         builder.externalTransition()
                 .from(OrderState.PLACED)
-                .to(OrderState.PAYING)
-                .on(OrderEvent.PAYMENT_SUBMIT)
-                .when(checkCondition())
-                .perform(doAction());
-
-        builder.externalTransition()
-                .from(OrderState.PAYING)
-                .to(OrderState.PLACED)
-                .on(OrderEvent.PAYMENT_FAIL)
-                .when(checkCondition())
-                .perform(doAction());
-
-        builder.externalTransition()
-                .from(OrderState.PAYING)
-                .to(OrderState.FINISHED)
-                .on(OrderEvent.PAYMENT_SUCCESS)
-                .when(checkCondition())
-                .perform((from, to, event, context) -> {
-                    orderActionService.updateOrderState(context, to);
-                    orderActionService.saveOrderEventLog(from, to, event, context);
-                    orderActionService.updatePaymentStatus(context, PaymentStatus.PAID);
-                });
-
-        builder.externalTransition()
-                .from(OrderState.PLACED)
                 .to(OrderState.FINISHED)
                 .on(OrderEvent.PAYMENT_SUCCESS)
                 .when(checkCondition())

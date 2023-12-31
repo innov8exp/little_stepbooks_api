@@ -24,7 +24,6 @@ import net.stepbooks.domain.product.entity.ProductCourse;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductBookService;
 import net.stepbooks.domain.product.service.ProductCourseService;
-import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.enums.PaymentType;
 import net.stepbooks.infrastructure.enums.RefundType;
 import net.stepbooks.infrastructure.exception.BusinessException;
@@ -262,14 +261,6 @@ public class VirtualOrderServiceImpl implements OrderService {
 //        updateOrderState(order.getId(), OrderEvent.REFUND_SUCCESS);
         virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.REFUND_SUCCESS, order);
         paymentOpsService.updateById(payment);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void paymentSubmit(Order order) {
-        if (!PaymentStatus.PAID.equals(order.getPaymentStatus())) {
-            virtualOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_SUBMIT, order);
-        }
     }
 
 }

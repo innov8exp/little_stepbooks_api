@@ -140,27 +140,6 @@ public class OrderController {
         return ResponseEntity.ok(orderAndPaymentDto);
     }
 
-    @Operation(summary = "已提交支付")
-    @PutMapping("/{code}/payment/submit")
-    public ResponseEntity<?> paymentSubmit(@PathVariable String code) {
-        Order order = orderOpsService.findOrderByCode(code);
-        User user = contextManager.currentUser();
-        if (!user.getId().equals(order.getUserId())) {
-            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
-        }
-        if (!OrderState.PLACED.equals(order.getState())) {
-            throw new BusinessException(ErrorCode.ORDER_STATE_NOT_SUPPORT);
-        }
-        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
-            physicalOrderServiceImpl.paymentSubmit(order);
-        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
-            virtualOrderServiceImpl.paymentSubmit(order);
-        } else {
-            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
-        }
-        return ResponseEntity.ok().build();
-    }
-
     @Operation(summary = "修改配送信息")
     @PutMapping("/{code}/delivery")
     public ResponseEntity<?> updateDeliveryInfo(@PathVariable String code, @RequestBody RecipientInfoDto recipient) {

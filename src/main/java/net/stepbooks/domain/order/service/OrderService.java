@@ -49,7 +49,4 @@ public interface OrderService {
     // 退款回调
     void refundCallback(Order order, Payment payment);
 
-    // 用户提交付款
-    void paymentSubmit(Order order);
-
 }

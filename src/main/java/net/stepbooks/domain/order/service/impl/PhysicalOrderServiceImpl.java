@@ -28,7 +28,10 @@ import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductBookService;
 import net.stepbooks.domain.product.service.ProductCourseService;
 import net.stepbooks.domain.product.service.ProductService;
-import net.stepbooks.infrastructure.enums.*;
+import net.stepbooks.infrastructure.enums.InventoryChangeType;
+import net.stepbooks.infrastructure.enums.PaymentMethod;
+import net.stepbooks.infrastructure.enums.PaymentType;
+import net.stepbooks.infrastructure.enums.RefundType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
@@ -320,14 +323,6 @@ public class PhysicalOrderServiceImpl implements OrderService {
 //        updateOrderState(order.getId(), OrderEvent.REFUND_SUCCESS);
         physicalOrderStateMachine.fireEvent(order.getState(), OrderEvent.REFUND_SUCCESS, order);
         paymentOpsService.updateById(payment);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void paymentSubmit(Order order) {
-        if (!PaymentStatus.PAID.equals(order.getPaymentStatus())) {
-            physicalOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_SUBMIT, order);
-        }
     }
 
     private Delivery buildDelivery(Order order, CreateOrderDto orderDto) {

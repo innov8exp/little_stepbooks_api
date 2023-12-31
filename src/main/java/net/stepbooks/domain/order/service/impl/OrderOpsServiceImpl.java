@@ -89,7 +89,7 @@ public class OrderOpsServiceImpl implements OrderOpsService {
             throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
         }
 
-        if (order.getState() == OrderState.PLACED || order.getState() == OrderState.PAYING) {
+        if (order.getState() == OrderState.PLACED) {
             Transaction transaction = paymentService.queryStatus(order.getOrderCode());
             if (transaction != null && transaction.getTradeState().equals(Transaction.TradeStateEnum.SUCCESS)) {
                 if (order.getProductNature().equals(ProductNature.PHYSICAL)) {
