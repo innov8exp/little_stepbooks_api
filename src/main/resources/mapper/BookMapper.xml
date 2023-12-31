@@ -11,7 +11,8 @@
                     on b.id = bcr.book_id
                     and sc.id = bcr.classification_id ), null)) classifications,
             (select count(1) from step_book_chapter bc where bc.book_id = b.id) chapter_count,
-            (select count(1) from step_course co where co.book_id = b.id) course_count
+            (select count(1) from step_course co where co.book_id = b.id) course_count,
+            (select count(1) from step_book_qr_code bq where bq.book_id = b.id) qrcode_count
         from step_book b
         where 1=1
         <if test="bookName != null">

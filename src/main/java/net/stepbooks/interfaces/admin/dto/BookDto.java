@@ -20,6 +20,7 @@ public class BookDto extends BaseDto {
     private String[] classifications;
     private Long chapterCount;
     private Long courseCount;
+    private Long qrcodeCount;
     private String duration;
     private List<BookMedia> medias;
 }
