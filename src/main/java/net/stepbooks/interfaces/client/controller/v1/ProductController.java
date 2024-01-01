@@ -16,6 +16,7 @@ import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.ProductDto;
 import net.stepbooks.interfaces.client.dto.CourseDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,12 +48,13 @@ public class ProductController {
     @GetMapping("/recommend")
     public ResponseEntity<IPage<Product>> getRecommendProducts(@RequestParam int currentPage,
                                                                @RequestParam int pageSize) {
-        User user = contextManager.currentUser();
-        if (ObjectUtils.isEmpty(user)) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (ObjectUtils.isEmpty(principal)) {
             Page<Product> page = Page.of(currentPage, pageSize);
             IPage<Product> products = productService.listDefaultRecommendProducts(page);
             return ResponseEntity.ok(products);
         }
+        User user = contextManager.currentUser();
         Float childMaxAge = user.getChildMaxAge();
         Float childMinAge = user.getChildMinAge();
         Page<Product> page = Page.of(currentPage, pageSize);
