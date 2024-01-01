@@ -1,29 +1,25 @@
 package net.stepbooks.domain.book.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.domain.book.entity.BookQRCode;
 import net.stepbooks.interfaces.admin.dto.BookQRCodeCreateDto;
 import net.stepbooks.interfaces.admin.dto.BookQRCodeDto;
 
-import java.io.IOException;
-import java.util.List;
-
 public interface BookQRCodeService extends IService<BookQRCode> {
-
-    /**
-     * 创建关联关系
-     *
-     * @param createDto createDto
-     */
-    void createBookQRCode(BookQRCodeCreateDto createDto) throws IOException;
 
     /**
      * 创建book&code关联关系
      *
-     * @param bookId bookId
-     * @return qrCode
+     * @param createDto createDto
      */
-    String linkQrCode(String bookId) throws IOException;
+    void createBookQRCode(BookQRCodeCreateDto createDto);
+
+    /**
+     * 分页数据
+     */
+    IPage<BookQRCodeDto> getPage(Page<BookQRCode> page, String bookId, String qrCode, String activeStatus);
 
     /**
      * 删除book&code关联关系
@@ -33,15 +29,9 @@ public interface BookQRCodeService extends IService<BookQRCode> {
     void deleteByQrCode(String qrcode);
 
     /**
-     * 批量生成关联关系
+     * 激活book
      *
-     * @param bookId bookId
-     * @param size   size
+     * @param qrcode qrcode
      */
-    void generateBatch(String bookId, int size) throws IOException;
-
-    /**
-     * list数据
-     */
-    List<BookQRCodeDto> listByBookId(String bookId, String qrcode);
+    void active(String qrcode);
 }
