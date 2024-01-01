@@ -49,7 +49,7 @@ public class ProductController {
     public ResponseEntity<IPage<Product>> getRecommendProducts(@RequestParam int currentPage,
                                                                @RequestParam int pageSize) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (ObjectUtils.isEmpty(principal)) {
+        if (ObjectUtils.isEmpty(principal) || "anonymousUser".equals(principal)) {
             Page<Product> page = Page.of(currentPage, pageSize);
             IPage<Product> products = productService.listDefaultRecommendProducts(page);
             return ResponseEntity.ok(products);
