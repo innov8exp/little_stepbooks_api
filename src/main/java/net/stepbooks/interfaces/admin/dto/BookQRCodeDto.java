@@ -2,7 +2,6 @@ package net.stepbooks.interfaces.admin.dto;
 
 import lombok.*;
 import lombok.experimental.Accessors;
-import net.stepbooks.domain.book.enums.BookActiveStatus;
 
 @Data
 @AllArgsConstructor
@@ -12,6 +11,5 @@ import net.stepbooks.domain.book.enums.BookActiveStatus;
 public class BookQRCodeDto {
     private String bookId;
     private String qrCode;
-    private BookActiveStatus activeStatus;
-    private String qrCodeUrl;
+    private String url;
 }
