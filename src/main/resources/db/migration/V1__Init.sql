@@ -112,6 +112,7 @@ create TABLE STEP_BOOK_QR_CODE
     id                  VARCHAR(100) NOT NULL PRIMARY KEY,
     book_id             VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
     qr_code             TEXT NOT NULL UNIQUE,
+    active_status       VARCHAR(100),  -- ACTIVATED, UNACTIVATED
     created_at          TIMESTAMP,
     modified_at         TIMESTAMP
 );
