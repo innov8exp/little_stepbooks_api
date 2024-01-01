@@ -11,5 +11,5 @@ import lombok.experimental.Accessors;
 public class BookQRCodeDto {
     private String bookId;
     private String qrCode;
-    private String url;
+    private String qrCodeUrl;
 }
