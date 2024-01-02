@@ -10,6 +10,7 @@ import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,11 @@ public class ContextManager {
     private final AdminUserService adminUserService;
 
     public User currentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (ObjectUtils.isEmpty(authentication)) {
+            throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot get the current user.");
+        }
+        Object principal = authentication.getPrincipal();
         if (ObjectUtils.isEmpty(principal)) {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot get the current user.");
         }
@@ -35,7 +40,11 @@ public class ContextManager {
     }
 
     public AdminUser currentAdminUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (ObjectUtils.isEmpty(authentication)) {
+            throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot get the current user.");
+        }
+        Object principal = authentication.getPrincipal();
         if (ObjectUtils.isEmpty(principal)) {
             throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot get the current user.");
         }
