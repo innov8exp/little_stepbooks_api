@@ -45,25 +45,26 @@ public class BookQRCodeServiceImpl extends ServiceImpl<BookQRCodeMapper, BookQRC
     @Override
     public IPage<BookQRCodeDto> getPage(Page<BookQRCode> page, String bookId, String qrCode, String activeStatus) {
         LambdaQueryWrapper<BookQRCode> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(ObjectUtils.isNotEmpty(bookId), BookQRCode::getBookId, bookId);
-        wrapper.eq(ObjectUtils.isNotEmpty(qrCode), BookQRCode::getQrCode, qrCode);
-        wrapper.eq(ObjectUtils.isNotEmpty(activeStatus), BookQRCode::getActiveStatus, activeStatus);
+        wrapper.eq(ObjectUtils.isNotEmpty(bookId), BookQRCode::getBookId, bookId)
+                .eq(ObjectUtils.isNotEmpty(qrCode), BookQRCode::getQrCode, qrCode)
+                .eq(ObjectUtils.isNotEmpty(activeStatus), BookQRCode::getActiveStatus, activeStatus);
         Page<BookQRCode> bookQRCodePage = this.baseMapper.selectPage(page, wrapper);
 
         Page<BookQRCodeDto> dtoPage = new Page<>();
         ArrayList<BookQRCodeDto> bookQRCodeDtos = new ArrayList<>();
         for (BookQRCode record : bookQRCodePage.getRecords()) {
             BookQRCodeDto dto = new BookQRCodeDto();
-            dto.setBookId(record.getBookId());
-            dto.setQrCode(record.getQrCode());
-            dto.setQrCodeUrl(officialAccountLink + "?code=" + record.getQrCode());
+            dto.setBookId(record.getBookId())
+                    .setQrCode(record.getQrCode())
+                    .setActiveStatus(record.getActiveStatus())
+                    .setQrCodeUrl(officialAccountLink + "?code=" + record.getQrCode());
             bookQRCodeDtos.add(dto);
         }
-        dtoPage.setRecords(bookQRCodeDtos);
-        dtoPage.setTotal(bookQRCodePage.getTotal());
-        dtoPage.setSize(bookQRCodePage.getSize());
-        dtoPage.setCurrent(bookQRCodePage.getCurrent());
-        dtoPage.setPages(bookQRCodePage.getPages());
+        dtoPage.setRecords(bookQRCodeDtos)
+                .setTotal(bookQRCodePage.getTotal())
+                .setSize(bookQRCodePage.getSize())
+                .setCurrent(bookQRCodePage.getCurrent())
+                .setPages(bookQRCodePage.getPages());
         return dtoPage;
     }
 
