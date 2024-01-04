@@ -2,11 +2,14 @@ package net.stepbooks.domain.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.domain.admin.entity.AdminUser;
+import net.stepbooks.interfaces.admin.dto.ResetPasswordDto;
 import net.stepbooks.interfaces.client.dto.TokenDto;
 
 public interface AdminUserService extends IService<AdminUser> {
 
     AdminUser findUserByEmail(String email);
+
+    AdminUser findUserByPhone(String phone);
 
     AdminUser findUserByUsername(String username);
 
@@ -20,4 +23,7 @@ public interface AdminUserService extends IService<AdminUser> {
 
     void updateUserById(String id, AdminUser userEntity);
 
+    void sendLoginVerificationSms(String phone);
+
+    void resetPassword(ResetPasswordDto resetPasswordDto);
 }

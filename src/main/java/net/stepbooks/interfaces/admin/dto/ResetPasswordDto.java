@@ -1,6 +1,5 @@
 package net.stepbooks.interfaces.admin.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import net.stepbooks.infrastructure.model.ValidPassword;
@@ -9,10 +8,9 @@ import net.stepbooks.infrastructure.model.ValidPassword;
 @Data
 public class ResetPasswordDto {
     @NotBlank
-    @Email
-    private String email;
+    private String phone;
     @NotBlank
-    private String resetToken;
+    private String verifyCode;
     @NotBlank
     @ValidPassword
     private String newPassword;

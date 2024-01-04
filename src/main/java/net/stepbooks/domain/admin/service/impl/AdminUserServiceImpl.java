@@ -8,15 +8,21 @@ import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.admin.entity.AdminUser;
 import net.stepbooks.domain.admin.mapper.AdminUserMapper;
 import net.stepbooks.domain.admin.service.AdminUserService;
+import net.stepbooks.domain.sms.entity.Sms;
+import net.stepbooks.domain.sms.service.SmsService;
+import net.stepbooks.infrastructure.enums.SmsType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.security.admin.AdminJwtTokenProvider;
 import net.stepbooks.interfaces.admin.assembler.AdminAuthAssembler;
+import net.stepbooks.interfaces.admin.dto.ResetPasswordDto;
 import net.stepbooks.interfaces.client.dto.TokenDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Service;
+
+import java.util.Random;
 
 @Service
 @Slf4j
@@ -25,6 +31,7 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
 
     private final AdminUserMapper adminUserMapper;
     private final AdminJwtTokenProvider adminJwtTokenProvider;
+    private final SmsService smsService;
 
     @Override
     public AdminUser findUserByEmail(String email) {
@@ -34,6 +41,15 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
             throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot found the user with email: " + email);
         }
         return userEntity;
+    }
+
+    @Override
+    public AdminUser findUserByPhone(String phone) {
+        AdminUser user = adminUserMapper.selectOne(Wrappers.<AdminUser>lambdaQuery().eq(AdminUser::getPhone, phone));
+        if (ObjectUtils.isEmpty(user)) {
+            throw new BusinessException(ErrorCode.AUTH_ERROR, "Cannot found the user with phone: " + phone);
+        }
+        return user;
     }
 
     @Override
@@ -99,5 +115,30 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
         adminUserMapper.updateById(userEntity);
     }
 
+    @Override
+    public void sendLoginVerificationSms(String phone) {
+        String verifyCode = generateVerifyCode();
+        smsService.sendSms(SmsType.VERIFICATION, phone, verifyCode);
+    }
 
+    @Override
+    public void resetPassword(ResetPasswordDto resetPasswordDto) {
+        boolean exists = smsService.exists(Wrappers.<Sms>lambdaQuery().eq(Sms::getPhone, resetPasswordDto.getPhone())
+                .eq(Sms::getContent, resetPasswordDto.getVerifyCode())
+                .eq(Sms::getSmsType, SmsType.VERIFICATION)
+        );
+        if (!exists) {
+            throw new BusinessException(ErrorCode.AUTH_ERROR, "Invalid verify code");
+        }
+        AdminUser adminUser = findUserByPhone(resetPasswordDto.getPhone());
+        String password = PasswordEncoderFactories.createDelegatingPasswordEncoder()
+                .encode(adminUser.getPassword());
+        adminUser.setPassword(password);
+        adminUserMapper.updateById(adminUser);
+    }
+
+    @SuppressWarnings("checkstyle:MagicNumber")
+    private static String generateVerifyCode() {
+        return String.valueOf(new Random().nextInt(899999) + 100000);
+    }
 }

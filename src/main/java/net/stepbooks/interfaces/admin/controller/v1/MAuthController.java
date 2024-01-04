@@ -13,7 +13,9 @@ import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.security.admin.AdminJwtTokenProvider;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.AdminUserDto;
+import net.stepbooks.interfaces.admin.dto.AdminUserResetPasswordDto;
 import net.stepbooks.interfaces.admin.dto.LoginDto;
+import net.stepbooks.interfaces.admin.dto.ResetPasswordDto;
 import net.stepbooks.interfaces.client.dto.TokenDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -96,6 +98,14 @@ public class MAuthController {
         return setCookie(token);
     }
 
+    @PostMapping("/sms/code")
+    public ResponseEntity<?> codeValidation(@RequestBody @Valid AdminUserResetPasswordDto adminUserResetPasswordDto) {
+        String phone = adminUserResetPasswordDto.getPhone();
+        adminUserService.findUserByPhone(phone);
+        adminUserService.sendLoginVerificationSms(phone);
+        return ResponseEntity.ok().build();
+    }
+
 //    @PutMapping("/user-info")
 //    public ResponseEntity<?> updateCurrentUserInfo(@Valid @RequestBody AdminUserDto userDto) {
 //        AdminUserDto currentAdminUser = ContextUtil.currentAdminUser();
@@ -121,11 +131,11 @@ public class MAuthController {
 //        return apiResponseMono.flatMap(apiResponse -> Mono.just(ResponseEntity.ok().build()));
 //    }
 //
-//    @PostMapping("/reset-password")
-//    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto) {
-//        Mono<APIResponse> apiResponseMono = adminUserService.resetPassword(resetPasswordDto);
-//        return apiResponseMono.flatMap(apiResponse -> Mono.just(ResponseEntity.ok().build()));
-//    }
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto) {
+        adminUserService.resetPassword(resetPasswordDto);
+        return ResponseEntity.ok().build();
+    }
 
     private ResponseEntity<TokenDto> setCookie(TokenDto token) {
         ResponseCookie accessTokenCookie = ResponseCookie.from(accessTokenCookieName, token.getAccessToken())
