@@ -1,6 +1,7 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/v1/xf-yun")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Client Authentication")
 @Slf4j
 public class XfIseController {
 
@@ -32,3 +34,4 @@ public class XfIseController {
     }
 
 }
+
