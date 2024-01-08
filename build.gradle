@@ -68,6 +68,7 @@ dependencies {
     implementation 'org.codehaus.janino:janino:3.1.6'
     implementation 'jmimemagic:jmimemagic:0.1.2'
 //    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    implementation 'cn.xfyun:websdk-java-speech:2.0.2'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -76,8 +77,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    implementation 'com.google.zxing:core:3.4.0' // ZXing核心库
-    implementation 'com.google.zxing:javase:3.4.0' // ZXing JavaSE扩展库
 }
 
 dependencyManagement {

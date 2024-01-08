@@ -161,3 +161,13 @@ bundle-id:
   ios: net.stepbooks.ios.app
   android: net.stepbooks.android.app
 
+xf-yun:
+  host-url: https://ise-api.xfyun.cn/v2/open-ise
+  app-id: 08e3bc57
+  api-secret: OTQ3NmJiZDA4ODYzZTk1MTYzMTgyNThm
+  api-key: cadf7193085eafa678a84ba08a282e27
+  check-type: easy # 打分门限值：hard、common、easy
+  grade: junior # 学段：junior(1,2年级) middle(3,4年级) senior(5,6年级)
+  group: pupil # 群体：adult成人 、youth（中学，效果与设置pupil参数一致）、pupil小学
+
+
