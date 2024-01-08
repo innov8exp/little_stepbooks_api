@@ -163,9 +163,9 @@ bundle-id:
 
 xf-yun:
   host-url: https://ise-api.xfyun.cn/v2/open-ise
-  app-id: 08e3bc57
-  api-secret: OTQ3NmJiZDA4ODYzZTk1MTYzMTgyNThm
-  api-key: cadf7193085eafa678a84ba08a282e27
+  app-id: 8e7f220b
+  api-secret: ZjFkNTc1MWY3Zjk0ODJiYzA4MzM0M2E3
+  api-key: 03258f3a05586fb9eff628313185837f
   check-type: easy # 打分门限值：hard、common、easy
   grade: junior # 学段：junior(1,2年级) middle(3,4年级) senior(5,6年级)
   group: pupil # 群体：adult成人 、youth（中学，效果与设置pupil参数一致）、pupil小学
