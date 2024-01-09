@@ -5,6 +5,8 @@ import cn.xfyun.model.response.ise.IseResponseData;
 import cn.xfyun.service.ise.AbstractIseWebSocketListener;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.xfyun.service.XfIseService;
+import net.stepbooks.infrastructure.exception.BusinessException;
+import net.stepbooks.infrastructure.exception.ErrorCode;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import org.apache.commons.lang3.ObjectUtils;
@@ -41,6 +43,7 @@ public class XfIseServiceImpl implements XfIseService {
     @Value("${xf-yun.group}")
     private String group;
 
+    @SuppressWarnings("checkstyle:MagicNumber")
     @Override
     public Double getIseResult(InputStream inputStream, String text) {
         IseClient client = new IseClient.Builder()
@@ -76,12 +79,31 @@ public class XfIseServiceImpl implements XfIseService {
                 public void onFail(WebSocket webSocket, Throwable throwable, Response response) {
                     String result = "";
                     future.complete(result);
-                    System.out.println(response);
+                    throw new BusinessException(ErrorCode.XF_YUN_ISE_ERROR, throwable.getMessage());
+                }
+
+                @Override
+                public void onMessage(WebSocket webSocket, String text) {
+                    super.onMessage(webSocket, text);
+                    IseResponseData resp = (IseResponseData) JSON.fromJson(text, IseResponseData.class);
+                    if (resp != null) {
+                        if (resp.getCode() != 0) {
+                            log.error(resp.getMessage());
+                            throw new BusinessException(ErrorCode.XF_YUN_ISE_ERROR, resp.getMessage());
+                        }
+
+                        if (resp.getData() != null && resp.getData().getStatus() == 2) {
+                            this.onSuccess(webSocket, resp);
+                            webSocket.close(1000, "");
+                        }
+                    }
+
                 }
             });
             resultStr = future.get();
         } catch (Exception e) {
             log.error(e.getMessage());
+            throw new BusinessException(ErrorCode.XF_YUN_ISE_ERROR, e.getMessage());
         }
 
         double totalScore = 0L;
