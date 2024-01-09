@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.xfyun.service.XfIseService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,7 @@ public class XfIseController {
     private final XfIseService xfIseService;
 
 
-    @PostMapping("/ise")
+    @PostMapping(value = "/ise", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "讯飞语音评测")
     public ResponseEntity<Double> getIseResult(@RequestParam("file") @NotNull MultipartFile file,
                                                @RequestParam String text) throws Exception {
