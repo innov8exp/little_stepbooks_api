@@ -54,7 +54,8 @@ public class BookQRCodeServiceImpl extends ServiceImpl<BookQRCodeMapper, BookQRC
         ArrayList<BookQRCodeDto> bookQRCodeDtos = new ArrayList<>();
         for (BookQRCode record : bookQRCodePage.getRecords()) {
             BookQRCodeDto dto = new BookQRCodeDto();
-            dto.setBookId(record.getBookId())
+            dto.setId(record.getId())
+                    .setBookId(record.getBookId())
                     .setQrCode(record.getQrCode())
                     .setActiveStatus(record.getActiveStatus())
                     .setQrCodeUrl(officialAccountLink + "?code=" + record.getQrCode());

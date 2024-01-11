@@ -10,6 +10,7 @@ import net.stepbooks.domain.book.enums.BookActiveStatus;
 @Builder
 @Accessors(chain = true)
 public class BookQRCodeDto {
+    private String id;
     private String bookId;
     private String qrCode;
     private BookActiveStatus activeStatus;
