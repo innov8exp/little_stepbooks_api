@@ -100,8 +100,8 @@ public class BookshelfController {
             throw new BusinessException(ErrorCode.BOOK_SET_NOT_EXISTS_IN_ORDER_ERROR);
         }
         bookshelfService.activeBook(bookId, userId);
-        // 激活后删除qrCode，qrCode仅使用一次
-        bookQRCodeService.deleteByQrCode(qrCode);
+        // 激活后qrCode状态改为已激活，qrCode仅使用一次
+        bookQRCodeService.active(qrCode);
         return ResponseEntity.ok().build();
     }
 

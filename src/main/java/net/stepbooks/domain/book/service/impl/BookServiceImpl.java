@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.book.entity.*;
+import net.stepbooks.domain.book.enums.BookActiveStatus;
 import net.stepbooks.domain.book.mapper.BookChapterMapper;
 import net.stepbooks.domain.book.mapper.BookMapper;
 import net.stepbooks.domain.book.mapper.BookQRCodeMapper;
@@ -139,7 +140,9 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
     @Override
     public Book findBookByQRCode(String qrCode) {
         BookQRCode bookQRCode = bookQRCodeMapper
-                .selectOne(Wrappers.<BookQRCode>lambdaQuery().eq(BookQRCode::getQrCode, qrCode));
+                .selectOne(Wrappers.<BookQRCode>lambdaQuery()
+                        .eq(BookQRCode::getQrCode, qrCode)
+                        .eq(BookQRCode::getActiveStatus, BookActiveStatus.UNACTIVATED));
         if (bookQRCode != null) {
             return bookMapper.selectById(bookQRCode.getBookId());
         }
