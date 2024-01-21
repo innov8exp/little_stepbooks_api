@@ -57,7 +57,11 @@ public enum ErrorCode {
     PAYMENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The payment is error"),
     REFUND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The refund is error"),
     CODE_NOT_EXISTS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The code is not exists"),
-    XF_YUN_ISE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The code is not exists");
+    XF_YUN_ISE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The code is not exists"),
+    EXERCISE_NOT_EXISTS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The exercise is not exists"),
+    PAIRED_READ_NOT_EXISTS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The pairedRead is not exists"),
+    PAIRED_READ_COLLECTION_NOT_EXISTS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The pairedReadCollection is not exists"),
+    PAIRED_READ_USER_NOT_EXISTS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The pairedReadCollectionUser is not exists");
 
 
     private final int status;
