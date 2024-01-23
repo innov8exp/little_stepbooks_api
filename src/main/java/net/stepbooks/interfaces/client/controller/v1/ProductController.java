@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.book.service.BookService;
-import net.stepbooks.domain.course.service.CourseService;
+import net.stepbooks.domain.courses.course.service.CourseService;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.user.entity.User;

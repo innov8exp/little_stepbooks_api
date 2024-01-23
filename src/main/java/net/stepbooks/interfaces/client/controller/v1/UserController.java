@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
-import net.stepbooks.domain.course.entity.Course;
+import net.stepbooks.domain.courses.course.entity.Course;
 import net.stepbooks.domain.history.service.LearnTimeService;
 import net.stepbooks.domain.history.service.ReadingHistoryService;
 import net.stepbooks.domain.order.service.OrderOpsService;

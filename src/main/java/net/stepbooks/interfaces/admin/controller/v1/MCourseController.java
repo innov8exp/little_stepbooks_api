@@ -2,8 +2,8 @@ package net.stepbooks.interfaces.admin.controller.v1;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.course.entity.Course;
-import net.stepbooks.domain.course.service.CourseService;
+import net.stepbooks.domain.courses.course.entity.Course;
+import net.stepbooks.domain.courses.course.service.CourseService;
 import net.stepbooks.interfaces.admin.dto.MCourseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

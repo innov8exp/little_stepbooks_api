@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.course.enums.CourseNature;
+import net.stepbooks.domain.courses.course.enums.CourseNature;
 import net.stepbooks.infrastructure.model.BaseDto;
 
 @Data

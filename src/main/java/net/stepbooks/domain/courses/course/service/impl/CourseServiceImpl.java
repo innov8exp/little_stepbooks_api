@@ -1,12 +1,12 @@
-package net.stepbooks.domain.course.service.impl;
+package net.stepbooks.domain.courses.course.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.course.entity.Course;
-import net.stepbooks.domain.course.enums.CourseNature;
-import net.stepbooks.domain.course.mapper.CourseMapper;
-import net.stepbooks.domain.course.service.CourseService;
+import net.stepbooks.domain.courses.course.entity.Course;
+import net.stepbooks.domain.courses.course.enums.CourseNature;
+import net.stepbooks.domain.courses.course.mapper.CourseMapper;
+import net.stepbooks.domain.courses.course.service.CourseService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.product.entity.ProductCourse;

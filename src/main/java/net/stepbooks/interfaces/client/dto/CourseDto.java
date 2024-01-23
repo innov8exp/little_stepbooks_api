@@ -2,7 +2,7 @@ package net.stepbooks.interfaces.client.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.stepbooks.domain.course.enums.CourseNature;
+import net.stepbooks.domain.courses.course.enums.CourseNature;
 import net.stepbooks.infrastructure.model.BaseDto;
 
 @EqualsAndHashCode(callSuper = true)

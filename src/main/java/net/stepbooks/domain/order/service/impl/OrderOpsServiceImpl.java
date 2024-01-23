@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
-import net.stepbooks.domain.course.entity.Course;
+import net.stepbooks.domain.courses.course.entity.Course;
 import net.stepbooks.domain.delivery.entity.Delivery;
 import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;

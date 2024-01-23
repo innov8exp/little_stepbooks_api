@@ -1,1 +1,0 @@
-ALTER TABLE "public"."step_book_qr_code" ADD COLUMN "active_status" varchar(100)

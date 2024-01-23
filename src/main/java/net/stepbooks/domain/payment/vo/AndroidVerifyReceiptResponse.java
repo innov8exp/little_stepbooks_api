@@ -16,7 +16,7 @@ public class AndroidVerifyReceiptResponse {
     private Integer consumptionState;
     // 0. Test (i.e. purchased from a license testing account)
     // 1. Promo (i.e. purchased using a promo code)
-    // 2. Rewarded (i.e. from watching a video ad instead of paying)
+    // 2. Rewarded (i.e. from watching a video_course ad instead of paying)
     private Integer purchaseType;
     // 0. Yet to be acknowledged
     // 1. Acknowledged

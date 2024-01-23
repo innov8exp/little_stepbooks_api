@@ -112,6 +112,7 @@ create TABLE STEP_BOOK_QR_CODE
     id                  VARCHAR(100) NOT NULL PRIMARY KEY,
     book_id             VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
     qr_code             TEXT NOT NULL UNIQUE,
+    active_status       VARCHAR(100) DEFAULT ('UNACTIVATED'), -- ACTIVATED, UNACTIVATED
     created_at          TIMESTAMP,
     modified_at         TIMESTAMP
 );
@@ -133,16 +134,14 @@ create TABLE STEP_BOOK_CLASSIFICATION_REF
     classification_id VARCHAR(100) REFERENCES STEP_CLASSIFICATION(id) NOT NULL
 );
 
--- 书籍章节内容
-create TABLE STEP_BOOK_CHAPTER
+-- 音频信息
+create TABLE STEP_AUDIO
 (
     id VARCHAR(100) NOT NULL PRIMARY KEY,
     book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
+    audio_num INTEGER NOT NULL,
+    audio_name VARCHAR(200),
     description TEXT,
-    chapter_no INTEGER NOT NULL,
-    chapter_name VARCHAR(200),
-    img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
-    img_url TEXT,
     audio_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     audio_url TEXT,
     created_at TIMESTAMP,
@@ -156,6 +155,19 @@ create TABLE STEP_COURSE
     book_id VARCHAR(100) REFERENCES STEP_BOOK(id) NOT NULL,
     name VARCHAR(200) NOT NULL,
     description TEXT,
+    cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    cover_img_url TEXT,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
+);
+
+-- 视频课程信息
+create TABLE STEP_VIDEO_COURSE
+(
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    course_id VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    description TEXT,
     author VARCHAR(200),
     author_introduction VARCHAR(200),
     duration VARCHAR(100),
@@ -164,6 +176,46 @@ create TABLE STEP_COURSE
     video_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
     video_url TEXT,
     course_nature VARCHAR(100) DEFAULT ('NEED_TO_PAY'),
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
+);
+
+-- 有声书信息
+create TABLE STEP_AUDIO_BOOK
+(
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    course_id VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL,
+    description TEXT,
+    page_no INTEGER NOT NULL,
+    page_name VARCHAR(200),
+    cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    cover_img_url TEXT,
+    img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    img_url TEXT,
+    audio_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    audio_url TEXT,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
+);
+
+-- 练习题信息
+create TABLE STEP_EXERCISES
+(
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    course_id VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL,
+    cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    cover_img_url TEXT,
+    created_at TIMESTAMP,
+    modified_at TIMESTAMP
+);
+
+-- 跟读练习信息
+create TABLE STEP_LISTEN_REPEAT
+(
+    id VARCHAR(100) NOT NULL PRIMARY KEY,
+    course_id VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL,
+    cover_img_id VARCHAR(100) REFERENCES STEP_MEDIA(id),
+    cover_img_url TEXT,
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 );

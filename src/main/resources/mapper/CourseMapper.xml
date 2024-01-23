@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="net.stepbooks.domain.course.mapper.CourseMapper">
+<mapper namespace="net.stepbooks.domain.courses.course.mapper.CourseMapper">
     <select id="findCoursesByProductId" resultType="net.stepbooks.interfaces.client.dto.CourseDto">
         select c.*, bk.book_name from step_course c
         left join STEP_PRODUCT_COURSE_REF pc on c.id = pc.course_id

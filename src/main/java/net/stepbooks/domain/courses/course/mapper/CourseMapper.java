@@ -1,7 +1,7 @@
-package net.stepbooks.domain.course.mapper;
+package net.stepbooks.domain.courses.course.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import net.stepbooks.domain.course.entity.Course;
+import net.stepbooks.domain.courses.course.entity.Course;
 import net.stepbooks.interfaces.client.dto.CourseDto;
 
 import java.util.List;

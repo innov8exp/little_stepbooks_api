@@ -1,8 +1,8 @@
-package net.stepbooks.domain.course.entity;
+package net.stepbooks.domain.courses.course.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
-import net.stepbooks.domain.course.enums.CourseNature;
+import net.stepbooks.domain.courses.course.enums.CourseNature;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)

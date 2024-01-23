@@ -1,4 +1,4 @@
-package net.stepbooks.domain.course.enums;
+package net.stepbooks.domain.courses.course.enums;
 
 import lombok.Getter;
 

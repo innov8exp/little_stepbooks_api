@@ -1,7 +1,7 @@
-package net.stepbooks.domain.course.service;
+package net.stepbooks.domain.courses.course.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import net.stepbooks.domain.course.entity.Course;
+import net.stepbooks.domain.courses.course.entity.Course;
 import net.stepbooks.interfaces.admin.dto.MCourseDto;
 import net.stepbooks.interfaces.client.dto.CourseDto;
 

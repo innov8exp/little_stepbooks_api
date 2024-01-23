@@ -2,7 +2,7 @@ package net.stepbooks.domain.order.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.course.entity.Course;
+import net.stepbooks.domain.courses.course.entity.Course;
 import net.stepbooks.domain.order.entity.OrderCourse;
 import net.stepbooks.domain.order.mapper.OrderCourseMapper;
 import net.stepbooks.domain.order.service.OrderCourseService;
