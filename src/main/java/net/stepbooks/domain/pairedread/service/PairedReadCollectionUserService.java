@@ -20,5 +20,5 @@ public interface PairedReadCollectionUserService {
 
     IPage<PairedReadCollectionUser> getPage(Page<PairedReadCollectionUser> page, PairedReadCollectionUserDto queryDto);
 
-    List<PairedReadCollectionInfoDto> getAllByUserId(String userId);
+    List<PairedReadCollectionInfoDto> getAllByUsername(String userId);
 }

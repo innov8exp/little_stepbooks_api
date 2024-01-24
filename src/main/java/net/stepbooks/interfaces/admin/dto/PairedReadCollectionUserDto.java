@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PairedReadCollectionUserDto {
     private String collectionId;
-    private String userId;
+    private String username;
 }

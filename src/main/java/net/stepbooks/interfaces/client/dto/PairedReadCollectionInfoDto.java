@@ -6,7 +6,7 @@ import lombok.Data;
 public class PairedReadCollectionInfoDto {
 
     private String collectionId;
-    private String userId;
+    private String username;
     private String coverImgId;
     private String coverImgUrl;
     private String name;

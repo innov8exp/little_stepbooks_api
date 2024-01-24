@@ -23,6 +23,7 @@ public class PairedReadServiceImpl extends ServiceImpl<PairedReadMapper, PairedR
     @Override
     public void create(PairedRead entity) {
         entity.setCreatedAt(LocalDateTime.now());
+        entity.setId(null);
         this.baseMapper.insert(entity);
     }
 

@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="net.stepbooks.domain.pairedread.mapper.PairedReadCollectionUserMapper">
 
-    <select id="selectCollectionByUserId"
+    <select id="selectCollectionByUsername"
             resultType="net.stepbooks.interfaces.client.dto.PairedReadCollectionInfoDto">
         SELECT
-        rcu.user_id,
+        rcu.username,
         rcu.collection_id,
         rc.cover_img_id,
         rc.cover_img_url,
@@ -15,6 +15,6 @@
         step_paired_read_collection_user rcu
         LEFT JOIN step_paired_read_collection rc ON
         rcu.collection_id = rc.id
-        WHERE rcu.user_id = #{id}
+        WHERE rcu.username = #{username}
     </select>
 </mapper>

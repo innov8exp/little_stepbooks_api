@@ -23,6 +23,7 @@ public class PairedReadCollectionServiceImpl
     @Override
     public void create(PairedReadCollection entity) {
         entity.setCreatedAt(LocalDateTime.now());
+        entity.setId(null);
         this.baseMapper.insert(entity);
     }
 

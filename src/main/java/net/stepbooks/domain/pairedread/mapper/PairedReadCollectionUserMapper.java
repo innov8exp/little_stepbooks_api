@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface PairedReadCollectionUserMapper extends BaseMapper<PairedReadCollectionUser> {
 
-    List<PairedReadCollectionInfoDto> selectCollectionByUserId(String userId);
+    List<PairedReadCollectionInfoDto> selectCollectionByUsername(String username);
 }

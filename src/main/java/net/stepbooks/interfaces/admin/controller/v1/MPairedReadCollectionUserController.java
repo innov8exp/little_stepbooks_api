@@ -48,9 +48,9 @@ public class MPairedReadCollectionUserController {
     @GetMapping
     public ResponseEntity<IPage<PairedReadCollectionUser>> getPage(@RequestParam int currentPage,
                                                                    @RequestParam int pageSize,
-                                                                   @RequestParam String userId) {
+                                                                   @RequestParam String username) {
         PairedReadCollectionUserDto queryDto = PairedReadCollectionUserDto.builder()
-                .userId(userId)
+                .username(username)
                 .build();
         Page<PairedReadCollectionUser> page = Page.of(currentPage, pageSize);
         IPage<PairedReadCollectionUser> pages = pairedReadCollectionUserService.getPage(page, queryDto);

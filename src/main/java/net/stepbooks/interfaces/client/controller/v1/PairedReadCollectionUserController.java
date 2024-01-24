@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.pairedread.entity.PairedReadCollectionUser;
 import net.stepbooks.domain.pairedread.service.PairedReadCollectionUserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
-import net.stepbooks.interfaces.admin.dto.PairedReadCollectionDto;
+import net.stepbooks.interfaces.admin.dto.PairedReadCollectionUserDto;
 import net.stepbooks.interfaces.client.dto.PairedReadCollectionInfoDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,16 +25,16 @@ public class PairedReadCollectionUserController {
 
     @PostMapping
     @Operation(summary = "领取合集")
-    public ResponseEntity<?> create(@RequestBody PairedReadCollectionDto dto) {
+    public ResponseEntity<?> create(@RequestBody PairedReadCollectionUserDto dto) {
         PairedReadCollectionUser entity = BaseAssembler.convert(dto, PairedReadCollectionUser.class);
         pairedReadCollectionUserService.create(entity);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/all/{userId}")
+    @GetMapping("/all/{username}")
     @Operation(summary = "查看已领取合集")
-    public ResponseEntity<List<PairedReadCollectionInfoDto>> getAll(@PathVariable String userId) {
-        List<PairedReadCollectionInfoDto> readCollectionUserDtoList = pairedReadCollectionUserService.getAllByUserId(userId);
+    public ResponseEntity<List<PairedReadCollectionInfoDto>> getAll(@PathVariable String username) {
+        List<PairedReadCollectionInfoDto> readCollectionUserDtoList = pairedReadCollectionUserService.getAllByUsername(username);
         return ResponseEntity.ok(readCollectionUserDtoList);
     }
 }

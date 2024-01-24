@@ -26,6 +26,7 @@ public class PairedReadCollectionUserServiceImpl
     @Override
     public void create(PairedReadCollectionUser entity) {
         entity.setCreatedAt(LocalDateTime.now());
+        entity.setId(null);
         this.baseMapper.insert(entity);
     }
 
@@ -51,15 +52,15 @@ public class PairedReadCollectionUserServiceImpl
 
     @Override
     public IPage<PairedReadCollectionUser> getPage(Page<PairedReadCollectionUser> page, PairedReadCollectionUserDto queryDto) {
-        String userId = queryDto.getUserId();
+        String username = queryDto.getUsername();
         LambdaQueryWrapper<PairedReadCollectionUser> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(ObjectUtils.isNotEmpty(userId), PairedReadCollectionUser::getUserId, userId);
+        wrapper.eq(ObjectUtils.isNotEmpty(username), PairedReadCollectionUser::getUsername, username);
         return this.baseMapper.selectPage(page, wrapper);
     }
 
     @Override
-    public List<PairedReadCollectionInfoDto> getAllByUserId(String userId) {
-        return this.baseMapper.selectCollectionByUserId(userId);
+    public List<PairedReadCollectionInfoDto> getAllByUsername(String username) {
+        return this.baseMapper.selectCollectionByUsername(username);
     }
 
     private void checkExists(String id) {

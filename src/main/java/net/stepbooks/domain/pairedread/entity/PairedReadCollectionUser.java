@@ -11,6 +11,6 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 public class PairedReadCollectionUser extends BaseEntity {
 
     private String collectionId;
-    private String userId;
+    private String username;
 
 }
