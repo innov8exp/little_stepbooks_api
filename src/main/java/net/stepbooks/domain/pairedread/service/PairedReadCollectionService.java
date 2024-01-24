@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import net.stepbooks.domain.pairedread.entity.PairedReadCollection;
 import net.stepbooks.interfaces.admin.dto.PairedReadCollectionDto;
 
+import java.util.List;
+
 public interface PairedReadCollectionService {
     void create(PairedReadCollection entity);
 
@@ -15,4 +17,7 @@ public interface PairedReadCollectionService {
     PairedReadCollection getById(String id);
 
     IPage<PairedReadCollection> getPage(IPage<PairedReadCollection> page, PairedReadCollectionDto queryDto);
+
+    List<PairedReadCollection> list();
+
 }

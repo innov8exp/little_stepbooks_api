@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "PairedReadCollection", description = "伴读合集相关接口")
+@Tag(name = "PairedReadCollectionUser", description = "伴读合集关联用户相关接口")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/paired-read-collection-user")

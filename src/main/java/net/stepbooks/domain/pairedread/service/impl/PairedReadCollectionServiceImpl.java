@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class PairedReadCollectionServiceImpl
@@ -58,5 +59,10 @@ public class PairedReadCollectionServiceImpl
 
         }
 
+    }
+
+    @Override
+    public List<PairedReadCollection> list() {
+        return super.list();
     }
 }
