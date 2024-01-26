@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.media.service.MediaService;
+import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.domain.pairedread.entity.PairedRead;
 import net.stepbooks.domain.pairedread.mapper.PairedReadMapper;
 import net.stepbooks.domain.pairedread.service.PairedReadService;
@@ -16,9 +19,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PairedReadServiceImpl extends ServiceImpl<PairedReadMapper, PairedRead> implements PairedReadService {
+
+    private final PrivateFileServiceImpl privateFileService;
+    private final MediaService mediaService;
 
     @Override
     public void create(PairedRead entity) {
@@ -54,7 +62,16 @@ public class PairedReadServiceImpl extends ServiceImpl<PairedReadMapper, PairedR
         LambdaQueryWrapper<PairedRead> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ObjectUtils.isNotEmpty(collectionId), PairedRead::getCollectionId, collectionId)
                 .eq(ObjectUtils.isNotEmpty(name), PairedRead::getName, name);
-        return this.baseMapper.selectPage(page, wrapper);
+        Page<PairedRead> pairedReadPage = this.baseMapper.selectPage(page, wrapper);
+        List<PairedRead> records = pairedReadPage.getRecords();
+        List<PairedRead> list = records.stream().peek(pairedRead -> {
+            String audioId = pairedRead.getAudioId();
+            String audioKey = mediaService.getById(audioId).getObjectKey();
+            String audioUrl = privateFileService.getUrl(audioKey);
+            pairedRead.setAudioUrl(audioUrl);
+        }).toList();
+        pairedReadPage.setRecords(list);
+        return pairedReadPage;
     }
 
     private void checkExists(String id) {
