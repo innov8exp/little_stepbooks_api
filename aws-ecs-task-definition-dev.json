@@ -1,5 +1,5 @@
 {
-  "taskDefinitionArn": "arn:aws-cn:ecs:cn-north-1:855070278401:task-definition/stepbook-api-ecs-task-definition-dev:13",
+  "taskDefinitionArn": "arn:aws-cn:ecs:cn-north-1:855070278401:task-definition/stepbook-api-ecs-task-definition-dev:17",
   "containerDefinitions": [
     {
       "name": "stepbook-api",
@@ -32,7 +32,7 @@
   "family": "stepbook-api-ecs-task-definition-dev",
   "executionRoleArn": "arn:aws-cn:iam::855070278401:role/stepbook_ecs_task_execution_role_dev",
   "networkMode": "awsvpc",
-  "revision": 13,
+  "revision": 17,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -71,7 +71,7 @@
   ],
   "cpu": "512",
   "memory": "1024",
-  "registeredAt": "2024-01-28T15:45:38.623Z",
+  "registeredAt": "2024-01-28T16:50:32.424Z",
   "registeredBy": "arn:aws-cn:iam::855070278401:user/terraform-user",
   "tags": [
     {
