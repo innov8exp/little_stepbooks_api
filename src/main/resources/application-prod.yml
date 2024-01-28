@@ -1,33 +1,35 @@
 # DataSource Config
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/stepbook?useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-    username: step_user
-    password: step_ps
+    url: jdbc:postgresql://stepbook-prod-db.czvfgexghsct.rds.cn-north-1.amazonaws.com.cn:5432/stepbook?ssl=true&sslrootcert=/app/rds-cert.pem&useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: stepbook_user
+    password: Ua$yG218Pu
   data:
     redis:
       cluster:
         nodes:
-          - clustercfg.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn:6379
+          - stepbook-prod-redis-cluster.retsq2.0001.cnn1.cache.amazonaws.com.cn:6379
       database: 0
+
 
 server:
   forward-headers-strategy: framework
 
 logging:
   level:
-    org.springframework.web: INFO
+    org.springframework.web: DEBUG
 
 aws:
   s3:
-    bucket: stepbook
-    public-bucket: stepbook-public
-  cdn: https://asset-stage.stepbooks.net
-
-in-app-purchase:
-  verify-host:
-    ios: https://buy.itunes.apple.com
-    android: https://androidpublisher.googleapis.com
+    bucket: stepbook-prod-private
+    public-bucket: stepbook-prod-public
+  cdn: https://s3.cn-north-1.amazonaws.com.cn
 
 stepbooks:
   mnp-qrcode-host: https://api.stepbooks.net/mnp-qrcode
+
+
+wechat:
+  merchant:
+    pay-notify-url: https://api.stepbooks.net/v1/payments/wechat/pay/callback
+    refund-notify-url: https://api.stepbooks.net/v1/payments/wechat/refund/callback

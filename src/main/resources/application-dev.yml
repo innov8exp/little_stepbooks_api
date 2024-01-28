@@ -1,0 +1,35 @@
+# DataSource Config
+spring:
+  datasource:
+    url: jdbc:postgresql://stepbook-dev-db.czvfgexghsct.rds.cn-north-1.amazonaws.com.cn:5432/stepbook?ssl=true&sslrootcert=/app/rds-cert.pem&useUnicode=true&characterEncoding=utf-8&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: stepbook_user
+    password: stepbook_user
+  data:
+    redis:
+      cluster:
+        nodes:
+          - stepbook-dev-redis-cluster.retsq2.0001.cnn1.cache.amazonaws.com.cn:6379
+      database: 0
+
+
+server:
+  forward-headers-strategy: framework
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+
+aws:
+  s3:
+    bucket: stepbook-dev-private
+    public-bucket: stepbook-dev-public
+  cdn: https://s3.cn-north-1.amazonaws.com.cn
+
+stepbooks:
+  mnp-qrcode-host: https://api-dev.stepbooks.net/mnp-qrcode
+
+
+wechat:
+  merchant:
+    pay-notify-url: https://api-dev.stepbooks.net/v1/payments/wechat/pay/callback
+    refund-notify-url: https://api-dev.stepbooks.net/v1/payments/wechat/refund/callback

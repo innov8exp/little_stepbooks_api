@@ -1,11 +1,11 @@
 {
-  "taskDefinitionArn": "arn:aws-cn:ecs:cn-north-1:855070278401:task-definition/stepbook-api-ecs-task-definition-prod:1",
+  "taskDefinitionArn": "arn:aws-cn:ecs:cn-north-1:855070278401:task-definition/stepbook-api-ecs-task-definition-dev:13",
   "containerDefinitions": [
     {
       "name": "stepbook-api",
-      "image": "855070278401.dkr.ecr.cn-north-1.amazonaws.com.cn/stepbook-api-repo-prod",
-      "cpu": 512,
-      "memory": 1024,
+      "image": "855070278401.dkr.ecr.cn-north-1.amazonaws.com.cn/stepbook-api-repo-dev",
+      "cpu": 256,
+      "memory": 512,
       "portMappings": [
         {
           "name": "stepbook-api",
@@ -22,17 +22,17 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-create-group": "true",
-          "awslogs-group": "/stepbook/ecs/prod/stepbook-api",
+          "awslogs-group": "/stepbook/ecs/dev/stepbook-api",
           "awslogs-region": "cn-north-1",
-          "awslogs-stream-prefix": "stepbook-api-log-stream-prod"
+          "awslogs-stream-prefix": "stepbook-api-log-stream-dev"
         }
       }
     }
   ],
-  "family": "stepbook-api-ecs-task-definition-prod",
-  "executionRoleArn": "arn:aws-cn:iam::855070278401:role/stepbook_ecs_task_execution_role_prod",
+  "family": "stepbook-api-ecs-task-definition-dev",
+  "executionRoleArn": "arn:aws-cn:iam::855070278401:role/stepbook_ecs_task_execution_role_dev",
   "networkMode": "awsvpc",
-  "revision": 1,
+  "revision": 13,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -69,9 +69,9 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "cpu": "1024",
-  "memory": "2048",
-  "registeredAt": "2024-01-28T16:09:24.113Z",
+  "cpu": "512",
+  "memory": "1024",
+  "registeredAt": "2024-01-28T15:45:38.623Z",
   "registeredBy": "arn:aws-cn:iam::855070278401:user/terraform-user",
   "tags": [
     {
@@ -80,7 +80,7 @@
     },
     {
       "key": "Environment",
-      "value": "prod"
+      "value": "dev"
     }
   ]
 }
