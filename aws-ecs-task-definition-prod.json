@@ -1,5 +1,5 @@
 {
-  "taskDefinitionArn": "arn:aws-cn:ecs:cn-north-1:855070278401:task-definition/stepbook-api-ecs-task-definition-prod:7",
+  "taskDefinitionArn": "arn:aws-cn:ecs:cn-north-1:855070278401:task-definition/stepbook-api-ecs-task-definition-prod:15",
   "containerDefinitions": [
     {
       "name": "stepbook-api",
@@ -11,7 +11,8 @@
           "name": "stepbook-api",
           "containerPort": 8081,
           "hostPort": 8081,
-          "protocol": "tcp"
+          "protocol": "tcp",
+          "appProtocol": "http"
         }
       ],
       "essential": true,
@@ -35,9 +36,10 @@
     }
   ],
   "family": "stepbook-api-ecs-task-definition-prod",
+  "taskRoleArn": "arn:aws-cn:iam::855070278401:role/stepbook_ecs_task_iam_role_prod",
   "executionRoleArn": "arn:aws-cn:iam::855070278401:role/stepbook_ecs_task_execution_role_prod",
   "networkMode": "awsvpc",
-  "revision": 7,
+  "revision": 15,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -52,6 +54,9 @@
     },
     {
       "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
     },
     {
       "name": "ecs.capability.execution-role-ecr-pull"
@@ -76,7 +81,7 @@
   ],
   "cpu": "1024",
   "memory": "2048",
-  "registeredAt": "2024-01-28T17:12:28.476Z",
+  "registeredAt": "2024-01-28T19:39:12.946Z",
   "registeredBy": "arn:aws-cn:iam::855070278401:user/terraform-user",
   "tags": [
     {
