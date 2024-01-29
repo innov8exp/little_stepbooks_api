@@ -8,6 +8,7 @@ import net.stepbooks.domain.pairedread.entity.PairedReadCollection;
 import net.stepbooks.domain.pairedread.service.PairedReadCollectionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +28,12 @@ public class PairedReadCollectionController {
     public ResponseEntity<List<PairedReadCollection>> getCarousels() {
         List<PairedReadCollection> data = pairedReadCollectionService.list();
         return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "获取合集详情")
+    public ResponseEntity<PairedReadCollection> get(@PathVariable String id) {
+        PairedReadCollection pairedReadCollection = pairedReadCollectionService.getById(id);
+        return ResponseEntity.ok(pairedReadCollection);
     }
 }
