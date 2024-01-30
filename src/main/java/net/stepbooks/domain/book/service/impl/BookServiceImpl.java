@@ -59,9 +59,11 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
                 .classificationId(classification)
                 .build()).toList();
         bookClassificationService.saveBatch(bookClassifications);
-        List<BookMedia> productMedias = bookDto.getMedias().stream().peek(bookMedia ->
-                bookMedia.setBookId(book.getId())).toList();
-        bookMediaService.saveBatch(productMedias);
+        if (bookDto.getMedias() != null) {
+            List<BookMedia> productMedias = bookDto.getMedias().stream().peek(bookMedia ->
+                    bookMedia.setBookId(book.getId())).toList();
+            bookMediaService.saveBatch(productMedias);
+        }
     }
 
     @Override
