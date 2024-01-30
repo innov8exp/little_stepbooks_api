@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.domain.pairedread.entity.PairedRead;
 import net.stepbooks.domain.pairedread.mapper.PairedReadMapper;
 import net.stepbooks.domain.pairedread.service.PairedReadService;
+import net.stepbooks.infrastructure.enums.AccessPermission;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.PairedReadDto;
@@ -66,9 +68,12 @@ public class PairedReadServiceImpl extends ServiceImpl<PairedReadMapper, PairedR
         List<PairedRead> records = pairedReadPage.getRecords();
         List<PairedRead> list = records.stream().peek(pairedRead -> {
             String audioId = pairedRead.getAudioId();
-            String audioKey = mediaService.getById(audioId).getObjectKey();
-            String audioUrl = privateFileService.getUrl(audioKey);
-            pairedRead.setAudioUrl(audioUrl);
+            Media media = mediaService.getById(audioId);
+            if (media.getAccessPermission().equals(AccessPermission.PRIVATE)) {
+                String audioKey = media.getObjectKey();
+                String audioUrl = privateFileService.getUrl(audioKey);
+                pairedRead.setAudioUrl(audioUrl);
+            }
         }).toList();
         pairedReadPage.setRecords(list);
         return pairedReadPage;
