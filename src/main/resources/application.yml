@@ -170,4 +170,8 @@ xf-yun:
   grade: junior # 学段：junior(1,2年级) middle(3,4年级) senior(5,6年级)
   group: pupil # 群体：adult成人 、youth（中学，效果与设置pupil参数一致）、pupil小学
 
-
+# Fix bug - MailHealthindicator: Mail health check failed
+management:
+  health:
+    mail:
+      enabled: false
