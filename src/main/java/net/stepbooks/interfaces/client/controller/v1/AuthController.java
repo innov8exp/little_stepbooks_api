@@ -143,6 +143,10 @@ public class AuthController {
     public ResponseEntity<TokenDto> refreshToken(HttpServletRequest httpRequest,
                                                  @Valid @RequestBody RefreshTokenDto refreshTokenDto) {
         String accessToken = httpRequest.getHeader(authHeader);
+        //按道理，未登录状态不应该调用refresh token的请求，但是为了解决客户端的报错问题，返回一个空结果
+        if (accessToken == null) {
+            return ResponseEntity.ok(null);
+        }
         if (accessToken.startsWith(tokenType)) {
             accessToken = accessToken.substring(tokenType.length()).trim();
         }
