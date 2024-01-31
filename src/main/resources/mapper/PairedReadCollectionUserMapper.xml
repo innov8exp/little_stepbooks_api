@@ -9,6 +9,8 @@
         rcu.collection_id,
         rc.cover_img_id,
         rc.cover_img_url,
+        rc.detail_img_id,
+        rc.detail_img_url,
         rc.name,
         rc.description
         FROM
