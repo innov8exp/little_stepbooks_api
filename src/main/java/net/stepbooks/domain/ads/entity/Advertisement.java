@@ -16,4 +16,5 @@ public class Advertisement extends BaseEntity {
     private String adsImgUrl;
     private Integer sortIndex;
     private AdsType adsType;
+    private String actionUrl;
 }

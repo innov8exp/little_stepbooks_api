@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.pairedread.entity.PairedReadCollection;
+import net.stepbooks.domain.pairedread.enums.CollectionStatus;
 import net.stepbooks.domain.pairedread.service.PairedReadCollectionService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.admin.dto.PairedReadCollectionDto;
@@ -22,7 +23,25 @@ public class MPairedReadCollectionController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody PairedReadCollectionDto dto) {
         PairedReadCollection entity = BaseAssembler.convert(dto, PairedReadCollection.class);
+        //需要手工上线
+        entity.setStatus(CollectionStatus.OFFLINE);
         pairedReadCollectionService.create(entity);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/online/{id}")
+    public ResponseEntity<?> online(@PathVariable String id) {
+        PairedReadCollection entity = pairedReadCollectionService.getById(id);
+        entity.setStatus(CollectionStatus.ONLINE);
+        pairedReadCollectionService.update(id, entity);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/offline/{id}")
+    public ResponseEntity<?> offline(@PathVariable String id) {
+        PairedReadCollection entity = pairedReadCollectionService.getById(id);
+        entity.setStatus(CollectionStatus.OFFLINE);
+        pairedReadCollectionService.update(id, entity);
         return ResponseEntity.ok().build();
     }
 
