@@ -44,8 +44,6 @@ public class ExerciseHistoryServiceImpl extends ServiceImpl<ExerciseHistoryMappe
         } else if (exerciseHistory.getScore() < score) {
             exerciseHistory.setScore(score);
             updateById(exerciseHistory);
-        } else {
-            //do nothing
         }
     }
 
