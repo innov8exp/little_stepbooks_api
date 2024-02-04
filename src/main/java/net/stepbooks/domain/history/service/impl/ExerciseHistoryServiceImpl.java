@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class ExerciseHistoryServiceImpl extends ServiceImpl<ExerciseHistoryMapper, ExerciseHistory> implements ExerciseHistoryService {
+public class ExerciseHistoryServiceImpl extends ServiceImpl<ExerciseHistoryMapper, ExerciseHistory>
+        implements ExerciseHistoryService {
 
     private final ExerciseHistoryMapper exerciseHistoryMapper;
 
