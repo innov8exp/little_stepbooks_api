@@ -2,6 +2,7 @@ package net.stepbooks.domain.exercise.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.stepbooks.domain.exercise.enums.ExerciseType;
 
 /**
  * 字表类型的练习

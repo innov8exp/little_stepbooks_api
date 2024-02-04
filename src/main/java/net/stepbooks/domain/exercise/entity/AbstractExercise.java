@@ -1,6 +1,7 @@
 package net.stepbooks.domain.exercise.entity;
 
 import lombok.Data;
+import net.stepbooks.domain.exercise.enums.ExerciseType;
 
 /**
  * 练习内容

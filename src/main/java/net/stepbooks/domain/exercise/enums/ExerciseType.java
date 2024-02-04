@@ -1,4 +1,4 @@
-package net.stepbooks.domain.exercise.entity;
+package net.stepbooks.domain.exercise.enums;
 
 public enum ExerciseType {
     WORD_TABLE, // 字表型练习，阅读完毕就算完成
