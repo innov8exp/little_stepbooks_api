@@ -3,6 +3,7 @@ create TABLE STEP_EXERCISE_HISTORY
 (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,
     exercise_id   VARCHAR(100) REFERENCES STEP_EXERCISE(id) NOT NULL,
+    course_id     VARCHAR(100) REFERENCES STEP_COURSE(id) NOT NULL,
     user_id       VARCHAR(100),
     score         INTEGER,
     created_at    TIMESTAMP,

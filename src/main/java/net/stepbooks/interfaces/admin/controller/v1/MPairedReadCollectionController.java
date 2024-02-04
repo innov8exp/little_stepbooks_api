@@ -29,7 +29,7 @@ public class MPairedReadCollectionController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/online/{id}")
+    @PostMapping("/{id}/online")
     public ResponseEntity<?> online(@PathVariable String id) {
         PairedReadCollection entity = pairedReadCollectionService.getById(id);
         entity.setStatus(CollectionStatus.ONLINE);
@@ -37,7 +37,7 @@ public class MPairedReadCollectionController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/offline/{id}")
+    @PostMapping("/{id}/offline")
     public ResponseEntity<?> offline(@PathVariable String id) {
         PairedReadCollection entity = pairedReadCollectionService.getById(id);
         entity.setStatus(CollectionStatus.OFFLINE);
