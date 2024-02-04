@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Data
 public class DragImage {
 
-    int id;
+    private int id;
     private String img;
     private BigDecimal posX;
     private BigDecimal posY;
