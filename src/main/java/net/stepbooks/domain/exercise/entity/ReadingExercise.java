@@ -13,7 +13,8 @@ import java.util.List;
 @Data
 public class ReadingExercise extends AbstractExercise {
 
-    private List<AudioContent> audioList;
+    private List<ReadingContent> readingList;
+
     public ReadingExercise() {
         this.setType(ExerciseType.READING);
     }
