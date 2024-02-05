@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.stepbooks.domain.exercise.enums.ExerciseType;
 
+import java.util.List;
+
 /**
  * 字表类型的练习
  */
@@ -11,14 +13,10 @@ import net.stepbooks.domain.exercise.enums.ExerciseType;
 @Data
 public class WordTableExercise extends AbstractExercise {
 
-    private String audioId;
-    private String audioUrl;
-    private String imgId;
-    private String imgUrl;
+    private List<AudioContent> audioList;
 
     public WordTableExercise() {
         this.setType(ExerciseType.WORD_TABLE);
     }
-
 
 }

@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.stepbooks.domain.exercise.enums.ExerciseType;
 
+import java.util.List;
+
 /**
  * 伴读练习
  */
@@ -11,9 +13,7 @@ import net.stepbooks.domain.exercise.enums.ExerciseType;
 @Data
 public class ReadingExercise extends AbstractExercise {
 
-    private String audioId;
-    private String audioUrl;
-
+    private List<AudioContent> audioList;
     public ReadingExercise() {
         this.setType(ExerciseType.READING);
     }
