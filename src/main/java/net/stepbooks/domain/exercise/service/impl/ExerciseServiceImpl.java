@@ -53,7 +53,9 @@ public class ExerciseServiceImpl extends ServiceImpl<ExerciseMapper, Exercise> i
     public IPage<Exercise> getPage(Page<Exercise> page, ExerciseDto queryDto) {
         LambdaQueryWrapper<Exercise> wrapper = Wrappers.lambdaQuery();
         String courseId = queryDto.getCourseId();
+        String nature = queryDto.getNature();
         wrapper.eq(ObjectUtils.isNotEmpty(courseId), Exercise::getCourseId, courseId);
+        wrapper.eq(ObjectUtils.isNotEmpty(nature), Exercise::getNature, nature);
         return this.baseMapper.selectPage(page, wrapper);
     }
 

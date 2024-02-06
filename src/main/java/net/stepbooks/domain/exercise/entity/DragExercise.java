@@ -13,6 +13,11 @@ import java.util.List;
 @Data
 public class DragExercise extends AbstractExercise {
 
+    private String imgId;
+    private String imgUrl;
+    private String audioId;
+    private String audioUrl;
+
     /**
      * 答案图
      */
