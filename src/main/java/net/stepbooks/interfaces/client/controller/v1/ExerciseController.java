@@ -34,9 +34,11 @@ public class ExerciseController {
     @Operation(summary = "查询练习内容")
     public ResponseEntity<IPage<Exercise>> getPage(@RequestParam int currentPage,
                                                    @RequestParam int pageSize,
-                                                   @RequestParam(required = false) String courseId) {
+                                                   @RequestParam(required = false) String courseId,
+                                                   @RequestParam(required = false) String nature) {
         ExerciseDto queryDto = ExerciseDto.builder()
                 .courseId(courseId)
+                .nature(nature)
                 .build();
         Page<Exercise> page = Page.of(currentPage, pageSize);
         IPage<Exercise> pages = exerciseService.getPage(page, queryDto);
