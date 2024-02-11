@@ -4,6 +4,7 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import java.beans.FeatureDescriptor;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -35,5 +36,41 @@ public class CommonUtil {
             }
         }
         return val.toString();
+    }
+
+    /**
+     * 输入"1,2,3,4,5" + "4,5,6,7,8"，输出"1,2,3,4,5,6,7,8"
+     * <p>
+     * 输入"*" + "1,2,3"，输出 "*"
+     *
+     * @param str1
+     * @param str2
+     * @return
+     */
+    public static String combineCommaString(String str1, String str2) {
+        if ("*".equals(str1) || "*".equals(str2)) {
+            return "*";
+        }
+
+        String[] arr1 = str1.split(",");
+        String[] arr2 = str2.split(",");
+
+        ArrayList<String> resultList = new ArrayList<>();
+
+        for (String element : arr1) {
+            if (!resultList.contains(element)) {
+                resultList.add(element);
+            }
+        }
+
+        for (String element : arr2) {
+            if (!resultList.contains(element)) {
+                resultList.add(element);
+            }
+        }
+
+        String result = String.join(",", resultList);
+
+        return result;
     }
 }
