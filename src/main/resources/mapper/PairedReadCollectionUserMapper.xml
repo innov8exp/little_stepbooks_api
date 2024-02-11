@@ -7,6 +7,8 @@
         SELECT
         rcu.username,
         rcu.collection_id,
+        rcu.created_at,
+        rcu.modified_at,
         rc.cover_img_id,
         rc.cover_img_url,
         rc.detail_img_id,

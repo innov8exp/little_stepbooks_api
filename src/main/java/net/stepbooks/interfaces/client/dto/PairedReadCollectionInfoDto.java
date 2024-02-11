@@ -2,6 +2,8 @@ package net.stepbooks.interfaces.client.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class PairedReadCollectionInfoDto {
 
@@ -13,4 +15,6 @@ public class PairedReadCollectionInfoDto {
     private String detailImgUrl;
     private String name;
     private String description;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 }
