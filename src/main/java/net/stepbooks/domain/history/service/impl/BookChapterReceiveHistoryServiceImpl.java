@@ -37,7 +37,7 @@ public class BookChapterReceiveHistoryServiceImpl extends ServiceImpl<BookChapte
             String newChapters = CommonUtil.
                     combineCommaString(oldChapters, chapters);
 
-            if (!oldChapters.equals(newChapters)) {
+            if (oldChapters == null || !oldChapters.equals(newChapters)) {
                 bookChapterReceiveHistory.setChapters(newChapters);
                 updateById(bookChapterReceiveHistory);
             }

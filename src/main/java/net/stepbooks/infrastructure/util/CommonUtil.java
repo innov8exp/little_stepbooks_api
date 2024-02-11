@@ -52,6 +52,14 @@ public class CommonUtil {
             return "*";
         }
 
+        if (str1 == null) {
+            return str2;
+        }
+
+        if (str2 == null) {
+            return str1;
+        }
+
         String[] arr1 = str1.split(",");
         String[] arr2 = str2.split(",");
 

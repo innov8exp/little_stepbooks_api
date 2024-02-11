@@ -37,7 +37,7 @@ public class BookCourseReceiveHistoryServiceImpl extends ServiceImpl<BookCourseR
             String newCourses = CommonUtil.
                     combineCommaString(oldCourses, courses);
 
-            if (!oldCourses.equals(newCourses)) {
+            if (oldCourses == null || !oldCourses.equals(newCourses)) {
                 bookCourseReceiveHistory.setCourses(newCourses);
                 updateById(bookCourseReceiveHistory);
             }
