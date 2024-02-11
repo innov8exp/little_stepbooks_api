@@ -19,8 +19,8 @@ import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
-import net.stepbooks.infrastructure.exception.BusinessException;
-import net.stepbooks.infrastructure.exception.ErrorCode;
+//import net.stepbooks.infrastructure.exception.BusinessException;
+//import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import org.springframework.stereotype.Service;
@@ -121,10 +121,11 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
 
     @Override
     public List<BookChapter> getBookChaptersByUser(String userId, String bookId) {
-        boolean exists = orderOpsService.checkBookInUserOrder(userId, bookId);
-        if (!exists) {
-            throw new BusinessException(ErrorCode.BOOK_NOT_EXISTS_IN_ORDER_ERROR);
-        }
+        //临时隐藏购买用户才能阅读的逻辑，将来再说
+//        boolean exists = orderOpsService.checkBookInUserOrder(userId, bookId);
+//        if (!exists) {
+//            throw new BusinessException(ErrorCode.BOOK_NOT_EXISTS_IN_ORDER_ERROR);
+//        }
         List<BookChapter> bookChapters = chapterMapper.selectList(Wrappers.<BookChapter>lambdaQuery()
                 .eq(BookChapter::getBookId, bookId));
         return bookChapters.stream().peek(bookChapter -> {

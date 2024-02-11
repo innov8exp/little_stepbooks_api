@@ -71,10 +71,11 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Override
     public List<Course> getBookCoursesByUser(String userId, String bookId) {
-        boolean exists = orderOpsService.checkBookInUserOrder(userId, bookId);
-        if (!exists) {
-            throw new BusinessException(ErrorCode.BOOK_NOT_EXISTS_IN_ORDER_ERROR);
-        }
+        ////临时隐藏购买用户才能阅读的逻辑，将来再说
+//        boolean exists = orderOpsService.checkBookInUserOrder(userId, bookId);
+//        if (!exists) {
+//            throw new BusinessException(ErrorCode.BOOK_NOT_EXISTS_IN_ORDER_ERROR);
+//        }
         return list(Wrappers.<Course>lambdaQuery().eq(Course::getBookId, bookId));
     }
 
