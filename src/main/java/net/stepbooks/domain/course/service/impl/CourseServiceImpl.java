@@ -59,10 +59,11 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     @Override
     public CourseDto getCourseUrl(String userId, String courseId) {
         // check the authority of the user
-        boolean exists = orderOpsService.checkCourseInUserOrder(userId, courseId);
-        if (!exists) {
-            throw new BusinessException(ErrorCode.COURSE_NEED_TO_PAY);
-        }
+        //临时隐藏购买用户才能阅读的逻辑，将来再说
+//        boolean exists = orderOpsService.checkCourseInUserOrder(userId, courseId);
+//        if (!exists) {
+//            throw new BusinessException(ErrorCode.COURSE_NEED_TO_PAY);
+//        }
         CourseDto courseDto = courseMapper.getCourseAndMediaById(courseId);
         String url = privateFileService.getUrl(courseDto.getVideoObjectKey());
         courseDto.setVideoUrl(url);
