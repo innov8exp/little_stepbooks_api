@@ -77,7 +77,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 //        if (!exists) {
 //            throw new BusinessException(ErrorCode.BOOK_NOT_EXISTS_IN_ORDER_ERROR);
 //        }
-        return list(Wrappers.<Course>lambdaQuery().eq(Course::getBookId, bookId));
+        return list(Wrappers.<Course>lambdaQuery().eq(Course::getBookId, bookId).orderByAsc(Course::getCreatedAt));
     }
 
     @Override
