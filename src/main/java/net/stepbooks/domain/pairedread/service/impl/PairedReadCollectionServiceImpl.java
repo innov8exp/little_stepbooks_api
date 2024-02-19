@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import net.stepbooks.domain.pairedread.entity.PairedReadCollection;
+import net.stepbooks.domain.pairedread.enums.CollectionStatus;
 import net.stepbooks.domain.pairedread.mapper.PairedReadCollectionMapper;
 import net.stepbooks.domain.pairedread.service.PairedReadCollectionService;
 import net.stepbooks.infrastructure.exception.BusinessException;
@@ -64,6 +65,8 @@ public class PairedReadCollectionServiceImpl
 
     @Override
     public List<PairedReadCollection> list() {
-        return super.list();
+        LambdaQueryWrapper<PairedReadCollection> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(PairedReadCollection::getStatus, CollectionStatus.ONLINE.name());
+        return super.list(wrapper);
     }
 }
