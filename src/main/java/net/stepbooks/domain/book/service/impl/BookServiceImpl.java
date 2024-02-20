@@ -127,7 +127,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
 //            throw new BusinessException(ErrorCode.BOOK_NOT_EXISTS_IN_ORDER_ERROR);
 //        }
         List<BookChapter> bookChapters = chapterMapper.selectList(Wrappers.<BookChapter>lambdaQuery()
-                .eq(BookChapter::getBookId, bookId));
+                .eq(BookChapter::getBookId, bookId).orderByAsc(BookChapter::getChapterNo));
         return bookChapters.stream().peek(bookChapter -> {
             String imgId = bookChapter.getImgId();
             String audioId = bookChapter.getAudioId();
