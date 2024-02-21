@@ -1,5 +1,6 @@
 package net.stepbooks.domain.book.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,6 +27,7 @@ import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -117,6 +119,23 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
     @Override
     public List<Book> findBooksByProductId(String productId) {
         return bookMapper.findBooksByProductId(productId);
+    }
+
+    @Override
+    public List<BookDto> findBooksBySeriesId(String seriesId) {
+
+        LambdaQueryWrapper<Book> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(Book::getSeriesId, seriesId);
+        wrapper.orderByAsc(Book::getCreatedAt);
+
+        //FIXME: 性能不好，回头再改
+        List<Book> books = bookMapper.selectList(wrapper);
+        List<BookDto> bookDtos = new ArrayList<>();
+        for (Book book : books) {
+            BookDto bookDto = findBookById(book.getId());
+            bookDtos.add(bookDto);
+        }
+        return bookDtos;
     }
 
     @Override

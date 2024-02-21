@@ -29,6 +29,14 @@ public interface BookService extends IService<Book> {
 
     List<Book> findBooksByProductId(String productId);
 
+    /**
+     * 获得该丛书的具体书本信息
+     *
+     * @param seriesId
+     * @return
+     */
+    List<BookDto> findBooksBySeriesId(String seriesId);
+
     List<BookChapter> getBookChaptersByUser(String userId, String bookId);
 
     Book findBookByQRCode(String qrCode);

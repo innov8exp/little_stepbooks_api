@@ -18,4 +18,5 @@ public class Book extends BaseEntity {
     private String description;
     private Integer totalPageNumber;
     private String duration;
+    private String seriesId;
 }

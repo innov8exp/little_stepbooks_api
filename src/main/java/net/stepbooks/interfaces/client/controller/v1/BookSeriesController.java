@@ -6,6 +6,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.BookSeries;
 import net.stepbooks.domain.book.service.BookSeriesService;
+import net.stepbooks.domain.book.service.BookService;
+import net.stepbooks.interfaces.admin.dto.BookDto;
+import net.stepbooks.interfaces.admin.dto.BookSeriesDto;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,11 +27,17 @@ public class BookSeriesController {
 
     private final BookSeriesService bookSeriesService;
 
+    private final BookService bookService;
+
     @Operation(summary = "获取系列详情")
     @GetMapping("/{id}")
-    public ResponseEntity<BookSeries> findBookSeries(@PathVariable String id) {
-        BookSeries book = bookSeriesService.getById(id);
-        return ResponseEntity.ok(book);
+    public ResponseEntity<BookSeriesDto> findBookSeries(@PathVariable String id) {
+        BookSeries bookSeries = bookSeriesService.getById(id);
+        BookSeriesDto bookSeriesDto = new BookSeriesDto();
+        BeanUtils.copyProperties(bookSeries, bookSeriesDto);
+        List<BookDto> books = bookService.findBooksBySeriesId(id);
+        bookSeriesDto.setBooks(books);
+        return ResponseEntity.ok(bookSeriesDto);
     }
 
     @Operation(summary = "获取全部系列")
