@@ -22,5 +22,7 @@ public class BookDto extends BaseDto {
     private Long courseCount;
     private Long qrcodeCount;
     private String duration;
+    private String seriesId;
+    private Integer seriesNo;
     private List<BookMedia> medias;
 }
