@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import net.stepbooks.domain.history.entity.BookCourseReceiveHistory;
+import net.stepbooks.interfaces.admin.dto.BookReceiveSummaryDto;
 
 public interface BookCourseReceiveHistoryService extends IService<BookCourseReceiveHistory> {
 
@@ -11,4 +12,5 @@ public interface BookCourseReceiveHistoryService extends IService<BookCourseRece
 
     IPage<BookCourseReceiveHistory> getPage(Page<BookCourseReceiveHistory> page, String userId, String bookId);
 
+    BookReceiveSummaryDto receiveSummary(String userId);
 }

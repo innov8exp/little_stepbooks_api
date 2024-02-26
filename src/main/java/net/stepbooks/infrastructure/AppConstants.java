@@ -5,6 +5,8 @@ public final class AppConstants {
     private AppConstants() {
     }
 
+    public static final int MAX_PAGE_SIZE = 500;
+
     public static final String PHYSICAL_ORDER_STATE_MACHINE_ID = "physicalOrderStateMachine";
     public static final String VIRTUAL_ORDER_STATE_MACHINE_ID = "virtualOrderStateMachine";
 

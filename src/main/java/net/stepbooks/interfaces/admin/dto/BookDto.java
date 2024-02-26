@@ -25,4 +25,10 @@ public class BookDto extends BaseDto {
     private String seriesId;
     private Integer seriesNo;
     private List<BookMedia> medias;
+
+    private List<CourseDto> courses;
+    private List<BookChapterDto> chapters;
+
+    //暂时没有单本书的领取，将来有的话，要加上领取时间给前端排序用
+    //private LocalDateTime receiveAt;
 }

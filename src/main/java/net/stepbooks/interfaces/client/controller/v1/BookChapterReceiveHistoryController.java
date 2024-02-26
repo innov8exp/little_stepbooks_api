@@ -10,6 +10,7 @@ import net.stepbooks.domain.history.entity.BookChapterReceiveHistory;
 import net.stepbooks.domain.history.service.BookChapterReceiveHistoryService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.util.ContextManager;
+import net.stepbooks.interfaces.admin.dto.BookReceiveSummaryDto;
 import net.stepbooks.interfaces.client.dto.ChapterReceiveForm;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,9 @@ public class BookChapterReceiveHistoryController {
         return ResponseEntity.ok().build();
     }
 
+    @Deprecated
     @GetMapping
-    @Operation(summary = "查询领取历史")
+    @Operation(summary = "查询领取历史(Deprecated)")
     public ResponseEntity<IPage<BookChapterReceiveHistory>> getHistoryPage(@RequestParam int currentPage,
                                                                            @RequestParam int pageSize,
                                                                            @RequestParam(required = false) String bookId) {
@@ -45,5 +47,14 @@ public class BookChapterReceiveHistoryController {
         User user = contextManager.currentUser();
         IPage<BookChapterReceiveHistory> pages = bookChapterReceiveHistoryService.getPage(page, user.getId(), bookId);
         return ResponseEntity.ok(pages);
+    }
+
+    @GetMapping("/summary")
+    @Operation(summary = "查询领取历史")
+    public ResponseEntity<BookReceiveSummaryDto> getReceiveSummary() {
+
+        User user = contextManager.currentUser();
+        BookReceiveSummaryDto summaryDto = bookChapterReceiveHistoryService.receiveSummary(user.getId());
+        return ResponseEntity.ok(summaryDto);
     }
 }
