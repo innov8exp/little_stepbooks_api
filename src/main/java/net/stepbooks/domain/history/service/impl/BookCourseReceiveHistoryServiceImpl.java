@@ -84,9 +84,6 @@ public class BookCourseReceiveHistoryServiceImpl extends ServiceImpl<BookCourseR
         for (BookCourseReceiveHistory receiveHistory : pages.getRecords()) {
             String bookId = receiveHistory.getBookId();
             BookDto book = bookService.findBookById(bookId);
-            if (book.getSeriesNo() != null) {
-                book.setSeriesName(CommonUtil.getSeriesName(book.getSeriesNo()));
-            }
             LocalDateTime receiveAt = receiveHistory.getCreatedAt();
             if (book.getSeriesId() != null) {
                 BookSeriesDto seriesDto = null;

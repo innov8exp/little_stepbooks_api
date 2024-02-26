@@ -22,6 +22,7 @@ import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 //import net.stepbooks.infrastructure.exception.BusinessException;
 //import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.infrastructure.util.CommonUtil;
 import net.stepbooks.interfaces.admin.dto.BookDto;
 import net.stepbooks.interfaces.admin.dto.MBookQueryDto;
 import org.springframework.stereotype.Service;
@@ -113,6 +114,9 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
         List<BookMedia> bookMedias = bookMediaService.list(Wrappers.<BookMedia>lambdaQuery()
                 .eq(BookMedia::getBookId, bookId));
         book.setMedias(bookMedias);
+        if (book.getSeriesNo() != null) {
+            book.setSeriesName(CommonUtil.getSeriesName(book.getSeriesNo()));
+        }
         return book;
     }
 
