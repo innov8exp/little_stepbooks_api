@@ -10,6 +10,15 @@ import java.util.stream.Stream;
 
 public class CommonUtil {
 
+    public static final int NUMBER_1 = 1;
+    public static final int NUMBER_2 = 2;
+    public static final int NUMBER_3 = 3;
+    public static final int NUMBER_4 = 4;
+    public static final int NUMBER_5 = 5;
+    public static final int NUMBER_6 = 6;
+    public static final int NUMBER_7 = 7;
+    public static final int NUMBER_8 = 8;
+
     public static String[] getNullPropertyNames(Object source) {
         final BeanWrapper wrappedSource = new BeanWrapperImpl(source);
         return Stream.of(wrappedSource.getPropertyDescriptors())
@@ -80,5 +89,28 @@ public class CommonUtil {
         String result = String.join(",", resultList);
 
         return result;
+    }
+
+    public static String getSeriesName(int seriesNo) {
+        switch (seriesNo) {
+            case NUMBER_1:
+                return "第一级";
+            case NUMBER_2:
+                return "第二级";
+            case NUMBER_3:
+                return "第三级";
+            case NUMBER_4:
+                return "第四级";
+            case NUMBER_5:
+                return "第五级";
+            case NUMBER_6:
+                return "第六级";
+            case NUMBER_7:
+                return "第七级";
+            case NUMBER_8:
+                return "第八级";
+            default:
+                return null;
+        }
     }
 }

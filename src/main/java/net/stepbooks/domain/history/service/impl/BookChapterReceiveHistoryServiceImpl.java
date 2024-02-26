@@ -84,6 +84,9 @@ public class BookChapterReceiveHistoryServiceImpl extends ServiceImpl<BookChapte
         for (BookChapterReceiveHistory receiveHistory : pages.getRecords()) {
             String bookId = receiveHistory.getBookId();
             BookDto book = bookService.findBookById(bookId);
+            if (book.getSeriesNo() != null) {
+                book.setSeriesName(CommonUtil.getSeriesName(book.getSeriesNo()));
+            }
             LocalDateTime receiveAt = receiveHistory.getCreatedAt();
             if (book.getSeriesId() != null) {
                 BookSeriesDto seriesDto = null;
@@ -103,7 +106,23 @@ public class BookChapterReceiveHistoryServiceImpl extends ServiceImpl<BookChapte
                 if (seriesDto.getBooks() == null) {
                     seriesDto.setBooks(new ArrayList<>());
                 }
-                seriesDto.getBooks().add(book);
+
+                //按seriesNo从小到大排序
+                boolean isAdded = false;
+                for (int i = 0; i < seriesDto.getBooks().size(); i++) {
+                    BookDto tmpBook = seriesDto.getBooks().get(i);
+                    if (tmpBook.getSeriesNo() > book.getSeriesNo()) {
+
+                        seriesDto.getBooks().add(i, book);
+                        isAdded = true;
+                        break;
+                    }
+                }
+
+                if (!isAdded) {
+                    seriesDto.getBooks().add(book);
+                }
+
             } else {
                 books.add(book);
             }

@@ -24,6 +24,12 @@ public class BookDto extends BaseDto {
     private String duration;
     private String seriesId;
     private Integer seriesNo;
+
+    /**
+     * 第一级，第二级...
+     */
+    private String seriesName;
+
     private List<BookMedia> medias;
 
     private List<CourseDto> courses;
