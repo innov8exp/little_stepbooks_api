@@ -13,7 +13,10 @@ import java.util.List;
 @Data
 public class WordTableExercise extends AbstractExercise {
 
+    @Deprecated
     private List<AudioContent> audioList;
+
+    private List<VideoContent> videoList;
 
     public WordTableExercise() {
         this.setType(ExerciseType.WORD_TABLE);
