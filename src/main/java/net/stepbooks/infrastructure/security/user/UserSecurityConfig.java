@@ -47,6 +47,7 @@ public class UserSecurityConfig {
                                 mvc.pattern("/v3/api-docs/**"),
                                 mvc.pattern("/swagger-ui.html"),
                                 mvc.pattern("/v1/bookseries/**"),
+                                mvc.pattern("/local_protocol.html"),
                                 mvc.pattern("/e4evlW47q4.txt")
                                 )
                         .permitAll()
