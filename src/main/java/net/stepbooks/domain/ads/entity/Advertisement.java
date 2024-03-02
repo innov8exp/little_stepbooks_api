@@ -17,4 +17,5 @@ public class Advertisement extends BaseEntity {
     private Integer sortIndex;
     private AdsType adsType;
     private String actionUrl;
+    private String wxActionUrl;
 }
