@@ -16,4 +16,6 @@ public class AdvertisementDto extends BaseDto {
     private String adsImgUrl;
     private Integer sortIndex;
     private AdsType adsType;
+    private String actionUrl;
+    private String wxActionUrl;
 }
