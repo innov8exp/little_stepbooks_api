@@ -66,8 +66,10 @@ public class MPairedReadCollectionController {
 
     @GetMapping
     public ResponseEntity<IPage<PairedReadCollection>> getPage(@RequestParam int currentPage,
-                                                               @RequestParam int pageSize) {
+                                                               @RequestParam int pageSize,
+                                                               @RequestParam(required = false) CollectionStatus status) {
         PairedReadCollectionDto queryDto = new PairedReadCollectionDto();
+        queryDto.setStatus(status);
         Page<PairedReadCollection> page = Page.of(currentPage, pageSize);
         IPage<PairedReadCollection> pages = pairedReadCollectionService.getPage(page, queryDto);
         return ResponseEntity.ok(pages);

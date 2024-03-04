@@ -11,6 +11,7 @@ import net.stepbooks.domain.pairedread.service.PairedReadCollectionService;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.PairedReadCollectionDto;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,8 @@ public class PairedReadCollectionServiceImpl
     @Override
     public IPage<PairedReadCollection> getPage(IPage<PairedReadCollection> page, PairedReadCollectionDto queryDto) {
         LambdaQueryWrapper<PairedReadCollection> wrapper = Wrappers.lambdaQuery();
+        CollectionStatus status = queryDto.getStatus();
+        wrapper.eq(ObjectUtils.isNotEmpty(status), PairedReadCollection::getStatus, status);
         return this.baseMapper.selectPage(page, wrapper);
     }
 
