@@ -4,13 +4,10 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.ads.entity.Advertisement;
 import net.stepbooks.domain.ads.service.AdvertisementService;
 import net.stepbooks.infrastructure.enums.AdsType;
-import net.stepbooks.interfaces.admin.dto.AdvertisementDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Random;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,26 +42,14 @@ public class MAdvertisementController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AdvertisementDto>> getAllAdvertisements() {
-        List<AdvertisementDto> advertisements = advertisementService.listAdvertisements();
+    public ResponseEntity<List<Advertisement>> getAllAdvertisements() {
+        List<Advertisement> advertisements = advertisementService.listAdvertisements(null);
         return ResponseEntity.ok(advertisements);
     }
 
     @GetMapping("/type")
-    public ResponseEntity<List<AdvertisementDto>> getTypedAdvertisements(@RequestParam AdsType adsType) {
-        List<AdvertisementDto> advertisements = advertisementService.listAdvertisementsByType(adsType);
+    public ResponseEntity<List<Advertisement>> getTypedAdvertisements(@RequestParam AdsType adsType) {
+        List<Advertisement> advertisements = advertisementService.listAdvertisements(adsType);
         return ResponseEntity.ok(advertisements);
-    }
-
-    @GetMapping("/random")
-    public ResponseEntity<AdvertisementDto> randomGetAds() {
-        List<AdvertisementDto> advertisementDtos = advertisementService.listAdvertisementsByType(AdsType.RECOMMEND);
-        if (ObjectUtils.isEmpty(advertisementDtos)) {
-            return ResponseEntity.notFound().build();
-        }
-        Random random = new Random();
-        int n = random.nextInt(advertisementDtos.size());
-        AdvertisementDto advertisementDto = advertisementDtos.get(n);
-        return ResponseEntity.ok(advertisementDto);
     }
 }

@@ -1,12 +1,14 @@
 package net.stepbooks.domain.ads.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.ads.entity.Advertisement;
 import net.stepbooks.domain.ads.mapper.AdvertisementMapper;
 import net.stepbooks.domain.ads.service.AdvertisementService;
 import net.stepbooks.infrastructure.enums.AdsType;
-import net.stepbooks.interfaces.admin.dto.AdvertisementDto;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,23 +21,10 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
     private final AdvertisementMapper advertisementMapper;
 
     @Override
-    public List<AdvertisementDto> listAdvertisementsByType(AdsType adsType) {
-        return advertisementMapper.findAdsDtos(adsType);
-    }
-
-    @Override
-    public List<AdvertisementDto> listAdvertisements() {
-        return advertisementMapper.findAdsDtos(null);
-    }
-
-    @Override
-    public AdvertisementDto findAdsById(String id) {
-        return advertisementMapper.findAdsDtoById(id);
-    }
-
-    @Override
-    public Advertisement findAdvertisement(String id) {
-        return advertisementMapper.selectById(id);
+    public List<Advertisement> listAdvertisements(AdsType adsType) {
+        LambdaQueryWrapper<Advertisement> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(ObjectUtils.isNotEmpty(adsType), Advertisement::getAdsType, adsType);
+        return baseMapper.selectList(wrapper);
     }
 
 }
