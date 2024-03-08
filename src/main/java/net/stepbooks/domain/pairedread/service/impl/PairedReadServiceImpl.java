@@ -69,7 +69,7 @@ public class PairedReadServiceImpl extends ServiceImpl<PairedReadMapper, PairedR
         List<PairedRead> list = records.stream().peek(pairedRead -> {
             String audioId = pairedRead.getAudioId();
             Media media = mediaService.getById(audioId);
-            if (media.getAccessPermission().equals(AccessPermission.PRIVATE)) {
+            if (media != null && media.getAccessPermission().equals(AccessPermission.PRIVATE)) {
                 String audioKey = media.getObjectKey();
                 String audioUrl = privateFileService.getUrl(audioKey);
                 pairedRead.setAudioUrl(audioUrl);
