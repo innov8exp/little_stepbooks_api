@@ -26,6 +26,7 @@ import net.stepbooks.infrastructure.external.client.WechatClient;
 import net.stepbooks.infrastructure.external.dto.UserPhoneNumberDto;
 import net.stepbooks.infrastructure.external.dto.WechatGetAccessTokenResponse;
 import net.stepbooks.infrastructure.external.dto.WechatLoginResponse;
+import net.stepbooks.infrastructure.external.dto.WechatPhoneResponse;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.security.user.UserJwtTokenProvider;
 import net.stepbooks.infrastructure.util.CommonUtil;
@@ -215,7 +216,6 @@ public class UserServiceImpl implements UserService {
         log.debug("accessToken: {}", accessToken);
         UserPhoneNumberDto userPhoneNumberDto = new UserPhoneNumberDto();
         userPhoneNumberDto.setCode(wechatAuthDto.getCode());
-        /** 没有隐私策略相关产品设计之前，临时隐藏获取手机号的接口，以通过整改
         WechatPhoneResponse wechatPhoneResponse = wechatClient.getPhoneNumber(accessToken, userPhoneNumberDto);
         log.debug("wechatPhoneResponse error code: {}", wechatPhoneResponse.getErrCode());
         log.debug("wechatPhoneResponse error msg: {}", wechatPhoneResponse.getErrMsg());
@@ -238,7 +238,7 @@ public class UserServiceImpl implements UserService {
             Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistory>lambdaQuery()
                     .eq(AuthHistory::getPhone, phoneNumber));
             return getTokenDto(authCount, user, AuthType.WECHAT);
-        }*/
+        }
         throw new BusinessException(ErrorCode.AUTH_ERROR, "Failed auth with wechat");
     }
 
