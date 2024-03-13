@@ -15,4 +15,5 @@ public class PairedReadDto {
     private String audioId;
     private String audioUrl;
     private String duration;
+    private Integer sortIndex;
 }

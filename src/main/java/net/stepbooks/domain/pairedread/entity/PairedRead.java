@@ -15,5 +15,6 @@ public class PairedRead extends BaseEntity {
     private String audioId;
     private String audioUrl;
     private String duration;
+    private Integer sortIndex;
 
 }

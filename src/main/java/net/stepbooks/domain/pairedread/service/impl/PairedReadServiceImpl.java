@@ -63,7 +63,8 @@ public class PairedReadServiceImpl extends ServiceImpl<PairedReadMapper, PairedR
         String name = queryDto.getName();
         LambdaQueryWrapper<PairedRead> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ObjectUtils.isNotEmpty(collectionId), PairedRead::getCollectionId, collectionId)
-                .eq(ObjectUtils.isNotEmpty(name), PairedRead::getName, name);
+                .eq(ObjectUtils.isNotEmpty(name), PairedRead::getName, name)
+                .orderByAsc(PairedRead::getSortIndex);
         Page<PairedRead> pairedReadPage = this.baseMapper.selectPage(page, wrapper);
         List<PairedRead> records = pairedReadPage.getRecords();
         List<PairedRead> list = records.stream().peek(pairedRead -> {
