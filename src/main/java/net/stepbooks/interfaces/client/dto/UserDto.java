@@ -1,5 +1,6 @@
 package net.stepbooks.interfaces.client.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.stepbooks.infrastructure.enums.ChildGender;
 import net.stepbooks.infrastructure.enums.RoleEnum;
+
+import java.time.LocalDate;
 
 
 @Data
@@ -27,4 +30,7 @@ public class UserDto {
     private Float childMaxAge;
     private ChildGender childGender;
     private String childClassificationId;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthday;
 }
