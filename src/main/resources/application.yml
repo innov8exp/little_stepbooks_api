@@ -79,7 +79,7 @@ mybatis-plus:
 
 once-upload-file-count: 10
 file-unit: M
-max-file-size: 100
+max-file-size: 200
 allowed-file-types: image/jpeg,image/png,image/webp,image/gif,image/bmp,image/tiff,image/svg+xml,image/heic,image/heif,application/pdf,audio/mpeg,audio/wav,audio/mp4,video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv,video/x-matroska,application/x-matroska,video/x-m4v,text/csv,text/plain,application/json,application/zip
 allowed-files: jpg,jpeg,png,webp,gif,bmp,tiff,svg,heic,heif,pdf,mp3,m4a,wav,mp4,mov,qt,avi,wmv,mkv,m4v,csv,txt,json,zip
 
