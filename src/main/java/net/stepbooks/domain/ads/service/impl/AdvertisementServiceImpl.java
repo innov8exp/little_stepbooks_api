@@ -24,6 +24,7 @@ public class AdvertisementServiceImpl extends ServiceImpl<AdvertisementMapper, A
     public List<Advertisement> listAdvertisements(AdsType adsType) {
         LambdaQueryWrapper<Advertisement> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ObjectUtils.isNotEmpty(adsType), Advertisement::getAdsType, adsType);
+        wrapper.orderByDesc(Advertisement::getSortIndex);
         return baseMapper.selectList(wrapper);
     }
 
