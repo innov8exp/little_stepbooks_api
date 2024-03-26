@@ -49,8 +49,9 @@ public class BookController {
     @Operation(summary = "获取书籍课程(不包含URL)")
     @GetMapping("/{id}/courses")
     public ResponseEntity<List<Course>> getBookCourses(@PathVariable String id) {
-        User user = contextManager.currentUser();
-        return ResponseEntity.ok(courseService.getBookCoursesByUser(user.getId(), id));
+        //User user = contextManager.currentUser();
+        //临时所有人可见！
+        return ResponseEntity.ok(courseService.getBookCoursesByUser(null, id));
     }
 
     @Operation(summary = "创建阅读记录")
