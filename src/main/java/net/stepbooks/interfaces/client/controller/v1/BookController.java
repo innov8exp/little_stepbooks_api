@@ -41,8 +41,9 @@ public class BookController {
     @Operation(summary = "获取书籍图画和音频(包含URL)")
     @GetMapping("/{id}/chapters")
     public ResponseEntity<List<BookChapter>> getBookChapters(@PathVariable String id) {
-        User user = contextManager.currentUser();
-        return ResponseEntity.ok(bookService.getBookChaptersByUser(user.getId(), id));
+        //User user = contextManager.currentUser();
+        //临时所有人可见！
+        return ResponseEntity.ok(bookService.getBookChaptersByUser(null, id));
     }
 
     @Operation(summary = "获取书籍课程(不包含URL)")
