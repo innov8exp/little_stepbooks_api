@@ -16,6 +16,7 @@ import net.stepbooks.domain.book.service.BookClassificationService;
 import net.stepbooks.domain.book.service.BookMediaService;
 import net.stepbooks.domain.book.service.BookService;
 import net.stepbooks.domain.classification.entity.Classification;
+import net.stepbooks.domain.media.entity.Media;
 import net.stepbooks.domain.media.service.MediaService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
 import net.stepbooks.domain.order.service.OrderOpsService;
@@ -153,13 +154,23 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
                 .eq(BookChapter::getBookId, bookId).orderByAsc(BookChapter::getChapterNo));
         return bookChapters.stream().peek(bookChapter -> {
             String imgId = bookChapter.getImgId();
+            if (imgId != null) {
+                Media imgMedia = mediaService.getById(imgId);
+                if (imgMedia != null) {
+                    String imgKey = imgMedia.getObjectKey();
+                    String imgUrl = privateFileService.getUrl(imgKey);
+                    bookChapter.setImgUrl(imgUrl);
+                }
+            }
             String audioId = bookChapter.getAudioId();
-            String imgKey = mediaService.getById(imgId).getObjectKey();
-            String audioKey = mediaService.getById(audioId).getObjectKey();
-            String imgUrl = privateFileService.getUrl(imgKey);
-            String audioUrl = privateFileService.getUrl(audioKey);
-            bookChapter.setImgUrl(imgUrl);
-            bookChapter.setAudioUrl(audioUrl);
+            if (audioId != null) {
+                Media audioMedia = mediaService.getById(audioId);
+                if (audioMedia != null) {
+                    String audioKey = audioMedia.getObjectKey();
+                    String audioUrl = privateFileService.getUrl(audioKey);
+                    bookChapter.setAudioUrl(audioUrl);
+                }
+            }
         }).toList();
     }
 
