@@ -63,7 +63,7 @@ public class BookController {
     }
 
     @Operation(summary = "获取全部非丛书的书（单独的）")
-    @GetMapping("/{id}/none-series-books")
+    @GetMapping("/none-series-books")
     public ResponseEntity<List<BookDto>> getAllNoneSeriesBooks() {
         List<BookDto> books = bookService.getAllNoneSeriesBooks();
         return ResponseEntity.ok(books);
