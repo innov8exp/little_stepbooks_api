@@ -40,4 +40,11 @@ public interface BookService extends IService<Book> {
     List<BookChapter> getBookChaptersByUser(String userId, String bookId);
 
     Book findBookByQRCode(String qrCode);
+
+    /**
+     * 获得所有非丛书书籍
+     *
+     * @return
+     */
+    List<BookDto> getAllNoneSeriesBooks();
 }

@@ -185,4 +185,20 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
         }
         return null;
     }
+
+    @Override
+    public List<BookDto> getAllNoneSeriesBooks() {
+        LambdaQueryWrapper<Book> wrapper = Wrappers.lambdaQuery();
+        wrapper.isNull(Book::getSeriesId);
+        wrapper.orderByDesc(Book::getCreatedAt);
+
+        //FIXME: 性能不好，回头再改
+        List<Book> books = bookMapper.selectList(wrapper);
+        List<BookDto> bookDtos = new ArrayList<>();
+        for (Book book : books) {
+            BookDto bookDto = findBookById(book.getId());
+            bookDtos.add(bookDto);
+        }
+        return bookDtos;
+    }
 }

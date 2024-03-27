@@ -62,6 +62,13 @@ public class BookController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "获取全部非丛书的书（单独的）")
+    @GetMapping("/{id}/none-series-books")
+    public ResponseEntity<List<BookDto>> getAllNoneSeriesBooks() {
+        List<BookDto> books = bookService.getAllNoneSeriesBooks();
+        return ResponseEntity.ok(books);
+    }
+
 //    @Operation(summary = "获取书籍评论")
 //    @GetMapping("/{id}/comments")
 //    public ResponseEntity<List<CommentDetailDto>> getBookComments(@PathVariable String id) {
