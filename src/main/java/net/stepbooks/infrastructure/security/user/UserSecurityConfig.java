@@ -42,6 +42,7 @@ public class UserSecurityConfig {
                                 mvc.pattern("/v1/products/**"),
                                 mvc.pattern("/v1/paired-read-collection/**"),
                                 mvc.pattern("/v1/paired-read/**"),
+                                mvc.pattern("/v1/paired-read"),
                                 mvc.pattern("/v1/bookseries/**"),
                                 mvc.pattern("/v1/books/{id}"),
                                 mvc.pattern("/v1/books/{id}/chapters"), //临时关闭，所有人可见！！！！！
