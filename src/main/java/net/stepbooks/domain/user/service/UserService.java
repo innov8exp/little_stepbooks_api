@@ -16,6 +16,8 @@ public interface UserService {
 
     User findUserByPhone(String phone);
 
+    User findUserByWxUnionId(String unionId);
+
     User findUserByUsername(String username);
 
     void registerWithEmail(User user);

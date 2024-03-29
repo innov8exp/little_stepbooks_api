@@ -96,6 +96,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserByWxUnionId(String unionId) {
+        return userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUnionId, unionId));
+    }
+
+    @Override
     public User findUserByUsername(String username) {
         User user = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
         if (ObjectUtils.isEmpty(user)) {
@@ -229,25 +234,42 @@ public class UserServiceImpl implements UserService {
         String accessToken = clientCredential.getAccessToken();
         log.debug("accessToken: {}", accessToken);
 
-        String phoneNumber = getPhoneNumber(accessToken, wechatAuthDto.getCode());
-        if (phoneNumber != null) {
-            log.debug("phoneNumber: {}", phoneNumber);
-            User user = findUserByPhone(phoneNumber);
-            if (ObjectUtils.isEmpty(user)) {
-                User newUser = User.builder()
-                        .username(phoneNumber)
-                        .phone(phoneNumber).build();
-                registerWithWechat(newUser);
-                return getTokenDto(0L, newUser, AuthType.WECHAT);
+        WechatLoginResponse wechatLogin = wechatClient
+                .wechatLogin(wechatAppId, wechatAppSecret, wechatAuthDto.getCode(), "authorization_code");
+        String openId = wechatLogin.getOpenId();
+        String unionId = wechatLogin.getUnionId();
+
+        log.debug("openId: {}", openId);
+        log.debug("unionId: {}", unionId);
+
+        User user = findUserByWxUnionId(unionId);
+
+        if (ObjectUtils.isEmpty(user)) {
+            User newUser = User.builder()
+                    .openId(openId)
+                    .unionId(unionId)
+                    .build();
+
+            if (wechatAuthDto.getIsPhoneLogin() != null && wechatAuthDto.getIsPhoneLogin()) {
+                String phoneNumber = getPhoneNumber(accessToken, wechatAuthDto.getCode());
+                newUser.setPhone(phoneNumber);
             }
+
+            registerWithWechat(newUser);
+            return getTokenDto(0L, newUser, AuthType.WECHAT);
+        } else {
             if (!user.getActive()) {
                 throw new BusinessException(ErrorCode.USER_NOT_ACTIVE);
             }
+            if (wechatAuthDto.getIsPhoneLogin() != null && wechatAuthDto.getIsPhoneLogin() && user.getPhone() == null) {
+                String phoneNumber = getPhoneNumber(accessToken, wechatAuthDto.getCode());
+                user.setPhone(phoneNumber);
+                userMapper.updateById(user);
+            }
             Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistory>lambdaQuery()
-                    .eq(AuthHistory::getPhone, phoneNumber));
+                    .eq(AuthHistory::getWechatId, unionId));
             return getTokenDto(authCount, user, AuthType.WECHAT);
         }
-        throw new BusinessException(ErrorCode.AUTH_ERROR, "Failed auth with wechat");
     }
 
     @Override
