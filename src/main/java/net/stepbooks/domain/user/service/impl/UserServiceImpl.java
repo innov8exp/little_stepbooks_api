@@ -207,6 +207,20 @@ public class UserServiceImpl implements UserService {
         return getTokenDto(authCount, user, AuthType.PHONE);
     }
 
+    private String getPhoneNumber(String accessToken, String code) {
+        UserPhoneNumberDto userPhoneNumberDto = new UserPhoneNumberDto();
+        userPhoneNumberDto.setCode(code);
+        WechatPhoneResponse wechatPhoneResponse = wechatClient.getPhoneNumber(accessToken, userPhoneNumberDto);
+        log.debug("wechatPhoneResponse error code: {}", wechatPhoneResponse.getErrCode());
+        log.debug("wechatPhoneResponse error msg: {}", wechatPhoneResponse.getErrMsg());
+        log.debug("wechatPhoneResponse phone Info: {}", wechatPhoneResponse.getPhoneInfo());
+        WechatPhoneResponse.PhoneInfo phoneInfo = wechatPhoneResponse.getPhoneInfo();
+        if (phoneInfo != null) {
+            return phoneInfo.getPurePhoneNumber();
+        }
+        return null;
+    }
+
     @Override
     public TokenDto loginWithWechat(WechatAuthDto wechatAuthDto) {
         // 获取access_token
@@ -214,15 +228,9 @@ public class UserServiceImpl implements UserService {
                 "client_credential");
         String accessToken = clientCredential.getAccessToken();
         log.debug("accessToken: {}", accessToken);
-        UserPhoneNumberDto userPhoneNumberDto = new UserPhoneNumberDto();
-        userPhoneNumberDto.setCode(wechatAuthDto.getCode());
-        WechatPhoneResponse wechatPhoneResponse = wechatClient.getPhoneNumber(accessToken, userPhoneNumberDto);
-        log.debug("wechatPhoneResponse error code: {}", wechatPhoneResponse.getErrCode());
-        log.debug("wechatPhoneResponse error msg: {}", wechatPhoneResponse.getErrMsg());
-        log.debug("wechatPhoneResponse phone Info: {}", wechatPhoneResponse.getPhoneInfo());
-        WechatPhoneResponse.PhoneInfo phoneInfo = wechatPhoneResponse.getPhoneInfo();
-        if (phoneInfo != null) {
-            String phoneNumber = phoneInfo.getPurePhoneNumber();
+
+        String phoneNumber = getPhoneNumber(accessToken, wechatAuthDto.getCode());
+        if (phoneNumber != null) {
             log.debug("phoneNumber: {}", phoneNumber);
             User user = findUserByPhone(phoneNumber);
             if (ObjectUtils.isEmpty(user)) {
