@@ -248,6 +248,9 @@ public class UserServiceImpl implements UserService {
             User newUser = User.builder()
                     .openId(openId)
                     .unionId(unionId)
+                    .nickname(wechatAuthDto.getNickname())
+                    .username(wechatAuthDto.getNickname())
+                    .avatarImgUrl(wechatAuthDto.getAvatarUrl())
                     .build();
 
             if (wechatAuthDto.getIsPhoneLogin() != null && wechatAuthDto.getIsPhoneLogin()) {
@@ -261,11 +264,32 @@ public class UserServiceImpl implements UserService {
             if (!user.getActive()) {
                 throw new BusinessException(ErrorCode.USER_NOT_ACTIVE);
             }
+            boolean isChanged = false;
             if (wechatAuthDto.getIsPhoneLogin() != null && wechatAuthDto.getIsPhoneLogin() && user.getPhone() == null) {
                 String phoneNumber = getPhoneNumber(accessToken, wechatAuthDto.getCode());
                 user.setPhone(phoneNumber);
+                isChanged = true;
+            }
+
+            if (user.getNickname() == null && wechatAuthDto.getNickname() != null) {
+                user.setNickname(wechatAuthDto.getNickname());
+                isChanged = true;
+            }
+
+            if (user.getUsername() == null && wechatAuthDto.getNickname() != null) {
+                user.setUsername(wechatAuthDto.getNickname());
+                isChanged = true;
+            }
+
+            if (user.getAvatarImgUrl() == null && wechatAuthDto.getAvatarUrl() != null) {
+                user.setAvatarImgUrl(wechatAuthDto.getAvatarUrl());
+                isChanged = true;
+            }
+
+            if (isChanged) {
                 userMapper.updateById(user);
             }
+
             Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistory>lambdaQuery()
                     .eq(AuthHistory::getWechatId, unionId));
             return getTokenDto(authCount, user, AuthType.WECHAT);
