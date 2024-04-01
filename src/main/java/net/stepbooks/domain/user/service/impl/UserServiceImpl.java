@@ -122,7 +122,9 @@ public class UserServiceImpl implements UserService {
         String password = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword());
         user.setPassword(password);
         user.setRole(RoleEnum.NORMAL_USER);
-        user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        if (user.getNickname() == null) {
+            user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        }
         user.setUsername(UUID.randomUUID().toString());
         int insert = userMapper.insert(user);
         AuthHistory authHistory = new AuthHistory();
@@ -141,7 +143,9 @@ public class UserServiceImpl implements UserService {
     public void registerWithPhone(User user) {
         String phone = user.getPhone();
         user.setRole(RoleEnum.NORMAL_USER);
-        user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        if (user.getNickname() == null) {
+            user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        }
         user.setUsername(UUID.randomUUID().toString());
         int insert = userMapper.insert(user);
         AuthHistory authHistory = new AuthHistory();
@@ -159,7 +163,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerWithWechat(User user) {
         user.setRole(RoleEnum.NORMAL_USER);
-        user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        if (user.getNickname() == null) {
+            user.setNickname("StepBooks" + CommonUtil.getStringRandom(8));
+        }
         int insert = userMapper.insert(user);
         if (insert != 1) {
             throw new BusinessException(ErrorCode.DATABASE_OPERATOR_ERROR, "Create user error");
@@ -248,8 +254,8 @@ public class UserServiceImpl implements UserService {
             User newUser = User.builder()
                     .openId(openId)
                     .unionId(unionId)
+                    .username(UUID.randomUUID().toString())
                     .nickname(wechatAuthDto.getNickname())
-                    .username(wechatAuthDto.getNickname())
                     .avatarImgUrl(wechatAuthDto.getAvatarUrl())
                     .build();
 
@@ -276,13 +282,13 @@ public class UserServiceImpl implements UserService {
                 isChanged = true;
             }
 
-            if (user.getUsername() == null && wechatAuthDto.getNickname() != null) {
-                user.setUsername(wechatAuthDto.getNickname());
+            if (user.getAvatarImgUrl() == null && wechatAuthDto.getAvatarUrl() != null) {
+                user.setAvatarImgUrl(wechatAuthDto.getAvatarUrl());
                 isChanged = true;
             }
 
-            if (user.getAvatarImgUrl() == null && wechatAuthDto.getAvatarUrl() != null) {
-                user.setAvatarImgUrl(wechatAuthDto.getAvatarUrl());
+            if (user.getUsername() == null) {
+                user.setUsername(UUID.randomUUID().toString());
                 isChanged = true;
             }
 
