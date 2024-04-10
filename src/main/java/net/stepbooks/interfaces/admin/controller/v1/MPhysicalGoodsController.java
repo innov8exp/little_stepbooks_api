@@ -38,6 +38,13 @@ public class MPhysicalGoodsController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除物理产品")
+    public ResponseEntity<?> delete(@PathVariable String id) {
+        physicalGoodsService.removeById(id);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "物理产品详情")
     public ResponseEntity<PhysicalGoodsEntity> get(@PathVariable String id) {
