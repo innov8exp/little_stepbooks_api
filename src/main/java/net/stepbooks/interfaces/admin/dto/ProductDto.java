@@ -24,7 +24,13 @@ public class ProductDto {
     private ProductStatus status;
     private String[] classificationIds;
     private String[] classificationNames;
+
+    @Deprecated
+    //使用physicalGoodsIds和virtualGoodsIds替代
     private List<String> bookIds;
+
+    private List<String> physicalGoodsIds;
+    private List<String> virtualGoodsIds;
 
     public SalesPlatform[] getParsedSalesPlatforms() {
         return SalesPlatform.parseSalesPlatforms(salesPlatforms);
