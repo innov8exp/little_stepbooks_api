@@ -3,6 +3,7 @@ package net.stepbooks.domain.goods.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
@@ -14,5 +15,6 @@ public class PhysicalGoodsEntity extends BaseEntity {
     private String description;
     private String imgId;
     private String imgUrl;
+    private PublishStatus status;
 
 }

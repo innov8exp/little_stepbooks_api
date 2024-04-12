@@ -6,6 +6,7 @@ create TABLE STEP_PHYSICAL_GOODS
     description TEXT,                                    -- 产品描述
     img_id      VARCHAR(100) REFERENCES STEP_MEDIA (id), -- 图片ID
     img_url     TEXT,                                    -- 图片链接
+    status      VARCHAR(100),
     created_at  TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -17,6 +18,7 @@ create TABLE STEP_VIRTUAL_CATEGORY
     name        TEXT         NOT NULL,                   -- 大类名称
     cover_id    VARCHAR(100) REFERENCES STEP_MEDIA (id), -- 封面图片ID
     cover_url   TEXT,                                    -- 封面图片链接
+    status      VARCHAR(100),
     created_at  TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -78,7 +80,8 @@ create TABLE STEP_MEMBER_EXPIRATION
     user_id       VARCHAR(100) REFERENCES STEP_USER (id), -- 用户ID
     active_at     TIMESTAMP,                              -- 最近一次激活时间
     expiration_at TIMESTAMP,                              -- 过期时间
-    created_at    TIMESTAMP
+    created_at    TIMESTAMP,
+    modified_at   TIMESTAMP
 );
 
 -- 虚拟产品过期状态记录
@@ -89,15 +92,18 @@ create TABLE STEP_VIRTUAL_GOODS_EXPIRATION
     goods_id      VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id), -- 虚拟商品ID
     active_at     TIMESTAMP,                                       -- 最近一次激活时间
     expiration_at TIMESTAMP,                                       -- 过期时间
-    created_at    TIMESTAMP
+    created_at    TIMESTAMP,
+    modified_at   TIMESTAMP
 );
 
 -- SKU产品与物理产品关系
 create TABLE STEP_PRODUCT_PHYSICAL_GOODS_REF
 (
-    id         VARCHAR(100)                                     NOT NULL PRIMARY KEY,
-    product_id VARCHAR(100) REFERENCES STEP_PRODUCT (id)        NOT NULL,
-    goods_id   VARCHAR(100) REFERENCES STEP_PHYSICAL_GOODS (id) NOT NULL
+    id          VARCHAR(100)                                     NOT NULL PRIMARY KEY,
+    product_id  VARCHAR(100) REFERENCES STEP_PRODUCT (id)        NOT NULL,
+    goods_id    VARCHAR(100) REFERENCES STEP_PHYSICAL_GOODS (id) NOT NULL,
+    created_at  TIMESTAMP,
+    modified_at TIMESTAMP
 );
 
 -- SKU产品与虚拟产品关系
@@ -106,27 +112,33 @@ create TABLE STEP_PRODUCT_VIRTUAL_GOODS_REF
     id               VARCHAR(100)                                    NOT NULL PRIMARY KEY,
     redeem_condition VARCHAR(100), -- PAYMENT_SUCCESS (支付成功立即兑换), SIGN_SUCCESS (签收成功兑换)
     product_id       VARCHAR(100) REFERENCES STEP_PRODUCT (id)       NOT NULL,
-    goods_id         VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id) NOT NULL
+    goods_id         VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id) NOT NULL,
+    created_at       TIMESTAMP,
+    modified_at      TIMESTAMP
 );
 
 -- 订单与物理产品关系
 create TABLE STEP_ORDER_PHYSICAL_GOODS_REF
 (
-    id         VARCHAR(100)                                     NOT NULL PRIMARY KEY,
-    order_id   VARCHAR(100) REFERENCES STEP_ORDER (id)          NOT NULL,
-    user_id    VARCHAR(100) REFERENCES STEP_USER (id)           NOT NULL,
-    product_id VARCHAR(100) REFERENCES STEP_PRODUCT (id)        NOT NULL,
-    goods_id   VARCHAR(100) REFERENCES STEP_PHYSICAL_GOODS (id) NOT NULL
+    id          VARCHAR(100)                                     NOT NULL PRIMARY KEY,
+    order_id    VARCHAR(100) REFERENCES STEP_ORDER (id)          NOT NULL,
+    user_id     VARCHAR(100) REFERENCES STEP_USER (id)           NOT NULL,
+    product_id  VARCHAR(100) REFERENCES STEP_PRODUCT (id)        NOT NULL,
+    goods_id    VARCHAR(100) REFERENCES STEP_PHYSICAL_GOODS (id) NOT NULL,
+    created_at  TIMESTAMP,
+    modified_at TIMESTAMP
 );
 
 -- 订单与虚拟产品关系
 create TABLE STEP_ORDER_VIRTUAL_GOODS_REF
 (
-    id         VARCHAR(100)                                    NOT NULL PRIMARY KEY,
-    order_id   VARCHAR(100) REFERENCES STEP_ORDER (id)         NOT NULL,
-    user_id    VARCHAR(100) REFERENCES STEP_USER (id)          NOT NULL,
-    product_id VARCHAR(100) REFERENCES STEP_PRODUCT (id)       NOT NULL,
-    goods_id   VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id) NOT NULL
+    id          VARCHAR(100)                                    NOT NULL PRIMARY KEY,
+    order_id    VARCHAR(100) REFERENCES STEP_ORDER (id)         NOT NULL,
+    user_id     VARCHAR(100) REFERENCES STEP_USER (id)          NOT NULL,
+    product_id  VARCHAR(100) REFERENCES STEP_PRODUCT (id)       NOT NULL,
+    goods_id    VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id) NOT NULL,
+    created_at  TIMESTAMP,
+    modified_at TIMESTAMP
 );
 
 INSERT INTO STEP_VIRTUAL_CATEGORY (id, name)

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.PhysicalGoodsEntity;
 import net.stepbooks.domain.goods.service.PhysicalGoodsService;
+import net.stepbooks.infrastructure.enums.PublishStatus;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class MPhysicalGoodsController {
     @PostMapping()
     @Operation(summary = "创建物理产品")
     public ResponseEntity<?> create(@RequestBody PhysicalGoodsEntity entity) {
+        entity.setStatus(PublishStatus.OFFLINE);
         physicalGoodsService.save(entity);
         return ResponseEntity.ok().build();
     }

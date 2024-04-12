@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
+import net.stepbooks.infrastructure.enums.PublishStatus;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class MVirtualCategoryController {
     @PostMapping()
     @Operation(summary = "创建虚拟产品大类")
     public ResponseEntity<?> create(@RequestBody VirtualCategoryEntity entity) {
+        entity.setStatus(PublishStatus.OFFLINE);
         virtualCategoryService.save(entity);
         return ResponseEntity.ok().build();
     }

@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import net.stepbooks.domain.pairedread.entity.PairedReadCollection;
-import net.stepbooks.domain.pairedread.enums.CollectionStatus;
 import net.stepbooks.domain.pairedread.mapper.PairedReadCollectionMapper;
 import net.stepbooks.domain.pairedread.service.PairedReadCollectionService;
+import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.PairedReadCollectionDto;
@@ -52,7 +52,7 @@ public class PairedReadCollectionServiceImpl
     @Override
     public IPage<PairedReadCollection> getPage(IPage<PairedReadCollection> page, PairedReadCollectionDto queryDto) {
         LambdaQueryWrapper<PairedReadCollection> wrapper = Wrappers.lambdaQuery();
-        CollectionStatus status = queryDto.getStatus();
+        PublishStatus status = queryDto.getStatus();
         wrapper.eq(ObjectUtils.isNotEmpty(status), PairedReadCollection::getStatus, status);
         return this.baseMapper.selectPage(page, wrapper);
     }
@@ -69,7 +69,7 @@ public class PairedReadCollectionServiceImpl
     @Override
     public List<PairedReadCollection> list() {
         LambdaQueryWrapper<PairedReadCollection> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(PairedReadCollection::getStatus, CollectionStatus.ONLINE.name());
+        wrapper.eq(PairedReadCollection::getStatus, PublishStatus.ONLINE.name());
         return super.list(wrapper);
     }
 }

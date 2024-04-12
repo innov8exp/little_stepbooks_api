@@ -3,7 +3,7 @@ package net.stepbooks.domain.pairedread.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.stepbooks.domain.pairedread.enums.CollectionStatus;
+import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 @EqualsAndHashCode(callSuper = true)
@@ -20,6 +20,6 @@ public class PairedReadCollection extends BaseEntity {
     private String name;
     private String description;
 
-    private CollectionStatus status;
+    private PublishStatus status;
 
 }

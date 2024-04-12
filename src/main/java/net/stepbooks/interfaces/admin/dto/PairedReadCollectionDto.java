@@ -1,7 +1,7 @@
 package net.stepbooks.interfaces.admin.dto;
 
 import lombok.Data;
-import net.stepbooks.domain.pairedread.enums.CollectionStatus;
+import net.stepbooks.infrastructure.enums.PublishStatus;
 
 @Data
 public class PairedReadCollectionDto {
@@ -11,5 +11,5 @@ public class PairedReadCollectionDto {
     private String detailImgUrl;
     private String name;
     private String description;
-    private CollectionStatus status;
+    private PublishStatus status;
 }

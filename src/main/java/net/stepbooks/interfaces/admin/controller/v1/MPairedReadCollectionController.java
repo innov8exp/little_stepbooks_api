@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.pairedread.entity.PairedReadCollection;
-import net.stepbooks.domain.pairedread.enums.CollectionStatus;
 import net.stepbooks.domain.pairedread.service.PairedReadCollectionService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.interfaces.admin.dto.PairedReadCollectionDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +24,7 @@ public class MPairedReadCollectionController {
     public ResponseEntity<?> create(@RequestBody PairedReadCollectionDto dto) {
         PairedReadCollection entity = BaseAssembler.convert(dto, PairedReadCollection.class);
         //需要手工上线
-        entity.setStatus(CollectionStatus.OFFLINE);
+        entity.setStatus(PublishStatus.OFFLINE);
         pairedReadCollectionService.create(entity);
         return ResponseEntity.ok().build();
     }
@@ -32,7 +32,7 @@ public class MPairedReadCollectionController {
     @PostMapping("/{id}/online")
     public ResponseEntity<?> online(@PathVariable String id) {
         PairedReadCollection entity = pairedReadCollectionService.getById(id);
-        entity.setStatus(CollectionStatus.ONLINE);
+        entity.setStatus(PublishStatus.ONLINE);
         pairedReadCollectionService.update(id, entity);
         return ResponseEntity.ok().build();
     }
@@ -40,7 +40,7 @@ public class MPairedReadCollectionController {
     @PostMapping("/{id}/offline")
     public ResponseEntity<?> offline(@PathVariable String id) {
         PairedReadCollection entity = pairedReadCollectionService.getById(id);
-        entity.setStatus(CollectionStatus.OFFLINE);
+        entity.setStatus(PublishStatus.OFFLINE);
         pairedReadCollectionService.update(id, entity);
         return ResponseEntity.ok().build();
     }
@@ -67,7 +67,7 @@ public class MPairedReadCollectionController {
     @GetMapping
     public ResponseEntity<IPage<PairedReadCollection>> getPage(@RequestParam int currentPage,
                                                                @RequestParam int pageSize,
-                                                               @RequestParam(required = false) CollectionStatus status) {
+                                                               @RequestParam(required = false) PublishStatus status) {
         PairedReadCollectionDto queryDto = new PairedReadCollectionDto();
         queryDto.setStatus(status);
         Page<PairedReadCollection> page = Page.of(currentPage, pageSize);
