@@ -11,6 +11,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @TableName("STEP_PHYSICAL_GOODS")
 public class PhysicalGoodsEntity extends BaseEntity {
 
+    private Integer sortIndex;
     private String name;
     private String description;
     private String imgId;

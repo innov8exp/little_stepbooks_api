@@ -6,7 +6,8 @@ create TABLE STEP_PHYSICAL_GOODS
     description TEXT,                                    -- 产品描述
     img_id      VARCHAR(100) REFERENCES STEP_MEDIA (id), -- 图片ID
     img_url     TEXT,                                    -- 图片链接
-    status      VARCHAR(100),
+    status      VARCHAR(100),                            -- ONLINE/OFFLINE
+    sort_index  SERIAL,                                  -- 排序
     created_at  TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -18,7 +19,8 @@ create TABLE STEP_VIRTUAL_CATEGORY
     name        TEXT         NOT NULL,                   -- 大类名称
     cover_id    VARCHAR(100) REFERENCES STEP_MEDIA (id), -- 封面图片ID
     cover_url   TEXT,                                    -- 封面图片链接
-    status      VARCHAR(100),
+    status      VARCHAR(100),                            -- ONLINE/OFFLINE
+    sort_index  SERIAL,                                  -- 排序
     created_at  TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -31,6 +33,7 @@ create TABLE STEP_VIRTUAL_GOODS
     name         TEXT         NOT NULL,                              -- 产品名称
     description  TEXT,                                               -- 产品描述
     to_add_month SMALLINT,                                           -- 增加几个月有效期，对于会员可以是1，3，12个月，对于其他虚拟产品，默认是12个月
+    sort_index   SERIAL,                                             -- 排序
     created_at   TIMESTAMP,
     modified_at  TIMESTAMP
 );
@@ -45,6 +48,7 @@ create TABLE STEP_VIRTUAL_GOODS_AUDIO
     cover_url   TEXT,                                            -- 封面图片链接
     audio_id    VARCHAR(100) REFERENCES STEP_MEDIA (id),         -- 音频ID
     audio_url   TEXT,                                            -- 音频链接
+    sort_index  SERIAL,                                          -- 排序
     created_at  TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -59,6 +63,7 @@ create TABLE STEP_VIRTUAL_GOODS_VIDEO
     cover_url   TEXT,                                            -- 封面图片链接
     video_id    VARCHAR(100) REFERENCES STEP_MEDIA (id),         -- 视频ID
     video_url   TEXT,                                            -- 视频链接
+    sort_index  SERIAL,                                          -- 排序
     created_at  TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -69,6 +74,7 @@ create TABLE STEP_VIRTUAL_GOODS_COURSE
     id          VARCHAR(100) NOT NULL PRIMARY KEY,               -- 主键ID
     goods_id    VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id), -- 虚拟产品小类ID
     course_id   VARCHAR(100) REFERENCES STEP_COURSE (id),        -- 课程ID（每个课程下面还有一些具体练习）
+    sort_index  SERIAL,                                          -- 排序
     created_at  TIMESTAMP,
     modified_at TIMESTAMP
 );
@@ -99,9 +105,9 @@ create TABLE STEP_VIRTUAL_GOODS_EXPIRATION
 -- SKU产品与物理产品关系
 create TABLE STEP_PRODUCT_PHYSICAL_GOODS_REF
 (
-    id          VARCHAR(100)                                     NOT NULL PRIMARY KEY,
-    product_id  VARCHAR(100) REFERENCES STEP_PRODUCT (id)        NOT NULL,
-    goods_id    VARCHAR(100) REFERENCES STEP_PHYSICAL_GOODS (id) NOT NULL
+    id         VARCHAR(100)                                     NOT NULL PRIMARY KEY,
+    product_id VARCHAR(100) REFERENCES STEP_PRODUCT (id)        NOT NULL,
+    goods_id   VARCHAR(100) REFERENCES STEP_PHYSICAL_GOODS (id) NOT NULL
 );
 
 -- SKU产品与虚拟产品关系
@@ -116,21 +122,21 @@ create TABLE STEP_PRODUCT_VIRTUAL_GOODS_REF
 -- 订单与物理产品关系
 create TABLE STEP_ORDER_PHYSICAL_GOODS_REF
 (
-    id          VARCHAR(100)                                     NOT NULL PRIMARY KEY,
-    order_id    VARCHAR(100) REFERENCES STEP_ORDER (id)          NOT NULL,
-    user_id     VARCHAR(100) REFERENCES STEP_USER (id)           NOT NULL,
-    product_id  VARCHAR(100) REFERENCES STEP_PRODUCT (id)        NOT NULL,
-    goods_id    VARCHAR(100) REFERENCES STEP_PHYSICAL_GOODS (id) NOT NULL
+    id         VARCHAR(100)                                     NOT NULL PRIMARY KEY,
+    order_id   VARCHAR(100) REFERENCES STEP_ORDER (id)          NOT NULL,
+    user_id    VARCHAR(100) REFERENCES STEP_USER (id)           NOT NULL,
+    product_id VARCHAR(100) REFERENCES STEP_PRODUCT (id)        NOT NULL,
+    goods_id   VARCHAR(100) REFERENCES STEP_PHYSICAL_GOODS (id) NOT NULL
 );
 
 -- 订单与虚拟产品关系
 create TABLE STEP_ORDER_VIRTUAL_GOODS_REF
 (
-    id          VARCHAR(100)                                    NOT NULL PRIMARY KEY,
-    order_id    VARCHAR(100) REFERENCES STEP_ORDER (id)         NOT NULL,
-    user_id     VARCHAR(100) REFERENCES STEP_USER (id)          NOT NULL,
-    product_id  VARCHAR(100) REFERENCES STEP_PRODUCT (id)       NOT NULL,
-    goods_id    VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id) NOT NULL
+    id         VARCHAR(100)                                    NOT NULL PRIMARY KEY,
+    order_id   VARCHAR(100) REFERENCES STEP_ORDER (id)         NOT NULL,
+    user_id    VARCHAR(100) REFERENCES STEP_USER (id)          NOT NULL,
+    product_id VARCHAR(100) REFERENCES STEP_PRODUCT (id)       NOT NULL,
+    goods_id   VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id) NOT NULL
 );
 
 INSERT INTO STEP_VIRTUAL_CATEGORY (id, name)

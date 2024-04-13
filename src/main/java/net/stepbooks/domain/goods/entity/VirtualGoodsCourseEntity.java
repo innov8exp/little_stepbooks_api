@@ -10,6 +10,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @TableName("STEP_VIRTUAL_GOODS_COURSE")
 public class VirtualGoodsCourseEntity extends BaseEntity {
 
+    private Integer sortIndex;
     private String goodsId;
     private String courseId;
 
