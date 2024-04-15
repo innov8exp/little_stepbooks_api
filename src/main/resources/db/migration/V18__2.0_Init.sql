@@ -48,6 +48,7 @@ create TABLE STEP_VIRTUAL_GOODS_AUDIO
     cover_url   TEXT,                                            -- 封面图片链接
     audio_id    VARCHAR(100) REFERENCES STEP_MEDIA (id),         -- 音频ID
     audio_url   TEXT,                                            -- 音频链接
+    duration    VARCHAR(100),                                    -- 时长，格式03:12
     sort_index  SERIAL,                                          -- 排序
     created_at  TIMESTAMP,
     modified_at TIMESTAMP
@@ -63,6 +64,7 @@ create TABLE STEP_VIRTUAL_GOODS_VIDEO
     cover_url   TEXT,                                            -- 封面图片链接
     video_id    VARCHAR(100) REFERENCES STEP_MEDIA (id),         -- 视频ID
     video_url   TEXT,                                            -- 视频链接
+    duration    VARCHAR(100),                                    -- 时长，格式03:12
     sort_index  SERIAL,                                          -- 排序
     created_at  TIMESTAMP,
     modified_at TIMESTAMP

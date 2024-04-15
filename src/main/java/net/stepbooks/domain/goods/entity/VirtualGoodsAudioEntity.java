@@ -17,5 +17,6 @@ public class VirtualGoodsAudioEntity extends BaseEntity {
     private String coverUrl;
     private String audioId;
     private String audioUrl;
+    private String duration;
 
 }

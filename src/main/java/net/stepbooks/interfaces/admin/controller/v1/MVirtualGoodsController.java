@@ -56,9 +56,11 @@ public class MVirtualGoodsController {
     @Operation(summary = "虚拟产品查询")
     public ResponseEntity<IPage<VirtualGoodsEntity>> list(@RequestParam int currentPage,
                                                           @RequestParam int pageSize,
+                                                          @RequestParam(required = false) String categoryId,
                                                           @RequestParam(required = false) String name) {
         Page<VirtualGoodsEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualGoodsEntity> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(ObjectUtils.isNotEmpty(categoryId), VirtualGoodsEntity::getCategoryId, categoryId);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualGoodsEntity::getName, name);
         IPage<VirtualGoodsEntity> results = virtualGoodsService.page(page, wrapper);
         return ResponseEntity.ok(results);

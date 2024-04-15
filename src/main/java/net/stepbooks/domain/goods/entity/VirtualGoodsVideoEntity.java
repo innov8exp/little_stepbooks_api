@@ -17,5 +17,6 @@ public class VirtualGoodsVideoEntity extends BaseEntity {
     private String coverUrl;
     private String videoId;
     private String videoUrl;
+    private String duration;
 
 }
