@@ -16,6 +16,7 @@ create TABLE STEP_PHYSICAL_GOODS
 create TABLE STEP_VIRTUAL_CATEGORY
 (
     id          VARCHAR(100) NOT NULL PRIMARY KEY,       -- 主键ID
+    type        VARCHAR(100),                            -- MEMBER(会员)/MEDIA(音视频)
     name        TEXT         NOT NULL,                   -- 大类名称
     cover_id    VARCHAR(100) REFERENCES STEP_MEDIA (id), -- 封面图片ID
     cover_url   TEXT,                                    -- 封面图片链接
@@ -141,8 +142,8 @@ create TABLE STEP_ORDER_VIRTUAL_GOODS_REF
     goods_id   VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id) NOT NULL
 );
 
-INSERT INTO STEP_VIRTUAL_CATEGORY (id, name)
-VALUES ('1', '会员');
+INSERT INTO STEP_VIRTUAL_CATEGORY (id, name, type)
+VALUES ('1', '会员', 'MEMBER');
 
 INSERT INTO STEP_VIRTUAL_GOODS (id, category_id, name, to_add_month)
 VALUES ('1', '1', '月会员', '1');
