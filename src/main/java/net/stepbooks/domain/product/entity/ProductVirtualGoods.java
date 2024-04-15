@@ -9,6 +9,7 @@ public class ProductVirtualGoods {
 
     private String id;
     private String productId;
+    private String categoryId;
     private String goodsId;
 
 }

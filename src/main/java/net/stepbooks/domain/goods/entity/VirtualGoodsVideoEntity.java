@@ -11,6 +11,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 public class VirtualGoodsVideoEntity extends BaseEntity {
 
     private Integer sortIndex;
+    private String categoryId;
     private String goodsId;
     private String name;
     private String coverId;

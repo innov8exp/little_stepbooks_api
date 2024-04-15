@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
+import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +30,10 @@ public class VirtualCategoryController {
     private final VirtualCategoryService virtualCategoryService;
 
     @GetMapping
-    @Operation(summary = "列出非会员类型的虚拟产品大类")
+    @Operation(summary = "虚拟产品大类列表")
     public ResponseEntity<IPage<VirtualCategoryEntity>> list(@RequestParam int currentPage,
                                                              @RequestParam int pageSize,
-                                                             @RequestParam String type,
+                                                             @RequestParam VirtualCategoryType type,
                                                              @RequestParam(required = false) String name) {
         Page<VirtualCategoryEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();

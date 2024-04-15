@@ -17,6 +17,7 @@ public class VirtualGoodsExpirationEntity extends BaseEntity {
 
     private String userId;
 
+    private String categoryId;
     private String goodsId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
