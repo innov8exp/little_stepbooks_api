@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
 import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
+import net.stepbooks.infrastructure.enums.PublishStatus;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +39,7 @@ public class VirtualCategoryController {
         Page<VirtualCategoryEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(VirtualCategoryEntity::getType, type);
+        wrapper.eq(VirtualCategoryEntity::getStatus, PublishStatus.ONLINE);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualCategoryEntity::getName, name);
         IPage<VirtualCategoryEntity> results = virtualCategoryService.page(page, wrapper);
         return ResponseEntity.ok(results);

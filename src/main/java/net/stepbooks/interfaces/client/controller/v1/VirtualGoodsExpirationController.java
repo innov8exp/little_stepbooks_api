@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @Slf4j
-@Tag(name = "VirtualGoodsExpiration", description = "虚拟产品有效期相关接口")
+@Tag(name = "VirtualGoodsExpiration", description = "虚拟产品购买记录相关接口")
 @RestController
 @RequestMapping("/v1/virtual-goods-expiration")
 @RequiredArgsConstructor
@@ -28,10 +28,9 @@ public class VirtualGoodsExpirationController {
     private final VirtualGoodsExpirationService virtualGoodsExpirationService;
 
     @GetMapping("/my")
-    @Operation(summary = "获得当前用户的未过期虚拟产品")
-    public ResponseEntity<List<VirtualGoodsExpirationEntity>> list() {
+    @Operation(summary = "获得用户购买的全部虚拟产品")
+    public ResponseEntity<List<VirtualGoodsExpirationEntity>> myList() {
         User user = contextManager.currentUser();
-        log.info("userId={}", user.getId());
         List<VirtualGoodsExpirationEntity> results = virtualGoodsExpirationService.validExpirations(user.getId());
         return ResponseEntity.ok(results);
     }
