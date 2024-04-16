@@ -7,6 +7,8 @@ import net.stepbooks.infrastructure.enums.PublishStatus;
 public class PairedReadCollectionDto {
     private String coverImgId;
     private String coverImgUrl;
+
+    @Deprecated
     private String detailImgId;
     private String detailImgUrl;
     private String name;

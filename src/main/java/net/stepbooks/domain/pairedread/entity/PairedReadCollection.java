@@ -14,6 +14,7 @@ public class PairedReadCollection extends BaseEntity {
     private String coverImgId;
     private String coverImgUrl;
 
+    @Deprecated
     private String detailImgId;
     private String detailImgUrl;
 
