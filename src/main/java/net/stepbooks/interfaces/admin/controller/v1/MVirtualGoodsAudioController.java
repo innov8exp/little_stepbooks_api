@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualGoodsAudioEntity;
 import net.stepbooks.domain.goods.service.VirtualGoodsAudioService;
+import net.stepbooks.domain.goods.service.VirtualGoodsService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +22,14 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "Admin Authentication")
 public class MVirtualGoodsAudioController {
 
-
+    private final VirtualGoodsService virtualGoodsService;
     private final VirtualGoodsAudioService virtualGoodsAudioService;
 
     @PostMapping()
     @Operation(summary = "创建虚拟产品音频")
     public ResponseEntity<?> create(@RequestBody VirtualGoodsAudioEntity entity) {
+        String goodsId = entity.getGoodsId();
+        entity.setCategoryId(virtualGoodsService.getById(goodsId).getCategoryId());
         virtualGoodsAudioService.save(entity);
         return ResponseEntity.ok().build();
     }
@@ -35,6 +38,8 @@ public class MVirtualGoodsAudioController {
     @Operation(summary = "修改虚拟产品音频")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody VirtualGoodsAudioEntity entity) {
         entity.setId(id);
+        String goodsId = entity.getGoodsId();
+        entity.setCategoryId(virtualGoodsService.getById(goodsId).getCategoryId());
         virtualGoodsAudioService.updateById(entity);
         return ResponseEntity.ok().build();
     }

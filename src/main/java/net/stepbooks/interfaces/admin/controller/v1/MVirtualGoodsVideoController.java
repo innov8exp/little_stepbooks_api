@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualGoodsVideoEntity;
+import net.stepbooks.domain.goods.service.VirtualGoodsService;
 import net.stepbooks.domain.goods.service.VirtualGoodsVideoService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,14 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "Admin Authentication")
 public class MVirtualGoodsVideoController {
 
-
+    private final VirtualGoodsService virtualGoodsService;
     private final VirtualGoodsVideoService virtualGoodsVideoService;
 
     @PostMapping()
     @Operation(summary = "创建虚拟产品视频")
     public ResponseEntity<?> create(@RequestBody VirtualGoodsVideoEntity entity) {
+        String goodsId = entity.getGoodsId();
+        entity.setCategoryId(virtualGoodsService.getById(goodsId).getCategoryId());
         virtualGoodsVideoService.save(entity);
         return ResponseEntity.ok().build();
     }
@@ -35,6 +38,8 @@ public class MVirtualGoodsVideoController {
     @Operation(summary = "修改虚拟产品视频")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody VirtualGoodsVideoEntity entity) {
         entity.setId(id);
+        String goodsId = entity.getGoodsId();
+        entity.setCategoryId(virtualGoodsService.getById(goodsId).getCategoryId());
         virtualGoodsVideoService.updateById(entity);
         return ResponseEntity.ok().build();
     }

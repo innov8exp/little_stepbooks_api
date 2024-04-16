@@ -11,6 +11,7 @@ import net.stepbooks.domain.product.mapper.ProductPhysicalGoodsMapper;
 import net.stepbooks.domain.product.service.ProductPhysicalGoodsService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,10 +29,14 @@ public class ProductPhysicalGoodsServiceImpl extends ServiceImpl<ProductPhysical
         List<ProductPhysicalGoods> productPhysicalGoodsList = list(wrapper);
         List<String> goodIds = productPhysicalGoodsList.stream().map(ProductPhysicalGoods::getGoodsId).toList();
 
-        LambdaQueryWrapper<PhysicalGoodsEntity> wrapper2 = Wrappers.lambdaQuery();
-        wrapper2.in(PhysicalGoodsEntity::getId, goodIds);
-        List<PhysicalGoodsEntity> physicalGoodsEntities = physicalGoodsService.list(wrapper2);
-        return physicalGoodsEntities;
+        if (goodIds.size() > 0) {
+            LambdaQueryWrapper<PhysicalGoodsEntity> wrapper2 = Wrappers.lambdaQuery();
+            wrapper2.in(PhysicalGoodsEntity::getId, goodIds);
+            List<PhysicalGoodsEntity> physicalGoodsEntities = physicalGoodsService.list(wrapper2);
+            return physicalGoodsEntities;
+        } else {
+            return new ArrayList<>();
+        }
 
     }
 

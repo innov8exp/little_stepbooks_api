@@ -14,7 +14,6 @@ public class VirtualGoodsEntity extends BaseEntity {
     private String name;
     private String description;
     private String categoryId;
-    private String detailImgId;
     private int toAddMonth;
 
 }
