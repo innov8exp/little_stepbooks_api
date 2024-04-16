@@ -1,29 +1,52 @@
+-- 详情图
+create TABLE STEP_DETAIL_IMAGE
+(
+    id          VARCHAR(100) NOT NULL PRIMARY KEY, -- 主键ID
+    name        TEXT         NOT NULL,             -- 详情图名称
+    created_at  TIMESTAMP,
+    modified_at TIMESTAMP
+);
+
+-- 详情图的具体切图
+create TABLE STEP_DETAIL_IMAGE_CUT
+(
+    id            VARCHAR(100) NOT NULL PRIMARY KEY,              -- 主键ID
+    detail_img_id VARCHAR(100) REFERENCES STEP_DETAIL_IMAGE (id), -- 详情图ID
+    img_id        VARCHAR(100) REFERENCES STEP_MEDIA (id),        -- 图片ID
+    img_url       TEXT,                                           -- 图片链接
+    sort_index    SERIAL,                                         -- 排序
+    created_at    TIMESTAMP,
+    modified_at   TIMESTAMP
+);
+
 -- 物理产品
 create TABLE STEP_PHYSICAL_GOODS
 (
-    id          VARCHAR(100) NOT NULL PRIMARY KEY,       -- 主键ID
-    name        TEXT         NOT NULL,                   -- 产品名称
-    description TEXT,                                    -- 产品描述
-    img_id      VARCHAR(100) REFERENCES STEP_MEDIA (id), -- 图片ID
-    img_url     TEXT,                                    -- 图片链接
-    status      VARCHAR(100),                            -- ONLINE/OFFLINE
-    sort_index  SERIAL,                                  -- 排序
-    created_at  TIMESTAMP,
-    modified_at TIMESTAMP
+    id            VARCHAR(100) NOT NULL PRIMARY KEY,              -- 主键ID
+    name          TEXT         NOT NULL,                          -- 产品名称
+    description   TEXT,                                           -- 产品描述
+    cover_id      VARCHAR(100) REFERENCES STEP_MEDIA (id),        -- 图片ID
+    cover_url     TEXT,                                           -- 图片链接
+    detail_img_id VARCHAR(100) REFERENCES STEP_DETAIL_IMAGE (id), -- 详情图ID
+    status        VARCHAR(100),                                   -- ONLINE/OFFLINE
+    sort_index    SERIAL,                                         -- 排序
+    created_at    TIMESTAMP,
+    modified_at   TIMESTAMP
 );
 
 -- 虚拟产品大类
 create TABLE STEP_VIRTUAL_CATEGORY
 (
-    id          VARCHAR(100) NOT NULL PRIMARY KEY,       -- 主键ID
-    type        VARCHAR(100),                            -- MEMBER(会员)/MEDIA(音视频)
-    name        TEXT         NOT NULL,                   -- 大类名称
-    cover_id    VARCHAR(100) REFERENCES STEP_MEDIA (id), -- 封面图片ID
-    cover_url   TEXT,                                    -- 封面图片链接
-    status      VARCHAR(100),                            -- ONLINE/OFFLINE
-    sort_index  SERIAL,                                  -- 排序
-    created_at  TIMESTAMP,
-    modified_at TIMESTAMP
+    id            VARCHAR(100) NOT NULL PRIMARY KEY,              -- 主键ID
+    type          VARCHAR(100),                                   -- MEMBER(会员)/MEDIA(音视频)
+    name          TEXT         NOT NULL,                          -- 大类名称
+    cover_id      VARCHAR(100) REFERENCES STEP_MEDIA (id),        -- 封面图片ID
+    cover_url     TEXT,                                           -- 封面图片链接
+    detail_img_id VARCHAR(100) REFERENCES STEP_DETAIL_IMAGE (id), -- 详情图ID
+    status        VARCHAR(100),                                   -- ONLINE/OFFLINE
+    sort_index    SERIAL,                                         -- 排序
+    created_at    TIMESTAMP,
+    modified_at   TIMESTAMP
 );
 
 -- 虚拟产品（小类）
@@ -147,6 +170,13 @@ create TABLE STEP_ORDER_VIRTUAL_GOODS_REF
     category_id VARCHAR(100) REFERENCES STEP_VIRTUAL_CATEGORY (id) NOT NULL,
     goods_id    VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id)    NOT NULL
 );
+
+-- 给产品SKU信息增加视频展示以及详情图描述字段
+ALTER TABLE STEP_PRODUCT
+    ADD COLUMN video_id VARCHAR(100) REFERENCES STEP_MEDIA (id),
+    ADD COLUMN video_url TEXT,
+    ADD COLUMN detail_img_id VARCHAR(100) REFERENCES STEP_DETAIL_IMAGE (id);
+
 
 INSERT INTO STEP_VIRTUAL_CATEGORY (id, name, type)
 VALUES ('1', '会员', 'MEMBER');

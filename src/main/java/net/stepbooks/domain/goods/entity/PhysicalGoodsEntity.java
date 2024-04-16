@@ -14,8 +14,8 @@ public class PhysicalGoodsEntity extends BaseEntity {
     private Integer sortIndex;
     private String name;
     private String description;
-    private String imgId;
-    private String imgUrl;
+    private String coverId;
+    private String coverUrl;
     private PublishStatus status;
 
 }

@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 public class VirtualGoodsDto extends BaseDto {
 
+    private Integer sortIndex;
     private String name;
     private String description;
     private String categoryId;
