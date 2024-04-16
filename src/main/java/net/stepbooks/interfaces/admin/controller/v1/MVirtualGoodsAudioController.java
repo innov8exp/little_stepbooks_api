@@ -62,10 +62,14 @@ public class MVirtualGoodsAudioController {
     @Operation(summary = "虚拟产品音频查询")
     public ResponseEntity<IPage<VirtualGoodsAudioEntity>> list(@RequestParam int currentPage,
                                                                @RequestParam int pageSize,
-                                                               @RequestParam(required = false) String name) {
+                                                               @RequestParam(required = false) String name,
+                                                               @RequestParam(required = false) String goodsId,
+                                                               @RequestParam(required = false) String categoryId) {
         Page<VirtualGoodsAudioEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualGoodsAudioEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualGoodsAudioEntity::getName, name);
+        wrapper.eq(ObjectUtils.isNotEmpty(goodsId), VirtualGoodsAudioEntity::getGoodsId, goodsId);
+        wrapper.eq(ObjectUtils.isNotEmpty(categoryId), VirtualGoodsAudioEntity::getCategoryId, categoryId);
         IPage<VirtualGoodsAudioEntity> results = virtualGoodsAudioService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }

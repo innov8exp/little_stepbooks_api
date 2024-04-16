@@ -62,10 +62,14 @@ public class MVirtualGoodsVideoController {
     @Operation(summary = "虚拟产品视频查询")
     public ResponseEntity<IPage<VirtualGoodsVideoEntity>> list(@RequestParam int currentPage,
                                                                @RequestParam int pageSize,
-                                                               @RequestParam(required = false) String name) {
+                                                               @RequestParam(required = false) String name,
+                                                               @RequestParam(required = false) String goodsId,
+                                                               @RequestParam(required = false) String categoryId) {
         Page<VirtualGoodsVideoEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualGoodsVideoEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualGoodsVideoEntity::getName, name);
+        wrapper.eq(ObjectUtils.isNotEmpty(goodsId), VirtualGoodsVideoEntity::getGoodsId, goodsId);
+        wrapper.eq(ObjectUtils.isNotEmpty(categoryId), VirtualGoodsVideoEntity::getCategoryId, categoryId);
         IPage<VirtualGoodsVideoEntity> results = virtualGoodsVideoService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }

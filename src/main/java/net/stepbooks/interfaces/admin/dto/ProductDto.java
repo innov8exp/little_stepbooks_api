@@ -32,6 +32,8 @@ public class ProductDto {
     private List<String> physicalGoodsIds;
     private List<String> virtualGoodsIds;
 
+    private String detailImgId;
+
     public SalesPlatform[] getParsedSalesPlatforms() {
         return SalesPlatform.parseSalesPlatforms(salesPlatforms);
     }
