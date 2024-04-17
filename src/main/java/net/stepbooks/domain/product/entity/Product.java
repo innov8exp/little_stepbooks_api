@@ -29,6 +29,7 @@ public class Product extends BaseEntity {
     private int materials;
     private ProductStatus status;
     private String detailImgId;
+    private String tags;
 
     public SalesPlatform[] getParsedSalesPlatforms() {
         return SalesPlatform.parseSalesPlatforms(salesPlatforms);

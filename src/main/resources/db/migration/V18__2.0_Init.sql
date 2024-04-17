@@ -171,8 +171,9 @@ create TABLE STEP_ORDER_VIRTUAL_GOODS_REF
     goods_id    VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id)    NOT NULL
 );
 
--- 给产品SKU信息增加视频展示以及详情图描述字段
+-- 给产品SKU信息增加"标签","视频展示"以及"详情图"字段
 ALTER TABLE STEP_PRODUCT
+    ADD COLUMN tags VARCHAR(100), -- 图书\文创\课程\训练营，支持用逗号分隔的多个标签
     ADD COLUMN video_id VARCHAR(100) REFERENCES STEP_MEDIA (id),
     ADD COLUMN video_url TEXT,
     ADD COLUMN detail_img_id VARCHAR(100) REFERENCES STEP_DETAIL_IMAGE (id);
