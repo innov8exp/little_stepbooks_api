@@ -57,10 +57,12 @@ public class MSkuController {
     @Operation(summary = "SKU查询")
     public ResponseEntity<IPage<Sku>> list(@RequestParam int currentPage,
                                            @RequestParam int pageSize,
-                                           @RequestParam(required = false) String name) {
+                                           @RequestParam(required = false) String name,
+                                           @RequestParam(required = false) String spuId) {
         Page<Sku> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<Sku> wrapper = Wrappers.lambdaQuery();
         wrapper.like(ObjectUtils.isNotEmpty(name), Sku::getSkuName, name);
+        wrapper.eq(ObjectUtils.isNotEmpty(spuId), Sku::getSpuId, spuId);
         IPage<Sku> results = skuService.page(page);
         return ResponseEntity.ok(results);
     }

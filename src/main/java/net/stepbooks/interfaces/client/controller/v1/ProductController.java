@@ -35,7 +35,7 @@ public class ProductController {
     private final CourseService courseService;
     private final ContextManager contextManager;
 
-    @Operation(summary = "搜索SKU产品")
+    @Operation(summary = "搜索SPU产品")
     @GetMapping("/search")
     public ResponseEntity<IPage<Product>> searchProducts(@RequestParam int currentPage,
                                                          @RequestParam int pageSize,
@@ -45,7 +45,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @Operation(summary = "获取推荐SKU产品")
+    @Operation(summary = "获取推荐SPU产品")
     @GetMapping("/recommend")
     public ResponseEntity<IPage<Product>> getRecommendProducts(@RequestParam int currentPage,
                                                                @RequestParam int pageSize) {
@@ -63,7 +63,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @Operation(summary = "获取新品SKU", description = "换一批可以传入当前页码和页大小")
+    @Operation(summary = "获取新品SPU", description = "换一批可以传入当前页码和页大小")
     @GetMapping("/new")
     public ResponseEntity<IPage<Product>> getNewProducts(@RequestParam int currentPage,
                                                          @RequestParam int pageSize) {
@@ -73,7 +73,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/detail")
-    @Operation(summary = "获取SKU产品详情")
+    @Operation(summary = "获取SPU产品详情")
     public ResponseEntity<ProductDto> getProductDetail(@PathVariable String id) {
         ProductDto productDto = productService.findDetailById(id);
         return ResponseEntity.ok(productDto);
@@ -81,7 +81,7 @@ public class ProductController {
 
     @Deprecated
     @GetMapping("/{id}/books")
-    @Operation(summary = "获取SKU产品的书籍")
+    @Operation(summary = "获取SPU产品的书籍")
     public ResponseEntity<List<Book>> getProductBooks(@PathVariable String id) {
         List<Book> books = bookService.findBooksByProductId(id);
         return ResponseEntity.ok(books);
@@ -89,7 +89,7 @@ public class ProductController {
 
     @Deprecated
     @GetMapping("/{id}/courses")
-    @Operation(summary = "获取SKU产品的课程")
+    @Operation(summary = "获取SPU产品的课程")
     public ResponseEntity<List<CourseDto>> getProductCourses(@PathVariable String id) {
         List<CourseDto> courses = courseService.findCoursesByProductId(id);
         return ResponseEntity.ok(courses);
