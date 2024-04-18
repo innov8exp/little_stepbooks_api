@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
+import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
 import net.stepbooks.infrastructure.enums.PublishStatus;
 import org.apache.commons.lang3.ObjectUtils;
@@ -58,9 +59,14 @@ public class MVirtualCategoryController {
     @Operation(summary = "虚拟产品大类查询")
     public ResponseEntity<IPage<VirtualCategoryEntity>> list(@RequestParam int currentPage,
                                                              @RequestParam int pageSize,
+                                                             @RequestParam(required = false) VirtualCategoryType type,
                                                              @RequestParam(required = false) String name) {
         Page<VirtualCategoryEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
+        if (type == null) {
+            type = VirtualCategoryType.MEDIA;
+        }
+        wrapper.eq(VirtualCategoryEntity::getType, type);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualCategoryEntity::getName, name);
         IPage<VirtualCategoryEntity> results = virtualCategoryService.page(page, wrapper);
         return ResponseEntity.ok(results);

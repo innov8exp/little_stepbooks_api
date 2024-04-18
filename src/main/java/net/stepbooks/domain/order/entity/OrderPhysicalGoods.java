@@ -16,7 +16,8 @@ public class OrderPhysicalGoods {
     private String id;
     private String orderId;
     private String userId;
-    private String productId;
+    private String spuId;
+    private String skuId;
     private String goodsId;
 
 }

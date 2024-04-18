@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.PhysicalGoodsEntity;
 import net.stepbooks.domain.goods.service.PhysicalGoodsService;
-import net.stepbooks.domain.product.entity.ProductPhysicalGoods;
-import net.stepbooks.domain.product.mapper.ProductPhysicalGoodsMapper;
-import net.stepbooks.domain.product.service.ProductPhysicalGoodsService;
+import net.stepbooks.domain.product.entity.SkuPhysicalGoods;
+import net.stepbooks.domain.product.mapper.SkuPhysicalGoodsMapper;
+import net.stepbooks.domain.product.service.SkuPhysicalGoodsService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,18 +16,17 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProductPhysicalGoodsServiceImpl extends ServiceImpl<ProductPhysicalGoodsMapper, ProductPhysicalGoods>
-        implements ProductPhysicalGoodsService {
+public class SkuPhysicalGoodsServiceImpl extends ServiceImpl<SkuPhysicalGoodsMapper, SkuPhysicalGoods>
+        implements SkuPhysicalGoodsService {
 
     private final PhysicalGoodsService physicalGoodsService;
 
     @Override
-    public List<PhysicalGoodsEntity> getPhysicalGoodsListByProductId(String productId) {
-
-        LambdaQueryWrapper<ProductPhysicalGoods> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(ProductPhysicalGoods::getProductId, productId);
-        List<ProductPhysicalGoods> productPhysicalGoodsList = list(wrapper);
-        List<String> goodIds = productPhysicalGoodsList.stream().map(ProductPhysicalGoods::getGoodsId).toList();
+    public List<PhysicalGoodsEntity> getPhysicalGoodsListBySkuId(String skuId) {
+        LambdaQueryWrapper<SkuPhysicalGoods> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(SkuPhysicalGoods::getSkuId, skuId);
+        List<SkuPhysicalGoods> skuPhysicalGoodsList = list(wrapper);
+        List<String> goodIds = skuPhysicalGoodsList.stream().map(SkuPhysicalGoods::getGoodsId).toList();
 
         if (goodIds.size() > 0) {
             LambdaQueryWrapper<PhysicalGoodsEntity> wrapper2 = Wrappers.lambdaQuery();
@@ -39,5 +38,4 @@ public class ProductPhysicalGoodsServiceImpl extends ServiceImpl<ProductPhysical
         }
 
     }
-
 }

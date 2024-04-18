@@ -35,8 +35,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private final ProductMediaService productMediaService;
     private final ProductClassificationService productClassificationService;
     private final ProductBookService productBookService;
-    private final ProductPhysicalGoodsService productPhysicalGoodsService;
-    private final ProductVirtualGoodsService productVirtualGoodsService;
     private final ProductCourseService productCourseService;
     private final CourseService courseService;
     private final InventoryService inventoryService;
@@ -96,27 +94,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 }).toList();
                 productCourseService.saveBatch(productCourses);
             });
-        }
-        if (productDto.getPhysicalGoodsIds() != null) {
-            // 保存SKU产品与物理产品的关系
-            List<ProductPhysicalGoods> productPhysicalGoodsList = productDto.getPhysicalGoodsIds().stream().map(goodsId -> {
-                ProductPhysicalGoods productPhysicalGoods = new ProductPhysicalGoods();
-                productPhysicalGoods.setProductId(product.getId());
-                productPhysicalGoods.setGoodsId(goodsId);
-                return productPhysicalGoods;
-            }).toList();
-            productPhysicalGoodsService.saveBatch(productPhysicalGoodsList);
-        }
-        if (productDto.getVirtualGoodsIds() != null) {
-            // 保存SKU产品与虚拟产品的关系
-            List<ProductVirtualGoods> productVirtualGoodsList = productDto.getVirtualGoodsIds().stream().map(goodsId -> {
-                ProductVirtualGoods productVirtualGoods = new ProductVirtualGoods();
-                productVirtualGoods.setProductId(product.getId());
-                productVirtualGoods.setCategoryId(virtualGoodsService.getById(goodsId).getCategoryId());
-                productVirtualGoods.setGoodsId(goodsId);
-                return productVirtualGoods;
-            }).toList();
-            productVirtualGoodsService.saveBatch(productVirtualGoodsList);
         }
 
     }
