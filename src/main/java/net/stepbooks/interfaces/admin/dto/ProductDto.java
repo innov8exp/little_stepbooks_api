@@ -29,9 +29,6 @@ public class ProductDto {
     //使用physicalGoodsIds和virtualGoodsIds替代
     private List<String> bookIds;
 
-    private List<String> physicalGoodsIds;
-    private List<String> virtualGoodsIds;
-
     private String detailImgId;
     private String tags;
 
