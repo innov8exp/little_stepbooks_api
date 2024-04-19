@@ -26,6 +26,10 @@ public class Product extends BaseEntity {
     private BigDecimal price;
     private String coverImgId;
     private String coverImgUrl;
+
+    private String videoId;
+    private String videoUrl;
+
     private int materials;
     private ProductStatus status;
     private String detailImgId;

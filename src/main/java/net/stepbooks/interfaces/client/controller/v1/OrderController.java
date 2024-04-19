@@ -87,6 +87,19 @@ public class OrderController {
         return paymentService.prepayWithRequestPayment(payPrePayRequest);
     }
 
+    @Operation(summary = "混合产品下单")
+    @PostMapping("/mixed")
+    public ResponseEntity<OrderAndPaymentDto> placeMixedOrder(@RequestBody PlaceOrderDto placeOrderDto) {
+        User user = contextManager.currentUser();
+        CreateOrderDto orderDto = prepareOrder(placeOrderDto, user);
+        Order order = physicalOrderServiceImpl.createOrder(orderDto);
+        PrepayWithRequestPaymentResponse paymentResponse = preparePayment(order, orderDto.getSkus(), user);
+        OrderAndPaymentDto orderAndPaymentDto = new OrderAndPaymentDto();
+        orderAndPaymentDto.setOrder(order);
+        orderAndPaymentDto.setPaymentResponse(paymentResponse);
+        return ResponseEntity.ok(orderAndPaymentDto);
+    }
+
     @Operation(summary = "实体产品下单")
     @PostMapping("/physical")
     public ResponseEntity<OrderAndPaymentDto> placePhysicalOrder(@RequestBody PlaceOrderDto placeOrderDto) {

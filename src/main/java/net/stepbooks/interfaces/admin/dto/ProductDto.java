@@ -20,6 +20,8 @@ public class ProductDto {
     private BigDecimal price;
     private String coverImgId;
     private String coverImgUrl;
+    private String videoId;
+    private String videoUrl;
     private List<ProductMediaDto> medias;
     private ProductStatus status;
     private String[] classificationIds;
