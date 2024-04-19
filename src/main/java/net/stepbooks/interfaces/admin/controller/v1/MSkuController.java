@@ -63,7 +63,7 @@ public class MSkuController {
         LambdaQueryWrapper<Sku> wrapper = Wrappers.lambdaQuery();
         wrapper.like(ObjectUtils.isNotEmpty(name), Sku::getSkuName, name);
         wrapper.eq(ObjectUtils.isNotEmpty(spuId), Sku::getSpuId, spuId);
-        IPage<Sku> results = skuService.page(page);
+        IPage<Sku> results = skuService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }
 

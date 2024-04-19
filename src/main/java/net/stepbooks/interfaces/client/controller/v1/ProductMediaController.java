@@ -36,7 +36,7 @@ public class ProductMediaController {
         Page<ProductMedia> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<ProductMedia> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ObjectUtils.isNotEmpty(spuId), ProductMedia::getProductId, spuId);
-        IPage<ProductMedia> results = productMediaService.page(page);
+        IPage<ProductMedia> results = productMediaService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }
 }

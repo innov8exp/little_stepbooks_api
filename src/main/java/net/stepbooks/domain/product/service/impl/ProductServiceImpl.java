@@ -10,7 +10,6 @@ import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.course.service.CourseService;
-import net.stepbooks.domain.goods.service.VirtualGoodsService;
 import net.stepbooks.domain.inventory.entity.Inventory;
 import net.stepbooks.domain.inventory.service.InventoryService;
 import net.stepbooks.domain.product.entity.*;
@@ -38,7 +37,6 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private final ProductCourseService productCourseService;
     private final CourseService courseService;
     private final InventoryService inventoryService;
-    private final VirtualGoodsService virtualGoodsService;
 
     @Override
     public IPage<Product> findProductsInPagingByCriteria(Page<Product> page, MProductQueryDto queryDto) {
