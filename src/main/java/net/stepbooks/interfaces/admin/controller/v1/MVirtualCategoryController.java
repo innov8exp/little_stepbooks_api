@@ -63,10 +63,7 @@ public class MVirtualCategoryController {
                                                              @RequestParam(required = false) String name) {
         Page<VirtualCategoryEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
-        if (type == null) {
-            type = VirtualCategoryType.MEDIA;
-        }
-        wrapper.eq(VirtualCategoryEntity::getType, type);
+        wrapper.eq(ObjectUtils.isNotEmpty(type), VirtualCategoryEntity::getType, type);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualCategoryEntity::getName, name);
         IPage<VirtualCategoryEntity> results = virtualCategoryService.page(page, wrapper);
         return ResponseEntity.ok(results);

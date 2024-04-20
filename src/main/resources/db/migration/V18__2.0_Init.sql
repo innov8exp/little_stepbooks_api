@@ -169,27 +169,16 @@ create TABLE STEP_VIRTUAL_GOODS_EXPIRATION
     modified_at   TIMESTAMP
 );
 
--- 订单与物理产品关系
-create TABLE STEP_ORDER_PHYSICAL_GOODS_REF
+-- 订单SKU信息
+create TABLE STEP_ORDER_SKU_REF
 (
-    id       VARCHAR(100)                                     NOT NULL PRIMARY KEY,
-    order_id VARCHAR(100) REFERENCES STEP_ORDER (id)          NOT NULL,
-    user_id  VARCHAR(100) REFERENCES STEP_USER (id)           NOT NULL,
-    spu_id   VARCHAR(100) REFERENCES STEP_PRODUCT (id)        NOT NULL,
-    sku_id   VARCHAR(100) REFERENCES STEP_SKU (id)            NOT NULL,
-    goods_id VARCHAR(100) REFERENCES STEP_PHYSICAL_GOODS (id) NOT NULL
-);
-
--- 订单与虚拟产品关系
-create TABLE STEP_ORDER_VIRTUAL_GOODS_REF
-(
-    id          VARCHAR(100)                                       NOT NULL PRIMARY KEY,
-    order_id    VARCHAR(100) REFERENCES STEP_ORDER (id)            NOT NULL,
-    user_id     VARCHAR(100) REFERENCES STEP_USER (id)             NOT NULL,
-    spu_id      VARCHAR(100) REFERENCES STEP_PRODUCT (id)          NOT NULL,
-    sku_id      VARCHAR(100) REFERENCES STEP_SKU (id)              NOT NULL,
-    category_id VARCHAR(100) REFERENCES STEP_VIRTUAL_CATEGORY (id) NOT NULL,
-    goods_id    VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id)    NOT NULL
+    id          VARCHAR(100)                              NOT NULL PRIMARY KEY,
+    order_id    VARCHAR(100) REFERENCES STEP_ORDER (id)   NOT NULL,
+    spu_id      VARCHAR(100) REFERENCES STEP_PRODUCT (id) NOT NULL,
+    sku_id      VARCHAR(100) REFERENCES STEP_SKU (id)     NOT NULL,
+    quantity    INTEGER,
+    created_at  TIMESTAMP,
+    modified_at TIMESTAMP
 );
 
 -- 给产品SKU信息增加"标签","视频展示"以及"详情图"字段
