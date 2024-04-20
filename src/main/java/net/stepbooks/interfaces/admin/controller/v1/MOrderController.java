@@ -19,8 +19,6 @@ import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.product.enums.ProductNature;
-import net.stepbooks.infrastructure.exception.BusinessException;
-import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.*;
 import org.springframework.beans.BeanUtils;
@@ -39,22 +37,29 @@ public class MOrderController {
     private final OrderOpsService orderOpsService;
     private final OrderService physicalOrderServiceImpl;
     private final OrderService virtualOrderServiceImpl;
+    private final OrderService mixedOrderServiceImpl;
     private final OrderEventLogService orderEventLogService;
     private final OrderProductService orderProductService;
     private final ContextManager contextManager;
     private final PaymentOpsService paymentOpsService;
     private final DeliveryService deliveryService;
 
+    private OrderService correctOrderService(Order order) {
+        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
+            return physicalOrderServiceImpl;
+        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
+            return virtualOrderServiceImpl;
+        } else if (ProductNature.MIXED.equals(order.getProductNature())) {
+            return mixedOrderServiceImpl;
+        }
+        return null;
+    }
+
+
     @PutMapping("/{id}/close")
     public ResponseEntity<?> closeOrder(@PathVariable String id) {
         Order order = orderOpsService.findOrderById(id);
-        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
-            physicalOrderServiceImpl.closeOrder(id);
-        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
-            virtualOrderServiceImpl.closeOrder(id);
-        } else {
-            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
-        }
+        correctOrderService(order).closeOrder(id);
         return ResponseEntity.ok().build();
     }
 
@@ -62,13 +67,15 @@ public class MOrderController {
     public ResponseEntity<?> shipOrder(@PathVariable String id, @RequestBody DeliveryInfoDto deliveryInfoDto) {
         AdminUser adminUser = contextManager.currentAdminUser();
         deliveryInfoDto.setShipperUserId(adminUser.getId());
-        physicalOrderServiceImpl.shipOrder(id, deliveryInfoDto);
+        Order order = orderOpsService.findOrderById(id);
+        correctOrderService(order).shipOrder(id, deliveryInfoDto);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}/sign")
     public ResponseEntity<?> signOrder(@PathVariable String id) {
-        physicalOrderServiceImpl.signOrder(id);
+        Order order = orderOpsService.findOrderById(id);
+        correctOrderService(order).signOrder(id);
         return ResponseEntity.ok().build();
     }
 

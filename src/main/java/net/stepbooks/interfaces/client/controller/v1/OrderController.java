@@ -48,6 +48,7 @@ public class OrderController {
     private final ContextManager contextManager;
     private final OrderService physicalOrderServiceImpl;
     private final OrderService virtualOrderServiceImpl;
+    private final OrderService mixedOrderServiceImpl;
     private final OrderOpsService orderOpsService;
     private final ProductService productService;
     private final RefundRequestService refundRequestService;
@@ -92,7 +93,7 @@ public class OrderController {
     public ResponseEntity<OrderAndPaymentDto> placeMixedOrder(@RequestBody PlaceOrderDto placeOrderDto) {
         User user = contextManager.currentUser();
         CreateOrderDto orderDto = prepareOrder(placeOrderDto, user);
-        Order order = physicalOrderServiceImpl.createOrder(orderDto);
+        Order order = mixedOrderServiceImpl.createOrder(orderDto);
         PrepayWithRequestPaymentResponse paymentResponse = preparePayment(order, orderDto.getSkus(), user);
         OrderAndPaymentDto orderAndPaymentDto = new OrderAndPaymentDto();
         orderAndPaymentDto.setOrder(order);
@@ -100,6 +101,7 @@ public class OrderController {
         return ResponseEntity.ok(orderAndPaymentDto);
     }
 
+    @Deprecated
     @Operation(summary = "实体产品下单")
     @PostMapping("/physical")
     public ResponseEntity<OrderAndPaymentDto> placePhysicalOrder(@RequestBody PlaceOrderDto placeOrderDto) {
@@ -113,6 +115,7 @@ public class OrderController {
         return ResponseEntity.ok(orderAndPaymentDto);
     }
 
+    @Deprecated
     @Operation(summary = "虚拟产品下单")
     @PostMapping("/virtual")
     public ResponseEntity<OrderAndPaymentDto> placeVirtualOrder(@RequestBody PlaceOrderDto placeOrderDto) {
@@ -228,6 +231,8 @@ public class OrderController {
             physicalOrderServiceImpl.cancelOrder(order.getId());
         } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
             virtualOrderServiceImpl.cancelOrder(order.getId());
+        } else if (ProductNature.MIXED.equals(order.getProductNature())) {
+            mixedOrderServiceImpl.cancelOrder(order.getId());
         } else {
             throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
         }

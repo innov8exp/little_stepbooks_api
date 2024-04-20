@@ -17,8 +17,6 @@ import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentType;
 import net.stepbooks.infrastructure.enums.TransactionStatus;
-import net.stepbooks.infrastructure.exception.BusinessException;
-import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +41,20 @@ public class PaymentController {
     private final PaymentOpsService paymentOpsService;
     private final OrderService physicalOrderServiceImpl;
     private final OrderService virtualOrderServiceImpl;
+    private final OrderService mixedOrderServiceImpl;
     private final OrderOpsService orderOpsService;
+
+    private OrderService correctOrderService(Order order) {
+        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
+            return physicalOrderServiceImpl;
+        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
+            return virtualOrderServiceImpl;
+        } else if (ProductNature.MIXED.equals(order.getProductNature())) {
+            return mixedOrderServiceImpl;
+        }
+        return null;
+    }
+
 
     @PostMapping("/wechat/pay/callback")
     public ResponseEntity<Transaction> handleWechatPaymentNotify(@RequestBody String body,
@@ -62,13 +73,7 @@ public class PaymentController {
         BigDecimal fen = new BigDecimal(transaction.getAmount().getTotal());
         payment.setTransactionAmount(fen.divide(new BigDecimal(ONE_HUNDRED)));
         payment.setTransactionStatus(transaction.getTradeState());
-        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
-            physicalOrderServiceImpl.paymentCallback(order, payment);
-        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
-            virtualOrderServiceImpl.paymentCallback(order, payment);
-        } else {
-            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
-        }
+        correctOrderService(order).paymentCallback(order, payment);
         return ResponseEntity.ok(transaction);
     }
 
@@ -89,13 +94,7 @@ public class PaymentController {
         BigDecimal fen = new BigDecimal(transaction.getAmount().getTotal());
         payment.setTransactionAmount(fen.divide(new BigDecimal(ONE_HUNDRED)));
         payment.setTransactionStatus(TransactionStatus.SUCCESS.name());
-        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
-            physicalOrderServiceImpl.refundCallback(order, payment);
-        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
-            virtualOrderServiceImpl.refundCallback(order, payment);
-        } else {
-            throw new BusinessException(ErrorCode.ORDER_NATURE_NOT_SUPPORT);
-        }
+        correctOrderService(order).refundCallback(order, payment);
         return ResponseEntity.ok(transaction);
     }
 

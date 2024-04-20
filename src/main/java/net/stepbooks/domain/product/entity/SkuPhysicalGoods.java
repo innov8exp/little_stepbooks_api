@@ -1,6 +1,7 @@
 package net.stepbooks.domain.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -8,7 +9,11 @@ import lombok.Data;
 public class SkuPhysicalGoods {
 
     private String id;
+
+    @NotNull
     private String spuId;
+
+    @NotNull
     private String skuId;
     private String goodsId;
 

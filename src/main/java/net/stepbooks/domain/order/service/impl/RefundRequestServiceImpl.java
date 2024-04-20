@@ -14,6 +14,7 @@ import net.stepbooks.domain.order.mapper.RefundRequestMapper;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.order.service.RefundRequestService;
+import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.RefundStatus;
 import net.stepbooks.infrastructure.enums.RefundType;
@@ -35,7 +36,20 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
 
     private final RefundRequestMapper refundRequestMapper;
     private final OrderService physicalOrderServiceImpl;
+    private final OrderService virtualOrderServiceImpl;
+    private final OrderService mixedOrderServiceImpl;
     private final OrderOpsService orderOpsService;
+
+    private OrderService correctOrderService(Order order) {
+        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
+            return physicalOrderServiceImpl;
+        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
+            return virtualOrderServiceImpl;
+        } else if (ProductNature.MIXED.equals(order.getProductNature())) {
+            return mixedOrderServiceImpl;
+        }
+        return null;
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -61,12 +75,12 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
             refundRequest.setRequestStatus(RequestStatus.APPROVED);
             refundRequest.setRefundType(RefundType.ONLY_REFUND);
             try {
-                physicalOrderServiceImpl.refundRequest(order.getId(), refundRequest);
+                correctOrderService(order).refundRequest(order.getId(), refundRequest);
             } catch (Exception e) {
                 throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
             }
         } else {
-        // 已发货的订单退货退款
+            // 已发货的订单退货退款
             refundRequest.setRequestStatus(RequestStatus.PENDING);
             refundRequest.setRefundType(RefundType.REFUND_AND_RETURN);
         }
@@ -88,7 +102,9 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
     @Transactional(rollbackFor = Exception.class)
     public void approveRefundRequest(String id, BigDecimal refundAmount) {
         RefundRequest refundRequest = getById(id);
-        physicalOrderServiceImpl.refundApprove(refundRequest.getOrderId(), refundAmount);
+        String orderId = refundRequest.getOrderId();
+        Order order = orderOpsService.findOrderById(orderId);
+        correctOrderService(order).refundApprove(refundRequest.getOrderId(), refundAmount);
         refundRequest.setRequestStatus(RequestStatus.APPROVED);
         refundRequest.setRefundStatus(RefundStatus.REFUNDING_WAIT_DELIVERY);
         refundRequest.setRefundAmount(refundAmount);
@@ -127,7 +143,7 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
         updateById(refundRequest);
         try {
             Order order = orderOpsService.findOrderById(refundRequest.getOrderId());
-            physicalOrderServiceImpl.refundPayment(order, refundRequest);
+            correctOrderService(order).refundPayment(order, refundRequest);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
         }

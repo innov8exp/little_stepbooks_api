@@ -14,11 +14,13 @@ public class OrderJob implements Job {
 
     private final OrderService physicalOrderServiceImpl;
     private final OrderService virtualOrderServiceImpl;
+    private final OrderService mixedOrderServiceImpl;
 
     @Override
     public void execute(JobExecutionContext context) {
         log.debug("Order Job is running...");
         physicalOrderServiceImpl.cancelTimeoutOrders();
         virtualOrderServiceImpl.cancelTimeoutOrders();
+        mixedOrderServiceImpl.cancelTimeoutOrders();
     }
 }

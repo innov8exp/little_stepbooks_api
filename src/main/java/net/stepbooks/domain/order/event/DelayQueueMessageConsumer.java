@@ -19,6 +19,7 @@ public class DelayQueueMessageConsumer {
     private final DelayQueueMessageProducer delayQueueMessageProducer;
     private final OrderService physicalOrderServiceImpl;
     private final OrderService virtualOrderServiceImpl;
+    private final OrderService mixedOrderServiceImpl;
 
 
     @Async("CustomAsyncExecutor")
@@ -32,6 +33,7 @@ public class DelayQueueMessageConsumer {
             log.info("get content to do cancelOrderAsPaymentTimeout task [{}]...", recordId);
             physicalOrderServiceImpl.autoCancelWhenPaymentTimeout(recordId);
             virtualOrderServiceImpl.autoCancelWhenPaymentTimeout(recordId);
+            mixedOrderServiceImpl.autoCancelWhenPaymentTimeout(recordId);
         }
     }
 

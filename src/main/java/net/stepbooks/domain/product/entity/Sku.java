@@ -1,6 +1,7 @@
 package net.stepbooks.domain.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.infrastructure.model.BaseEntity;
@@ -14,6 +15,8 @@ import java.math.BigDecimal;
 @Builder
 @TableName("STEP_SKU")
 public class Sku extends BaseEntity {
+
+    @NotNull
     private String spuId;
     private String skuCode;
     private String skuName;

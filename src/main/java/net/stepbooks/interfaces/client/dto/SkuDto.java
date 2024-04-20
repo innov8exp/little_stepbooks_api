@@ -9,9 +9,12 @@ public class SkuDto {
 
     @NotNull
     private String id;
+
+    @NotNull
     private String spuId;
     private String skuCode;
 
+    @Deprecated
     private Product product;
     private int quantity;
 }
