@@ -9,13 +9,13 @@ import net.stepbooks.domain.delivery.enums.DeliveryMethod;
 import net.stepbooks.domain.delivery.enums.DeliveryStatus;
 import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;
-import net.stepbooks.domain.order.entity.OrderProduct;
+import net.stepbooks.domain.order.entity.OrderSku;
 import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.mapper.OrderMapper;
-import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.domain.order.service.OrderService;
+import net.stepbooks.domain.order.service.OrderSkuService;
 import net.stepbooks.domain.order.util.OrderUtil;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
@@ -48,7 +48,7 @@ import static net.stepbooks.infrastructure.AppConstants.*;
 public class MixedOrderServiceImpl implements OrderService {
 
     private final OrderMapper orderMapper;
-    private final OrderProductService orderProductService;
+    private final OrderSkuService orderSkuService;
     private final DeliveryService deliveryService;
     private final PaymentOpsService paymentOpsService;
     private final PaymentService paymentService;
@@ -74,17 +74,15 @@ public class MixedOrderServiceImpl implements OrderService {
             if (sku.getQuantity() == 0) {
                 throw new BusinessException(ErrorCode.ORDER_QUANTITY_IS_ZERO);
             }
-            Product product = sku.getProduct();
-            String productId = product.getId();
 
-
-            // 创建订单商品
-            OrderProduct orderProduct = OrderProduct.builder()
+            // 创建订单SKU商品
+            OrderSku orderSku = OrderSku.builder()
                     .orderId(order.getId())
-                    .productId(productId)
+                    .spuId(sku.getSpuId())
+                    .skuId(sku.getId())
                     .quantity(sku.getQuantity())
                     .build();
-            orderProductService.save(orderProduct);
+            orderSkuService.save(orderSku);
 
         }
 
