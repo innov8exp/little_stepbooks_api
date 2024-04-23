@@ -4,7 +4,6 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderState;
-import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.util.RandomNumberUtils;
@@ -27,9 +26,8 @@ public class OrderUtil {
     public static Order buildOrder(CreateOrderDto orderDto, List<SkuDto> skus, String orderCode,
                                    ProductNature productNature) {
         BigDecimal totalAmount = BigDecimal.ZERO;
-        for (SkuDto sku: skus) {
-            Product product = sku.getProduct();
-            BigDecimal price = product.getPrice().multiply(new BigDecimal(sku.getQuantity()));
+        for (SkuDto sku : skus) {
+            BigDecimal price = sku.getPrice().multiply(new BigDecimal(sku.getQuantity()));
             totalAmount = totalAmount.add(price);
         }
         return Order.builder()

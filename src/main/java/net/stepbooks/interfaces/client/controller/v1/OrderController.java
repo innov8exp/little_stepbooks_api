@@ -20,8 +20,10 @@ import net.stepbooks.domain.order.service.RefundRequestService;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.product.entity.Product;
+import net.stepbooks.domain.product.entity.Sku;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductService;
+import net.stepbooks.domain.product.service.SkuService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
@@ -54,10 +56,19 @@ public class OrderController {
     private final DeliveryService deliveryService;
     private final PaymentService paymentService;
     private final OrderProductService orderProductService;
+    private final SkuService skuService;
 
     private CreateOrderDto prepareOrder(PlaceOrderDto placeOrderDto, User user) {
         CreateOrderDto orderDto = BaseAssembler.convert(placeOrderDto, CreateOrderDto.class);
         orderDto.setUserId(user.getId());
+
+        for (SkuDto skuDto : orderDto.getSkus()) {
+            //查询价格
+            String skuId = skuDto.getId();
+            Sku sku = skuService.getById(skuId);
+            skuDto.setPrice(sku.getPrice());
+        }
+
         return orderDto;
     }
 
