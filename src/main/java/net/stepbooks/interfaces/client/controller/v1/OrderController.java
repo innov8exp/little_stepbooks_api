@@ -19,7 +19,6 @@ import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.order.service.RefundRequestService;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
-import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.entity.Sku;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductService;
@@ -74,9 +73,9 @@ public class OrderController {
 
     private PrepayWithRequestPaymentResponse preparePayment(Order order, List<SkuDto> skus, User user) {
         StringBuilder payContent = new StringBuilder("【 ");
-        for (SkuDto sku : skus) {
-            Product product = productService.getProductBySkuCode(sku.getSkuCode());
-            payContent.append(product.getSkuName()).append(" ");
+        for (SkuDto skuDto : skus) {
+            Sku sku = skuService.getById(skuDto.getId());
+            payContent.append(sku.getSkuName()).append(" ");
         }
         payContent.append("】");
         WechatPayPrePayRequest payPrePayRequest = new WechatPayPrePayRequest();
