@@ -38,6 +38,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.stepbooks.infrastructure.AppConstants.*;
@@ -67,6 +68,8 @@ public class MixedOrderServiceImpl implements OrderService {
         Order order = OrderUtil.buildOrder(orderDto, skus, orderCode, ProductNature.MIXED);
         log.info("OrderNo:" + order.getOrderCode());
         orderMapper.insert(order);
+
+        ArrayList<OrderSku> orderSkus = new ArrayList<>();
         for (SkuDto sku : skus) {
             if (sku == null) {
                 throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
@@ -82,9 +85,9 @@ public class MixedOrderServiceImpl implements OrderService {
                     .skuId(sku.getId())
                     .quantity(sku.getQuantity())
                     .build();
-            orderSkuService.save(orderSku);
-
+            orderSkus.add(orderSku);
         }
+        orderSkuService.saveBatch(orderSkus);
 
         // 创建物流信息
         Delivery delivery = buildDelivery(order, orderDto);

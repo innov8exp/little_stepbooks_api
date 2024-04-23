@@ -32,7 +32,6 @@ import net.stepbooks.interfaces.admin.dto.OrderProductDto;
 import net.stepbooks.interfaces.client.dto.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -59,15 +58,6 @@ public class OrderController {
     private CreateOrderDto prepareOrder(PlaceOrderDto placeOrderDto, User user) {
         CreateOrderDto orderDto = BaseAssembler.convert(placeOrderDto, CreateOrderDto.class);
         orderDto.setUserId(user.getId());
-        List<SkuDto> skus = orderDto.getSkus();
-        skus = skus.stream().peek(sku -> {
-            Product product = productService.getProductBySkuCode(sku.getSkuCode());
-            if (ObjectUtils.isEmpty(product)) {
-                throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
-            }
-            sku.setProduct(product);
-        }).toList();
-        orderDto.setSkus(skus);
         return orderDto;
     }
 
