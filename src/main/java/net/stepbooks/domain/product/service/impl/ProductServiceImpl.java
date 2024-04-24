@@ -1,5 +1,6 @@
 package net.stepbooks.domain.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -152,7 +154,15 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Override
     public ProductDto findDetailById(String id) {
-        ProductDto productDto = productMapper.findDetailById(id);
+        Product product = productMapper.selectById(id);
+        ProductDto productDto = BaseAssembler.convert(product, ProductDto.class);
+
+        LambdaQueryWrapper<ProductClassification> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(ProductClassification::getProductId, id);
+        List<ProductClassification> productClassifications = productClassificationService.list(wrapper);
+        String[] classificationIds = productClassifications.stream()
+                .map(ProductClassification::getClassificationId).collect(Collectors.toList()).toArray(new String[0]);
+        productDto.setClassificationIds(classificationIds);
         List<ProductMediaDto> medias = productMediaService.findMediasByProductId(id);
         productDto.setMedias(medias);
         return productDto;

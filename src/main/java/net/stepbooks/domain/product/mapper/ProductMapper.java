@@ -7,13 +7,10 @@ import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductStatus;
-import net.stepbooks.interfaces.admin.dto.ProductDto;
 
 import java.util.List;
 
 public interface ProductMapper extends BaseMapper<Product> {
-
-    ProductDto findDetailById(String id);
 
     IPage<Product> findProductsInPagingByCriteria(IPage<Product> page, String skuName, ProductStatus status);
 

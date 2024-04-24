@@ -25,7 +25,8 @@ public class ProductDto {
     private List<ProductMediaDto> medias;
     private ProductStatus status;
     private String[] classificationIds;
-    private String[] classificationNames;
+
+    //private String[] classificationNames;
 
     @Deprecated
     //使用physicalGoodsIds和virtualGoodsIds替代
