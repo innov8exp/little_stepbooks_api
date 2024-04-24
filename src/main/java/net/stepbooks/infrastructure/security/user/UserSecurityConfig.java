@@ -63,6 +63,7 @@ public class UserSecurityConfig {
                                 mvc.pattern("/local_protocol.html"),
                                 mvc.pattern("/privacy_policy.html"),
                                 mvc.pattern("/user_agreement.html"),
+                                mvc.pattern("/stepbooks_catalog_2024.html"),
                                 mvc.pattern("/e4evlW47q4.txt")
                                 )
                         .permitAll()
