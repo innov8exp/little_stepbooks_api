@@ -55,14 +55,16 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         Product product = BaseAssembler.convert(productDto, Product.class);
         product.setSkuCode(IdWorker.getIdStr());
         productMapper.insert(product);
-        List<ProductMedia> productMedias = productDto.getMedias().stream().map(media -> {
-            ProductMedia productMedia = new ProductMedia();
-            productMedia.setProductId(product.getId());
-            productMedia.setMediaId(media.getMediaId());
-            productMedia.setMediaUrl(media.getMediaUrl());
-            return productMedia;
-        }).toList();
-        productMediaService.saveBatch(productMedias);
+        if (productDto.getMedias() != null && productDto.getMedias().size() > 0) {
+            List<ProductMedia> productMedias = productDto.getMedias().stream().map(media -> {
+                ProductMedia productMedia = new ProductMedia();
+                productMedia.setProductId(product.getId());
+                productMedia.setMediaId(media.getMediaId());
+                productMedia.setMediaUrl(media.getMediaUrl());
+                return productMedia;
+            }).toList();
+            productMediaService.saveBatch(productMedias);
+        }
         List<ProductClassification> productClassifications
                 = Arrays.stream(productDto.getClassificationIds()).map(classificationId -> {
             ProductClassification productClassification = new ProductClassification();
@@ -103,14 +105,16 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         product.setId(id);
         productMapper.updateById(product);
         productMediaService.remove(Wrappers.<ProductMedia>lambdaQuery().eq(ProductMedia::getProductId, id));
-        List<ProductMedia> productMedias = productDto.getMedias().stream().map(media -> {
-            ProductMedia productMedia = new ProductMedia();
-            productMedia.setProductId(id);
-            productMedia.setMediaId(media.getMediaId());
-            productMedia.setMediaUrl(media.getMediaUrl());
-            return productMedia;
-        }).toList();
-        productMediaService.saveBatch(productMedias);
+        if (productDto.getMedias() != null && productDto.getMedias().size() > 0) {
+            List<ProductMedia> productMedias = productDto.getMedias().stream().map(media -> {
+                ProductMedia productMedia = new ProductMedia();
+                productMedia.setProductId(id);
+                productMedia.setMediaId(media.getMediaId());
+                productMedia.setMediaUrl(media.getMediaUrl());
+                return productMedia;
+            }).toList();
+            productMediaService.saveBatch(productMedias);
+        }
         productClassificationService.remove(Wrappers.<ProductClassification>lambdaQuery()
                 .eq(ProductClassification::getProductId, id));
         List<ProductClassification> productClassifications
