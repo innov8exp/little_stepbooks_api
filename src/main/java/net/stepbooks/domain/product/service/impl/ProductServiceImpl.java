@@ -129,27 +129,31 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         productClassificationService.saveBatch(productClassifications);
 
         // 保存产品与书籍的关系
-        productBookService.remove(Wrappers.<ProductBook>lambdaQuery().eq(ProductBook::getProductId, id));
-        List<ProductBook> productBooks = productDto.getBookIds().stream().map(bookId -> {
-            ProductBook productBook = new ProductBook();
-            productBook.setBookId(bookId);
-            productBook.setProductId(product.getId());
-            return productBook;
-        }).toList();
-        productBookService.saveBatch(productBooks);
-        // 保存产品与课程的关系
-        productCourseService.remove(Wrappers.<ProductCourse>lambdaQuery().eq(ProductCourse::getProductId, id));
-        productDto.getBookIds().forEach(bookId -> {
-            List<Course> courses = courseService.getBookCourses(bookId);
-            List<ProductCourse> productCourses = courses.stream().map(course -> {
-                ProductCourse productCourse = new ProductCourse();
-                productCourse.setCourseId(course.getId());
-                productCourse.setProductId(product.getId());
-                productCourse.setBookId(bookId);
-                return productCourse;
+        if (productDto.getBookIds() != null) {
+            productBookService.remove(Wrappers.<ProductBook>lambdaQuery().eq(ProductBook::getProductId, id));
+            List<ProductBook> productBooks = productDto.getBookIds().stream().map(bookId -> {
+                ProductBook productBook = new ProductBook();
+                productBook.setBookId(bookId);
+                productBook.setProductId(product.getId());
+                return productBook;
             }).toList();
-            productCourseService.saveBatch(productCourses);
-        });
+            productBookService.saveBatch(productBooks);
+        }
+        // 保存产品与课程的关系
+        if (productDto.getBookIds() != null) {
+            productCourseService.remove(Wrappers.<ProductCourse>lambdaQuery().eq(ProductCourse::getProductId, id));
+            productDto.getBookIds().forEach(bookId -> {
+                List<Course> courses = courseService.getBookCourses(bookId);
+                List<ProductCourse> productCourses = courses.stream().map(course -> {
+                    ProductCourse productCourse = new ProductCourse();
+                    productCourse.setCourseId(course.getId());
+                    productCourse.setProductId(product.getId());
+                    productCourse.setBookId(bookId);
+                    return productCourse;
+                }).toList();
+                productCourseService.saveBatch(productCourses);
+            });
+        }
     }
 
     @Override
