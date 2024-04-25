@@ -41,6 +41,7 @@ public class VirtualCategoryController {
         wrapper.eq(VirtualCategoryEntity::getType, type);
         wrapper.eq(VirtualCategoryEntity::getStatus, PublishStatus.ONLINE);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualCategoryEntity::getName, name);
+        wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
         IPage<VirtualCategoryEntity> results = virtualCategoryService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }

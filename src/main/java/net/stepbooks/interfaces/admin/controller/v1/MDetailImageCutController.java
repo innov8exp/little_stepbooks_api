@@ -56,6 +56,7 @@ public class MDetailImageCutController {
     public ResponseEntity<List<DetailImageCut>> list(@RequestParam String detailImgId) {
         LambdaQueryWrapper<DetailImageCut> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(DetailImageCut::getDetailImgId, detailImgId);
+        wrapper.orderByAsc(DetailImageCut::getSortIndex);
         List<DetailImageCut> results = detailImageCutService.list(wrapper);
         return ResponseEntity.ok(results);
     }

@@ -65,6 +65,7 @@ public class MVirtualCategoryController {
         LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ObjectUtils.isNotEmpty(type), VirtualCategoryEntity::getType, type);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualCategoryEntity::getName, name);
+        wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
         IPage<VirtualCategoryEntity> results = virtualCategoryService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }

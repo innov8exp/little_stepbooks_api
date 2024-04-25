@@ -70,6 +70,7 @@ public class MVirtualGoodsAudioController {
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualGoodsAudioEntity::getName, name);
         wrapper.eq(ObjectUtils.isNotEmpty(goodsId), VirtualGoodsAudioEntity::getGoodsId, goodsId);
         wrapper.eq(ObjectUtils.isNotEmpty(categoryId), VirtualGoodsAudioEntity::getCategoryId, categoryId);
+        wrapper.orderByAsc(VirtualGoodsAudioEntity::getSortIndex);
         IPage<VirtualGoodsAudioEntity> results = virtualGoodsAudioService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }

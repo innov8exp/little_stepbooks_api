@@ -62,6 +62,7 @@ public class MVirtualGoodsController {
         LambdaQueryWrapper<VirtualGoodsEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ObjectUtils.isNotEmpty(categoryId), VirtualGoodsEntity::getCategoryId, categoryId);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualGoodsEntity::getName, name);
+        wrapper.orderByAsc(VirtualGoodsEntity::getSortIndex);
         IPage<VirtualGoodsEntity> results = virtualGoodsService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }

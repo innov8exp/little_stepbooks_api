@@ -70,6 +70,7 @@ public class MVirtualGoodsVideoController {
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualGoodsVideoEntity::getName, name);
         wrapper.eq(ObjectUtils.isNotEmpty(goodsId), VirtualGoodsVideoEntity::getGoodsId, goodsId);
         wrapper.eq(ObjectUtils.isNotEmpty(categoryId), VirtualGoodsVideoEntity::getCategoryId, categoryId);
+        wrapper.orderByAsc(VirtualGoodsVideoEntity::getSortIndex);
         IPage<VirtualGoodsVideoEntity> results = virtualGoodsVideoService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }

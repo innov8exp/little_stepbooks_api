@@ -1,6 +1,8 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -55,7 +57,10 @@ public class MVirtualGoodsCourseController {
     public ResponseEntity<IPage<VirtualGoodsCourseEntity>> list(@RequestParam int currentPage,
                                                                 @RequestParam int pageSize) {
         Page<VirtualGoodsCourseEntity> page = Page.of(currentPage, pageSize);
-        IPage<VirtualGoodsCourseEntity> results = virtualGoodsCourseService.page(page);
+
+        LambdaQueryWrapper<VirtualGoodsCourseEntity> wrapper = Wrappers.lambdaQuery();
+        wrapper.orderByAsc(VirtualGoodsCourseEntity::getSortIndex);
+        IPage<VirtualGoodsCourseEntity> results = virtualGoodsCourseService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }
 
