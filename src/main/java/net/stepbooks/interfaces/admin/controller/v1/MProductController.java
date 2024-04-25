@@ -38,6 +38,25 @@ public class MProductController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{id}/simple-update")
+    public ResponseEntity<?> simpleUpdate(@PathVariable String id,
+                                          @RequestParam(required = false) String detailImageId,
+                                          @RequestParam(required = false) String videoId,
+                                          @RequestParam(required = false) String videoUrl) {
+        Product product = productService.getById(id);
+        if (detailImageId != null) {
+            product.setDetailImgId(detailImageId);
+        }
+        if (videoId != null) {
+            product.setVideoId(videoId);
+        }
+        if (videoUrl != null) {
+            product.setVideoUrl(videoUrl);
+        }
+        productService.save(product);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/{id}/status/{status}")
     public ResponseEntity<?> updateProductStatus(@PathVariable String id, @PathVariable String status) {
         productService.updateProductStatus(id, ProductStatus.valueOf(status));
