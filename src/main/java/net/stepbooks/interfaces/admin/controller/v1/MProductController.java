@@ -53,7 +53,7 @@ public class MProductController {
         if (videoUrl != null) {
             product.setVideoUrl(videoUrl);
         }
-        productService.save(product);
+        productService.updateById(product);
         return ResponseEntity.ok().build();
     }
 
