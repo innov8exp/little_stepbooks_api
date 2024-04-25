@@ -23,9 +23,9 @@ public class MVirtualGoodsCourseController {
 
     @PostMapping()
     @Operation(summary = "创建虚拟产品课程")
-    public ResponseEntity<?> create(@RequestBody VirtualGoodsCourseEntity entity) {
+    public ResponseEntity<VirtualGoodsCourseEntity> create(@RequestBody VirtualGoodsCourseEntity entity) {
         virtualGoodsCourseService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")

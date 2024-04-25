@@ -25,9 +25,9 @@ public class MSkuVirtualGoodsController {
 
     @PostMapping()
     @Operation(summary = "创建SKU与虚拟产品关系")
-    public ResponseEntity<?> create(@RequestBody SkuVirtualGoods entity) {
+    public ResponseEntity<SkuVirtualGoods> create(@RequestBody SkuVirtualGoods entity) {
         skuVirtualGoodsService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")

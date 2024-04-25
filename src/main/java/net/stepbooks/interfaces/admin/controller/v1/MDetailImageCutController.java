@@ -24,9 +24,9 @@ public class MDetailImageCutController {
 
     @PostMapping()
     @Operation(summary = "创建详情图切图")
-    public ResponseEntity<?> create(@RequestBody DetailImageCut entity) {
+    public ResponseEntity<DetailImageCut> create(@RequestBody DetailImageCut entity) {
         detailImageCutService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")

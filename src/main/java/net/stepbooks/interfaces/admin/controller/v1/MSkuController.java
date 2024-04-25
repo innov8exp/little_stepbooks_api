@@ -26,9 +26,9 @@ public class MSkuController {
 
     @PostMapping()
     @Operation(summary = "创建SKU")
-    public ResponseEntity<?> create(@RequestBody Sku entity) {
+    public ResponseEntity<Sku> create(@RequestBody Sku entity) {
         skuService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")

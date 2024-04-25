@@ -26,10 +26,10 @@ public class MPhysicalGoodsController {
 
     @PostMapping()
     @Operation(summary = "创建物理产品")
-    public ResponseEntity<?> create(@RequestBody PhysicalGoodsEntity entity) {
+    public ResponseEntity<PhysicalGoodsEntity> create(@RequestBody PhysicalGoodsEntity entity) {
         entity.setStatus(PublishStatus.OFFLINE);
         physicalGoodsService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")

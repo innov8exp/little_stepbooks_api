@@ -25,9 +25,9 @@ public class MVirtualGoodsController {
 
     @PostMapping()
     @Operation(summary = "创建虚拟产品")
-    public ResponseEntity<?> create(@RequestBody VirtualGoodsEntity entity) {
+    public ResponseEntity<VirtualGoodsEntity> create(@RequestBody VirtualGoodsEntity entity) {
         virtualGoodsService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")

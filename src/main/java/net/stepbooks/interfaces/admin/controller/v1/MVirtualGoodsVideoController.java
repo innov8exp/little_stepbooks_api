@@ -27,11 +27,11 @@ public class MVirtualGoodsVideoController {
 
     @PostMapping()
     @Operation(summary = "创建虚拟产品视频")
-    public ResponseEntity<?> create(@RequestBody VirtualGoodsVideoEntity entity) {
+    public ResponseEntity<VirtualGoodsVideoEntity> create(@RequestBody VirtualGoodsVideoEntity entity) {
         String goodsId = entity.getGoodsId();
         entity.setCategoryId(virtualGoodsService.getById(goodsId).getCategoryId());
         virtualGoodsVideoService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")

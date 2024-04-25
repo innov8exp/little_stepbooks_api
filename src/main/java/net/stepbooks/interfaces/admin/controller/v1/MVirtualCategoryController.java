@@ -27,10 +27,10 @@ public class MVirtualCategoryController {
 
     @PostMapping()
     @Operation(summary = "创建虚拟产品大类")
-    public ResponseEntity<?> create(@RequestBody VirtualCategoryEntity entity) {
+    public ResponseEntity<VirtualCategoryEntity> create(@RequestBody VirtualCategoryEntity entity) {
         entity.setStatus(PublishStatus.OFFLINE);
         virtualCategoryService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")

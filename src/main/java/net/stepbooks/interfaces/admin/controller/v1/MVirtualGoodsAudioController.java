@@ -27,11 +27,11 @@ public class MVirtualGoodsAudioController {
 
     @PostMapping()
     @Operation(summary = "创建虚拟产品音频")
-    public ResponseEntity<?> create(@RequestBody VirtualGoodsAudioEntity entity) {
+    public ResponseEntity<VirtualGoodsAudioEntity> create(@RequestBody VirtualGoodsAudioEntity entity) {
         String goodsId = entity.getGoodsId();
         entity.setCategoryId(virtualGoodsService.getById(goodsId).getCategoryId());
         virtualGoodsAudioService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")

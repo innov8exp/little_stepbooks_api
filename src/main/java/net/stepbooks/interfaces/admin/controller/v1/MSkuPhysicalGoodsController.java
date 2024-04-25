@@ -25,9 +25,9 @@ public class MSkuPhysicalGoodsController {
 
     @PostMapping()
     @Operation(summary = "创建SKU与物理产品关系")
-    public ResponseEntity<?> create(@RequestBody SkuPhysicalGoods entity) {
+    public ResponseEntity<SkuPhysicalGoods> create(@RequestBody SkuPhysicalGoods entity) {
         skuPhysicalGoodsService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")

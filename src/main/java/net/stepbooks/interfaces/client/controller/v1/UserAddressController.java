@@ -25,11 +25,11 @@ public class UserAddressController {
 
     @PostMapping
     @Operation(summary = "创建用户地址")
-    public ResponseEntity<?> createUserAddress(@RequestBody UserAddress userAddress) {
+    public ResponseEntity<UserAddress> createUserAddress(@RequestBody UserAddress userAddress) {
         User user = contextManager.currentUser();
         userAddress.setUserId(user.getId());
         userAddressService.createUserAddress(userAddress);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(userAddress);
     }
 
     @GetMapping

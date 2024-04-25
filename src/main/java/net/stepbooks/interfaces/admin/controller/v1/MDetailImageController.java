@@ -25,9 +25,9 @@ public class MDetailImageController {
 
     @PostMapping()
     @Operation(summary = "创建详情图")
-    public ResponseEntity<?> create(@RequestBody DetailImage entity) {
+    public ResponseEntity<DetailImage> create(@RequestBody DetailImage entity) {
         detailImageService.save(entity);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(entity);
     }
 
     @PutMapping("/{id}")
