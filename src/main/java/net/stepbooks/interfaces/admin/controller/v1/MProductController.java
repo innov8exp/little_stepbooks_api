@@ -40,12 +40,12 @@ public class MProductController {
 
     @PutMapping("/{id}/simple-update")
     public ResponseEntity<?> simpleUpdate(@PathVariable String id,
-                                          @RequestParam(required = false) String detailImageId,
+                                          @RequestParam(required = false) String detailImgId,
                                           @RequestParam(required = false) String videoId,
                                           @RequestParam(required = false) String videoUrl) {
         Product product = productService.getById(id);
-        if (detailImageId != null) {
-            product.setDetailImgId(detailImageId);
+        if (detailImgId != null) {
+            product.setDetailImgId(detailImgId);
         }
         if (videoId != null) {
             product.setVideoId(videoId);
