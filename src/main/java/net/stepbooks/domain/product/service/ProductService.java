@@ -43,4 +43,6 @@ public interface ProductService extends IService<Product> {
     List<Book> findBookByProductId(String id);
 
     List<Product> findProductsBySkuCodes(List<String> skuCodes);
+
+    void reloadDisplayPrice(String id);
 }

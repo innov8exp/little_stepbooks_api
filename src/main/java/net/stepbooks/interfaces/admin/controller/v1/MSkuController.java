@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.product.entity.Sku;
+import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.product.service.SkuService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,13 @@ public class MSkuController {
 
 
     private final SkuService skuService;
+    private final ProductService productService;
 
     @PostMapping()
     @Operation(summary = "创建SKU")
     public ResponseEntity<Sku> create(@RequestBody Sku entity) {
         skuService.save(entity);
+        productService.reloadDisplayPrice(entity.getSpuId());
         return ResponseEntity.ok(entity);
     }
 
@@ -36,13 +39,16 @@ public class MSkuController {
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody Sku entity) {
         entity.setId(id);
         skuService.updateById(entity);
+        productService.reloadDisplayPrice(entity.getSpuId());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除SKU")
     public ResponseEntity<?> delete(@PathVariable String id) {
+        Sku sku = skuService.getById(id);
         skuService.removeById(id);
+        productService.reloadDisplayPrice(sku.getSpuId());
         return ResponseEntity.ok().build();
     }
 

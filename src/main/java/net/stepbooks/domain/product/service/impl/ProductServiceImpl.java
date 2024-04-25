@@ -24,6 +24,7 @@ import net.stepbooks.interfaces.admin.dto.ProductMediaDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private final ProductCourseService productCourseService;
     private final CourseService courseService;
     private final InventoryService inventoryService;
+    private final SkuService skuService;
 
     @Override
     public IPage<Product> findProductsInPagingByCriteria(Page<Product> page, MProductQueryDto queryDto) {
@@ -231,6 +233,30 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     public List<Product> findProductsBySkuCodes(List<String> skuCodes) {
         return list(Wrappers.<Product>lambdaQuery().in(Product::getSkuCode, skuCodes));
+    }
+
+    @Override
+    public void reloadDisplayPrice(String id) {
+        LambdaQueryWrapper<Sku> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(Sku::getSpuId, id);
+        List<Sku> skus = skuService.list(wrapper);
+
+        BigDecimal price = null;
+        for (Sku sku : skus) {
+            if (price == null) {
+                price = sku.getPrice();
+            } else {
+                if (sku.getPrice().compareTo(price) < 0) {
+                    price = sku.getPrice();
+                }
+            }
+        }
+
+        if (price != null) {
+            Product product = getById(id);
+            product.setPrice(price);
+            updateById(product);
+        }
     }
 
 }
