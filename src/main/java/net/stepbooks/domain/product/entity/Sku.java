@@ -18,7 +18,6 @@ public class Sku extends BaseEntity {
 
     @NotNull
     private String spuId;
-    private String skuCode;
     private String skuName;
     private BigDecimal originalPrice;
     private BigDecimal price;

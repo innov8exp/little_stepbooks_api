@@ -13,10 +13,7 @@ import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.enums.OrderState;
-import net.stepbooks.domain.order.service.OrderOpsService;
-import net.stepbooks.domain.order.service.OrderProductService;
-import net.stepbooks.domain.order.service.OrderService;
-import net.stepbooks.domain.order.service.RefundRequestService;
+import net.stepbooks.domain.order.service.*;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.product.entity.Sku;
@@ -55,6 +52,7 @@ public class OrderController {
     private final DeliveryService deliveryService;
     private final PaymentService paymentService;
     private final OrderProductService orderProductService;
+    private final OrderSkuService orderSkuService;
     private final SkuService skuService;
 
     private CreateOrderDto prepareOrder(PlaceOrderDto placeOrderDto, User user) {
@@ -75,6 +73,22 @@ public class OrderController {
         StringBuilder payContent = new StringBuilder("【 ");
         for (SkuDto skuDto : skus) {
             Sku sku = skuService.getById(skuDto.getId());
+            payContent.append(sku.getSkuName()).append(" ");
+        }
+        payContent.append("】");
+        WechatPayPrePayRequest payPrePayRequest = new WechatPayPrePayRequest();
+        payPrePayRequest.setOutTradeNo(order.getOrderCode());
+        payPrePayRequest.setOpenId(user.getOpenId());
+        payPrePayRequest.setPayMoney(order.getTotalAmount());
+        payPrePayRequest.setPayContent(payContent.toString());
+        // remove this after debug
+        payPrePayRequest.setPayMoney(new BigDecimal("0.01"));
+        return paymentService.prepayWithRequestPayment(payPrePayRequest);
+    }
+
+    private PrepayWithRequestPaymentResponse preparePaymentWithSkus(Order order, List<Sku> skus, User user) {
+        StringBuilder payContent = new StringBuilder("【 ");
+        for (Sku sku : skus) {
             payContent.append(sku.getSkuName()).append(" ");
         }
         payContent.append("】");
@@ -140,16 +154,8 @@ public class OrderController {
         if (!OrderState.PLACED.equals(order.getState())) {
             throw new BusinessException(ErrorCode.ORDER_STATE_NOT_SUPPORT);
         }
-        List<OrderProductDto> orderProducts = orderProductService.findByOrderId(order.getId());
-        List<SkuDto> skus = orderProducts.stream().map(orderProduct -> {
-            String skuCode = orderProduct.getSkuCode();
-            int quantity = orderProduct.getQuantity();
-            SkuDto skuDto = new SkuDto();
-            skuDto.setSkuCode(skuCode);
-            skuDto.setQuantity(quantity);
-            return skuDto;
-        }).toList();
-        PrepayWithRequestPaymentResponse paymentResponse = preparePayment(order, skus, user);
+        List<Sku> skus = orderSkuService.findSkusByOrderId(order.getId());
+        PrepayWithRequestPaymentResponse paymentResponse = preparePaymentWithSkus(order, skus, user);
         OrderAndPaymentDto orderAndPaymentDto = new OrderAndPaymentDto();
         orderAndPaymentDto.setOrder(order);
         orderAndPaymentDto.setPaymentResponse(paymentResponse);

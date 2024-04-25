@@ -115,7 +115,6 @@ create TABLE STEP_SKU
 (
     id             VARCHAR(100) NOT NULL PRIMARY KEY,
     spu_id         VARCHAR(200) REFERENCES STEP_PRODUCT (id), -- STEP_PRODUCT 就是 SPU 表，其id为spu_id
-    sku_code       VARCHAR(200) NOT NULL UNIQUE,
     sku_name       VARCHAR(200) NOT NULL,
     original_price DECIMAL,                                   -- 原价
     price          DECIMAL,                                   -- 实际价格

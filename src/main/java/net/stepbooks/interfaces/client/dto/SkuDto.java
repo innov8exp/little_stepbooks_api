@@ -14,7 +14,6 @@ public class SkuDto {
 
     @NotNull
     private String spuId;
-    private String skuCode;
 
     private BigDecimal price;
 
