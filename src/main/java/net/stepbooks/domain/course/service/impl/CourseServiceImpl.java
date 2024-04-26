@@ -8,7 +8,6 @@ import net.stepbooks.domain.course.enums.CourseNature;
 import net.stepbooks.domain.course.mapper.CourseMapper;
 import net.stepbooks.domain.course.service.CourseService;
 import net.stepbooks.domain.media.service.impl.PrivateFileServiceImpl;
-import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.product.entity.ProductCourse;
 import net.stepbooks.domain.product.service.ProductBookService;
 import net.stepbooks.domain.product.service.ProductCourseService;
@@ -28,7 +27,6 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     private final CourseMapper courseMapper;
     private final PrivateFileServiceImpl privateFileService;
-    private final OrderOpsService orderOpsService;
     private final ProductCourseService productCourseService;
     private final ProductBookService productBookService;
 
