@@ -12,10 +12,7 @@ import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.OrderEventLog;
 import net.stepbooks.domain.order.enums.DeliveryCompany;
 import net.stepbooks.domain.order.enums.OrderState;
-import net.stepbooks.domain.order.service.OrderEventLogService;
-import net.stepbooks.domain.order.service.OrderOpsService;
-import net.stepbooks.domain.order.service.OrderProductService;
-import net.stepbooks.domain.order.service.OrderService;
+import net.stepbooks.domain.order.service.*;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.product.enums.ProductNature;
@@ -40,6 +37,7 @@ public class MOrderController {
     private final OrderService mixedOrderServiceImpl;
     private final OrderEventLogService orderEventLogService;
     private final OrderProductService orderProductService;
+    private final OrderSkuService orderSkuService;
     private final ContextManager contextManager;
     private final PaymentOpsService paymentOpsService;
     private final DeliveryService deliveryService;
@@ -127,10 +125,17 @@ public class MOrderController {
         return ResponseEntity.ok(orderEventLogs);
     }
 
+    @Deprecated
     @GetMapping("/{id}/products")
     public ResponseEntity<List<OrderProductDto>> getOrderProducts(@PathVariable String id) {
         List<OrderProductDto> orderProducts = orderProductService.findByOrderId(id);
         return ResponseEntity.ok(orderProducts);
+    }
+
+    @GetMapping("/{id}/skus")
+    public ResponseEntity<List<OrderSkuDto>> getOrderSkus(@PathVariable String id) {
+        List<OrderSkuDto> orderSkuDtos = orderSkuService.findOrderSkusByOrderId(id);
+        return ResponseEntity.ok(orderSkuDtos);
     }
 
     @GetMapping("/{id}/payments")

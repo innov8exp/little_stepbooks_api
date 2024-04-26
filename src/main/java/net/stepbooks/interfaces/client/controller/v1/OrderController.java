@@ -27,6 +27,7 @@ import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 import net.stepbooks.interfaces.admin.dto.OrderProductDto;
+import net.stepbooks.interfaces.admin.dto.OrderSkuDto;
 import net.stepbooks.interfaces.client.dto.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
@@ -200,6 +201,7 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
+    @Deprecated
     @Operation(summary = "获取订单产品信息")
     @GetMapping("/{code}/products")
     public ResponseEntity<List<OrderProductDto>> getOrderProducts(@PathVariable String code) {
@@ -207,6 +209,15 @@ public class OrderController {
         OrderInfoDto order = orderOpsService.findOrderByCodeAndUser(code, userId);
         List<OrderProductDto> products = order.getProducts();
         return ResponseEntity.ok(products);
+    }
+
+    @Operation(summary = "获取订单SKU信息")
+    @GetMapping("/{code}/skus")
+    public ResponseEntity<List<OrderSkuDto>> getOrderSkus(@PathVariable String code) {
+        String userId = contextManager.currentUser().getId();
+        OrderInfoDto order = orderOpsService.findOrderByCodeAndUser(code, userId);
+        List<OrderSkuDto> orderSkuDtos = order.getSkus();
+        return ResponseEntity.ok(orderSkuDtos);
     }
 
     @Operation(summary = "获取订单物流信息")

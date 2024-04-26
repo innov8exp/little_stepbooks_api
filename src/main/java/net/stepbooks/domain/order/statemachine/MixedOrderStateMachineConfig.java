@@ -62,7 +62,7 @@ public class MixedOrderStateMachineConfig {
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
                     orderActionService.updateOrderState(context, to);
-                    orderActionService.releaseStock(context);
+                    //orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
 
@@ -73,7 +73,7 @@ public class MixedOrderStateMachineConfig {
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
                     orderActionService.updateOrderState(context, to);
-                    orderActionService.releaseStock(context);
+                    //orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
 
@@ -102,7 +102,7 @@ public class MixedOrderStateMachineConfig {
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
                     orderActionService.updateOrderState(context, to);
-                    orderActionService.releaseStock(context);
+                    //orderActionService.releaseStock(context);
                     orderActionService.updateDeliveryStatus(context, DeliveryStatus.CANCELED);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                     orderActionService.updateRequestRefundStatus(context, RefundStatus.REFUNDED);
@@ -134,7 +134,7 @@ public class MixedOrderStateMachineConfig {
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
                     orderActionService.updateOrderState(context, to);
-                    orderActionService.releaseStock(context);
+                    //orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
 
@@ -145,7 +145,7 @@ public class MixedOrderStateMachineConfig {
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
                     orderActionService.updateOrderState(context, to);
-                    orderActionService.releaseStock(context);
+                    //orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
 
@@ -156,7 +156,7 @@ public class MixedOrderStateMachineConfig {
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
                     orderActionService.updateOrderState(context, to);
-                    orderActionService.releaseStock(context);
+                    //orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
 
@@ -167,7 +167,7 @@ public class MixedOrderStateMachineConfig {
                 .when(checkCondition())
                 .perform((from, to, event, context) -> {
                     orderActionService.updateOrderState(context, to);
-                    orderActionService.releaseStock(context);
+                    //orderActionService.releaseStock(context);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                 });
 

@@ -30,7 +30,13 @@ public class OrderInfoDto extends BaseDto {
     private ProductNature productNature;
     private PaymentStatus paymentStatus;
 
+    @Deprecated
     private List<OrderProductDto> products;
+    /**
+     * 使用skus替代products
+     */
+    private List<OrderSkuDto> skus;
+
     private Delivery delivery;
     private List<OrderEventLog> eventLogs;
 }

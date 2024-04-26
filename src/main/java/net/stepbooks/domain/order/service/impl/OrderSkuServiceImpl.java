@@ -9,6 +9,7 @@ import net.stepbooks.domain.order.mapper.OrderSkuMapper;
 import net.stepbooks.domain.order.service.OrderSkuService;
 import net.stepbooks.domain.product.entity.Sku;
 import net.stepbooks.domain.product.service.SkuService;
+import net.stepbooks.interfaces.admin.dto.OrderSkuDto;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,5 +35,11 @@ public class OrderSkuServiceImpl extends ServiceImpl<OrderSkuMapper, OrderSku>
             results.add(sku);
         }
         return results;
+    }
+
+    @Override
+    public List<OrderSkuDto> findOrderSkusByOrderId(String orderId) {
+        //TODO
+        return null;
     }
 }
