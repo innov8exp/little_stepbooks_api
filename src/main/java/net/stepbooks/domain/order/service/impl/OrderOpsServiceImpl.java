@@ -24,7 +24,7 @@ import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
-import net.stepbooks.interfaces.admin.dto.OrderProductDto;
+import net.stepbooks.interfaces.admin.dto.OrderSkuDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +39,7 @@ import static net.stepbooks.infrastructure.AppConstants.ORDER_PAYMENT_TIMEOUT;
 public class OrderOpsServiceImpl implements OrderOpsService {
 
     private final OrderMapper orderMapper;
-    private final OrderProductService orderProductService;
+    private final OrderSkuService orderSkuService;
     private final DeliveryService deliveryService;
     private final OrderBookService orderBookService;
     private final OrderCourseService orderCourseService;
@@ -57,7 +57,7 @@ public class OrderOpsServiceImpl implements OrderOpsService {
     public IPage<OrderInfoDto> findOrdersByUser(Page<OrderInfoDto> page, String userId, OrderState state, String keyword) {
         IPage<OrderInfoDto> orderInfoDto = orderMapper.findPageByUser(page, userId, state, keyword);
         List<OrderInfoDto> enhancedOrders = orderInfoDto.getRecords().stream()
-                .peek(orderInfo -> orderInfo.setProducts(orderProductService.findByOrderId(orderInfo.getId()))).toList();
+                .peek(orderInfo -> orderInfo.setSkus(orderSkuService.findOrderSkusByOrderId(orderInfo.getId()))).toList();
         orderInfoDto.setRecords(enhancedOrders);
         return orderInfoDto;
     }
@@ -102,11 +102,13 @@ public class OrderOpsServiceImpl implements OrderOpsService {
             }
         }
         // Step 3: Retrieve order products for the order
-        List<OrderProductDto> products = orderProductService.findByOrderId(order.getId());
+        // List<OrderProductDto> products = orderProductService.findByOrderId(order.getId());
+        List<OrderSkuDto> skus = orderSkuService.findOrderSkusByOrderId(order.getId());
 
         // Step 4: Convert Order entity to OrderInfoDto
         OrderInfoDto orderInfoDto = BaseAssembler.convert(order, OrderInfoDto.class);
-        orderInfoDto.setProducts(products);
+        // orderInfoDto.setProducts(products);
+        orderInfoDto.setSkus(skus);
 
         // Step 5: Retrieve the delivery information for the order
         Delivery delivery = deliveryService.getOne(Wrappers.<Delivery>lambdaQuery()

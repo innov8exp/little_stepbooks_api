@@ -23,7 +23,7 @@ import java.util.List;
 @SecurityRequirement(name = "Client Authentication")
 public class VirtualGoodsController {
 
-    private VirtualGoodsService virtualGoodsService;
+    private final VirtualGoodsService virtualGoodsService;
 
     @GetMapping("/category/{virtualCategoryId}")
     @Operation(summary = "获得虚拟产品大类下的全部小类信息")
