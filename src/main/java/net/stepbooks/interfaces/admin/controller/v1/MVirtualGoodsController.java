@@ -60,6 +60,8 @@ public class MVirtualGoodsController {
                                                           @RequestParam(required = false) String name) {
         Page<VirtualGoodsEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualGoodsEntity> wrapper = Wrappers.lambdaQuery();
+        String virtualCategoryMemberId = "1";
+        wrapper.gt(VirtualGoodsEntity::getCategoryId, virtualCategoryMemberId);
         wrapper.eq(ObjectUtils.isNotEmpty(categoryId), VirtualGoodsEntity::getCategoryId, categoryId);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualGoodsEntity::getName, name);
         wrapper.orderByAsc(VirtualGoodsEntity::getSortIndex);
