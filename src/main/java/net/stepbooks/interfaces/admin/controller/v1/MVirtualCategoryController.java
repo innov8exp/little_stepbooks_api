@@ -28,6 +28,9 @@ public class MVirtualCategoryController {
     @PostMapping()
     @Operation(summary = "创建虚拟产品大类")
     public ResponseEntity<VirtualCategoryEntity> create(@RequestBody VirtualCategoryEntity entity) {
+        if (entity.getType() == null) {
+            entity.setType(VirtualCategoryType.MEDIA);
+        }
         entity.setStatus(PublishStatus.OFFLINE);
         virtualCategoryService.save(entity);
         return ResponseEntity.ok(entity);
@@ -36,10 +39,35 @@ public class MVirtualCategoryController {
     @PutMapping("/{id}")
     @Operation(summary = "修改虚拟产品大类")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody VirtualCategoryEntity entity) {
+        if (entity.getType() == null) {
+            entity.setType(VirtualCategoryType.MEDIA);
+        }
+        entity.setStatus(PublishStatus.OFFLINE);
         entity.setId(id);
         virtualCategoryService.updateById(entity);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{id}/online")
+    @Operation(summary = "上线虚拟产品大类")
+    public ResponseEntity<?> online(@PathVariable String id) {
+        VirtualCategoryEntity entity = virtualCategoryService.getById(id);
+        entity.setStatus(PublishStatus.ONLINE);
+        entity.setId(id);
+        virtualCategoryService.updateById(entity);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/offline")
+    @Operation(summary = "下线虚拟产品大类")
+    public ResponseEntity<?> offline(@PathVariable String id) {
+        VirtualCategoryEntity entity = virtualCategoryService.getById(id);
+        entity.setStatus(PublishStatus.OFFLINE);
+        entity.setId(id);
+        virtualCategoryService.updateById(entity);
+        return ResponseEntity.ok().build();
+    }
+
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除虚拟产品大类")

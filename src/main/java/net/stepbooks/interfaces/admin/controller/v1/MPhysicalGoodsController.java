@@ -35,6 +35,27 @@ public class MPhysicalGoodsController {
     @PutMapping("/{id}")
     @Operation(summary = "修改物理产品")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody PhysicalGoodsEntity entity) {
+        entity.setStatus(PublishStatus.OFFLINE);
+        entity.setId(id);
+        physicalGoodsService.updateById(entity);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/online")
+    @Operation(summary = "上线物理产品")
+    public ResponseEntity<?> online(@PathVariable String id) {
+        PhysicalGoodsEntity entity = physicalGoodsService.getById(id);
+        entity.setStatus(PublishStatus.ONLINE);
+        entity.setId(id);
+        physicalGoodsService.updateById(entity);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/offline")
+    @Operation(summary = "下线物理产品")
+    public ResponseEntity<?> offline(@PathVariable String id) {
+        PhysicalGoodsEntity entity = physicalGoodsService.getById(id);
+        entity.setStatus(PublishStatus.OFFLINE);
         entity.setId(id);
         physicalGoodsService.updateById(entity);
         return ResponseEntity.ok().build();

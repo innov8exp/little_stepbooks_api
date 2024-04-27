@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.product.entity.Sku;
+import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.product.service.SkuService;
 import org.apache.commons.lang3.ObjectUtils;
@@ -29,6 +30,7 @@ public class MSkuController {
     @PostMapping()
     @Operation(summary = "创建SKU")
     public ResponseEntity<Sku> create(@RequestBody Sku entity) {
+        entity.setStatus(ProductStatus.OFF_SHELF);
         skuService.save(entity);
         productService.reloadDisplayPrice(entity.getSpuId());
         return ResponseEntity.ok(entity);
@@ -37,9 +39,28 @@ public class MSkuController {
     @PutMapping("/{id}")
     @Operation(summary = "修改SKU")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody Sku entity) {
+        entity.setStatus(ProductStatus.OFF_SHELF);
         entity.setId(id);
         skuService.updateById(entity);
         productService.reloadDisplayPrice(entity.getSpuId());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/online")
+    @Operation(summary = "上线SKU")
+    public ResponseEntity<?> online(@PathVariable String id) {
+        Sku entity = skuService.getById(id);
+        entity.setStatus(ProductStatus.ON_SHELF);
+        skuService.updateById(entity);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/offline")
+    @Operation(summary = "下线SKU")
+    public ResponseEntity<?> offline(@PathVariable String id) {
+        Sku entity = skuService.getById(id);
+        entity.setStatus(ProductStatus.OFF_SHELF);
+        skuService.updateById(entity);
         return ResponseEntity.ok().build();
     }
 
