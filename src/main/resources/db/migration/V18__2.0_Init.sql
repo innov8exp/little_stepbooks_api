@@ -132,7 +132,7 @@ create TABLE STEP_SKU_PHYSICAL_GOODS_REF
     goods_id VARCHAR(100) REFERENCES STEP_PHYSICAL_GOODS (id) NOT NULL
 );
 
--- SKU产品与虚拟产品关系
+-- SKU产品与虚拟产品关系（如果goods_id为空，则表示关联整个虚拟产品大类）
 create TABLE STEP_SKU_VIRTUAL_GOODS_REF
 (
     id               VARCHAR(100)                                       NOT NULL PRIMARY KEY,
@@ -140,7 +140,7 @@ create TABLE STEP_SKU_VIRTUAL_GOODS_REF
     spu_id           VARCHAR(100) REFERENCES STEP_PRODUCT (id)          NOT NULL,
     sku_id           VARCHAR(100) REFERENCES STEP_SKU (id)              NOT NULL,
     category_id      VARCHAR(100) REFERENCES STEP_VIRTUAL_CATEGORY (id) NOT NULL,
-    goods_id         VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id)    NOT NULL
+    goods_id         VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id)
 );
 
 
@@ -155,7 +155,7 @@ create TABLE STEP_MEMBER_EXPIRATION
     modified_at   TIMESTAMP
 );
 
--- 虚拟产品过期状态记录
+-- 虚拟产品过期状态记录（如果goods_id为空，则表示拥有整个虚拟产品大类）
 create TABLE STEP_VIRTUAL_GOODS_EXPIRATION
 (
     id            VARCHAR(100) NOT NULL PRIMARY KEY,                  -- 主键ID
