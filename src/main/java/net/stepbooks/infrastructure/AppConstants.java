@@ -11,6 +11,8 @@ public final class AppConstants {
     public static final String PHYSICAL_ORDER_STATE_MACHINE_ID = "physicalOrderStateMachine";
     public static final String VIRTUAL_ORDER_STATE_MACHINE_ID = "virtualOrderStateMachine";
 
+    public static final String VIRTUAL_CATEGORY_ID_MEMBER = "1";
+
     public static final int ORDER_CODE_RANDOM_LENGTH = 5;
     public static final int ORDER_CODE_START_INCLUSIVE = 0;
     public static final int ORDER_CODE_END_EXCLUSIVE = 9;
