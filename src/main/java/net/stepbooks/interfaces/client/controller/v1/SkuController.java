@@ -34,7 +34,7 @@ public class SkuController {
     @GetMapping("/{id}/virtual-goods")
     @Operation(summary = "获取SKU对应的虚拟产品")
     public ResponseEntity<List<VirtualGoodsDto>> getVirtualGoods(@PathVariable String id) {
-        List<VirtualGoodsDto> virtualGoodsList = skuVirtualGoodsService.getVirtualGoodsListBySkuId(id);
+        List<VirtualGoodsDto> virtualGoodsList = skuVirtualGoodsService.getVirtualGoodsListBySkuId(id, null);
         return ResponseEntity.ok(virtualGoodsList);
     }
 

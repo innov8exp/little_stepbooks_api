@@ -8,6 +8,7 @@ import com.alibaba.cola.statemachine.builder.StateMachineBuilderFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.delivery.enums.DeliveryStatus;
+import net.stepbooks.domain.goods.service.VirtualGoodsRedeemService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
@@ -27,6 +28,8 @@ public class MixedOrderStateMachineConfig {
 
 
     private final OrderActionService orderActionService;
+
+    private final VirtualGoodsRedeemService virtualGoodsRedeemService;
 
     @SuppressWarnings("checkstyle:MethodLength")
     @Bean
@@ -53,6 +56,7 @@ public class MixedOrderStateMachineConfig {
                     orderActionService.updateOrderState(context, to);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                     orderActionService.updatePaymentStatus(context, PaymentStatus.PAID);
+                    virtualGoodsRedeemService.afterOrderPaid(context);
                 });
 
         builder.externalTransition()
@@ -117,6 +121,7 @@ public class MixedOrderStateMachineConfig {
                     orderActionService.updateOrderState(context, to);
                     orderActionService.updateDeliveryStatus(context, DeliveryStatus.DELIVERED);
                     orderActionService.saveOrderEventLog(from, to, event, context);
+                    virtualGoodsRedeemService.afterOrderSigned(context);
                 });
 
         builder.externalTransition()

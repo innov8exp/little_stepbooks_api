@@ -15,4 +15,14 @@ public interface VirtualGoodsExpirationService extends IService<VirtualGoodsExpi
      */
     List<VirtualGoodsExpirationEntity> validExpirations(String userId);
 
+    /**
+     * 兑现虚拟商品
+     *
+     * @param userId
+     * @param goodsId
+     * @param categoryId
+     * @param toAddMonth
+     */
+    void redeem(String userId, String goodsId, String categoryId, int toAddMonth);
+
 }

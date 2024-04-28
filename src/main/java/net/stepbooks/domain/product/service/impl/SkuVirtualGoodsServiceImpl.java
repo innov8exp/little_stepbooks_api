@@ -9,10 +9,12 @@ import net.stepbooks.domain.goods.service.VirtualGoodsAudioService;
 import net.stepbooks.domain.goods.service.VirtualGoodsService;
 import net.stepbooks.domain.goods.service.VirtualGoodsVideoService;
 import net.stepbooks.domain.product.entity.SkuVirtualGoods;
+import net.stepbooks.domain.product.enums.RedeemCondition;
 import net.stepbooks.domain.product.mapper.SkuVirtualGoodsMapper;
 import net.stepbooks.domain.product.service.SkuVirtualGoodsService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.client.dto.VirtualGoodsDto;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,11 +30,14 @@ public class SkuVirtualGoodsServiceImpl extends ServiceImpl<SkuVirtualGoodsMappe
     private final VirtualGoodsVideoService virtualGoodsVideoService;
 
     @Override
-    public List<VirtualGoodsDto> getVirtualGoodsListBySkuId(String skuId) {
+    public List<VirtualGoodsDto> getVirtualGoodsListBySkuId(String skuId, RedeemCondition redeemCondition) {
         LambdaQueryWrapper<SkuVirtualGoods> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(SkuVirtualGoods::getSkuId, skuId);
-        List<SkuVirtualGoods> skuPhysicalGoodsList = list(wrapper);
-        List<String> goodIds = skuPhysicalGoodsList.stream().map(SkuVirtualGoods::getGoodsId).toList();
+
+        //不传redeemCondition则返回全部，否则按照redeemCondition查询
+        wrapper.eq(ObjectUtils.isNotEmpty(redeemCondition), SkuVirtualGoods::getRedeemCondition, redeemCondition);
+        List<SkuVirtualGoods> skuVirtualGoodsList = list(wrapper);
+        List<String> goodIds = skuVirtualGoodsList.stream().map(SkuVirtualGoods::getGoodsId).toList();
 
         List<VirtualGoodsDto> results = new ArrayList<>();
         if (goodIds.size() > 0) {
