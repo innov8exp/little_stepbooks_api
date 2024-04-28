@@ -56,10 +56,12 @@ public class MSkuPhysicalGoodsController {
     @Operation(summary = "SKU与物理产品关系查询")
     public ResponseEntity<IPage<SkuPhysicalGoods>> list(@RequestParam int currentPage,
                                                         @RequestParam int pageSize,
-                                                        @RequestParam(required = false) String spuId) {
+                                                        @RequestParam(required = false) String spuId,
+                                                        @RequestParam(required = false) String skuId) {
         Page<SkuPhysicalGoods> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<SkuPhysicalGoods> wrapper = Wrappers.lambdaQuery();
-        wrapper.like(ObjectUtils.isNotEmpty(spuId), SkuPhysicalGoods::getSpuId, spuId);
+        wrapper.eq(ObjectUtils.isNotEmpty(spuId), SkuPhysicalGoods::getSpuId, spuId);
+        wrapper.eq(ObjectUtils.isNotEmpty(skuId), SkuPhysicalGoods::getSkuId, skuId);
         IPage<SkuPhysicalGoods> results = skuPhysicalGoodsService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }
