@@ -38,8 +38,10 @@ public class MSkuVirtualGoodsController {
     @Operation(summary = "创建SKU与虚拟产品关系")
     public ResponseEntity<SkuVirtualGoods> create(@RequestBody SkuVirtualGoods entity) {
         String goodsId = entity.getGoodsId();
-        VirtualGoodsEntity goods = virtualGoodsService.getById(goodsId);
-        entity.setCategoryId(goods.getCategoryId());
+        if (goodsId != null) {
+            VirtualGoodsEntity goods = virtualGoodsService.getById(goodsId);
+            entity.setCategoryId(goods.getCategoryId());
+        }
         skuVirtualGoodsService.save(entity);
         return ResponseEntity.ok(entity);
     }
@@ -48,8 +50,10 @@ public class MSkuVirtualGoodsController {
     @Operation(summary = "修改SKU与虚拟产品关系")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody SkuVirtualGoods entity) {
         String goodsId = entity.getGoodsId();
-        VirtualGoodsEntity goods = virtualGoodsService.getById(goodsId);
-        entity.setCategoryId(goods.getCategoryId());
+        if (goodsId != null) {
+            VirtualGoodsEntity goods = virtualGoodsService.getById(goodsId);
+            entity.setCategoryId(goods.getCategoryId());
+        }
         entity.setId(id);
         skuVirtualGoodsService.updateById(entity);
         return ResponseEntity.ok().build();
