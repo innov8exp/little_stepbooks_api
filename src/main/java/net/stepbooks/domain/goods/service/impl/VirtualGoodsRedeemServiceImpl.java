@@ -2,6 +2,7 @@ package net.stepbooks.domain.goods.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.stepbooks.domain.goods.service.MemberExpirationService;
 import net.stepbooks.domain.goods.service.VirtualGoodsExpirationService;
 import net.stepbooks.domain.goods.service.VirtualGoodsRedeemService;
 import net.stepbooks.domain.order.entity.Order;
@@ -26,6 +27,8 @@ public class VirtualGoodsRedeemServiceImpl implements VirtualGoodsRedeemService 
 
     private final VirtualGoodsExpirationService virtualGoodsExpirationService;
 
+    private final MemberExpirationService memberExpirationService;
+
     private void redeem(Order order, RedeemCondition redeemCondition) {
         List<OrderSkuDto> orderSkuDtos = orderSkuService.findOrderSkusByOrderId(order.getId());
         for (OrderSkuDto orderSkuDto : orderSkuDtos) {
@@ -39,7 +42,8 @@ public class VirtualGoodsRedeemServiceImpl implements VirtualGoodsRedeemService 
                 int toAddMonth = virtualGoodsDto.getToAddMonth();
                 toAddMonth = toAddMonth * quantity;
                 if (AppConstants.VIRTUAL_CATEGORY_ID_MEMBER.equals(categoryId)) {
-                    log.info("redeem membership");
+                    //兑换会员商品
+                    memberExpirationService.redeem(order.getUserId(), toAddMonth);
                 } else {
                     //兑换其他虚拟商品
                     virtualGoodsExpirationService.redeem(order.getUserId(), goodsId, categoryId, toAddMonth);

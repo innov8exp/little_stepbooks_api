@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
-import net.stepbooks.domain.goods.entity.VirtualGoodsExpirationEntity;
-import net.stepbooks.domain.goods.mapper.VirtualGoodsExpirationMapper;
-import net.stepbooks.domain.goods.service.VirtualGoodsExpirationService;
-import org.apache.commons.lang3.ObjectUtils;
+import net.stepbooks.domain.goods.entity.MemberExpirationEntity;
+import net.stepbooks.domain.goods.mapper.MemberExpirationMapper;
+import net.stepbooks.domain.goods.service.MemberExpirationService;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -16,36 +15,29 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class VirtualGoodsExpirationServiceImpl extends ServiceImpl<VirtualGoodsExpirationMapper, VirtualGoodsExpirationEntity>
-        implements VirtualGoodsExpirationService {
+public class MemberExpirationServiceImpl extends ServiceImpl<MemberExpirationMapper, MemberExpirationEntity>
+        implements MemberExpirationService {
 
     @Override
-    public List<VirtualGoodsExpirationEntity> validExpirations(String userId) {
+    public MemberExpirationEntity getExpirationByUserId(String userId) {
         Date now = new Date();
-        LambdaQueryWrapper<VirtualGoodsExpirationEntity> wrapper = Wrappers.lambdaQuery();
-        wrapper.gt(VirtualGoodsExpirationEntity::getExpirationAt, now);
-        return baseMapper.selectList(wrapper);
+        LambdaQueryWrapper<MemberExpirationEntity> wrapper = Wrappers.lambdaQuery();
+        wrapper.gt(MemberExpirationEntity::getExpirationAt, now);
+        return baseMapper.selectOne(wrapper);
     }
 
     @Override
-    public void redeem(String userId, String goodsId, String categoryId, int toAddMonth) {
-        LambdaQueryWrapper<VirtualGoodsExpirationEntity> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(ObjectUtils.isNotEmpty(goodsId),
-                VirtualGoodsExpirationEntity::getGoodsId, goodsId);
-        wrapper.eq(ObjectUtils.isNotEmpty(categoryId),
-                VirtualGoodsExpirationEntity::getCategoryId, categoryId);
-        wrapper.eq(VirtualGoodsExpirationEntity::getUserId, userId);
-        VirtualGoodsExpirationEntity expirationEntity = baseMapper.selectOne(wrapper);
+    public void redeem(String userId, int toAddMonth) {
+        LambdaQueryWrapper<MemberExpirationEntity> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(MemberExpirationEntity::getUserId, userId);
+        MemberExpirationEntity expirationEntity = baseMapper.selectOne(wrapper);
 
         if (expirationEntity == null) {
-            expirationEntity = new VirtualGoodsExpirationEntity();
+            expirationEntity = new MemberExpirationEntity();
             expirationEntity.setUserId(userId);
-            expirationEntity.setGoodsId(goodsId);
-            expirationEntity.setCategoryId(categoryId);
             Calendar ca = Calendar.getInstance();
             int month = ca.get(Calendar.MONTH);
             ca.set(Calendar.MONTH, month + toAddMonth);
