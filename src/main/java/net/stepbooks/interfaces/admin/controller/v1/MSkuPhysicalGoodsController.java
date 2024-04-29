@@ -8,11 +8,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.goods.entity.PhysicalGoodsEntity;
+import net.stepbooks.domain.goods.service.PhysicalGoodsService;
 import net.stepbooks.domain.product.entity.SkuPhysicalGoods;
 import net.stepbooks.domain.product.service.SkuPhysicalGoodsService;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.admin.dto.SkuPhysicalGoodsDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Tag(name = "SkuPhysicalGoods", description = "SKU与物理产品关系后台管理接口")
 @RestController
@@ -22,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class MSkuPhysicalGoodsController {
 
     private final SkuPhysicalGoodsService skuPhysicalGoodsService;
+    private final PhysicalGoodsService physicalGoodsService;
 
     @PostMapping()
     @Operation(summary = "创建SKU与物理产品关系")
@@ -45,24 +53,43 @@ public class MSkuPhysicalGoodsController {
         return ResponseEntity.ok().build();
     }
 
+    private void fillin(SkuPhysicalGoodsDto dto) {
+        PhysicalGoodsEntity entity = physicalGoodsService.getById(dto.getGoodsId());
+        dto.setGoodsName(entity.getName());
+        dto.setGoodsDescription(entity.getDescription());
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "SKU与物理产品关系详情")
-    public ResponseEntity<SkuPhysicalGoods> get(@PathVariable String id) {
+    public ResponseEntity<SkuPhysicalGoodsDto> get(@PathVariable String id) {
         SkuPhysicalGoods entity = skuPhysicalGoodsService.getById(id);
-        return ResponseEntity.ok(entity);
+        SkuPhysicalGoodsDto dto = BaseAssembler.convert(entity, SkuPhysicalGoodsDto.class);
+        fillin(dto);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping
     @Operation(summary = "SKU与物理产品关系查询")
-    public ResponseEntity<IPage<SkuPhysicalGoods>> list(@RequestParam int currentPage,
-                                                        @RequestParam int pageSize,
-                                                        @RequestParam(required = false) String spuId,
-                                                        @RequestParam(required = false) String skuId) {
+    public ResponseEntity<IPage<SkuPhysicalGoodsDto>> list(@RequestParam int currentPage,
+                                                           @RequestParam int pageSize,
+                                                           @RequestParam(required = false) String spuId,
+                                                           @RequestParam(required = false) String skuId) {
         Page<SkuPhysicalGoods> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<SkuPhysicalGoods> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(ObjectUtils.isNotEmpty(spuId), SkuPhysicalGoods::getSpuId, spuId);
         wrapper.eq(ObjectUtils.isNotEmpty(skuId), SkuPhysicalGoods::getSkuId, skuId);
-        IPage<SkuPhysicalGoods> results = skuPhysicalGoodsService.page(page, wrapper);
+        IPage<SkuPhysicalGoods> skuPhysicalGoodsPage = skuPhysicalGoodsService.page(page, wrapper);
+        IPage<SkuPhysicalGoodsDto> results = new Page<>();
+        results.setCurrent(currentPage);
+        results.setSize(pageSize);
+        results.setTotal(skuPhysicalGoodsPage.getTotal());
+        List<SkuPhysicalGoodsDto> records = new ArrayList<>();
+        for (SkuPhysicalGoods skuPhysicalGoods : skuPhysicalGoodsPage.getRecords()) {
+            SkuPhysicalGoodsDto dto = BaseAssembler.convert(skuPhysicalGoods, SkuPhysicalGoodsDto.class);
+            fillin(dto);
+            records.add(dto);
+        }
+        results.setRecords(records);
         return ResponseEntity.ok(results);
     }
 
