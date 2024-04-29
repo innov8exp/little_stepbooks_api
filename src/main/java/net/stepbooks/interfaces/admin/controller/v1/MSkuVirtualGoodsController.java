@@ -67,9 +67,12 @@ public class MSkuVirtualGoodsController {
     }
 
     private void fillin(SkuVirtualGoodsDto dto) {
-        VirtualGoodsEntity entity = virtualGoodsService.getById(dto.getGoodsId());
-        dto.setGoodsName(entity.getName());
-        dto.setGoodsDescription(entity.getDescription());
+        String goodsId = dto.getGoodsId();
+        if (goodsId != null) {
+            VirtualGoodsEntity entity = virtualGoodsService.getById(goodsId);
+            dto.setGoodsName(entity.getName());
+            dto.setGoodsDescription(entity.getDescription());
+        }
         VirtualCategoryEntity categoryEntity = virtualCategoryService.getById(dto.getCategoryId());
         dto.setCategoryName(categoryEntity.getName());
     }

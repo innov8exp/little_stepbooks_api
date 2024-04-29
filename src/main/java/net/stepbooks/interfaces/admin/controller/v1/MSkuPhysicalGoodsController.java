@@ -54,9 +54,12 @@ public class MSkuPhysicalGoodsController {
     }
 
     private void fillin(SkuPhysicalGoodsDto dto) {
-        PhysicalGoodsEntity entity = physicalGoodsService.getById(dto.getGoodsId());
-        dto.setGoodsName(entity.getName());
-        dto.setGoodsDescription(entity.getDescription());
+        String goodsId = dto.getGoodsId();
+        if (goodsId != null) {
+            PhysicalGoodsEntity entity = physicalGoodsService.getById(goodsId);
+            dto.setGoodsName(entity.getName());
+            dto.setGoodsDescription(entity.getDescription());
+        }
     }
 
     @GetMapping("/{id}")
