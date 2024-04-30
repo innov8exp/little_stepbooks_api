@@ -3,6 +3,7 @@ package net.stepbooks.interfaces.client.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.stepbooks.domain.goods.entity.VirtualGoodsAudioEntity;
+import net.stepbooks.domain.goods.entity.VirtualGoodsCourseEntity;
 import net.stepbooks.domain.goods.entity.VirtualGoodsVideoEntity;
 import net.stepbooks.infrastructure.model.BaseDto;
 
@@ -20,5 +21,6 @@ public class VirtualGoodsDto extends BaseDto {
 
     private List<VirtualGoodsAudioEntity> audioList;
     private List<VirtualGoodsVideoEntity> videoList;
+    private List<VirtualGoodsCourseEntity> courseList;
 
 }

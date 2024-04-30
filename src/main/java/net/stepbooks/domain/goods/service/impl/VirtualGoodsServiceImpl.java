@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualGoodsEntity;
 import net.stepbooks.domain.goods.mapper.VirtualGoodsMappter;
 import net.stepbooks.domain.goods.service.VirtualGoodsAudioService;
+import net.stepbooks.domain.goods.service.VirtualGoodsCourseService;
 import net.stepbooks.domain.goods.service.VirtualGoodsService;
 import net.stepbooks.domain.goods.service.VirtualGoodsVideoService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
@@ -23,6 +24,7 @@ public class VirtualGoodsServiceImpl extends ServiceImpl<VirtualGoodsMappter, Vi
 
     private final VirtualGoodsAudioService virtualGoodsAudioService;
     private final VirtualGoodsVideoService virtualGoodsVideoService;
+    private final VirtualGoodsCourseService virtualGoodsCourseService;
 
     @Override
     public List<VirtualGoodsDto> listAll(String virtualCategoryId) {
@@ -39,6 +41,7 @@ public class VirtualGoodsServiceImpl extends ServiceImpl<VirtualGoodsMappter, Vi
             VirtualGoodsDto virtualGoodsDto = BaseAssembler.convert(entity, VirtualGoodsDto.class);
             virtualGoodsAudioService.fillinAudio(virtualGoodsDto);
             virtualGoodsVideoService.fillinVideo(virtualGoodsDto);
+            virtualGoodsCourseService.fillinCourse(virtualGoodsDto);
             virtualGoodsDtos.add(virtualGoodsDto);
         }
 

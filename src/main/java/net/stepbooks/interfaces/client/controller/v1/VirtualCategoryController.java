@@ -10,15 +10,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
+import net.stepbooks.domain.goods.entity.VirtualGoodsExpirationEntity;
 import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
+import net.stepbooks.domain.goods.service.VirtualGoodsExpirationService;
+import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.enums.PublishStatus;
+import net.stepbooks.infrastructure.util.ContextManager;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Tag(name = "VirtualGoodsCategory", description = "虚拟产品大类相关接口")
@@ -28,7 +35,24 @@ import org.springframework.web.bind.annotation.RestController;
 @SecurityRequirement(name = "Client Authentication")
 public class VirtualCategoryController {
 
+    private final ContextManager contextManager;
     private final VirtualCategoryService virtualCategoryService;
+    private final VirtualGoodsExpirationService virtualGoodsExpirationService;
+
+    @GetMapping("/my")
+    @Operation(summary = "获得当前用户购买的虚拟产品大类")
+    public ResponseEntity<List<VirtualCategoryEntity>> my() {
+        User user = contextManager.currentUser();
+        List<VirtualGoodsExpirationEntity> results = virtualGoodsExpirationService.validExpirations(user.getId());
+        List<VirtualCategoryEntity> virtualCategories = new ArrayList<>();
+        for (VirtualGoodsExpirationEntity virtualGoodsExpirationEntity : results) {
+            String categoryId = virtualGoodsExpirationEntity.getCategoryId();
+            VirtualCategoryEntity entity = virtualCategoryService.getById(categoryId);
+            virtualCategories.add(entity);
+        }
+        return ResponseEntity.ok(virtualCategories);
+    }
+
 
     @GetMapping
     @Operation(summary = "虚拟产品大类列表")
