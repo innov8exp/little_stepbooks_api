@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@Tag(name = "VirtualGoods", description = "物理产品相关接口")
+@Tag(name = "PhysicalGoods", description = "物理产品相关接口")
 @RestController
 @RequestMapping("/v1/physical-goods")
 @RequiredArgsConstructor
