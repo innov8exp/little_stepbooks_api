@@ -6,8 +6,9 @@ spring:
     password: 17@6WI4zcA
   data:
     redis:
-      host: nonprod-stepbook-redis-cluster.retsq2.clustercfg.cnn1.cache.amazonaws.com.cn
-      port: 6379
+      cluster:
+        nodes:
+          - stage-redis-cluster.retsq2.clustercfg.cnn1.cache.amazonaws.com.cn:6379
       database: 0
 
 
