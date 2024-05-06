@@ -1,17 +1,20 @@
-package net.stepbooks.domain.goods.entity;
+package net.stepbooks.interfaces.client.dto;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.infrastructure.enums.PublishStatus;
-import net.stepbooks.infrastructure.model.BaseEntity;
+import net.stepbooks.infrastructure.model.BaseDto;
 
-@EqualsAndHashCode(callSuper = true)
+import java.util.List;
+
 @Data
-@TableName("STEP_VIRTUAL_CATEGORY")
-public class VirtualCategoryEntity extends BaseEntity {
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class VirtualCategoryDto extends BaseDto {
     private String parentId;
     private Integer sortIndex;
     private String name;
@@ -20,5 +23,5 @@ public class VirtualCategoryEntity extends BaseEntity {
     private String detailImgId;
     private PublishStatus status;
     private VirtualCategoryType type;
-
+    private List<VirtualCategoryDto> children;
 }

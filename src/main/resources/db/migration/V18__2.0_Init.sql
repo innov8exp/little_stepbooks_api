@@ -37,14 +37,15 @@ create TABLE STEP_PHYSICAL_GOODS
 -- 虚拟产品大类
 create TABLE STEP_VIRTUAL_CATEGORY
 (
-    id            VARCHAR(100) NOT NULL PRIMARY KEY,              -- 主键ID
-    type          VARCHAR(100),                                   -- MEMBER(会员)/MEDIA(音视频)
-    name          TEXT         NOT NULL,                          -- 大类名称
-    cover_id      VARCHAR(100) REFERENCES STEP_MEDIA (id),        -- 封面图片ID
-    cover_url     TEXT,                                           -- 封面图片链接
-    detail_img_id VARCHAR(100) REFERENCES STEP_DETAIL_IMAGE (id), -- 详情图ID
-    status        VARCHAR(100),                                   -- ONLINE/OFFLINE
-    sort_index    SERIAL,                                         -- 排序
+    id            VARCHAR(100) NOT NULL PRIMARY KEY,                  -- 主键ID
+    parent_id     VARCHAR(100) REFERENCES STEP_VIRTUAL_CATEGORY (id), -- 父大类的ID，支持多级目录
+    type          VARCHAR(100),                                       -- MEMBER(会员)/MEDIA(音视频)
+    name          TEXT         NOT NULL,                              -- 大类名称
+    cover_id      VARCHAR(100) REFERENCES STEP_MEDIA (id),            -- 封面图片ID
+    cover_url     TEXT,                                               -- 封面图片链接
+    detail_img_id VARCHAR(100) REFERENCES STEP_DETAIL_IMAGE (id),     -- 详情图ID
+    status        VARCHAR(100),                                       -- ONLINE/OFFLINE
+    sort_index    SERIAL,                                             -- 排序
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );

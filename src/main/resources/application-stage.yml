@@ -8,7 +8,7 @@ spring:
     redis:
       cluster:
         nodes:
-          - clustercfg.nonprod-stepbook-redis-cluster.retsq2.cnn1.cache.amazonaws.com.cn:6379
+          - nonprod-stepbook-redis-cluster.retsq2.clustercfg.cnn1.cache.amazonaws.com.cn:6379
       database: 0
 
 

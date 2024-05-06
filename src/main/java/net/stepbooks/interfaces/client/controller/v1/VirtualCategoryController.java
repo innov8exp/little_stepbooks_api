@@ -1,27 +1,19 @@
 package net.stepbooks.interfaces.client.controller.v1;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
 import net.stepbooks.domain.goods.entity.VirtualGoodsExpirationEntity;
-import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
 import net.stepbooks.domain.goods.service.VirtualGoodsExpirationService;
 import net.stepbooks.domain.user.entity.User;
-import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.infrastructure.util.ContextManager;
-import org.apache.commons.lang3.ObjectUtils;
+import net.stepbooks.interfaces.client.dto.VirtualCategoryDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -41,32 +33,22 @@ public class VirtualCategoryController {
 
     @GetMapping("/my")
     @Operation(summary = "获得当前用户购买的虚拟产品大类")
-    public ResponseEntity<List<VirtualCategoryEntity>> my() {
+    public ResponseEntity<List<VirtualCategoryDto>> my() {
         User user = contextManager.currentUser();
         List<VirtualGoodsExpirationEntity> results = virtualGoodsExpirationService.validExpirations(user.getId());
-        List<VirtualCategoryEntity> virtualCategories = new ArrayList<>();
+        List<VirtualCategoryDto> virtualCategories = new ArrayList<>();
         for (VirtualGoodsExpirationEntity virtualGoodsExpirationEntity : results) {
             String categoryId = virtualGoodsExpirationEntity.getCategoryId();
-            VirtualCategoryEntity entity = virtualCategoryService.getById(categoryId);
-            virtualCategories.add(entity);
+            VirtualCategoryDto dto = virtualCategoryService.getFullVirtualCategoryById(categoryId);
+            virtualCategories.add(dto);
         }
         return ResponseEntity.ok(virtualCategories);
     }
 
-
-    @GetMapping
-    @Operation(summary = "虚拟产品大类列表")
-    public ResponseEntity<IPage<VirtualCategoryEntity>> list(@RequestParam int currentPage,
-                                                             @RequestParam int pageSize,
-                                                             @RequestParam VirtualCategoryType type,
-                                                             @RequestParam(required = false) String name) {
-        Page<VirtualCategoryEntity> page = Page.of(currentPage, pageSize);
-        LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(VirtualCategoryEntity::getType, type);
-        wrapper.eq(VirtualCategoryEntity::getStatus, PublishStatus.ONLINE);
-        wrapper.like(ObjectUtils.isNotEmpty(name), VirtualCategoryEntity::getName, name);
-        wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
-        IPage<VirtualCategoryEntity> results = virtualCategoryService.page(page, wrapper);
-        return ResponseEntity.ok(results);
+    @GetMapping("/all")
+    @Operation(summary = "获得全部音视频虚拟产品大类")
+    public ResponseEntity<List<VirtualCategoryDto>> getAllMediaVirtualCategories() {
+        List<VirtualCategoryDto> dtos = virtualCategoryService.getAllMediaVirtualCategories();
+        return ResponseEntity.ok(dtos);
     }
 }

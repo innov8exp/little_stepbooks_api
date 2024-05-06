@@ -1,14 +1,87 @@
 package net.stepbooks.domain.goods.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
 import net.stepbooks.domain.goods.mapper.VirtualCategoryMapper;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.infrastructure.enums.PublishStatus;
+import net.stepbooks.interfaces.client.dto.VirtualCategoryDto;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMapper, VirtualCategoryEntity>
         implements VirtualCategoryService {
+
+    @Override
+    public VirtualCategoryDto getFullVirtualCategoryById(String categoryId) {
+
+        VirtualCategoryEntity entity = getById(categoryId);
+        VirtualCategoryDto dto = BaseAssembler.convert(entity, VirtualCategoryDto.class);
+
+        LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(VirtualCategoryEntity::getStatus, PublishStatus.ONLINE);
+        wrapper.eq(VirtualCategoryEntity::getParentId, categoryId);
+        wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
+        List<VirtualCategoryEntity> childEntities = list(wrapper);
+
+        List<VirtualCategoryDto> children = new ArrayList<>();
+        for (VirtualCategoryEntity childEntity : childEntities) {
+            VirtualCategoryDto child = BaseAssembler.convert(childEntity, VirtualCategoryDto.class);
+            children.add(child);
+        }
+        dto.setChildren(children);
+
+        return dto;
+    }
+
+    @Override
+    public List<VirtualCategoryDto> getAllMediaVirtualCategories() {
+
+        List<VirtualCategoryDto> results = new ArrayList<>();
+
+        LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(VirtualCategoryEntity::getStatus, PublishStatus.ONLINE);
+        wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
+
+        List<VirtualCategoryEntity> allEntities = list(wrapper);
+
+        HashMap<String, VirtualCategoryDto> dtoMap = new HashMap<>();
+
+        List<VirtualCategoryDto> tempChildren = new ArrayList<>();
+
+        //加上全部一级分类
+        for (VirtualCategoryEntity entity : allEntities) {
+            VirtualCategoryDto dto = BaseAssembler.convert(entity, VirtualCategoryDto.class);
+            dtoMap.put(dto.getId(), dto);
+            if (entity.getParentId() == null) {
+                results.add(dto);
+            } else {
+                //暂存，后面处理
+                tempChildren.add(dto);
+            }
+        }
+
+        //加上全部子分类
+        for (VirtualCategoryDto childDto : tempChildren) {
+            String parentId = childDto.getParentId();
+            VirtualCategoryDto parent = dtoMap.get(parentId);
+
+            if (parent.getChildren() == null) {
+                parent.setChildren(new ArrayList<>());
+            }
+            parent.getChildren().add(childDto);
+        }
+
+        return results;
+    }
+
 }
