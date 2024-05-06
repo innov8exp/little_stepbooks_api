@@ -8,7 +8,7 @@ spring:
     redis:
       cluster:
         nodes:
-          - stage-redis-cluster.retsq2.clustercfg.cnn1.cache.amazonaws.com.cn:6379
+          - stepbook-stage-redis-cluster.retsq2.clustercfg.cnn1.cache.amazonaws.com.cn:6379
       database: 0
 
 
@@ -17,7 +17,7 @@ server:
 
 logging:
   level:
-    org.springframework.web: DEBUG
+    org.springframework.web: INFO
 
 aws:
   s3:

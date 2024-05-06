@@ -17,7 +17,7 @@ server:
 
 logging:
   level:
-    org.springframework.web: DEBUG
+    org.springframework.web: INFO
 
 aws:
   s3:
