@@ -13,6 +13,7 @@ import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.client.dto.VirtualCategoryDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +31,13 @@ public class VirtualCategoryController {
     private final ContextManager contextManager;
     private final VirtualCategoryService virtualCategoryService;
     private final VirtualGoodsExpirationService virtualGoodsExpirationService;
+
+    @GetMapping("/{categoryId}")
+    @Operation(summary = "虚拟产品大类详情")
+    public ResponseEntity<VirtualCategoryDto> get(@PathVariable String categoryId) {
+        VirtualCategoryDto dto = virtualCategoryService.getFullVirtualCategoryById(categoryId);
+        return ResponseEntity.ok(dto);
+    }
 
     @GetMapping("/my")
     @Operation(summary = "获得当前用户购买的虚拟产品大类")
