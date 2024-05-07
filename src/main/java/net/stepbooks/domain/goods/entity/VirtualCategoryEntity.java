@@ -12,6 +12,7 @@ import net.stepbooks.infrastructure.model.BaseEntity;
 @TableName("STEP_VIRTUAL_CATEGORY")
 public class VirtualCategoryEntity extends BaseEntity {
 
+    private Boolean free;
     private String parentId;
     private Integer sortIndex;
     private String name;

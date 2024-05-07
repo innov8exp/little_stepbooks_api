@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 public class VirtualCategoryDto extends BaseDto {
+    private Boolean free;
     private String parentId;
     private Integer sortIndex;
     private String name;

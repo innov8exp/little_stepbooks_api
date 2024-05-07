@@ -46,6 +46,7 @@ create TABLE STEP_VIRTUAL_CATEGORY
     detail_img_id VARCHAR(100) REFERENCES STEP_DETAIL_IMAGE (id),     -- 详情图ID
     status        VARCHAR(100),                                       -- ONLINE/OFFLINE
     sort_index    SERIAL,                                             -- 排序
+    free          BOOLEAN DEFAULT (false),                            -- 是否免费
     created_at    TIMESTAMP,
     modified_at   TIMESTAMP
 );

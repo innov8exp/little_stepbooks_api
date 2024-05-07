@@ -51,4 +51,11 @@ public class VirtualCategoryController {
         List<VirtualCategoryDto> dtos = virtualCategoryService.getAllMediaVirtualCategories();
         return ResponseEntity.ok(dtos);
     }
+
+    @GetMapping("/free")
+    @Operation(summary = "获得免费的音视频虚拟产品大类")
+    public ResponseEntity<List<VirtualCategoryDto>> getFreeMediaVirtualCategories() {
+        List<VirtualCategoryDto> dtos = virtualCategoryService.getFreeMediaVirtualCategories();
+        return ResponseEntity.ok(dtos);
+    }
 }

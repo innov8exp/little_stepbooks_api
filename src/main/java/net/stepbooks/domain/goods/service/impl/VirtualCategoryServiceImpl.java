@@ -10,6 +10,7 @@ import net.stepbooks.domain.goods.service.VirtualCategoryService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.interfaces.client.dto.VirtualCategoryDto;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -43,8 +44,7 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
         return dto;
     }
 
-    @Override
-    public List<VirtualCategoryDto> getAllMediaVirtualCategories() {
+    private List<VirtualCategoryDto> getMediaVirtualCategories(boolean freeOnly) {
 
         List<VirtualCategoryDto> results = new ArrayList<>();
 
@@ -63,6 +63,9 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
             VirtualCategoryDto dto = BaseAssembler.convert(entity, VirtualCategoryDto.class);
             dtoMap.put(dto.getId(), dto);
             if (entity.getParentId() == null) {
+                if (freeOnly && BooleanUtils.isNotTrue(entity.getFree())) {
+                    continue;
+                }
                 results.add(dto);
             } else {
                 //暂存，后面处理
@@ -82,6 +85,16 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
         }
 
         return results;
+    }
+
+    @Override
+    public List<VirtualCategoryDto> getAllMediaVirtualCategories() {
+        return getMediaVirtualCategories(false);
+    }
+
+    @Override
+    public List<VirtualCategoryDto> getFreeMediaVirtualCategories() {
+        return getMediaVirtualCategories(true);
     }
 
 }

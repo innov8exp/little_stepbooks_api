@@ -12,4 +12,6 @@ public interface VirtualCategoryService extends IService<VirtualCategoryEntity> 
 
     List<VirtualCategoryDto> getAllMediaVirtualCategories();
 
+    List<VirtualCategoryDto> getFreeMediaVirtualCategories();
+
 }
