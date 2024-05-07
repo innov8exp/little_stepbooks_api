@@ -40,7 +40,7 @@ public class UserSecurityConfig {
                                 mvc.pattern("/auth/**"),
                                 mvc.pattern("/v1/skus"),
                                 mvc.pattern("/v1/detail-image/**"),
-                                mvc.pattern("/v1/virtual-goods-category"),
+                                mvc.pattern("/v1/virtual-goods-category/**"),
                                 mvc.pattern("/v1/payments/**"),
                                 mvc.pattern("/v1/products/**"),
                                 mvc.pattern("/v1/product-media"),

@@ -28,23 +28,14 @@ public class MVirtualCategoryController {
     @PostMapping()
     @Operation(summary = "创建虚拟产品大类")
     public ResponseEntity<VirtualCategoryEntity> create(@RequestBody VirtualCategoryEntity entity) {
-        if (entity.getType() == null) {
-            entity.setType(VirtualCategoryType.MEDIA);
-        }
-        entity.setStatus(PublishStatus.OFFLINE);
-        virtualCategoryService.save(entity);
-        return ResponseEntity.ok(entity);
+        VirtualCategoryEntity result = virtualCategoryService.create(entity);
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "修改虚拟产品大类")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody VirtualCategoryEntity entity) {
-        if (entity.getType() == null) {
-            entity.setType(VirtualCategoryType.MEDIA);
-        }
-        entity.setStatus(PublishStatus.OFFLINE);
-        entity.setId(id);
-        virtualCategoryService.updateById(entity);
+        virtualCategoryService.update(id, entity);
         return ResponseEntity.ok().build();
     }
 

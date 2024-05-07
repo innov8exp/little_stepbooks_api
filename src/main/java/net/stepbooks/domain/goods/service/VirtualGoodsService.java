@@ -8,6 +8,10 @@ import java.util.List;
 
 public interface VirtualGoodsService extends IService<VirtualGoodsEntity> {
 
+    VirtualGoodsEntity create(VirtualGoodsEntity entity);
+
+    VirtualGoodsEntity update(String id, VirtualGoodsEntity entity);
+
     List<VirtualGoodsDto> listAll(String virtualCategoryId);
 
 }

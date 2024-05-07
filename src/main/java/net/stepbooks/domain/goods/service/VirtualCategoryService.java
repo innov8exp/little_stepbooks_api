@@ -8,10 +8,16 @@ import java.util.List;
 
 public interface VirtualCategoryService extends IService<VirtualCategoryEntity> {
 
+    VirtualCategoryEntity create(VirtualCategoryEntity entity);
+
+    VirtualCategoryEntity update(String id, VirtualCategoryEntity entity);
+
     VirtualCategoryDto getFullVirtualCategoryById(String categoryId);
 
     List<VirtualCategoryDto> getAllMediaVirtualCategories();
 
     List<VirtualCategoryDto> getFreeMediaVirtualCategories();
+
+    boolean hasChild(String categoryId);
 
 }

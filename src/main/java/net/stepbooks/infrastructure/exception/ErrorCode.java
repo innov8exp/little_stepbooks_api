@@ -20,6 +20,9 @@ public enum ErrorCode {
     UPLOAD_FILE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Upload file to s3 failed"),
     S3_FAILED(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Connect S3 failed"),
 
+    CATEGORY_TREE_EXCEEDING_2_LEVELS(HttpStatus.BAD_REQUEST.value(), "Category tree exceeding 2 levels"),
+    CATEGORY_HAS_CHILD(HttpStatus.BAD_REQUEST.value(), "Category has child"),
+
     PRODUCT_NOT_EXISTS(HttpStatus.BAD_REQUEST.value(), "The product is already unshelve"),
     STOCK_NOT_EXISTS(HttpStatus.BAD_REQUEST.value(), "The product is out of stock"),
     STOCK_NOT_ENOUGH(HttpStatus.BAD_REQUEST.value(), "The product is out of stock"),

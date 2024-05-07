@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
+import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.domain.goods.mapper.VirtualCategoryMapper;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.PublishStatus;
+import net.stepbooks.infrastructure.exception.BusinessException;
+import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.client.dto.VirtualCategoryDto;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,43 @@ import java.util.List;
 @Service
 public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMapper, VirtualCategoryEntity>
         implements VirtualCategoryService {
+
+    @Override
+    public VirtualCategoryEntity create(VirtualCategoryEntity entity) {
+        if (entity.getType() == null) {
+            entity.setType(VirtualCategoryType.MEDIA);
+        }
+        entity.setStatus(PublishStatus.OFFLINE);
+
+        if (entity.getParentId() != null) {
+            VirtualCategoryEntity parent = getById(entity.getParentId());
+            if (parent.getParentId() != null) {
+                throw new BusinessException(ErrorCode.CATEGORY_TREE_EXCEEDING_2_LEVELS);
+            }
+        }
+
+        save(entity);
+        return entity;
+    }
+
+    @Override
+    public VirtualCategoryEntity update(String id, VirtualCategoryEntity entity) {
+        if (entity.getType() == null) {
+            entity.setType(VirtualCategoryType.MEDIA);
+        }
+        entity.setStatus(PublishStatus.OFFLINE);
+
+        if (entity.getParentId() != null) {
+            VirtualCategoryEntity parent = getById(entity.getParentId());
+            if (parent.getParentId() != null) {
+                throw new BusinessException(ErrorCode.CATEGORY_TREE_EXCEEDING_2_LEVELS);
+            }
+        }
+
+        entity.setId(id);
+        updateById(entity);
+        return entity;
+    }
 
     @Override
     public VirtualCategoryDto getFullVirtualCategoryById(String categoryId) {
@@ -95,6 +135,13 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
     @Override
     public List<VirtualCategoryDto> getFreeMediaVirtualCategories() {
         return getMediaVirtualCategories(true);
+    }
+
+    @Override
+    public boolean hasChild(String categoryId) {
+        LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(VirtualCategoryEntity::getParentId, categoryId);
+        return count(wrapper) > 0;
     }
 
 }
