@@ -13,6 +13,8 @@ public final class AppConstants {
 
     public static final String VIRTUAL_CATEGORY_ID_MEMBER = "1";
 
+    public static final int DEFAULT_TO_ADD_MONTH = 240;
+
     public static final int ORDER_CODE_RANDOM_LENGTH = 5;
     public static final int ORDER_CODE_START_INCLUSIVE = 0;
     public static final int ORDER_CODE_END_EXCLUSIVE = 9;

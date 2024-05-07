@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualGoodsEntity;
 import net.stepbooks.domain.goods.service.VirtualGoodsService;
+import net.stepbooks.infrastructure.AppConstants;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,9 @@ public class MVirtualGoodsController {
     @PostMapping()
     @Operation(summary = "创建虚拟产品")
     public ResponseEntity<VirtualGoodsEntity> create(@RequestBody VirtualGoodsEntity entity) {
+        if (entity.getToAddMonth() == 0) {
+            entity.setToAddMonth(AppConstants.DEFAULT_TO_ADD_MONTH);
+        }
         virtualGoodsService.save(entity);
         return ResponseEntity.ok(entity);
     }

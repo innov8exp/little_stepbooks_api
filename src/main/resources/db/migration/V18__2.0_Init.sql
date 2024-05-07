@@ -41,6 +41,7 @@ create TABLE STEP_VIRTUAL_CATEGORY
     parent_id     VARCHAR(100) REFERENCES STEP_VIRTUAL_CATEGORY (id), -- 父大类的ID，支持多级目录
     type          VARCHAR(100),                                       -- MEMBER(会员)/MEDIA(音视频)
     name          TEXT         NOT NULL,                              -- 大类名称
+    description   TEXT,                                               -- 大类介绍
     cover_id      VARCHAR(100) REFERENCES STEP_MEDIA (id),            -- 封面图片ID
     cover_url     TEXT,                                               -- 封面图片链接
     detail_img_id VARCHAR(100) REFERENCES STEP_DETAIL_IMAGE (id),     -- 详情图ID

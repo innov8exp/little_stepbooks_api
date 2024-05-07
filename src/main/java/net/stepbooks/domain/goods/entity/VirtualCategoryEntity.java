@@ -16,6 +16,7 @@ public class VirtualCategoryEntity extends BaseEntity {
     private String parentId;
     private Integer sortIndex;
     private String name;
+    private String description;
     private String coverId;
     private String coverUrl;
     private String detailImgId;

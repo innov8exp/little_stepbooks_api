@@ -13,6 +13,7 @@ public class VirtualCategoryDto extends BaseDto {
     private String parentId;
     private Integer sortIndex;
     private String name;
+    private String description;
     private String coverId;
     private String coverUrl;
     private String detailImgId;
