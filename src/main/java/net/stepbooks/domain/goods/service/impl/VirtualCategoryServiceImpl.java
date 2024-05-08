@@ -12,12 +12,14 @@ import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
+import net.stepbooks.interfaces.admin.dto.VirtualCategoryAdminDto;
 import net.stepbooks.interfaces.client.dto.VirtualCategoryDto;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -142,6 +144,46 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
         LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(VirtualCategoryEntity::getParentId, categoryId);
         return count(wrapper) > 0;
+    }
+
+    @Override
+    public List<VirtualCategoryAdminDto> allOnlineEndpoints() {
+
+        List<VirtualCategoryAdminDto> results = new ArrayList<>();
+
+        LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(VirtualCategoryEntity::getStatus, PublishStatus.ONLINE);
+        wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
+
+        List<VirtualCategoryEntity> allEntities = list(wrapper);
+
+        //全部大类
+        HashMap<String, VirtualCategoryAdminDto> dtoMap = new HashMap<>();
+
+        //所有父大类
+        HashSet<String> parentSet = new HashSet<>();
+
+        for (VirtualCategoryEntity entity : allEntities) {
+            VirtualCategoryAdminDto dto = BaseAssembler.convert(entity, VirtualCategoryAdminDto.class);
+            dtoMap.put(dto.getId(), dto);
+            if (dto.getParentId() != null) {
+                parentSet.add(dto.getParentId());
+            }
+        }
+
+        for (VirtualCategoryEntity entity : allEntities) {
+            if (!parentSet.contains(entity.getId())) {
+                //确认是最终节点
+                VirtualCategoryAdminDto dto = dtoMap.get(entity.getId());
+                if (dto.getParentId() != null) {
+                    VirtualCategoryAdminDto parent = dtoMap.get(dto.getParentId());
+                    dto.setParent(parent);
+                }
+                results.add(dto);
+            }
+        }
+
+        return results;
     }
 
 }

@@ -12,9 +12,13 @@ import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
 import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
 import net.stepbooks.infrastructure.enums.PublishStatus;
+import net.stepbooks.interfaces.admin.dto.VirtualCategoryAdminDto;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "VirtualCategory", description = "虚拟产品大类后台管理接口")
 @RestController
@@ -79,16 +83,28 @@ public class MVirtualCategoryController {
     public ResponseEntity<IPage<VirtualCategoryEntity>> list(@RequestParam int currentPage,
                                                              @RequestParam int pageSize,
                                                              @RequestParam(required = false) VirtualCategoryType type,
-                                                             @RequestParam(required = false) String name) {
+                                                             @RequestParam(required = false) String name,
+                                                             @RequestParam(required = false) Boolean includeChildren) {
         Page<VirtualCategoryEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
         if (type == null) {
             type = VirtualCategoryType.MEDIA;
         }
+        if (BooleanUtils.isNotTrue(includeChildren)) {
+            //默认只返回顶级的虚拟大类
+            wrapper.isNull(VirtualCategoryEntity::getParentId);
+        }
         wrapper.eq(ObjectUtils.isNotEmpty(type), VirtualCategoryEntity::getType, type);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualCategoryEntity::getName, name);
         wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
         IPage<VirtualCategoryEntity> results = virtualCategoryService.page(page, wrapper);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/all-endpoints")
+    @Operation(summary = "所有可供生成VirtualGoods的大类")
+    public ResponseEntity<List<VirtualCategoryAdminDto>> allOnlineEndpoints() {
+        List<VirtualCategoryAdminDto> results = virtualCategoryService.allOnlineEndpoints();
         return ResponseEntity.ok(results);
     }
 
