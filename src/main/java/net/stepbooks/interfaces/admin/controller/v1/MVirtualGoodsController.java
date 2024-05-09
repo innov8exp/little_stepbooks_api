@@ -9,10 +9,15 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualGoodsEntity;
+import net.stepbooks.domain.goods.service.VirtualCategoryService;
 import net.stepbooks.domain.goods.service.VirtualGoodsService;
+import net.stepbooks.interfaces.client.dto.VirtualCategoryDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Tag(name = "VirtualGoods", description = "虚拟产品后台管理接口")
 @RestController
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class MVirtualGoodsController {
 
     private final VirtualGoodsService virtualGoodsService;
+    private final VirtualCategoryService virtualCategoryService;
 
     @PostMapping()
     @Operation(summary = "创建虚拟产品")
@@ -61,7 +67,20 @@ public class MVirtualGoodsController {
         LambdaQueryWrapper<VirtualGoodsEntity> wrapper = Wrappers.lambdaQuery();
         String virtualCategoryMemberId = "1";
         wrapper.gt(VirtualGoodsEntity::getCategoryId, virtualCategoryMemberId);
-        wrapper.eq(ObjectUtils.isNotEmpty(categoryId), VirtualGoodsEntity::getCategoryId, categoryId);
+
+        if (categoryId != null) {
+            VirtualCategoryDto categoryDto = virtualCategoryService.getFullVirtualCategoryById(categoryId);
+            if (categoryDto != null) {
+                if (categoryDto.getChildren() != null && categoryDto.getChildren().size() > 0) {
+                    List<String> ids = categoryDto.getChildren().stream()
+                            .map(VirtualCategoryDto::getId).collect(Collectors.toList());
+                    wrapper.in(VirtualGoodsEntity::getCategoryId, ids);
+                } else {
+                    wrapper.eq(VirtualGoodsEntity::getCategoryId, categoryId);
+                }
+            }
+        }
+
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualGoodsEntity::getName, name);
         wrapper.orderByAsc(VirtualGoodsEntity::getSortIndex);
         IPage<VirtualGoodsEntity> results = virtualGoodsService.page(page, wrapper);
