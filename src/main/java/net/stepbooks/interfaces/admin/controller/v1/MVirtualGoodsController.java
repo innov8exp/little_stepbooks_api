@@ -11,11 +11,16 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualGoodsEntity;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
 import net.stepbooks.domain.goods.service.VirtualGoodsService;
+import net.stepbooks.infrastructure.AppConstants;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.admin.dto.VirtualCategoryAdminDto;
+import net.stepbooks.interfaces.admin.dto.VirtualGoodsAdminDto;
 import net.stepbooks.interfaces.client.dto.VirtualCategoryDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,13 +64,13 @@ public class MVirtualGoodsController {
 
     @GetMapping
     @Operation(summary = "虚拟产品查询")
-    public ResponseEntity<IPage<VirtualGoodsEntity>> list(@RequestParam int currentPage,
-                                                          @RequestParam int pageSize,
-                                                          @RequestParam(required = false) String categoryId,
-                                                          @RequestParam(required = false) String name) {
+    public ResponseEntity<IPage<VirtualGoodsAdminDto>> list(@RequestParam int currentPage,
+                                                            @RequestParam int pageSize,
+                                                            @RequestParam(required = false) String categoryId,
+                                                            @RequestParam(required = false) String name) {
         Page<VirtualGoodsEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualGoodsEntity> wrapper = Wrappers.lambdaQuery();
-        String virtualCategoryMemberId = "1";
+        String virtualCategoryMemberId = AppConstants.VIRTUAL_ORDER_STATE_MACHINE_ID;
         wrapper.gt(VirtualGoodsEntity::getCategoryId, virtualCategoryMemberId);
 
         if (categoryId != null) {
@@ -83,7 +88,21 @@ public class MVirtualGoodsController {
 
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualGoodsEntity::getName, name);
         wrapper.orderByAsc(VirtualGoodsEntity::getSortIndex);
-        IPage<VirtualGoodsEntity> results = virtualGoodsService.page(page, wrapper);
+        IPage<VirtualGoodsEntity> virtualGoodsEntities = virtualGoodsService.page(page, wrapper);
+        IPage<VirtualGoodsAdminDto> results = new Page<>();
+        results.setCurrent(currentPage);
+        results.setSize(pageSize);
+        results.setTotal(virtualGoodsEntities.getTotal());
+        List<VirtualGoodsAdminDto> records = new ArrayList<>();
+        for (VirtualGoodsEntity entity : virtualGoodsEntities.getRecords()) {
+            VirtualGoodsAdminDto dto = BaseAssembler.convert(entity, VirtualGoodsAdminDto.class);
+            VirtualCategoryAdminDto categoryAdminDto =
+                    virtualCategoryService.getAdminVirtualCategoryById(dto.getCategoryId());
+            dto.setCategory(categoryAdminDto);
+
+        }
+        results.setRecords(records);
+
         return ResponseEntity.ok(results);
     }
 }

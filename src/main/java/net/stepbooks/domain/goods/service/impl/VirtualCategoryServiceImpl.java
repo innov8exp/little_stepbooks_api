@@ -86,6 +86,18 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
         return dto;
     }
 
+    @Override
+    public VirtualCategoryAdminDto getAdminVirtualCategoryById(String categoryId) {
+        VirtualCategoryEntity entity = getById(categoryId);
+        VirtualCategoryAdminDto dto = BaseAssembler.convert(entity, VirtualCategoryAdminDto.class);
+        if (dto.getParentId() != null) {
+            VirtualCategoryEntity parentEntity = getById(dto.getParentId());
+            VirtualCategoryAdminDto parentDto = BaseAssembler.convert(parentEntity, VirtualCategoryAdminDto.class);
+            dto.setParent(parentDto);
+        }
+        return dto;
+    }
+
     private List<VirtualCategoryDto> getMediaVirtualCategories(boolean freeOnly) {
 
         List<VirtualCategoryDto> results = new ArrayList<>();
