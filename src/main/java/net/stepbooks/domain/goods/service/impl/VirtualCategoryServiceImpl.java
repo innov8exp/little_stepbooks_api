@@ -195,8 +195,8 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
                     }
                     dto.setParent(parent);
                 }
+                results.add(dto);
             }
-            results.add(dto);
         }
 
         return results;
