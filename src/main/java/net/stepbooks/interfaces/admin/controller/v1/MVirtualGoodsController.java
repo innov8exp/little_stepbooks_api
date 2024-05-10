@@ -70,7 +70,7 @@ public class MVirtualGoodsController {
                                                             @RequestParam(required = false) String name) {
         Page<VirtualGoodsEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualGoodsEntity> wrapper = Wrappers.lambdaQuery();
-        String virtualCategoryMemberId = AppConstants.VIRTUAL_ORDER_STATE_MACHINE_ID;
+        String virtualCategoryMemberId = AppConstants.VIRTUAL_CATEGORY_ID_MEMBER;
         wrapper.gt(VirtualGoodsEntity::getCategoryId, virtualCategoryMemberId);
 
         if (categoryId != null) {
