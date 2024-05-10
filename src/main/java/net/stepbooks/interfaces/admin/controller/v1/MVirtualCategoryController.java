@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
 import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.interfaces.admin.dto.VirtualCategoryAdminDto;
 import org.apache.commons.lang3.BooleanUtils;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "VirtualCategory", description = "虚拟产品大类后台管理接口")
@@ -80,11 +82,11 @@ public class MVirtualCategoryController {
 
     @GetMapping
     @Operation(summary = "虚拟产品大类查询")
-    public ResponseEntity<IPage<VirtualCategoryEntity>> list(@RequestParam int currentPage,
-                                                             @RequestParam int pageSize,
-                                                             @RequestParam(required = false) VirtualCategoryType type,
-                                                             @RequestParam(required = false) String name,
-                                                             @RequestParam(required = false) Boolean includeChildren) {
+    public ResponseEntity<IPage<VirtualCategoryAdminDto>> list(@RequestParam int currentPage,
+                                                               @RequestParam int pageSize,
+                                                               @RequestParam(required = false) VirtualCategoryType type,
+                                                               @RequestParam(required = false) String name,
+                                                               @RequestParam(required = false) Boolean includeChildren) {
         Page<VirtualCategoryEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
         if (type == null) {
@@ -97,7 +99,23 @@ public class MVirtualCategoryController {
         wrapper.eq(ObjectUtils.isNotEmpty(type), VirtualCategoryEntity::getType, type);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualCategoryEntity::getName, name);
         wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
-        IPage<VirtualCategoryEntity> results = virtualCategoryService.page(page, wrapper);
+        IPage<VirtualCategoryEntity> categories = virtualCategoryService.page(page, wrapper);
+
+        IPage<VirtualCategoryAdminDto> results = new Page<>();
+        results.setCurrent(currentPage);
+        results.setSize(pageSize);
+        results.setTotal(categories.getTotal());
+        List<VirtualCategoryAdminDto> records = new ArrayList<>();
+        for (VirtualCategoryEntity entity : categories.getRecords()) {
+            VirtualCategoryAdminDto dto = BaseAssembler.convert(entity, VirtualCategoryAdminDto.class);
+            if (dto.getParentId() != null) {
+                VirtualCategoryEntity parentEntity = virtualCategoryService.getById(dto.getParentId());
+                VirtualCategoryAdminDto parent = BaseAssembler.convert(parentEntity, VirtualCategoryAdminDto.class);
+                dto.setParent(parent);
+            }
+            records.add(dto);
+        }
+        results.setRecords(records);
         return ResponseEntity.ok(results);
     }
 
