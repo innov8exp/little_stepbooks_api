@@ -99,7 +99,7 @@ public class MVirtualGoodsController {
             VirtualCategoryAdminDto categoryAdminDto =
                     virtualCategoryService.getAdminVirtualCategoryById(dto.getCategoryId());
             dto.setCategory(categoryAdminDto);
-
+            records.add(dto);
         }
         results.setRecords(records);
 
