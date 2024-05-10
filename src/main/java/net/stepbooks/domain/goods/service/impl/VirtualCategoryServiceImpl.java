@@ -184,18 +184,19 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
         }
 
         for (VirtualCategoryEntity entity : allEntities) {
+            VirtualCategoryAdminDto dto = dtoMap.get(entity.getId());
             if (!parentSet.contains(entity.getId())) {
                 //确认是最终节点
-                VirtualCategoryAdminDto dto = dtoMap.get(entity.getId());
                 if (dto.getParentId() != null) {
                     VirtualCategoryAdminDto parent = dtoMap.get(dto.getParentId());
                     //parent为空，说明可能是下线了，这种情况不返回
-                    if (parent != null) {
-                        dto.setParent(parent);
-                        results.add(dto);
+                    if (parent == null) {
+                        continue;
                     }
+                    dto.setParent(parent);
                 }
             }
+            results.add(dto);
         }
 
         return results;
