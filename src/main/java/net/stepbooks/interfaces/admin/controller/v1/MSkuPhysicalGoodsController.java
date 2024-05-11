@@ -34,6 +34,14 @@ public class MSkuPhysicalGoodsController {
     @PostMapping()
     @Operation(summary = "创建SKU与物理产品关系")
     public ResponseEntity<SkuPhysicalGoods> create(@RequestBody SkuPhysicalGoods entity) {
+        LambdaQueryWrapper<SkuPhysicalGoods> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(SkuPhysicalGoods::getSpuId, entity.getSpuId());
+        wrapper.eq(SkuPhysicalGoods::getSkuId, entity.getSkuId());
+        wrapper.eq(SkuPhysicalGoods::getGoodsId, entity.getGoodsId());
+        SkuPhysicalGoods oldOne = skuPhysicalGoodsService.getOne(wrapper);
+        if (oldOne != null) {
+            return ResponseEntity.ok(oldOne);
+        }
         skuPhysicalGoodsService.save(entity);
         return ResponseEntity.ok(entity);
     }

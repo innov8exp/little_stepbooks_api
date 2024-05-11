@@ -42,6 +42,14 @@ public class MSkuVirtualGoodsController {
             VirtualGoodsEntity goods = virtualGoodsService.getById(goodsId);
             entity.setCategoryId(goods.getCategoryId());
         }
+        LambdaQueryWrapper<SkuVirtualGoods> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(SkuVirtualGoods::getSpuId, entity.getSpuId());
+        wrapper.eq(SkuVirtualGoods::getSkuId, entity.getSkuId());
+        wrapper.eq(SkuVirtualGoods::getGoodsId, entity.getGoodsId());
+        SkuVirtualGoods oldOne = skuVirtualGoodsService.getOne(wrapper);
+        if (oldOne != null) {
+            return ResponseEntity.ok(oldOne);
+        }
         skuVirtualGoodsService.save(entity);
         return ResponseEntity.ok(entity);
     }
