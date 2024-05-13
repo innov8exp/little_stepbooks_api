@@ -56,6 +56,17 @@ public class OrderController {
     private final OrderSkuService orderSkuService;
     private final SkuService skuService;
 
+    private OrderService correctOrderService(Order order) {
+        if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
+            return physicalOrderServiceImpl;
+        } else if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
+            return virtualOrderServiceImpl;
+        } else if (ProductNature.MIXED.equals(order.getProductNature())) {
+            return mixedOrderServiceImpl;
+        }
+        return null;
+    }
+
     private CreateOrderDto prepareOrder(PlaceOrderDto placeOrderDto, User user) {
         CreateOrderDto orderDto = BaseAssembler.convert(placeOrderDto, CreateOrderDto.class);
         orderDto.setUserId(user.getId());
@@ -280,5 +291,17 @@ public class OrderController {
         return ResponseEntity.ok(refundRequest);
     }
 
+
+    @Operation(summary = "订单签收")
+    @PutMapping("/{code}/sign")
+    public ResponseEntity<?> signOrder(@PathVariable String code) {
+        User user = contextManager.currentUser();
+        Order order = orderOpsService.findOrderByCode(code);
+        if (!user.getId().equals(order.getUserId())) {
+            throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+        }
+        correctOrderService(order).signOrder(order.getId());
+        return ResponseEntity.ok().build();
+    }
 
 }
