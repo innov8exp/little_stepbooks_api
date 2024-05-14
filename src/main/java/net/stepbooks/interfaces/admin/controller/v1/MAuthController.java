@@ -1,5 +1,6 @@
 package net.stepbooks.interfaces.admin.controller.v1;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import net.stepbooks.interfaces.admin.dto.AdminUserResetPasswordDto;
 import net.stepbooks.interfaces.admin.dto.LoginDto;
 import net.stepbooks.interfaces.admin.dto.ResetPasswordDto;
 import net.stepbooks.interfaces.client.dto.TokenDto;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -134,6 +136,18 @@ public class MAuthController {
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto) {
         adminUserService.resetPassword(resetPasswordDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/change-password")
+    @Operation(summary = "需要传入旧密码和新密码，并对它们进行MD5加密")
+    public ResponseEntity<?> changePassword(@RequestParam String oldPwd,
+                                            @RequestParam String newPwd) {
+        AdminUser adminUser = contextManager.currentAdminUser();
+        if (BooleanUtils.isNotTrue(adminUser.getActive())) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        }
+        adminUserService.changePassword(adminUser.getId(), oldPwd, newPwd);
         return ResponseEntity.ok().build();
     }
 

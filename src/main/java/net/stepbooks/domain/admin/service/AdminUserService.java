@@ -26,4 +26,6 @@ public interface AdminUserService extends IService<AdminUser> {
     void sendLoginVerificationSms(String phone);
 
     void resetPassword(ResetPasswordDto resetPasswordDto);
+
+    void changePassword(String id, String oldMd5, String newMd5);
 }

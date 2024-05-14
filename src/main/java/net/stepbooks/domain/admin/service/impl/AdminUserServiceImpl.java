@@ -15,6 +15,7 @@ import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.model.JwtUserDetails;
 import net.stepbooks.infrastructure.security.admin.AdminJwtTokenProvider;
+import net.stepbooks.infrastructure.util.EncryptUtils;
 import net.stepbooks.interfaces.admin.assembler.AdminAuthAssembler;
 import net.stepbooks.interfaces.admin.dto.ResetPasswordDto;
 import net.stepbooks.interfaces.client.dto.TokenDto;
@@ -135,6 +136,18 @@ public class AdminUserServiceImpl extends ServiceImpl<AdminUserMapper, AdminUser
                 .encode(adminUser.getPassword());
         adminUser.setPassword(password);
         adminUserMapper.updateById(adminUser);
+    }
+
+    @Override
+    public void changePassword(String id, String oldMd5, String newMd5) {
+        AdminUser adminUser = adminUserMapper.selectById(id);
+        if (EncryptUtils.matches(oldMd5, adminUser.getPassword())) {
+            String password = EncryptUtils.encodePassword(newMd5);
+            adminUser.setPassword(password);
+            adminUserMapper.updateById(adminUser);
+        } else {
+            throw new BusinessException(ErrorCode.AUTH_ERROR);
+        }
     }
 
     @SuppressWarnings("checkstyle:MagicNumber")
