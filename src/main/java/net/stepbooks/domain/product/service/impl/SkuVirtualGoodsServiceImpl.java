@@ -29,6 +29,14 @@ public class SkuVirtualGoodsServiceImpl extends ServiceImpl<SkuVirtualGoodsMappe
     private final VirtualGoodsAudioService virtualGoodsAudioService;
     private final VirtualGoodsVideoService virtualGoodsVideoService;
 
+    private void fillin(List<VirtualGoodsDto> results, String goodsId) {
+        VirtualGoodsEntity entity = virtualGoodsService.getById(goodsId);
+        VirtualGoodsDto virtualGoodsDto = BaseAssembler.convert(entity, VirtualGoodsDto.class);
+        virtualGoodsAudioService.fillinAudio(virtualGoodsDto);
+        virtualGoodsVideoService.fillinVideo(virtualGoodsDto);
+        results.add(virtualGoodsDto);
+    }
+
     @Override
     public List<VirtualGoodsDto> getVirtualGoodsListBySkuId(String skuId, RedeemCondition redeemCondition) {
         LambdaQueryWrapper<SkuVirtualGoods> wrapper = Wrappers.lambdaQuery();
@@ -37,18 +45,22 @@ public class SkuVirtualGoodsServiceImpl extends ServiceImpl<SkuVirtualGoodsMappe
         //不传redeemCondition则返回全部，否则按照redeemCondition查询
         wrapper.eq(ObjectUtils.isNotEmpty(redeemCondition), SkuVirtualGoods::getRedeemCondition, redeemCondition);
         List<SkuVirtualGoods> skuVirtualGoodsList = list(wrapper);
-        List<String> goodIds = skuVirtualGoodsList.stream().map(SkuVirtualGoods::getGoodsId).toList();
 
         List<VirtualGoodsDto> results = new ArrayList<>();
-        if (goodIds.size() > 0) {
-            LambdaQueryWrapper<VirtualGoodsEntity> wrapper2 = Wrappers.lambdaQuery();
-            wrapper2.in(VirtualGoodsEntity::getId, goodIds);
-            List<VirtualGoodsEntity> virtualGoodsEntities = virtualGoodsService.list(wrapper2);
-            for (VirtualGoodsEntity entity : virtualGoodsEntities) {
-                VirtualGoodsDto virtualGoodsDto = BaseAssembler.convert(entity, VirtualGoodsDto.class);
-                virtualGoodsAudioService.fillinAudio(virtualGoodsDto);
-                virtualGoodsVideoService.fillinVideo(virtualGoodsDto);
-                results.add(virtualGoodsDto);
+
+        for (SkuVirtualGoods skuVirtualGoods : skuVirtualGoodsList) {
+            if (skuVirtualGoods.getGoodsId() == null) {
+                //表示整个虚拟大类都展示
+                LambdaQueryWrapper<VirtualGoodsEntity> wrapper2 = Wrappers.lambdaQuery();
+                wrapper2.eq(VirtualGoodsEntity::getCategoryId, skuVirtualGoods.getCategoryId());
+                wrapper2.orderByAsc(VirtualGoodsEntity::getSortIndex);
+                List<VirtualGoodsEntity> virtualGoodsEntities = virtualGoodsService.list(wrapper2);
+                for (VirtualGoodsEntity entity : virtualGoodsEntities) {
+                    fillin(results, entity.getId());
+                }
+
+            } else {
+                fillin(results, skuVirtualGoods.getGoodsId());
             }
         }
 
