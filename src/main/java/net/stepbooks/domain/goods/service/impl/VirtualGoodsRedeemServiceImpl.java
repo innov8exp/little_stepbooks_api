@@ -31,11 +31,14 @@ public class VirtualGoodsRedeemServiceImpl implements VirtualGoodsRedeemService 
 
     private void redeem(Order order, RedeemCondition redeemCondition) {
         List<OrderSkuDto> orderSkuDtos = orderSkuService.findOrderSkusByOrderId(order.getId());
+        log.info("Redeem order={}, orderSkuDtos.size={}", order.getId(), orderSkuDtos.size());
         for (OrderSkuDto orderSkuDto : orderSkuDtos) {
             String skuId = orderSkuDto.getSkuId();
             int quantity = orderSkuDto.getQuantity();
+            log.info("Redeem sku={}, quantity={}", skuId, quantity);
             List<VirtualGoodsDto> virtualGoodsDtos = skuVirtualGoodsService.
                     getVirtualGoodsListBySkuId(skuId, redeemCondition);
+            log.info("Redeem virtualGoodsDtos.size={}", virtualGoodsDtos.size());
             for (VirtualGoodsDto virtualGoodsDto : virtualGoodsDtos) {
                 String goodsId = virtualGoodsDto.getId();
                 String categoryId = virtualGoodsDto.getCategoryId();
@@ -43,9 +46,12 @@ public class VirtualGoodsRedeemServiceImpl implements VirtualGoodsRedeemService 
                 toAddMonth = toAddMonth * quantity;
                 if (AppConstants.VIRTUAL_CATEGORY_ID_MEMBER.equals(categoryId)) {
                     //兑换会员商品
+                    log.info("Redeem member userId={}, toAddMonth={}", order.getUserId(), toAddMonth);
                     memberExpirationService.redeem(order.getUserId(), toAddMonth);
                 } else {
                     //兑换其他虚拟商品
+                    log.info("Redeem categoryId={}, goodsId={}, userId={}, toAddMonth={}",
+                            categoryId, goodsId, order.getUserId(), toAddMonth);
                     virtualGoodsExpirationService.redeem(order.getUserId(), goodsId, categoryId, toAddMonth);
                 }
             }
@@ -54,11 +60,13 @@ public class VirtualGoodsRedeemServiceImpl implements VirtualGoodsRedeemService 
 
     @Override
     public void afterOrderPaid(Order order) {
+        log.info("After order={} paid, redeem ...", order.getId());
         redeem(order, RedeemCondition.PAYMENT_SUCCESS);
     }
 
     @Override
     public void afterOrderSigned(Order order) {
+        log.info("After order={} signed, redeem ...", order.getId());
         redeem(order, RedeemCondition.SIGN_SUCCESS);
     }
 
