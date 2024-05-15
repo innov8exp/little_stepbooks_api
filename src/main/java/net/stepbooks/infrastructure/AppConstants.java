@@ -7,6 +7,11 @@ public final class AppConstants {
 
     public static final int MAX_PAGE_SIZE = 500;
 
+    /**
+     * 虚拟商品增加的月份
+     */
+    public static final int TO_ADD_MONTH = 240;
+
     public static final String MIXED_ORDER_STATE_MACHINE_ID = "mixedOrderStateMachine";
     public static final String PHYSICAL_ORDER_STATE_MACHINE_ID = "physicalOrderStateMachine";
     public static final String VIRTUAL_ORDER_STATE_MACHINE_ID = "virtualOrderStateMachine";

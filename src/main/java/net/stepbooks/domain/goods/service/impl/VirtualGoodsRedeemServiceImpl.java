@@ -42,14 +42,15 @@ public class VirtualGoodsRedeemServiceImpl implements VirtualGoodsRedeemService 
             for (VirtualGoodsDto virtualGoodsDto : virtualGoodsDtos) {
                 String goodsId = virtualGoodsDto.getId();
                 String categoryId = virtualGoodsDto.getCategoryId();
-                int toAddMonth = virtualGoodsDto.getToAddMonth();
-                toAddMonth = toAddMonth * quantity;
                 if (AppConstants.VIRTUAL_CATEGORY_ID_MEMBER.equals(categoryId)) {
                     //兑换会员商品
+                    int toAddMonth = virtualGoodsDto.getToAddMonth();
+                    toAddMonth = toAddMonth * quantity;
                     log.info("Redeem member userId={}, toAddMonth={}", order.getUserId(), toAddMonth);
                     memberExpirationService.redeem(order.getUserId(), toAddMonth);
                 } else {
                     //兑换其他虚拟商品
+                    int toAddMonth = AppConstants.TO_ADD_MONTH * quantity;
                     log.info("Redeem categoryId={}, goodsId={}, userId={}, toAddMonth={}",
                             categoryId, goodsId, order.getUserId(), toAddMonth);
                     virtualGoodsExpirationService.redeem(order.getUserId(), goodsId, categoryId, toAddMonth);
