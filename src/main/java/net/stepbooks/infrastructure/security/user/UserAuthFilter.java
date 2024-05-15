@@ -33,7 +33,7 @@ public class UserAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        log.debug("user doFilterInternal: {}", request.getServletPath());
+        //log.debug("user doFilterInternal: {}", request.getServletPath());
         String accessToken = request.getHeader(authHeader);
         if (ObjectUtils.isEmpty(accessToken)) {
             filterChain.doFilter(request, response);
