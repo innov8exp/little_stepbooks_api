@@ -54,7 +54,7 @@ public class VirtualGoodsRedeemServiceImpl implements VirtualGoodsRedeemService 
 
             log.info("Redeem skuVirtualGoodsList.size={}", skuVirtualGoodsList.size());
             for (SkuVirtualGoods skuVirtualGoods : skuVirtualGoodsList) {
-                String goodsId = skuVirtualGoods.getId();
+                String goodsId = skuVirtualGoods.getGoodsId();
                 String categoryId = skuVirtualGoods.getCategoryId();
                 if (AppConstants.VIRTUAL_CATEGORY_ID_MEMBER.equals(categoryId)) {
                     //兑换会员商品
