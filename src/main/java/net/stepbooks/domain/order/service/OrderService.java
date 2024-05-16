@@ -49,4 +49,7 @@ public interface OrderService {
     // 退款回调
     void refundCallback(Order order, Payment payment);
 
+    //标记虚拟产品兑换成功
+    void markRedeemed(Order order);
+
 }

@@ -9,20 +9,20 @@ public interface VirtualGoodsRedeemService {
      *
      * @param order
      */
-    void afterOrderPaid(Order order);
+    boolean redeemAfterOrderPaid(Order order);
 
     /**
      * 当订单签收成功，如果RedeemCondition是SIGN_SUCCESS，那么立即兑现虚拟商品
      *
      * @param order
      */
-    void afterOrderSigned(Order order);
+    boolean redeemAfterOrderSigned(Order order);
 
     /**
      * 管理后台强行兑换
      *
-     * @param orderId
+     * @param order
      */
-    void redeemAll(String orderId);
+    boolean redeemByAdmin(Order order);
 
 }

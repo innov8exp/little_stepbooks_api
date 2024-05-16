@@ -22,4 +22,6 @@ public interface OrderActionService {
     void updateOrderState(Order order, OrderState orderState);
 
     void updatePaymentStatus(Order order, PaymentStatus paymentStatus);
+
+    void markRedeemed(Order order);
 }

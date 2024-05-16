@@ -245,6 +245,12 @@ public class MixedOrderServiceImpl implements OrderService {
         paymentOpsService.updateById(payment);
     }
 
+    @Override
+    public void markRedeemed(Order order) {
+        order.setRedeemed(true);
+        orderMapper.updateById(order);
+    }
+
     private Delivery buildDelivery(Order order, CreateOrderDto orderDto) {
         return Delivery.builder()
                 .deliveryMethod(DeliveryMethod.EXPRESS)

@@ -150,4 +150,10 @@ public class OrderActionServiceImpl implements OrderActionService {
         orderMapper.updateById(order);
     }
 
+    @Override
+    public void markRedeemed(Order order) {
+        order.setRedeemed(true);
+        orderMapper.updateById(order);
+    }
+
 }

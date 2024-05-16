@@ -36,7 +36,10 @@ public class VirtualGoodsRedeemServiceImpl implements VirtualGoodsRedeemService 
 
     private final VirtualGoodsService virtualGoodsService;
 
-    private void redeem(Order order, RedeemCondition redeemCondition) {
+    private boolean redeem(Order order, RedeemCondition redeemCondition) {
+
+        boolean redeemed = false;
+
         List<OrderSkuDto> orderSkuDtos = orderSkuService.findOrderSkusByOrderId(order.getId());
         log.info("Redeem order={}, orderSkuDtos.size={}", order.getId(), orderSkuDtos.size());
         for (OrderSkuDto orderSkuDto : orderSkuDtos) {
@@ -70,25 +73,29 @@ public class VirtualGoodsRedeemServiceImpl implements VirtualGoodsRedeemService 
                             categoryId, goodsId, order.getUserId(), toAddMonth);
                     virtualGoodsExpirationService.redeem(order.getUserId(), goodsId, categoryId, toAddMonth);
                 }
+                redeemed = true;
             }
         }
+
+        return redeemed;
     }
 
     @Override
-    public void afterOrderPaid(Order order) {
+    public boolean redeemAfterOrderPaid(Order order) {
         log.info("After order={} paid, redeem ...", order.getId());
-        redeem(order, RedeemCondition.PAYMENT_SUCCESS);
+        return redeem(order, RedeemCondition.PAYMENT_SUCCESS);
     }
 
     @Override
-    public void afterOrderSigned(Order order) {
+    public boolean redeemAfterOrderSigned(Order order) {
         log.info("After order={} signed, redeem ...", order.getId());
-        redeem(order, RedeemCondition.SIGN_SUCCESS);
+        return redeem(order, RedeemCondition.SIGN_SUCCESS);
     }
 
     @Override
-    public void redeemAll(String orderId) {
-
+    public boolean redeemByAdmin(Order order) {
+        log.info("Redeem by admin order={} ...", order.getId());
+        return redeem(order, null);
     }
 
 }

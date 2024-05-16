@@ -3,11 +3,13 @@ package net.stepbooks.interfaces.admin.controller.v1;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.admin.entity.AdminUser;
 import net.stepbooks.domain.delivery.entity.Delivery;
 import net.stepbooks.domain.delivery.service.DeliveryService;
+import net.stepbooks.domain.goods.service.VirtualGoodsRedeemService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.OrderEventLog;
 import net.stepbooks.domain.order.enums.DeliveryCompany;
@@ -16,8 +18,11 @@ import net.stepbooks.domain.order.service.*;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.product.enums.ProductNature;
+import net.stepbooks.infrastructure.exception.BusinessException;
+import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.*;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +46,7 @@ public class MOrderController {
     private final ContextManager contextManager;
     private final PaymentOpsService paymentOpsService;
     private final DeliveryService deliveryService;
+    private final VirtualGoodsRedeemService virtualGoodsRedeemService;
 
     private OrderService correctOrderService(Order order) {
         if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
@@ -99,6 +105,24 @@ public class MOrderController {
         Delivery delivery = deliveryService.getOne(Wrappers.<Delivery>lambdaQuery().eq(Delivery::getOrderId, id));
         BeanUtils.copyProperties(deliveryDetail, delivery);
         deliveryService.updateById(delivery);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/redeem")
+    @Operation(summary = "兑换订单的虚拟产品，一般来说如果已兑换则不再重复兑换，force=true例外")
+    public ResponseEntity<?> redeem(@PathVariable String id,
+                                    @RequestParam(required = false) Boolean force) {
+
+        Order order = orderOpsService.findOrderById(id);
+
+        if (BooleanUtils.isNotTrue(force) && BooleanUtils.isTrue(order.getRedeemed())) {
+            throw new BusinessException(ErrorCode.REDEEMED_ALREADY);
+        }
+
+        boolean redeemed = virtualGoodsRedeemService.redeemByAdmin(order);
+        if (redeemed) {
+            correctOrderService(order).markRedeemed(order);
+        }
         return ResponseEntity.ok().build();
     }
 

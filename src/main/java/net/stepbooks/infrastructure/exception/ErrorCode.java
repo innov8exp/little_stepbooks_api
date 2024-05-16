@@ -9,6 +9,8 @@ public enum ErrorCode {
 
     CONSTRAINT_VALIDATION_ERROR(HttpStatus.BAD_REQUEST.value(), "Constraint validation error"),
 
+    REDEEMED_ALREADY(HttpStatus.BAD_REQUEST.value(), "Redeemed already"),
+
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Cannot found the order"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Cannot found the user"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "The request param is not valid"),

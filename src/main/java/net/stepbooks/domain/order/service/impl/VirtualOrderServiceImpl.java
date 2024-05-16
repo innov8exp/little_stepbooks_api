@@ -266,4 +266,10 @@ public class VirtualOrderServiceImpl implements OrderService {
         paymentOpsService.updateById(payment);
     }
 
+    @Override
+    public void markRedeemed(Order order) {
+        order.setRedeemed(true);
+        orderMapper.updateById(order);
+    }
+
 }

@@ -126,7 +126,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
 
                 // 建立订单与书籍关系
                 List<OrderBook> orderBooks = productBookService.list(Wrappers.<ProductBook>lambdaQuery()
-                                .eq(ProductBook::getProductId, productId))
+                        .eq(ProductBook::getProductId, productId))
                         .stream().map(productBook -> OrderBook.builder()
                                 .orderId(order.getId())
                                 .productId(productId)
@@ -136,7 +136,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
                 orderBookService.saveBatch(orderBooks);
                 // 建立订单与课程关系
                 List<OrderCourse> orderCourses = productCourseService.list(Wrappers.<ProductCourse>lambdaQuery()
-                                .eq(ProductCourse::getProductId, productId))
+                        .eq(ProductCourse::getProductId, productId))
                         .stream().map(productCourse -> OrderCourse.builder()
                                 .orderId(order.getId())
                                 .productId(productId)
@@ -326,6 +326,11 @@ public class PhysicalOrderServiceImpl implements OrderService {
 //        updateOrderState(order.getId(), OrderEvent.REFUND_SUCCESS);
         physicalOrderStateMachine.fireEvent(order.getState(), OrderEvent.REFUND_SUCCESS, order);
         paymentOpsService.updateById(payment);
+    }
+
+    @Override
+    public void markRedeemed(Order order) {
+        throw new BusinessException(ErrorCode.BAD_REQUEST);
     }
 
     private Delivery buildDelivery(Order order, CreateOrderDto orderDto) {

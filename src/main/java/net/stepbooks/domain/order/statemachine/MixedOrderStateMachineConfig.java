@@ -56,7 +56,10 @@ public class MixedOrderStateMachineConfig {
                     orderActionService.updateOrderState(context, to);
                     orderActionService.saveOrderEventLog(from, to, event, context);
                     orderActionService.updatePaymentStatus(context, PaymentStatus.PAID);
-                    virtualGoodsRedeemService.afterOrderPaid(context);
+                    boolean redeemed = virtualGoodsRedeemService.redeemAfterOrderPaid(context);
+                    if (redeemed) {
+                        orderActionService.markRedeemed(context);
+                    }
                 });
 
         builder.externalTransition()
@@ -121,7 +124,10 @@ public class MixedOrderStateMachineConfig {
                     orderActionService.updateOrderState(context, to);
                     orderActionService.updateDeliveryStatus(context, DeliveryStatus.DELIVERED);
                     orderActionService.saveOrderEventLog(from, to, event, context);
-                    virtualGoodsRedeemService.afterOrderSigned(context);
+                    boolean redeemed = virtualGoodsRedeemService.redeemAfterOrderSigned(context);
+                    if (redeemed) {
+                        orderActionService.markRedeemed(context);
+                    }
                 });
 
         builder.externalTransition()
