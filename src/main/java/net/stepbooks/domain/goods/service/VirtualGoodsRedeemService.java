@@ -17,4 +17,12 @@ public interface VirtualGoodsRedeemService {
      * @param order
      */
     void afterOrderSigned(Order order);
+
+    /**
+     * 管理后台强行兑换
+     *
+     * @param orderId
+     */
+    void redeemAll(String orderId);
+
 }

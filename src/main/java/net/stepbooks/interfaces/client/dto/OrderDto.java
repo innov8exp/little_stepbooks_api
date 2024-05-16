@@ -14,4 +14,5 @@ public class OrderDto {
     private BigDecimal transactionAmount;
     private BigDecimal coinAmount;
     private OrderState state;
+    private Boolean redeemed;
 }

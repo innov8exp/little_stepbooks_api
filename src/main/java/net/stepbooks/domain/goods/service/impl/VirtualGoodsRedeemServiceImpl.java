@@ -86,4 +86,9 @@ public class VirtualGoodsRedeemServiceImpl implements VirtualGoodsRedeemService 
         redeem(order, RedeemCondition.SIGN_SUCCESS);
     }
 
+    @Override
+    public void redeemAll(String orderId) {
+
+    }
+
 }

@@ -27,6 +27,7 @@ public class OrderInfoDto extends BaseDto {
     private String skuCode;
     private BigDecimal totalAmount;
     private OrderState state;
+    private Boolean redeemed;
     private ProductNature productNature;
     private PaymentStatus paymentStatus;
 

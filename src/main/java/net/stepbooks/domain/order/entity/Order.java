@@ -32,4 +32,5 @@ public class Order extends BaseEntity {
     private PaymentStatus paymentStatus;
     private RefundType refundType;
     private OrderState state;
+    private Boolean redeemed;
 }
