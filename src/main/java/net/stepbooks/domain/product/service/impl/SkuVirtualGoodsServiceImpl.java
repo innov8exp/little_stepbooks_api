@@ -29,9 +29,10 @@ public class SkuVirtualGoodsServiceImpl extends ServiceImpl<SkuVirtualGoodsMappe
     private final VirtualGoodsAudioService virtualGoodsAudioService;
     private final VirtualGoodsVideoService virtualGoodsVideoService;
 
-    private void fillin(List<VirtualGoodsDto> results, String goodsId) {
+    private void fillin(List<VirtualGoodsDto> results, String goodsId, RedeemCondition redeemCondition) {
         VirtualGoodsEntity entity = virtualGoodsService.getById(goodsId);
         VirtualGoodsDto virtualGoodsDto = BaseAssembler.convert(entity, VirtualGoodsDto.class);
+        virtualGoodsDto.setRedeemCondition(redeemCondition);
         virtualGoodsAudioService.fillinAudio(virtualGoodsDto);
         virtualGoodsVideoService.fillinVideo(virtualGoodsDto);
         results.add(virtualGoodsDto);
@@ -56,11 +57,11 @@ public class SkuVirtualGoodsServiceImpl extends ServiceImpl<SkuVirtualGoodsMappe
                 wrapper2.orderByAsc(VirtualGoodsEntity::getSortIndex);
                 List<VirtualGoodsEntity> virtualGoodsEntities = virtualGoodsService.list(wrapper2);
                 for (VirtualGoodsEntity entity : virtualGoodsEntities) {
-                    fillin(results, entity.getId());
+                    fillin(results, entity.getId(), skuVirtualGoods.getRedeemCondition());
                 }
 
             } else {
-                fillin(results, skuVirtualGoods.getGoodsId());
+                fillin(results, skuVirtualGoods.getGoodsId(), skuVirtualGoods.getRedeemCondition());
             }
         }
 
