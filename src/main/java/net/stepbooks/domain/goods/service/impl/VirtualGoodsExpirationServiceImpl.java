@@ -28,6 +28,7 @@ public class VirtualGoodsExpirationServiceImpl extends ServiceImpl<VirtualGoodsE
         Date now = new Date();
         LambdaQueryWrapper<VirtualGoodsExpirationEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.gt(VirtualGoodsExpirationEntity::getExpirationAt, now);
+        wrapper.eq(VirtualGoodsExpirationEntity::getUserId, userId);
         return baseMapper.selectList(wrapper);
     }
 
