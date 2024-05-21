@@ -27,8 +27,15 @@ import java.util.List;
 public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMapper, VirtualCategoryEntity>
         implements VirtualCategoryService {
 
+    private void validate(VirtualCategoryEntity entity) {
+        if (entity.getTags() != null && entity.getParentId() != null) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "Children categories have no tags.");
+        }
+    }
+
     @Override
     public VirtualCategoryEntity create(VirtualCategoryEntity entity) {
+        validate(entity);
         if (entity.getType() == null) {
             entity.setType(VirtualCategoryType.MEDIA);
         }
@@ -47,6 +54,7 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
 
     @Override
     public VirtualCategoryEntity update(String id, VirtualCategoryEntity entity) {
+        validate(entity);
         if (entity.getType() == null) {
             entity.setType(VirtualCategoryType.MEDIA);
         }
