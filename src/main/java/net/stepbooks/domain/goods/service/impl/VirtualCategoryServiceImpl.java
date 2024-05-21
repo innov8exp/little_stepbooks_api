@@ -98,7 +98,7 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
         return dto;
     }
 
-    private List<VirtualCategoryDto> getMediaVirtualCategories(boolean freeOnly) {
+    private List<VirtualCategoryDto> getMediaVirtualCategories(boolean freeOnly, String tag) {
 
         List<VirtualCategoryDto> results = new ArrayList<>();
 
@@ -120,6 +120,14 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
                 if (freeOnly && BooleanUtils.isNotTrue(entity.getFree())) {
                     continue;
                 }
+
+                if (tag != null) {
+                    //只返回指定标签的虚拟大类
+                    if (entity.getTags() == null || !entity.getTags().contains(tag)) {
+                        continue;
+                    }
+                }
+
                 results.add(dto);
             } else {
                 //暂存，后面处理
@@ -132,6 +140,10 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
             String parentId = childDto.getParentId();
             VirtualCategoryDto parent = dtoMap.get(parentId);
 
+            if (parent == null) {
+                continue;
+            }
+
             if (parent.getChildren() == null) {
                 parent.setChildren(new ArrayList<>());
             }
@@ -142,13 +154,13 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
     }
 
     @Override
-    public List<VirtualCategoryDto> getAllMediaVirtualCategories() {
-        return getMediaVirtualCategories(false);
+    public List<VirtualCategoryDto> getAllMediaVirtualCategories(String tag) {
+        return getMediaVirtualCategories(false, tag);
     }
 
     @Override
-    public List<VirtualCategoryDto> getFreeMediaVirtualCategories() {
-        return getMediaVirtualCategories(true);
+    public List<VirtualCategoryDto> getFreeMediaVirtualCategories(String tag) {
+        return getMediaVirtualCategories(true, tag);
     }
 
     @Override

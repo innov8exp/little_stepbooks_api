@@ -86,6 +86,7 @@ public class MVirtualCategoryController {
                                                                @RequestParam int pageSize,
                                                                @RequestParam(required = false) VirtualCategoryType type,
                                                                @RequestParam(required = false) String name,
+                                                               @RequestParam(required = false) String tag,
                                                                @RequestParam(required = false) Boolean includeChildren) {
         Page<VirtualCategoryEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
@@ -98,6 +99,7 @@ public class MVirtualCategoryController {
         }
         wrapper.eq(ObjectUtils.isNotEmpty(type), VirtualCategoryEntity::getType, type);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualCategoryEntity::getName, name);
+        wrapper.like(ObjectUtils.isNotEmpty(tag), VirtualCategoryEntity::getTags, tag);
         wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
         IPage<VirtualCategoryEntity> categories = virtualCategoryService.page(page, wrapper);
 

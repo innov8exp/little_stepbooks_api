@@ -19,5 +19,6 @@ public class VirtualCategoryDto extends BaseDto {
     private String detailImgId;
     private PublishStatus status;
     private VirtualCategoryType type;
+    private String tags;
     private List<VirtualCategoryDto> children;
 }

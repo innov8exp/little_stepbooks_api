@@ -12,10 +12,7 @@ import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.client.dto.VirtualCategoryDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,15 +52,15 @@ public class VirtualCategoryController {
 
     @GetMapping("/all")
     @Operation(summary = "获得全部音视频虚拟产品大类")
-    public ResponseEntity<List<VirtualCategoryDto>> getAllMediaVirtualCategories() {
-        List<VirtualCategoryDto> dtos = virtualCategoryService.getAllMediaVirtualCategories();
+    public ResponseEntity<List<VirtualCategoryDto>> getAllMediaVirtualCategories(@RequestParam(required = false) String tag) {
+        List<VirtualCategoryDto> dtos = virtualCategoryService.getAllMediaVirtualCategories(tag);
         return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/free")
     @Operation(summary = "获得免费的音视频虚拟产品大类")
-    public ResponseEntity<List<VirtualCategoryDto>> getFreeMediaVirtualCategories() {
-        List<VirtualCategoryDto> dtos = virtualCategoryService.getFreeMediaVirtualCategories();
+    public ResponseEntity<List<VirtualCategoryDto>> getFreeMediaVirtualCategories(@RequestParam(required = false) String tag) {
+        List<VirtualCategoryDto> dtos = virtualCategoryService.getFreeMediaVirtualCategories(tag);
         return ResponseEntity.ok(dtos);
     }
 }
