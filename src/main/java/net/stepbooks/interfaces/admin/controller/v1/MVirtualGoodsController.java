@@ -87,7 +87,7 @@ public class MVirtualGoodsController {
         }
 
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualGoodsEntity::getName, name);
-        wrapper.orderByAsc(VirtualGoodsEntity::getSortIndex);
+        wrapper.orderByDesc(VirtualGoodsEntity::getSortIndex);
         IPage<VirtualGoodsEntity> virtualGoodsEntities = virtualGoodsService.page(page, wrapper);
         IPage<VirtualGoodsAdminDto> results = new Page<>();
         results.setCurrent(currentPage);

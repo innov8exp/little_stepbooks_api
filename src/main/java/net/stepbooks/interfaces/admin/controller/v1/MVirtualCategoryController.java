@@ -100,7 +100,7 @@ public class MVirtualCategoryController {
         wrapper.eq(ObjectUtils.isNotEmpty(type), VirtualCategoryEntity::getType, type);
         wrapper.like(ObjectUtils.isNotEmpty(name), VirtualCategoryEntity::getName, name);
         wrapper.like(ObjectUtils.isNotEmpty(tag), VirtualCategoryEntity::getTags, tag);
-        wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
+        wrapper.orderByDesc(VirtualCategoryEntity::getSortIndex);
         IPage<VirtualCategoryEntity> categories = virtualCategoryService.page(page, wrapper);
 
         IPage<VirtualCategoryAdminDto> results = new Page<>();

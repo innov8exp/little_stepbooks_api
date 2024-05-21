@@ -83,7 +83,7 @@ public class MPhysicalGoodsController {
         Page<PhysicalGoodsEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<PhysicalGoodsEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.like(ObjectUtils.isNotEmpty(name), PhysicalGoodsEntity::getName, name);
-        wrapper.orderByAsc(PhysicalGoodsEntity::getSortIndex);
+        wrapper.orderByDesc(PhysicalGoodsEntity::getSortIndex);
         IPage<PhysicalGoodsEntity> results = physicalGoodsService.page(page, wrapper);
         return ResponseEntity.ok(results);
     }
