@@ -33,7 +33,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Tag(name = "Order", description = "订单相关接口")
@@ -94,7 +93,7 @@ public class OrderController {
         payPrePayRequest.setPayMoney(order.getTotalAmount());
         payPrePayRequest.setPayContent(payContent.toString());
         // remove this after debug
-        payPrePayRequest.setPayMoney(new BigDecimal("0.01"));
+        // payPrePayRequest.setPayMoney(new BigDecimal("0.01"));
         return paymentService.prepayWithRequestPayment(payPrePayRequest);
     }
 
@@ -110,7 +109,7 @@ public class OrderController {
         payPrePayRequest.setPayMoney(order.getTotalAmount());
         payPrePayRequest.setPayContent(payContent.toString());
         // remove this after debug
-        payPrePayRequest.setPayMoney(new BigDecimal("0.01"));
+        // payPrePayRequest.setPayMoney(new BigDecimal("0.01"));
         return paymentService.prepayWithRequestPayment(payPrePayRequest);
     }
 
