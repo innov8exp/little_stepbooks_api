@@ -9,6 +9,7 @@ public enum ErrorCode {
 
     CONSTRAINT_VALIDATION_ERROR(HttpStatus.BAD_REQUEST.value(), "Constraint validation error"),
 
+    CHECKIN_ALREADY(HttpStatus.BAD_REQUEST.value(), "Checkin already"),
     REDEEMED_ALREADY(HttpStatus.BAD_REQUEST.value(), "Redeemed already"),
 
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Cannot found the order"),

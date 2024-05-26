@@ -9,12 +9,15 @@ import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.history.service.LearnTimeService;
 import net.stepbooks.domain.history.service.ReadingHistoryService;
 import net.stepbooks.domain.order.service.OrderOpsService;
-import net.stepbooks.domain.points.service.UserPointsService;
 import net.stepbooks.domain.user.entity.User;
+import net.stepbooks.domain.user.service.UserCheckinLogService;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.interfaces.client.dto.*;
+import net.stepbooks.interfaces.client.dto.CheckinDto;
+import net.stepbooks.interfaces.client.dto.LearnReportDto;
+import net.stepbooks.interfaces.client.dto.LearnReportSummaryDto;
+import net.stepbooks.interfaces.client.dto.UserDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,15 +35,13 @@ public class UserController {
     private final OrderOpsService orderOpsService;
     private final ReadingHistoryService readingHistoryService;
     private final LearnTimeService learnTimeService;
-    private final UserPointsService userPointsService;
+    private final UserCheckinLogService userCheckinLogService;
 
     @GetMapping("/daily-check-in")
     @Operation(summary = "每日签到")
     public ResponseEntity<CheckinDto> dailyCheckIn() {
         User user = contextManager.currentUser();
-        CheckinDto checkinDto = new CheckinDto();
-        PointsDto pointsDto = userPointsService.checkin(user.getId());
-        checkinDto.setPoints(pointsDto);
+        CheckinDto checkinDto = userCheckinLogService.dailyCheckin(user.getId());
         return ResponseEntity.ok(checkinDto);
     }
 

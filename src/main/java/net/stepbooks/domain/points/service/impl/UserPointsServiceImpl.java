@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserPointsServiceImpl implements UserPointsService {
     @Override
-    public PointsDto checkin(String userId) {
+    public PointsDto dailyCheckin(String userId, int continuesDay) {
         PointsDto pointsDto = new PointsDto();
         pointsDto.setAmount(1);
         pointsDto.setReason("每日登录积分奖励"); //TODO 多语言支持
