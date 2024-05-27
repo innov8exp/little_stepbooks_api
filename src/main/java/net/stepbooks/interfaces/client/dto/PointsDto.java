@@ -10,12 +10,17 @@ import lombok.Data;
 public class PointsDto {
 
     /**
-     * 积分变化数量
+     * 本次积分变化数量
      */
     private Integer amount;
 
     /**
-     * 积分变化原因
+     * 本次积分变化原因
      */
     private String reason;
+
+    /**
+     * 当前用户的总积分
+     */
+    private Integer totalAmount;
 }
