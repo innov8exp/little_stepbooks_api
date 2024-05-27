@@ -45,7 +45,7 @@ public class UserCheckinLogServiceImpl extends ServiceImpl<UserCheckinLogMapper,
             LambdaQueryWrapper<UserCheckinLog> yesterdayWrapper = Wrappers.lambdaQuery();
             yesterdayWrapper.eq(UserCheckinLog::getCheckinDate, yesterday);
             yesterdayWrapper.eq(UserCheckinLog::getUserId, userId);
-            UserCheckinLog yesterdayUserCheckinLog = getOne(wrapper);
+            UserCheckinLog yesterdayUserCheckinLog = getOne(yesterdayWrapper);
             int continuesDay = 1;
             if (!ObjectUtils.isEmpty(yesterdayUserCheckinLog)) {
                 continuesDay = yesterdayUserCheckinLog.getContinuesDay() + 1;
