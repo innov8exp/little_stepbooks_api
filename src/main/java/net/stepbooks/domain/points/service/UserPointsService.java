@@ -6,4 +6,6 @@ import net.stepbooks.interfaces.client.dto.PointsDto;
 
 public interface UserPointsService extends IService<UserPoints> {
     PointsDto dailyCheckin(String userId, int continuesDay);
+
+    UserPoints getUserPointsByUserId(String userId);
 }

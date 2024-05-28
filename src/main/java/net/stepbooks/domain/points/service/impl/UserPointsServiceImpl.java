@@ -32,9 +32,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
      * @return
      */
     private UserPoints calculate(String userId, LocalDate thisYearsNewYear, LocalDate nextYearsNewYear) {
-        LambdaQueryWrapper<UserPoints> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(UserPoints::getUserId, userId);
-        UserPoints userPoints = getOne(wrapper);
+        UserPoints userPoints = getUserPointsByUserId(userId);
 
         int totalPoints = userPointsLogService.pointsTotal(userId, thisYearsNewYear, nextYearsNewYear);
 
@@ -78,5 +76,13 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
         pointsDto.setTotalAmount(userPoints.getPoints());
 
         return pointsDto;
+    }
+
+    @Override
+    public UserPoints getUserPointsByUserId(String userId) {
+        LambdaQueryWrapper<UserPoints> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(UserPoints::getUserId, userId);
+        UserPoints userPoints = getOne(wrapper);
+        return userPoints;
     }
 }
