@@ -14,10 +14,10 @@ import java.time.LocalDate;
 public class UserPointsLogServiceImpl extends ServiceImpl<UserPointsLogMapper, UserPointsLog>
         implements UserPointsLogService {
 
+    private final UserPointsLogMapper userPointsLogMapper;
+
     @Override
     public int pointsTotal(String userId, LocalDate thisYearsNewYear, LocalDate nextYearsNewYear) {
-
-
-        return 0;
+        return userPointsLogMapper.getTotalAmountByYear(userId, thisYearsNewYear, nextYearsNewYear);
     }
 }
