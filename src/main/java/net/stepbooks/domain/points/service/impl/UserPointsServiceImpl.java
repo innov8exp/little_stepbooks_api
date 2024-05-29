@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.points.entity.PointsRule;
 import net.stepbooks.domain.points.entity.UserPoints;
 import net.stepbooks.domain.points.entity.UserPointsLog;
 import net.stepbooks.domain.points.enums.PointsEventType;
 import net.stepbooks.domain.points.mapper.UserPointsMapper;
+import net.stepbooks.domain.points.service.PointsRuleService;
 import net.stepbooks.domain.points.service.UserPointsLogService;
 import net.stepbooks.domain.points.service.UserPointsService;
+import net.stepbooks.infrastructure.AppConstants;
 import net.stepbooks.interfaces.client.dto.PointsDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
         implements UserPointsService {
 
     private final UserPointsLogService userPointsLogService;
+    private final PointsRuleService pointsRuleService;
 
     /**
      * 重新计算用户的总积分
@@ -54,8 +58,27 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
     @Override
     public PointsDto dailyCheckin(String userId, int continuesDay) {
 
-        int pointsChange = 1;
-        String reason = "每日登录积分奖励";
+        PointsRule pointsRule = null;
+        if (continuesDay >= AppConstants.THIRTY_DAYS) {
+            pointsRule = pointsRuleService.getRuleByType(PointsEventType.CHECK_IN_30_DAY);
+            if (pointsRule == null || pointsRule.getPoints() <= 0) {
+                pointsRule = pointsRuleService.getRuleByType(PointsEventType.CHECK_IN_7_DAY);
+
+            }
+        } else if (continuesDay >= AppConstants.SEVEN_DAYS) {
+            pointsRule = pointsRuleService.getRuleByType(PointsEventType.CHECK_IN_7_DAY);
+        }
+
+        if (pointsRule == null || pointsRule.getPoints() <= 0) {
+            pointsRule = pointsRuleService.getRuleByType(PointsEventType.DAILY_CHECK_IN);
+        }
+
+        if (pointsRule == null) {
+            return null;
+        }
+
+        int pointsChange = pointsRule.getPoints();
+        String reason = pointsRule.getReason();
 
         LocalDate thisYearsNewYear = LocalDate.now().withMonth(1).withDayOfMonth(1);
         LocalDate nextYearsNewYear = thisYearsNewYear.plusYears(1);

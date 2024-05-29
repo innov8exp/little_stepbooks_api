@@ -12,6 +12,9 @@ public final class AppConstants {
      */
     public static final int TO_ADD_MONTH = 240;
 
+    public static final int THIRTY_DAYS = 30;
+    public static final int SEVEN_DAYS = 7;
+
     public static final String MIXED_ORDER_STATE_MACHINE_ID = "mixedOrderStateMachine";
     public static final String PHYSICAL_ORDER_STATE_MACHINE_ID = "physicalOrderStateMachine";
     public static final String VIRTUAL_ORDER_STATE_MACHINE_ID = "virtualOrderStateMachine";

@@ -40,16 +40,16 @@ create TABLE STEP_USER_POINTS
 );
 
 -- 积分获取规制设置
--- 例如DAILY_CHECK_IN可获得积分5点，7_DAY_CHECK_IN额外获得积分5点，30_DAY_CHECK_IN再额外获得积分10点
--- 如果没有设置7_DAY_CHECK_IN和30_DAY_CHECK_IN，那么就没有额外积分，
 -- 如果某个活动期间希望提高签到积分，可直接将DAILY_CHECK_IN设置为50点
 create TABLE STEP_POINTS_RULE
 (
-    id          VARCHAR(100) NOT NULL PRIMARY KEY, -- 主键ID
-    event_type  VARCHAR(50)  NOT NULL UNIQUE,      -- 事件类型，例如DAILY_CHECK_IN，7_DAY_CHECK_IN，30_DAY_CHECK_IN
-    points      INT          NOT NULL DEFAULT 0,   -- 当事件触发时获得的积分增长
-    created_at  TIMESTAMP,
-    modified_at TIMESTAMP
+    id              VARCHAR(100) NOT NULL PRIMARY KEY, -- 主键ID
+    event_type      VARCHAR(50)  NOT NULL UNIQUE,      -- 事件类型，例如DAILY_CHECK_IN，7_DAY_CHECK_IN，30_DAY_CHECK_IN
+    exclusive_types VARCHAR(50),                       -- 当本规则生效的时候，其他几个规则失效
+    reason          VARCHAR(50),                       -- 产生积分时给用户的描述
+    points          INT          NOT NULL DEFAULT 0,   -- 当事件触发时获得的积分增长
+    created_at      TIMESTAMP,
+    modified_at     TIMESTAMP
 );
 
 -- 虚拟大类和商品的关联表
@@ -64,3 +64,14 @@ create TABLE STEP_VIRTUAL_CATEGORY_PRODUCT
     UNIQUE (category_id, product_id)
 );
 
+-- 每日音频
+create TABLE STEP_DAILY_AUDIO
+(
+    id          VARCHAR(100) NOT NULL PRIMARY KEY,                     -- 主键ID
+    day         DATE         NOT NULL,                                 -- 每日音频播放日期
+    category_id VARCHAR(100) REFERENCES STEP_VIRTUAL_CATEGORY (id),    -- 虚拟产品大类ID
+    goods_id    VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS (id),       -- 虚拟产品小类ID
+    audio_id    VARCHAR(100) REFERENCES STEP_VIRTUAL_GOODS_AUDIO (id), -- 音频ID
+    created_at  TIMESTAMP,
+    modified_at TIMESTAMP
+);
