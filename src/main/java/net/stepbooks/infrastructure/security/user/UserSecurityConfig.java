@@ -41,6 +41,7 @@ public class UserSecurityConfig {
                                 mvc.pattern("/v1/skus"),
                                 mvc.pattern("/v1/skus/**"),
                                 mvc.pattern("/v1/detail-image/**"),
+                                mvc.pattern("/v1/virtual-category-product/**"),
                                 mvc.pattern("/v1/virtual-goods-category/**"),
                                 mvc.pattern("/v1/virtual-goods/**"),
                                 mvc.pattern("/v1/payments/**"),
