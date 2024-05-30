@@ -19,6 +19,11 @@ public class VirtualCategoryAdminDto extends BaseDto {
     private PublishStatus status;
     private VirtualCategoryType type;
 
+    /**
+     * 相关的销售产品
+     */
+    private ProductDto relativeProduct;
+
     private VirtualCategoryAdminDto parent;
 
 }

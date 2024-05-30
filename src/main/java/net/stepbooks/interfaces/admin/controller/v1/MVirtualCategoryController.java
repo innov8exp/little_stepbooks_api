@@ -10,9 +10,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
 import net.stepbooks.domain.goods.enums.VirtualCategoryType;
+import net.stepbooks.domain.goods.service.VirtualCategoryProductService;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
+import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.PublishStatus;
+import net.stepbooks.interfaces.admin.dto.ProductDto;
 import net.stepbooks.interfaces.admin.dto.VirtualCategoryAdminDto;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -30,6 +33,8 @@ import java.util.List;
 public class MVirtualCategoryController {
 
     private final VirtualCategoryService virtualCategoryService;
+    private final VirtualCategoryProductService virtualCategoryProductService;
+    private final ProductService productService;
 
     @PostMapping()
     @Operation(summary = "创建虚拟产品大类")
@@ -114,6 +119,13 @@ public class MVirtualCategoryController {
                 VirtualCategoryEntity parentEntity = virtualCategoryService.getById(dto.getParentId());
                 VirtualCategoryAdminDto parent = BaseAssembler.convert(parentEntity, VirtualCategoryAdminDto.class);
                 dto.setParent(parent);
+            } else {
+                //顶级虚拟大类
+                String productId = virtualCategoryProductService.getRelativeProductId(dto.getId());
+                if (productId != null) {
+                    ProductDto product = productService.findDetailById(productId);
+                    dto.setRelativeProduct(product);
+                }
             }
             records.add(dto);
         }
