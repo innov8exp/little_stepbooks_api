@@ -44,7 +44,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Override
     public IPage<Product> findProductsInPagingByCriteria(Page<Product> page, MProductQueryDto queryDto) {
-        return productMapper.findProductsInPagingByCriteria(page, queryDto.getSkuName(), queryDto.getStatus());
+        return productMapper.findProductsInPagingByCriteria(page, queryDto.getTag(), queryDto.getSkuName(), queryDto.getStatus());
     }
 
     @Override
@@ -199,8 +199,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     @Override
-    public IPage<Product> searchProducts(Page<Product> page, String skuName) {
-        return productMapper.findProductsInPagingByCriteria(page, skuName, ProductStatus.ON_SHELF);
+    public IPage<Product> searchProducts(Page<Product> page, String tag, String skuName) {
+        return productMapper.findProductsInPagingByCriteria(page, tag, skuName, ProductStatus.ON_SHELF);
     }
 
     @Override

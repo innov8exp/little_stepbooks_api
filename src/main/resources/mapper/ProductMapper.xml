@@ -7,6 +7,10 @@
             <bind name="pattern" value="'%' + skuName + '%'"/>
             AND p.sku_name ILIKE #{pattern}
         </if>
+        <if test="tag != null">
+            <bind name="pattern" value="'%' + tag + '%'"/>
+            AND p.tags ILIKE #{pattern}
+        </if>
         <if test="status != null">
             AND p.status = #{status}
         </if>

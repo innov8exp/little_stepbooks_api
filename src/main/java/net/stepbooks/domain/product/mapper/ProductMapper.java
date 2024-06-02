@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface ProductMapper extends BaseMapper<Product> {
 
-    IPage<Product> findProductsInPagingByCriteria(IPage<Product> page, String skuName, ProductStatus status);
+    IPage<Product> findProductsInPagingByCriteria(IPage<Product> page, String tag, String skuName, ProductStatus status);
 
     IPage<Product> findRecommendProductsInPaging(Page<Product> page, Float minAge, Float maxAge);
 

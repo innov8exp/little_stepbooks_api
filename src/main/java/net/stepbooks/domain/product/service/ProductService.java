@@ -32,7 +32,7 @@ public interface ProductService extends IService<Product> {
 
     IPage<Product> listNewProducts(Page<Product> page);
 
-    IPage<Product> searchProducts(Page<Product> page, String skuName);
+    IPage<Product> searchProducts(Page<Product> page, String tag, String skuName);
 
     List<Classification> getProductClassifications(String id);
 

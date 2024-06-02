@@ -13,5 +13,6 @@ import net.stepbooks.domain.product.enums.ProductStatus;
 public class MProductQueryDto {
     private String skuCode;
     private String skuName;
+    private String tag;
     private ProductStatus status;
 }

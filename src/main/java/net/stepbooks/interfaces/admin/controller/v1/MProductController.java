@@ -67,9 +67,14 @@ public class MProductController {
     public ResponseEntity<IPage<Product>> getPagedProducts(@RequestParam int currentPage,
                                                            @RequestParam int pageSize,
                                                            @RequestParam(required = false) String skuName,
+                                                           @RequestParam(required = false) String tag,
                                                            @RequestParam(required = false) ProductStatus status) {
         Page<Product> page = Page.of(currentPage, pageSize);
-        MProductQueryDto queryDto = MProductQueryDto.builder().skuName(skuName).status(status).build();
+        MProductQueryDto queryDto = MProductQueryDto.builder()
+                .skuName(skuName)
+                .tag(tag)
+                .status(status)
+                .build();
         IPage<Product> products = productService.findProductsInPagingByCriteria(page, queryDto);
         return ResponseEntity.ok(products);
     }

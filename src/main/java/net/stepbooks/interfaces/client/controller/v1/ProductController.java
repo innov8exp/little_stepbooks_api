@@ -39,9 +39,10 @@ public class ProductController {
     @GetMapping("/search")
     public ResponseEntity<IPage<Product>> searchProducts(@RequestParam int currentPage,
                                                          @RequestParam int pageSize,
-                                                         @RequestParam(required = false) String keyword) {
+                                                         @RequestParam(required = false) String keyword,
+                                                         @RequestParam(required = false) String tag) {
         Page<Product> page = Page.of(currentPage, pageSize);
-        IPage<Product> products = productService.searchProducts(page, keyword);
+        IPage<Product> products = productService.searchProducts(page, tag, keyword);
         return ResponseEntity.ok(products);
     }
 
