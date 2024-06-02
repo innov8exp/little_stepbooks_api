@@ -21,6 +21,7 @@ public class VirtualGoodsVideoServiceImpl extends ServiceImpl<VirtualGoodsVideoM
         String goodsId = virtualGoodsDto.getId();
         LambdaQueryWrapper<VirtualGoodsVideoEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(VirtualGoodsVideoEntity::getGoodsId, goodsId);
+        wrapper.orderByAsc(VirtualGoodsVideoEntity::getSortIndex);
         List<VirtualGoodsVideoEntity> videoList = list(wrapper);
         if (videoList != null && videoList.size() > 0) {
             virtualGoodsDto.setVideoList(videoList);

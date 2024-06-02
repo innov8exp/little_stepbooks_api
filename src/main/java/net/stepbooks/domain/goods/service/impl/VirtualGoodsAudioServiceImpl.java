@@ -21,6 +21,7 @@ public class VirtualGoodsAudioServiceImpl extends ServiceImpl<VirtualGoodsAudioM
         String goodsId = virtualGoodsDto.getId();
         LambdaQueryWrapper<VirtualGoodsAudioEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(VirtualGoodsAudioEntity::getGoodsId, goodsId);
+        wrapper.orderByAsc(VirtualGoodsAudioEntity::getSortIndex);
         List<VirtualGoodsAudioEntity> audioList = list(wrapper);
         if (audioList != null && audioList.size() > 0) {
             virtualGoodsDto.setAudioList(audioList);
