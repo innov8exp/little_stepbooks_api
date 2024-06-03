@@ -9,8 +9,6 @@ public interface VirtualCategoryProductService extends IService<VirtualCategoryP
 
     void set(String categoryId, String productId, VirtualCategoryProductDisplayTime displayTime);
 
-    String getRelativeProductId(String categoryId);
-
     VirtualCategoryProductDto getRelativeProduct(String categoryId);
 
 }

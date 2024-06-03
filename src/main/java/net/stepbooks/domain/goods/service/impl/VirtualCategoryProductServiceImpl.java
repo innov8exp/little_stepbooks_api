@@ -39,18 +39,6 @@ public class VirtualCategoryProductServiceImpl extends ServiceImpl<VirtualCatego
     }
 
     @Override
-    public String getRelativeProductId(String categoryId) {
-        LambdaQueryWrapper<VirtualCategoryProductEntity> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(VirtualCategoryProductEntity::getCategoryId, categoryId);
-        VirtualCategoryProductEntity virtualCategoryProductEntity = getOne(wrapper);
-        if (virtualCategoryProductEntity != null) {
-            return virtualCategoryProductEntity.getProductId();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public VirtualCategoryProductDto getRelativeProduct(String categoryId) {
         LambdaQueryWrapper<VirtualCategoryProductEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(VirtualCategoryProductEntity::getCategoryId, categoryId);

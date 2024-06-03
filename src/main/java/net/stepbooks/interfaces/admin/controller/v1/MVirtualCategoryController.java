@@ -17,6 +17,7 @@ import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.interfaces.admin.dto.ProductDto;
 import net.stepbooks.interfaces.admin.dto.VirtualCategoryAdminDto;
+import net.stepbooks.interfaces.client.dto.VirtualCategoryProductDto;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
@@ -121,8 +122,10 @@ public class MVirtualCategoryController {
                 dto.setParent(parent);
             } else {
                 //顶级虚拟大类
-                String productId = virtualCategoryProductService.getRelativeProductId(dto.getId());
-                if (productId != null) {
+                VirtualCategoryProductDto virtualCategoryProduct = virtualCategoryProductService.getRelativeProduct(dto.getId());
+                dto.setVirtualCategoryProduct(virtualCategoryProduct);
+                if (virtualCategoryProduct != null) {
+                    String productId = virtualCategoryProduct.getProductId();
                     ProductDto product = productService.findDetailById(productId);
                     dto.setRelativeProduct(product);
                 }

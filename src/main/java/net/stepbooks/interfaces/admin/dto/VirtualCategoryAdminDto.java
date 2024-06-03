@@ -4,6 +4,7 @@ import lombok.Data;
 import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.infrastructure.model.BaseDto;
+import net.stepbooks.interfaces.client.dto.VirtualCategoryProductDto;
 
 @Data
 public class VirtualCategoryAdminDto extends BaseDto {
@@ -23,6 +24,11 @@ public class VirtualCategoryAdminDto extends BaseDto {
      * 相关的销售产品
      */
     private ProductDto relativeProduct;
+
+    /**
+     * 虚拟大类和商品的对应关系
+     */
+    private VirtualCategoryProductDto virtualCategoryProduct;
 
     private VirtualCategoryAdminDto parent;
 
