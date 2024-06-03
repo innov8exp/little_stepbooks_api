@@ -56,11 +56,12 @@ create TABLE STEP_POINTS_RULE
 -- 如果用户某个虚拟大类没有订阅，那么会引导他浏览对应的商品导购页面
 create TABLE STEP_VIRTUAL_CATEGORY_PRODUCT
 (
-    id          VARCHAR(100) NOT NULL PRIMARY KEY,                  -- 主键ID
-    category_id VARCHAR(100) REFERENCES STEP_VIRTUAL_CATEGORY (id), -- 大类ID
-    product_id  VARCHAR(100) REFERENCES STEP_PRODUCT (id),          -- 产品ID
-    created_at  TIMESTAMP,
-    modified_at TIMESTAMP,
+    id           VARCHAR(100) NOT NULL PRIMARY KEY,                  -- 主键ID
+    category_id  VARCHAR(100) REFERENCES STEP_VIRTUAL_CATEGORY (id), -- 大类ID
+    product_id   VARCHAR(100) REFERENCES STEP_PRODUCT (id),          -- 产品ID
+    display_time VARCHAR(30),                                        -- 展示时机 ONLY_UNPURCHASED，ALWAYS
+    created_at   TIMESTAMP,
+    modified_at  TIMESTAMP,
     UNIQUE (category_id, product_id)
 );
 
