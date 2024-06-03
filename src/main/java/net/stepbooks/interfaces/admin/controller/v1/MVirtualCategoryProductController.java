@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.VirtualCategoryProductEntity;
+import net.stepbooks.domain.goods.enums.VirtualCategoryProductDisplayTime;
 import net.stepbooks.domain.goods.service.VirtualCategoryProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,8 @@ public class MVirtualCategoryProductController {
     public ResponseEntity<?> set(@RequestBody VirtualCategoryProductEntity entity) {
         String categoryId = entity.getCategoryId();
         String productId = entity.getProductId();
-        virtualCategoryProductService.set(categoryId, productId);
+        VirtualCategoryProductDisplayTime displayTime = entity.getDisplayTime();
+        virtualCategoryProductService.set(categoryId, productId, displayTime);
         return ResponseEntity.ok().build();
     }
 

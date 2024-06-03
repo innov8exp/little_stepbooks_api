@@ -27,10 +27,7 @@ public class VirtualCategoryProductController {
     @GetMapping("/category/{categoryId}")
     @Operation(summary = "获得虚拟大类对应的商品ID")
     public ResponseEntity<VirtualCategoryProductDto> get(@PathVariable String categoryId) {
-        String productId = virtualCategoryProductService.getRelativeProductId(categoryId);
-        VirtualCategoryProductDto dto = new VirtualCategoryProductDto();
-        dto.setCategoryId(categoryId);
-        dto.setProductId(productId);
+        VirtualCategoryProductDto dto = virtualCategoryProductService.getRelativeProduct(categoryId);
         return ResponseEntity.ok(dto);
     }
 }
