@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.goods.entity.DailyAudioEntity;
 import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
 import net.stepbooks.domain.goods.entity.VirtualGoodsAudioEntity;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAudioEntity>
@@ -72,7 +74,7 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
                             todayAudio = audioEntity;
                             break;
                         } else {
-                            if (audioEntity.getAudioId().equals(audioId)) {
+                            if (audioEntity.getId().equals(audioId)) {
                                 //找到昨天的音频了
                                 yesterdayMatched = true;
                             }
@@ -87,11 +89,10 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
                     dailyAudioEntity.setCategoryId(todayAudio.getCategoryId());
                     dailyAudioEntity.setGoodsId(todayAudio.getGoodsId());
                     save(dailyAudioEntity);
+                    DailyAudioDto dailyAudioDto = BaseAssembler.convert(dailyAudioEntity, DailyAudioDto.class);
+                    dailyAudioDto.setGoods(goods);
+                    return dailyAudioDto;
                 }
-
-                DailyAudioDto dailyAudioDto = BaseAssembler.convert(dailyAudioEntity, DailyAudioDto.class);
-                dailyAudioDto.setGoods(goods);
-                return dailyAudioDto;
             }
 
             DailyAudioDto dailyAudioDto = new DailyAudioDto();
