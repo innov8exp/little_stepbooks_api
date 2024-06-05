@@ -8,9 +8,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.goods.entity.DailyAudioEntity;
+import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
 import net.stepbooks.domain.goods.entity.VirtualGoodsAudioEntity;
 import net.stepbooks.domain.goods.mapper.DailyAudioMapper;
 import net.stepbooks.domain.goods.service.DailyAudioService;
+import net.stepbooks.domain.goods.service.VirtualCategoryService;
 import net.stepbooks.domain.goods.service.VirtualGoodsService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.admin.dto.DailyAudioAdminDto;
@@ -30,6 +32,7 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
         implements DailyAudioService {
 
     private final VirtualGoodsService virtualGoodsService;
+    private final VirtualCategoryService virtualCategoryService;
 
     private List<VirtualGoodsDto> listGoods(String categoryId) {
         List<VirtualGoodsDto> goods = virtualGoodsService.listAll(categoryId);
@@ -57,6 +60,14 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
         }
     }
 
+    private void fillinParentCategory(DailyAudioDto dailyAudioDto) {
+        VirtualCategoryEntity virtualCategoryEntity = virtualCategoryService.getById(dailyAudioDto.getCategoryId());
+        String parentId = virtualCategoryEntity.getParentId();
+        if (parentId != null) {
+            dailyAudioDto.setParentCategoryId(parentId);
+        }
+    }
+
     @Transactional
     @Override
     public DailyAudioDto todayAudio() {
@@ -67,6 +78,7 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
 
         if (dailyAudioEntity != null) {
             DailyAudioDto dailyAudioDto = BaseAssembler.convert(dailyAudioEntity, DailyAudioDto.class);
+            fillinParentCategory(dailyAudioDto);
             List<VirtualGoodsDto> goods = listGoods(dailyAudioDto.getCategoryId());
             dailyAudioDto.setGoods(goods);
             return dailyAudioDto;
@@ -107,6 +119,7 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
                     dailyAudioEntity.setGoodsId(todayAudio.getGoodsId());
                     save(dailyAudioEntity);
                     DailyAudioDto dailyAudioDto = BaseAssembler.convert(dailyAudioEntity, DailyAudioDto.class);
+                    fillinParentCategory(dailyAudioDto);
                     dailyAudioDto.setGoods(goods);
                     return dailyAudioDto;
                 }

@@ -12,6 +12,8 @@ public class DailyAudioDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate day;
 
+    private String parentCategoryId;
+
     private String categoryId;
     private String goodsId;
     private String audioId;
