@@ -58,7 +58,7 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
         if (entity.getType() == null) {
             entity.setType(VirtualCategoryType.MEDIA);
         }
-        entity.setStatus(PublishStatus.OFFLINE);
+        //entity.setStatus(PublishStatus.OFFLINE);
 
         if (entity.getParentId() != null) {
             VirtualCategoryEntity parent = getById(entity.getParentId());

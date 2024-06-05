@@ -35,7 +35,7 @@ public class MPhysicalGoodsController {
     @PutMapping("/{id}")
     @Operation(summary = "修改物理产品")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody PhysicalGoodsEntity entity) {
-        entity.setStatus(PublishStatus.OFFLINE);
+        //entity.setStatus(PublishStatus.OFFLINE);
         entity.setId(id);
         physicalGoodsService.updateById(entity);
         return ResponseEntity.ok().build();
