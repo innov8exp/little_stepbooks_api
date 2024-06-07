@@ -18,6 +18,8 @@ import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.admin.dto.DailyAudioAdminDto;
 import net.stepbooks.interfaces.client.dto.DailyAudioDto;
 import net.stepbooks.interfaces.client.dto.VirtualGoodsDto;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +36,29 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
     private final VirtualGoodsService virtualGoodsService;
     private final VirtualCategoryService virtualCategoryService;
 
+    /**
+     * 启动后1小时第一次执行
+     */
+    private final long initialDelay = 3600000L;
+
+    /**
+     * 每8小时执行一次
+     */
+    private final long fixedDelay = 28800000L;
+
     private List<VirtualGoodsDto> listGoods(String categoryId) {
         List<VirtualGoodsDto> goods = virtualGoodsService.listAll(categoryId);
         return goods;
+    }
+
+    /**
+     * 每隔8小时刷新一下每日音频
+     */
+    @Async("CustomAsyncExecutor")
+    @Scheduled(initialDelay = initialDelay, fixedDelay = fixedDelay)
+    public void refreshDailyAudio() {
+        log.info("refreshDailyAudio");
+        todayAudio();
     }
 
     @Transactional
