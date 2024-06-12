@@ -20,6 +20,8 @@ public class DailyAudioAdminDto extends BaseDto {
     private String goodsId;
     private String audioId;
 
+    private String fullName;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDay;
 }

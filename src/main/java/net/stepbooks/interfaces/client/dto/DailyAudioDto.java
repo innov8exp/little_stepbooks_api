@@ -18,6 +18,9 @@ public class DailyAudioDto {
     private String goodsId;
     private String audioId;
 
+    private VirtualCategoryDto parentCategory;
+    private VirtualCategoryDto category;
+
     private List<VirtualGoodsDto> goods;
 
 }

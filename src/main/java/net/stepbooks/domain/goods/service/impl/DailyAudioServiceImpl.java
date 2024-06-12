@@ -13,10 +13,12 @@ import net.stepbooks.domain.goods.entity.VirtualGoodsAudioEntity;
 import net.stepbooks.domain.goods.mapper.DailyAudioMapper;
 import net.stepbooks.domain.goods.service.DailyAudioService;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
+import net.stepbooks.domain.goods.service.VirtualGoodsAudioService;
 import net.stepbooks.domain.goods.service.VirtualGoodsService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.admin.dto.DailyAudioAdminDto;
 import net.stepbooks.interfaces.client.dto.DailyAudioDto;
+import net.stepbooks.interfaces.client.dto.VirtualCategoryDto;
 import net.stepbooks.interfaces.client.dto.VirtualGoodsDto;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -35,6 +37,7 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
 
     private final VirtualGoodsService virtualGoodsService;
     private final VirtualCategoryService virtualCategoryService;
+    private final VirtualGoodsAudioService virtualGoodsAudioService;
 
     /**
      * 启动后1小时第一次执行
@@ -82,11 +85,17 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
         }
     }
 
-    private void fillinParentCategory(DailyAudioDto dailyAudioDto) {
+    private void fillinCategory(DailyAudioDto dailyAudioDto) {
         VirtualCategoryEntity virtualCategoryEntity = virtualCategoryService.getById(dailyAudioDto.getCategoryId());
+        VirtualCategoryDto category = BaseAssembler.convert(virtualCategoryEntity, VirtualCategoryDto.class);
+        dailyAudioDto.setCategory(category);
+
         String parentId = virtualCategoryEntity.getParentId();
         if (parentId != null) {
             dailyAudioDto.setParentCategoryId(parentId);
+            VirtualCategoryEntity parentEntity = virtualCategoryService.getById(parentId);
+            VirtualCategoryDto parentCategory = BaseAssembler.convert(parentEntity, VirtualCategoryDto.class);
+            dailyAudioDto.setParentCategory(parentCategory);
         }
     }
 
@@ -100,7 +109,7 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
 
         if (dailyAudioEntity != null) {
             DailyAudioDto dailyAudioDto = BaseAssembler.convert(dailyAudioEntity, DailyAudioDto.class);
-            fillinParentCategory(dailyAudioDto);
+            fillinCategory(dailyAudioDto);
             List<VirtualGoodsDto> goods = listGoods(dailyAudioDto.getCategoryId());
             dailyAudioDto.setGoods(goods);
             return dailyAudioDto;
@@ -141,7 +150,7 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
                     dailyAudioEntity.setGoodsId(todayAudio.getGoodsId());
                     save(dailyAudioEntity);
                     DailyAudioDto dailyAudioDto = BaseAssembler.convert(dailyAudioEntity, DailyAudioDto.class);
-                    fillinParentCategory(dailyAudioDto);
+                    fillinCategory(dailyAudioDto);
                     dailyAudioDto.setGoods(goods);
                     return dailyAudioDto;
                 }
@@ -198,6 +207,21 @@ public class DailyAudioServiceImpl extends ServiceImpl<DailyAudioMapper, DailyAu
         LocalDate recentDay = null;
         for (DailyAudioEntity entity : entities.getRecords()) {
             DailyAudioAdminDto dto = BaseAssembler.convert(entity, DailyAudioAdminDto.class);
+
+            String fullName = "";
+            VirtualCategoryEntity categoryEntity = virtualCategoryService.getById(dto.getCategoryId());
+            if (categoryEntity != null && categoryEntity.getParentId() != null) {
+                VirtualCategoryEntity parentCategoryEntity =
+                        virtualCategoryService.getById(categoryEntity.getParentId());
+                if (parentCategoryEntity != null) {
+                    fullName += parentCategoryEntity.getName() + "->";
+                }
+            }
+            fullName += categoryEntity.getName() + "->";
+            VirtualGoodsAudioEntity audioEntity = virtualGoodsAudioService.getById(dto.getAudioId());
+            fullName += audioEntity.getName();
+            dto.setFullName(fullName);
+
             if (currentPage <= 1) {
                 List<VirtualGoodsDto> goods = listGoods(dto.getCategoryId());
                 LocalDate endDay = calculateEndDay(goods, entity, recentDay);
