@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -49,8 +50,15 @@ public class OrderOpsServiceImpl implements OrderOpsService {
     private final StateMachine<OrderState, OrderEvent, Order> virtualOrderStateMachine;
 
     @Override
-    public IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderCode, String username, String state) {
-        return orderMapper.findByCriteria(page, orderCode, username, state);
+    public IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderCode, String username,
+                                                    String state, LocalDate startDate, LocalDate endDate) {
+
+        if (endDate != null) {
+            //结束时间要加1天
+            endDate = endDate.plusDays(1);
+        }
+
+        return orderMapper.findByCriteria(page, orderCode, username, state, startDate, endDate);
     }
 
     @Override

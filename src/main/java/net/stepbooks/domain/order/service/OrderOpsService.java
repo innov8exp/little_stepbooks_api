@@ -8,11 +8,13 @@ import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface OrderOpsService {
 
-    IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderNo, String username, String state);
+    IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderNo,
+                                             String username, String state, LocalDate startDate, LocalDate endDate);
 
     IPage<OrderInfoDto> findOrdersByUser(Page<OrderInfoDto> page, String userId, OrderState state, String keyword);
 

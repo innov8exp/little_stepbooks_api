@@ -24,9 +24,11 @@ import net.stepbooks.infrastructure.util.ContextManager;
 import net.stepbooks.interfaces.admin.dto.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,9 +90,13 @@ public class MOrderController {
                                                             @RequestParam int pageSize,
                                                             @RequestParam(required = false) String orderCode,
                                                             @RequestParam(required = false) String username,
-                                                            @RequestParam(required = false) String state) {
+                                                            @RequestParam(required = false) String state,
+                                                            @RequestParam(required = false)
+                                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                            @RequestParam(required = false)
+                                                            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
         Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
-        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username, state);
+        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username, state, startDate, endDate);
         return ResponseEntity.ok(orders);
     }
 

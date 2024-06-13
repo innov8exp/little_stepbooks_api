@@ -15,6 +15,12 @@
         <if test="state != null">
             and o.state = #{state}
         </if>
+        <if test="startDate != null">
+            and o.created_at <![CDATA[ >= ]]> #{startDate}
+        </if>
+        <if test="endDate != null">
+            and o.created_at <![CDATA[ < ]]> #{endDate}
+        </if>
         order by o.modified_at desc
     </select>
     <select id="findPageByUser" resultType="net.stepbooks.interfaces.admin.dto.OrderInfoDto">
