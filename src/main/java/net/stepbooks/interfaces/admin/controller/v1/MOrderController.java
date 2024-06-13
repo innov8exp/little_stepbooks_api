@@ -3,6 +3,11 @@ package net.stepbooks.interfaces.admin.controller.v1;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +30,19 @@ import net.stepbooks.interfaces.admin.dto.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin/v1/orders")
@@ -49,6 +61,7 @@ public class MOrderController {
     private final PaymentOpsService paymentOpsService;
     private final DeliveryService deliveryService;
     private final VirtualGoodsRedeemService virtualGoodsRedeemService;
+    private final OrderExportService orderExportService;
 
     private OrderService correctOrderService(Order order) {
         if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
@@ -98,6 +111,44 @@ public class MOrderController {
         Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
         IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username, state, startDate, endDate);
         return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/export")
+    @Operation(summary = "根据查询条件导出订单")
+    public ResponseEntity<byte[]> exportOrders(@RequestParam(required = false) String orderCode,
+                                               @RequestParam(required = false) String username,
+                                               @RequestParam(required = false) String state,
+                                               @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                               @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate)
+            throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
+
+        List<OrderExportDto> data = orderExportService.export(orderCode, username, state, startDate, endDate);
+
+        // 创建 CSV 文件
+        String filename = "Order_stepbooks_" + startDate + "-" + endDate;
+
+        if (state != null) {
+            filename += "_" + state;
+        }
+
+        filename += "_" + UUID.randomUUID().toString().replaceAll("-", "") + ".csv";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Disposition", "attachment; filename=" + filename);
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        // 将数据写入 CSV 文件
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream))) {
+            StatefulBeanToCsv<OrderExportDto> beanToCsv = new StatefulBeanToCsvBuilder<OrderExportDto>(writer)
+                    .withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER)
+                    .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+                    .withOrderedResults(false)
+                    .build();
+            beanToCsv.write(data);
+        }
+
+        return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

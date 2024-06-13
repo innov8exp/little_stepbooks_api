@@ -5,7 +5,7 @@ public final class AppConstants {
     private AppConstants() {
     }
 
-    public static final int MAX_PAGE_SIZE = 500;
+    public static final int MAX_PAGE_SIZE = 9999;
 
     /**
      * 虚拟商品增加的月份
