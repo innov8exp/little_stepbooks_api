@@ -18,6 +18,8 @@ import java.math.BigDecimal;
 @TableName("STEP_PRODUCT")
 public class Product extends BaseEntity {
 
+    private Integer sortIndex;
+
     private String skuCode;
     private String skuName;
     private int salesPlatforms;

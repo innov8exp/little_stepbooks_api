@@ -58,6 +58,7 @@ public class SkuController {
         LambdaQueryWrapper<Sku> wrapper = Wrappers.lambdaQuery();
         wrapper.like(ObjectUtils.isNotEmpty(name), Sku::getSkuName, name);
         wrapper.eq(ObjectUtils.isNotEmpty(spuId), Sku::getSpuId, spuId);
+        wrapper.orderByAsc(Sku::getSortIndex);
         IPage<Sku> skus = skuService.page(page, wrapper);
 
         IPage<SkuDto> results = new Page<>();

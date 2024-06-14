@@ -13,6 +13,8 @@ public class SkuDto {
     @NotNull
     private String id;
 
+    private Integer sortIndex;
+
     @NotNull
     private String spuId;
     private String skuName;

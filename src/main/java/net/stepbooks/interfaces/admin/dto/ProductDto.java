@@ -9,6 +9,9 @@ import java.util.List;
 
 @Data
 public class ProductDto {
+
+    private Integer sortIndex;
+
     private String skuCode;
     private String skuName;
     private int salesPlatforms;

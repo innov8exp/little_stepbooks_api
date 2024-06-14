@@ -16,6 +16,8 @@ import java.math.BigDecimal;
 @TableName("STEP_SKU")
 public class Sku extends BaseEntity {
 
+    private Integer sortIndex;
+
     @NotNull
     private String spuId;
     private String skuName;
