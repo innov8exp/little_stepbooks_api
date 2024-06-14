@@ -92,8 +92,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
                 if (sku.getQuantity() == 0) {
                     throw new BusinessException(ErrorCode.ORDER_QUANTITY_IS_ZERO);
                 }
-                Product product = sku.getProduct();
-                String productId = product.getId();
+                String productId = sku.getSpuId();
                 boolean res = redisDistributedLocker.tryLock(productId);
                 if (!res) {
                     log.info("线程 PRODUCT_STOCK_LOCK_{} 获取锁失败", productId);
@@ -110,7 +109,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
                         .orderCode(order.getOrderCode())
                         .inventoryId(inventory.getId())
                         .productId(productId)
-                        .skuCode(product.getSkuCode())
+                        .skuCode(sku.getId()) // remove product.getSkuCode()
                         .quantity(sku.getQuantity())
                         .changeType(InventoryChangeType.DECREASE)
                         .build();
@@ -159,7 +158,7 @@ public class PhysicalOrderServiceImpl implements OrderService {
             throw new BusinessException(ErrorCode.LOCK_STOCK_FAILED);
         } finally {
             for (SkuDto sku : skus) {
-                String productId = sku.getProduct().getId();
+                String productId = sku.getSpuId();
                 redisDistributedLocker.unlock(productId);
                 log.info("线程 PRODUCT_STOCK_LOCK_{} 释放锁成功", productId);
             }

@@ -1,11 +1,13 @@
 package net.stepbooks.interfaces.admin.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.stepbooks.domain.goods.enums.VirtualCategoryType;
 import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.infrastructure.model.BaseDto;
 import net.stepbooks.interfaces.client.dto.VirtualCategoryProductDto;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class VirtualCategoryAdminDto extends BaseDto {
 

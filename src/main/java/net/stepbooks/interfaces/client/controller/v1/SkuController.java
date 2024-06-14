@@ -13,11 +13,14 @@ import net.stepbooks.domain.product.entity.Sku;
 import net.stepbooks.domain.product.service.SkuPhysicalGoodsService;
 import net.stepbooks.domain.product.service.SkuService;
 import net.stepbooks.domain.product.service.SkuVirtualGoodsService;
+import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.interfaces.client.dto.SkuDto;
 import net.stepbooks.interfaces.client.dto.VirtualGoodsDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "SKU", description = "SKU产品相关接口")
@@ -47,15 +50,30 @@ public class SkuController {
 
     @GetMapping
     @Operation(summary = "SKU查询")
-    public ResponseEntity<IPage<Sku>> list(@RequestParam int currentPage,
-                                           @RequestParam int pageSize,
-                                           @RequestParam(required = false) String name,
-                                           @RequestParam(required = false) String spuId) {
+    public ResponseEntity<IPage<SkuDto>> list(@RequestParam int currentPage,
+                                              @RequestParam int pageSize,
+                                              @RequestParam(required = false) String name,
+                                              @RequestParam(required = false) String spuId) {
         Page<Sku> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<Sku> wrapper = Wrappers.lambdaQuery();
         wrapper.like(ObjectUtils.isNotEmpty(name), Sku::getSkuName, name);
         wrapper.eq(ObjectUtils.isNotEmpty(spuId), Sku::getSpuId, spuId);
-        IPage<Sku> results = skuService.page(page, wrapper);
+        IPage<Sku> skus = skuService.page(page, wrapper);
+
+        IPage<SkuDto> results = new Page<>();
+        results.setCurrent(currentPage);
+        results.setSize(pageSize);
+        results.setTotal(skus.getTotal());
+        List<SkuDto> records = new ArrayList<>();
+
+        for (Sku sku : skus.getRecords()) {
+            SkuDto dto = BaseAssembler.convert(sku, SkuDto.class);
+            List<PhysicalGoodsEntity> physicalGoodsList = skuPhysicalGoodsService.getPhysicalGoodsListBySkuId(sku.getId());
+            dto.setPhysicalGoods(physicalGoodsList);
+            records.add(dto);
+        }
+        results.setRecords(records);
+
         return ResponseEntity.ok(results);
     }
 }

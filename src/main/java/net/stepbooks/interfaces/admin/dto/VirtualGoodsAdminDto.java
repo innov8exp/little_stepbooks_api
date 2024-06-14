@@ -1,8 +1,10 @@
 package net.stepbooks.interfaces.admin.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.stepbooks.infrastructure.model.BaseDto;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class VirtualGoodsAdminDto extends BaseDto {
 

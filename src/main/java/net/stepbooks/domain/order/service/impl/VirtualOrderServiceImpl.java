@@ -76,8 +76,7 @@ public class VirtualOrderServiceImpl implements OrderService {
             if (sku.getQuantity() == 0) {
                 throw new BusinessException(ErrorCode.ORDER_QUANTITY_IS_ZERO);
             }
-            Product product = sku.getProduct();
-            String productId = product.getId();
+            String productId = sku.getSpuId();
             // 创建订单商品
             OrderProduct orderProduct = OrderProduct.builder()
                     .orderId(order.getId())
