@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.PhysicalGoodsEntity;
 import net.stepbooks.domain.product.entity.Sku;
+import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.domain.product.service.SkuPhysicalGoodsService;
 import net.stepbooks.domain.product.service.SkuService;
 import net.stepbooks.domain.product.service.SkuVirtualGoodsService;
@@ -58,6 +59,7 @@ public class SkuController {
         LambdaQueryWrapper<Sku> wrapper = Wrappers.lambdaQuery();
         wrapper.like(ObjectUtils.isNotEmpty(name), Sku::getSkuName, name);
         wrapper.eq(ObjectUtils.isNotEmpty(spuId), Sku::getSpuId, spuId);
+        wrapper.eq(Sku::getStatus, ProductStatus.ON_SHELF);
         wrapper.orderByAsc(Sku::getSortIndex);
         IPage<Sku> skus = skuService.page(page, wrapper);
 
