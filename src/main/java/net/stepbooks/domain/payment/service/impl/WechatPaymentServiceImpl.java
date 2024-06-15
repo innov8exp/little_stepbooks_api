@@ -1,5 +1,7 @@
 package net.stepbooks.domain.payment.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wechat.pay.java.core.Config;
 import com.wechat.pay.java.core.cipher.PrivacyEncryptor;
@@ -78,6 +80,14 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
 
     @Resource
     private NotificationParser notificationParser;
+
+    @Override
+    public Payment getByOrder(String orderId) {
+        LambdaQueryWrapper<Payment> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(Payment::getOrderId, orderId);
+        Payment payment = getOne(wrapper);
+        return payment;
+    }
 
     @Override
     public PrepayWithRequestPaymentResponse prepayWithRequestPayment(WechatPayPrePayRequest createOrderPay) {

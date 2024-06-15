@@ -7,6 +7,8 @@ import net.stepbooks.domain.delivery.entity.Delivery;
 import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.order.service.OrderExportService;
 import net.stepbooks.domain.order.service.OrderOpsService;
+import net.stepbooks.domain.payment.entity.Payment;
+import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.infrastructure.AppConstants;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.interfaces.admin.dto.OrderExportDto;
@@ -24,6 +26,8 @@ public class OrderExportServiceImpl implements OrderExportService {
     private final OrderOpsService orderOpsService;
 
     private final DeliveryService deliveryService;
+
+    private final PaymentService paymentService;
 
     @Override
     public List<OrderExportDto> export(String orderCode, String username, String state, LocalDate startDate, LocalDate endDate) {
@@ -46,6 +50,17 @@ public class OrderExportServiceImpl implements OrderExportService {
                 orderExportDto.setRecipientDistrict(delivery.getRecipientDistrict());
                 orderExportDto.setRecipientAddress(delivery.getRecipientAddress());
             }
+
+            Payment payment = paymentService.getByOrder(orderInfoDto.getId());
+            if (payment != null) {
+                orderExportDto.setPaymentType(payment.getPaymentType());
+                orderExportDto.setPaymentMethod(payment.getPaymentMethod());
+                orderExportDto.setPayAt(payment.getCreatedAt());
+                orderExportDto.setTransactionAmount(payment.getTransactionAmount());
+                orderExportDto.setVendorPaymentNo(payment.getVendorPaymentNo());
+                orderExportDto.setTransactionStatus(payment.getTransactionStatus());
+            }
+
             data.add(orderExportDto);
         }
 
