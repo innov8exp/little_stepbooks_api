@@ -70,18 +70,21 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
         refundRequest.setRefundAmount(order.getTotalAmount());
         refundRequest.setOrderId(order.getId());
         refundRequest.setRefundStatus(RefundStatus.PENDING);
-        // 未发货的订单直接退款
         if (OrderState.PAID.equals(order.getState())) {
-            refundRequest.setRequestStatus(RequestStatus.APPROVED);
+
+//            refundRequest.setRequestStatus(RequestStatus.APPROVED);
+//            refundRequest.setRefundType(RefundType.ONLY_REFUND);
+//            try {
+//                correctOrderService(order).refundRequest(order.getId(), refundRequest);
+//            } catch (Exception e) {
+//                throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
+//            }
+
+            // 未发货的订单
             refundRequest.setRefundType(RefundType.ONLY_REFUND);
-            try {
-                correctOrderService(order).refundRequest(order.getId(), refundRequest);
-            } catch (Exception e) {
-                throw new BusinessException(ErrorCode.REFUND_ERROR, e.getMessage());
-            }
+
         } else {
             // 已发货的订单退货退款
-            refundRequest.setRequestStatus(RequestStatus.PENDING);
             refundRequest.setRefundType(RefundType.REFUND_AND_RETURN);
         }
         save(refundRequest);
