@@ -9,13 +9,13 @@ public enum ErrorCode {
 
     CONSTRAINT_VALIDATION_ERROR(HttpStatus.BAD_REQUEST.value(), "Constraint validation error"),
 
-    CHECKIN_ALREADY(HttpStatus.BAD_REQUEST.value(), "Checkin already"),
-    REDEEMED_ALREADY(HttpStatus.BAD_REQUEST.value(), "Redeemed already"),
+    CHECKIN_ALREADY(HttpStatus.BAD_REQUEST.value(), "已签到"), //Checkin already
+    REDEEMED_ALREADY(HttpStatus.BAD_REQUEST.value(), "已兑换"), //Redeemed already
 
-    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Cannot found the order"),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Cannot found the user"),
-    BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "The request param is not valid"),
-    AUTH_ERROR(HttpStatus.UNAUTHORIZED.value(), "authenticated error"),
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "找不到订单"), //Cannot found the order
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "找不到用户"), //Cannot found the user
+    BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "非法的请求参数"), //The request param is not valid
+    AUTH_ERROR(HttpStatus.UNAUTHORIZED.value(), "认证失败"), //authenticated error
     EMAIL_EXISTS_ERROR(HttpStatus.BAD_REQUEST.value(), "The email has already exist, please input another one."),
     FILETYPE_ERROR(HttpStatus.BAD_REQUEST.value(), "file type validation error"),
     DATABASE_OPERATOR_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "database operator occur error"),

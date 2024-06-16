@@ -16,10 +16,11 @@ create TABLE STEP_USER_CHECKIN_LOG
 (
     id            VARCHAR(100)                           NOT NULL PRIMARY KEY, -- 主键ID
     user_id       VARCHAR(100) REFERENCES STEP_USER (id) NOT NULL,             -- 用户ID
-    checkin_date  DATE                                   NOT NULL UNIQUE,      -- 签到日期
+    checkin_date  DATE                                   NOT NULL,             -- 签到日期
     continues_day INT                                    NOT NULL,             -- 连续签到几天，如果昨天没有签到，那么为1
     created_at    TIMESTAMP,
-    modified_at   TIMESTAMP
+    modified_at   TIMESTAMP,
+    UNIQUE (user_id, checkin_date)
 );
 
 -- 用户积分日志
