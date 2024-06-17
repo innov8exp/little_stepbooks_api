@@ -60,7 +60,7 @@ public class OrderExportServiceImpl implements OrderExportService {
                 orderExportDto.fillinPaymentMethod(payment.getPaymentMethod());
                 orderExportDto.setPayAt(payment.getCreatedAt());
                 orderExportDto.setTransactionAmount(payment.getTransactionAmount());
-                orderExportDto.setVendorPaymentNo(payment.getVendorPaymentNo());
+                orderExportDto.setVendorPaymentNo("'" + payment.getVendorPaymentNo() + "'");
                 orderExportDto.setTransactionStatus(payment.getTransactionStatus());
             }
 
