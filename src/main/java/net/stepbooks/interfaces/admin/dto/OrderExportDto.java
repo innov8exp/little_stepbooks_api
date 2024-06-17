@@ -35,7 +35,7 @@ public class OrderExportDto {
 
     @CsvBindByName(column = "订单状态")
     @CsvBindByPosition(position = POS_1)
-    private OrderState state;
+    private String stateDesc;
 
     @CsvBindByName(column = "订单创建时间")
     @CsvBindByPosition(position = POS_2)
@@ -68,11 +68,11 @@ public class OrderExportDto {
 
     @CsvBindByName(column = "交易类型")
     @CsvBindByPosition(position = POS_9)
-    private PaymentType paymentType;
+    private String paymentTypeDesc;
 
     @CsvBindByName(column = "交易方式")
     @CsvBindByPosition(position = POS_10)
-    private PaymentMethod paymentMethod;
+    private String paymentMethodDesc;
 
     @CsvBindByName(column = "交易时间")
     @CsvBindByPosition(position = POS_11)
@@ -90,5 +90,41 @@ public class OrderExportDto {
     @CsvBindByName(column = "交易状态")
     @CsvBindByPosition(position = POS_13)
     private String transactionStatus;
+
+    public void fillinStateDesc(OrderState state) {
+        if (OrderState.INIT.equals(state)) {
+            this.stateDesc = "未支付";
+        } else if (OrderState.PLACED.equals(state)) {
+            this.stateDesc = "已下单";
+        } else if (OrderState.PAID.equals(state)) {
+            this.stateDesc = "已支付";
+        } else if (OrderState.REFUNDING.equals(state)) {
+            this.stateDesc = "退款中";
+        } else if (OrderState.SHIPPED.equals(state)) {
+            this.stateDesc = "已发货";
+        } else if (OrderState.CLOSED.equals(state)) {
+            this.stateDesc = "已关闭";
+        } else if (OrderState.REFUNDED.equals(state)) {
+            this.stateDesc = "已退款";
+        } else if (OrderState.FINISHED.equals(state)) {
+            this.stateDesc = "已签收";
+        }
+    }
+
+    public void fillinPaymentType(PaymentType paymentType) {
+        if (PaymentType.ORDER_PAYMENT.equals(paymentType)) {
+            this.paymentTypeDesc = "收款";
+        } else if (PaymentType.REFUND_PAYMENT.equals(paymentType)) {
+            this.paymentTypeDesc = "退款";
+        }
+    }
+
+    public void fillinPaymentMethod(PaymentMethod paymentMethod) {
+        if (PaymentMethod.ALI_PAY.equals(paymentMethod)) {
+            this.paymentMethodDesc = "支付宝";
+        } else if (PaymentMethod.WECHAT_PAY.equals(paymentMethod)) {
+            this.paymentMethodDesc = "微信支付";
+        }
+    }
 
 }

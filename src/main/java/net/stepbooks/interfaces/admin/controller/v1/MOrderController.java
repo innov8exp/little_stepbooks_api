@@ -26,7 +26,7 @@ import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
-import net.stepbooks.infrastructure.util.CustomBeanToCSVMappingStrategy;
+import net.stepbooks.infrastructure.util.csv.CustomBeanToCSVMappingStrategy;
 import net.stepbooks.interfaces.admin.dto.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.BeanUtils;

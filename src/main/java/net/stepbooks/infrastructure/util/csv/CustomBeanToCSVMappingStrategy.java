@@ -1,4 +1,4 @@
-package net.stepbooks.infrastructure.util;
+package net.stepbooks.infrastructure.util.csv;
 
 import com.opencsv.bean.BeanField;
 import com.opencsv.bean.ColumnPositionMappingStrategy;

@@ -41,6 +41,9 @@ public class OrderExportServiceImpl implements OrderExportService {
 
         for (OrderInfoDto orderInfoDto : records) {
             OrderExportDto orderExportDto = BaseAssembler.convert(orderInfoDto, OrderExportDto.class);
+
+            orderExportDto.fillinStateDesc(orderInfoDto.getState());
+
             Delivery delivery = deliveryService.getByOrder(orderInfoDto.getId());
             if (delivery != null) {
                 orderExportDto.setRecipientName(delivery.getRecipientName());
@@ -53,8 +56,8 @@ public class OrderExportServiceImpl implements OrderExportService {
 
             Payment payment = paymentService.getByOrder(orderInfoDto.getId());
             if (payment != null) {
-                orderExportDto.setPaymentType(payment.getPaymentType());
-                orderExportDto.setPaymentMethod(payment.getPaymentMethod());
+                orderExportDto.fillinPaymentType(payment.getPaymentType());
+                orderExportDto.fillinPaymentMethod(payment.getPaymentMethod());
                 orderExportDto.setPayAt(payment.getCreatedAt());
                 orderExportDto.setTransactionAmount(payment.getTransactionAmount());
                 orderExportDto.setVendorPaymentNo(payment.getVendorPaymentNo());
