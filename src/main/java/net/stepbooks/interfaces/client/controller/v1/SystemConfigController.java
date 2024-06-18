@@ -24,7 +24,7 @@ public class SystemConfigController {
 
     @GetMapping()
     @Operation(summary = "获取系统配置")
-    public ResponseEntity<List<SystemConfig>> getVirtualGoods() {
+    public ResponseEntity<List<SystemConfig>> list() {
         List<SystemConfig> results = systemConfigService.list();
         return ResponseEntity.ok(results);
     }

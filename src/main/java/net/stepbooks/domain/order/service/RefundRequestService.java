@@ -30,4 +30,7 @@ public interface RefundRequestService extends IService<RefundRequest> {
     boolean existsRefundRequest(String orderCode);
 
     RefundRequest getLatestRefundRequestByOrderId(String orderId);
+
+    void refundApprovedOrders();
+
 }

@@ -1,10 +1,12 @@
 package net.stepbooks.domain.order.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.delivery.enums.DeliveryStatus;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.RefundRequest;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, RefundRequest>
@@ -162,6 +165,25 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
     public RefundRequest getLatestRefundRequestByOrderId(String orderId) {
         return getOne(Wrappers.<RefundRequest>lambdaQuery().eq(RefundRequest::getOrderId, orderId)
                 .orderByDesc(RefundRequest::getCreatedAt).last("limit 1"));
+    }
+
+
+    @Transactional
+    protected void refundApprovedOrder(RefundRequest refundRequest) {
+        log.info("refundApprovedOrder id={}", refundRequest.getOrderId());
+    }
+
+    @Override
+    public void refundApprovedOrders() {
+        LambdaQueryWrapper<RefundRequest> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(RefundRequest::getRefundStatus, RefundStatus.REFUNDING_WAIT_DELIVERY);
+
+        List<RefundRequest> refundRequests = list(wrapper);
+
+        for (RefundRequest refundRequest : refundRequests) {
+            refundApprovedOrder(refundRequest);
+        }
+
     }
 
 
