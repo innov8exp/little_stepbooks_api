@@ -141,6 +141,11 @@ public class VirtualOrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void refundApprovedOrders() {
+
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void autoCancelWhenPaymentTimeout(String recordId) {
 //        updateOrderState(recordId, OrderEvent.PAYMENT_TIMEOUT);

@@ -27,6 +27,7 @@ aws:
 
 stepbooks:
   mnp-qrcode-host: https://api-stage.stepbooks.net/mnp-qrcode
+  mock: 1
 
 
 wechat:

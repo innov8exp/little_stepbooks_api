@@ -22,7 +22,7 @@ public class QuartzConfig {
         return TriggerBuilder.newTrigger().forJob(orderJobDetail)
                 .withIdentity("OrderJobTrigger")
                 .withDescription("Order Job Trigger")
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/30 * * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0/5 * * * ?"))
                 .startNow()
                 .build();
     }

@@ -115,6 +115,11 @@ public class MixedOrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void refundApprovedOrders() {
+        log.info("refundApprovedOrders");
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void autoCancelWhenPaymentTimeout(String recordId) {
         Order order = orderMapper.selectById(recordId);
