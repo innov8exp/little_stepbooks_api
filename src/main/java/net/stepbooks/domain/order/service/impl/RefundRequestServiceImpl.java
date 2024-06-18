@@ -171,6 +171,10 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
     @Transactional
     protected void refundApprovedOrder(RefundRequest refundRequest) {
         log.info("refundApprovedOrder id={}", refundRequest.getOrderId());
+        Order order = orderOpsService.findOrderById(refundRequest.getOrderId());
+        correctOrderService(order).refundRequest(order.getId(), refundRequest);
+        refundRequest.setRefundStatus(RefundStatus.REFUNDED);
+        save(refundRequest);
     }
 
     @Override
@@ -181,7 +185,11 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
         List<RefundRequest> refundRequests = list(wrapper);
 
         for (RefundRequest refundRequest : refundRequests) {
-            refundApprovedOrder(refundRequest);
+            try {
+                refundApprovedOrder(refundRequest);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         }
 
     }
