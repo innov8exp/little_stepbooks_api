@@ -23,6 +23,6 @@ public interface VirtualCategoryService extends IService<VirtualCategoryEntity> 
 
     boolean hasChild(String categoryId);
 
-    List<VirtualCategoryAdminDto> allOnlineEndpoints();
+    List<VirtualCategoryAdminDto> allEndpoints();
 
 }

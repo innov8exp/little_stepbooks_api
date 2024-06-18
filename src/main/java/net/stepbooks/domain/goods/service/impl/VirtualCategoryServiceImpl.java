@@ -179,13 +179,13 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
     }
 
     @Override
-    public List<VirtualCategoryAdminDto> allOnlineEndpoints() {
+    public List<VirtualCategoryAdminDto> allEndpoints() {
 
         List<VirtualCategoryAdminDto> results = new ArrayList<>();
 
         LambdaQueryWrapper<VirtualCategoryEntity> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(VirtualCategoryEntity::getStatus, PublishStatus.ONLINE);
-        wrapper.orderByAsc(VirtualCategoryEntity::getSortIndex);
+        //wrapper.eq(VirtualCategoryEntity::getStatus, PublishStatus.ONLINE);
+        wrapper.orderByDesc(VirtualCategoryEntity::getSortIndex);
 
         List<VirtualCategoryEntity> allEntities = list(wrapper);
 

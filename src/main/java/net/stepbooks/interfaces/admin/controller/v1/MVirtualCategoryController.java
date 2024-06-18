@@ -139,7 +139,7 @@ public class MVirtualCategoryController {
     @GetMapping("/all-endpoints")
     @Operation(summary = "所有可供生成VirtualGoods的大类")
     public ResponseEntity<List<VirtualCategoryAdminDto>> allOnlineEndpoints() {
-        List<VirtualCategoryAdminDto> results = virtualCategoryService.allOnlineEndpoints();
+        List<VirtualCategoryAdminDto> results = virtualCategoryService.allEndpoints();
         return ResponseEntity.ok(results);
     }
 
