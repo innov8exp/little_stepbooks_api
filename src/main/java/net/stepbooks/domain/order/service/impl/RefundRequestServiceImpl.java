@@ -70,6 +70,7 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
         refundRequest.setRefundAmount(order.getTotalAmount());
         refundRequest.setOrderId(order.getId());
         refundRequest.setRefundStatus(RefundStatus.PENDING);
+        refundRequest.setRequestStatus(RequestStatus.PENDING);
         if (OrderState.PAID.equals(order.getState())) {
 
 //            refundRequest.setRequestStatus(RequestStatus.APPROVED);
