@@ -39,6 +39,7 @@ public class UserSecurityConfig {
                                 mvc.pattern("/admin/**"),
                                 mvc.pattern("/auth/**"),
                                 mvc.pattern("/v1/skus"),
+                                mvc.pattern("/v1/system-config"),
                                 mvc.pattern("/v1/daily-audio/**"),
                                 mvc.pattern("/v1/skus/**"),
                                 mvc.pattern("/v1/detail-image/**"),
