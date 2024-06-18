@@ -1,6 +1,7 @@
 package net.stepbooks.domain.order.service.impl;
 
 import com.alibaba.cola.statemachine.StateMachine;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -224,8 +225,14 @@ public class MixedOrderServiceImpl implements OrderService {
         refundPayment.setUserId(order.getUserId());
         refundPayment.setVendorPaymentNo(refund.getRefundId());
         refundPayment.setTransactionStatus(refund.getStatus());
-        //TODO
-        paymentOpsService.save(refundPayment);
+
+        LambdaQueryWrapper<Payment> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(Payment::getVendorPaymentNo, refund.getRefundId());
+        if (paymentOpsService.exists(wrapper)) {
+            log.info("RefundId {} exists, ignore it", refund.getRefundId());
+        } else {
+            paymentOpsService.save(refundPayment);
+        }
     }
 
     @Override
