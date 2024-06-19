@@ -29,7 +29,7 @@ stepbooks:
   mnp-qrcode-host: https://api-stage.stepbooks.net/mnp-qrcode
   mock: 1
   admin-email: dongzhen1002@126.com
-
+  order-export-cron: 0 5 15 * * ?
 
 wechat:
   merchant:

@@ -41,6 +41,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -63,6 +64,8 @@ public class MOrderController {
     private final DeliveryService deliveryService;
     private final VirtualGoodsRedeemService virtualGoodsRedeemService;
     private final OrderExportService orderExportService;
+
+    private static final int END_DAY_HOUR = 24;
 
     private OrderService correctOrderService(Order order) {
         if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
@@ -110,7 +113,19 @@ public class MOrderController {
                                                             @RequestParam(required = false)
                                                             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
         Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
-        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username, state, startDate, endDate);
+
+        LocalDateTime startDateTime = null;
+        if (startDate != null) {
+            startDateTime = startDate.atStartOfDay();
+        }
+
+        LocalDateTime endDateTime = null;
+        if (endDate != null) {
+            endDateTime = endDate.atTime(END_DAY_HOUR, 0, 0);
+        }
+
+        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username, state,
+                startDateTime, endDateTime);
         return ResponseEntity.ok(orders);
     }
 
@@ -123,7 +138,18 @@ public class MOrderController {
                                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate)
             throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
 
-        List<OrderExportDto> data = orderExportService.export(orderCode, username, state, startDate, endDate);
+
+        LocalDateTime startDateTime = null;
+        if (startDate != null) {
+            startDateTime = startDate.atStartOfDay();
+        }
+
+        LocalDateTime endDateTime = null;
+        if (endDate != null) {
+            endDateTime = endDate.atTime(END_DAY_HOUR, 0, 0);
+        }
+
+        List<OrderExportDto> data = orderExportService.export(orderCode, username, state, startDateTime, endDateTime);
 
         // 创建 CSV 文件
         String filename = "Order_stepbooks_" + startDate + "-" + endDate;
