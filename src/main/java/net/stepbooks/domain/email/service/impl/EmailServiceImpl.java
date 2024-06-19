@@ -21,7 +21,7 @@ import java.util.List;
 public class EmailServiceImpl implements EmailService {
 
     public static final long VERIFICATION_CODE_VALID_SECONDS = 60;
-    public static final String EMAIL_FROM_ADDRESS = "noreply@novlnovl.com";
+    public static final String EMAIL_FROM_ADDRESS = "service@stepbooks.net";
 
     private final JavaMailSender sender;
     private final EmailHistoryMapper emailHistoryMapper;
