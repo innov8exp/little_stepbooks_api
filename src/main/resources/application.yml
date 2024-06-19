@@ -17,19 +17,15 @@ spring:
   #      time-between-eviction-runs-millis: 3600000
 
   mail:
-    host: email-smtp.us-east-2.amazonaws.com
-    username: AKIA22ZPJOKKECLHBZWF
-    password: BAPkKsFk9nJFPM5QevslyNjPzqJ1lXtLnAv1rcvrqV5e
+    host: smtp.exmail.qq.com
+    username: service@stepbooks.net
+    password: Xixi050518
     properties:
       mail:
-        transport:
-          protocol: smtp
         smtp:
-          port: 587
           auth: true
           starttls:
             enable: true
-            required: true
 
   quartz:
     job-store-type: jdbc

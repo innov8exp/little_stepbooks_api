@@ -3,7 +3,7 @@ package net.stepbooks.domain.email.service;
 import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.interfaces.client.dto.EmailDto;
 
-public interface EmailService {
+public interface EmailBusinessService {
 
     void sendSimpleMessage(EmailDto emailDto);
 

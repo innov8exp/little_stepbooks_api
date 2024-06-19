@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.domain.email.service.EmailService;
+import net.stepbooks.domain.email.service.EmailBusinessService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.user.service.UserService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
@@ -35,7 +35,7 @@ public class AuthController {
     private String authHeader;
 
     private final UserService userService;
-    private final EmailService emailService;
+    private final EmailBusinessService emailBusinessService;
     private final ContextManager contextManager;
 
     @PostMapping("/login")
@@ -103,7 +103,7 @@ public class AuthController {
     @PostMapping("/validation")
     @Operation(summary = "验证验证码")
     public ResponseEntity<Boolean> validateTheVerificationCode(@Valid @RequestBody ValidateDto validateDto) {
-        Boolean valid = emailService.verifyValidationCode(validateDto.getEmail(),
+        Boolean valid = emailBusinessService.verifyValidationCode(validateDto.getEmail(),
                 validateDto.getCode(), EmailType.valueOf(validateDto.getEmailType()));
         return ResponseEntity.ok(valid);
     }
@@ -111,7 +111,7 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(summary = "注册")
     public ResponseEntity<TokenDto> register(@Valid @RequestBody RegisterDto registerDto) {
-        Boolean valid = emailService.verifyValidationCode(registerDto.getEmail(),
+        Boolean valid = emailBusinessService.verifyValidationCode(registerDto.getEmail(),
                 registerDto.getCode(), EmailType.REGISTER);
         if (!valid) {
             throw new BusinessException(ErrorCode.BAD_REQUEST);
@@ -126,7 +126,7 @@ public class AuthController {
     @PostMapping("/reset-password")
     @Operation(summary = "重置密码")
     public ResponseEntity<TokenDto> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto) {
-        Boolean valid = emailService.verifyValidationCode(resetPasswordDto.getEmail(),
+        Boolean valid = emailBusinessService.verifyValidationCode(resetPasswordDto.getEmail(),
                 resetPasswordDto.getResetToken(), EmailType.FORGET);
         if (!valid) {
             throw new BusinessException(ErrorCode.BAD_REQUEST);

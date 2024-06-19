@@ -5,7 +5,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import net.stepbooks.domain.email.entity.EmailHistoryEntity;
 import net.stepbooks.domain.email.mapper.EmailHistoryMapper;
-import net.stepbooks.domain.email.service.EmailService;
+import net.stepbooks.domain.email.service.EmailBusinessService;
 import net.stepbooks.infrastructure.enums.SendStatus;
 import net.stepbooks.infrastructure.enums.EmailType;
 import net.stepbooks.interfaces.client.dto.EmailDto;
@@ -18,15 +18,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class EmailServiceImpl implements EmailService {
+public class EmailBusinessServiceImpl implements EmailBusinessService {
 
     public static final long VERIFICATION_CODE_VALID_SECONDS = 60;
-    public static final String EMAIL_FROM_ADDRESS = "noreply@novlnovl.com";
+    public static final String EMAIL_FROM_ADDRESS = "service@stepbooks.net";
 
     private final JavaMailSender sender;
     private final EmailHistoryMapper emailHistoryMapper;
 
-    public EmailServiceImpl(JavaMailSender sender, EmailHistoryMapper emailHistoryMapper) {
+    public EmailBusinessServiceImpl(JavaMailSender sender, EmailHistoryMapper emailHistoryMapper) {
         this.sender = sender;
         this.emailHistoryMapper = emailHistoryMapper;
     }
