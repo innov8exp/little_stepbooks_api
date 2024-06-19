@@ -28,6 +28,7 @@ aws:
 stepbooks:
   mnp-qrcode-host: https://api-stage.stepbooks.net/mnp-qrcode
   mock: 1
+  admin-email: dongzhen1002@126.com
 
 
 wechat:

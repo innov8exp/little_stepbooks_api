@@ -27,6 +27,7 @@ aws:
 
 stepbooks:
   mnp-qrcode-host: https://api.stepbooks.net/mnp-qrcode
+  admin-email: zhengrui@stepbooks.net
 
 
 wechat:

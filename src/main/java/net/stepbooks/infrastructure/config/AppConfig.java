@@ -10,4 +10,7 @@ public class AppConfig {
 
     @Value("${stepbooks.mock:0}")
     private boolean mock;
+
+    @Value("${stepbooks.admin-email:0}")
+    private String adminEmail;
 }
