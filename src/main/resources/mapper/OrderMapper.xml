@@ -5,7 +5,7 @@
         select o.*, u.username, u.nickname from step_order o
         left join step_user u
         on o.user_id = u.id
-        where 1 = 1
+        where payment_method is not null
         <if test="orderCode != null">
             and o.order_code = #{orderCode}
         </if>

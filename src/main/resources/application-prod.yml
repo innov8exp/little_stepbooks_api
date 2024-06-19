@@ -27,7 +27,8 @@ aws:
 
 stepbooks:
   mnp-qrcode-host: https://api.stepbooks.net/mnp-qrcode
-
+  admin-email: dongzhen1002@126.com
+  order-export-cron: 0 5 15 * * ?
 
 wechat:
   merchant:

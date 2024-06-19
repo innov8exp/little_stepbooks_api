@@ -8,13 +8,13 @@ import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderMapper extends BaseMapper<Order> {
 
     IPage<OrderInfoDto> findByCriteria(Page<OrderInfoDto> page, String orderCode, String username,
-                                       String state, LocalDate startDate, LocalDate endDate);
+                                       String state, LocalDateTime startDate, LocalDateTime endDate);
 
     IPage<OrderInfoDto> findPageByUser(Page<OrderInfoDto> page, String userId, OrderState state, String skuName);
 
