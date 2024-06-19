@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.stepbooks.domain.email.service.EmailService;
-import net.stepbooks.domain.email.service.impl.EmailServiceImpl;
+import net.stepbooks.domain.email.service.EmailBusinessService;
+import net.stepbooks.domain.email.service.impl.EmailBusinessServiceImpl;
 import net.stepbooks.domain.sms.service.SmsService;
 import net.stepbooks.domain.user.entity.AuthHistory;
 import net.stepbooks.domain.user.entity.User;
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final UserJwtTokenProvider jwtTokenProvider;
-    private final EmailService emailService;
+    private final EmailBusinessService emailBusinessService;
     private final AuthHistoryMapper authHistoryMapper;
     private final FacebookClient facebookClient;
     private final GoogleClient googleClient;
@@ -515,7 +515,7 @@ public class UserServiceImpl implements UserService {
                 + "<p>Your verification code is:<p>"
                 + "<h2>" + verifyCode + "</h2>"
                 + "<p>Please filled in the code into your App, it's only valid in "
-                + "<red>" + EmailServiceImpl.VERIFICATION_CODE_VALID_SECONDS + "</red> seconds.</p>";
+                + "<red>" + EmailBusinessServiceImpl.VERIFICATION_CODE_VALID_SECONDS + "</red> seconds.</p>";
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(email);
         emailDto.setSubject("NovlNovl - Email Address Register Verification");
@@ -523,7 +523,7 @@ public class UserServiceImpl implements UserService {
         emailDto.setText(htmlBody);
         emailDto.setEmailType(EmailType.REGISTER);
         log.info(emailDto.getCode());
-        emailService.sendSimpleMessage(emailDto);
+        emailBusinessService.sendSimpleMessage(emailDto);
     }
 
     @Override
@@ -533,7 +533,7 @@ public class UserServiceImpl implements UserService {
                 + "<p>Your verification code is:<p>"
                 + "<h2>" + verifyCode + "</h2>"
                 + "<p>Please filled in the code into your App, it's only valid in "
-                + "<red>" + EmailServiceImpl.VERIFICATION_CODE_VALID_SECONDS + "</red> seconds.</p>";
+                + "<red>" + EmailBusinessServiceImpl.VERIFICATION_CODE_VALID_SECONDS + "</red> seconds.</p>";
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(email);
         emailDto.setSubject("NovlNovl - Reset Password Verification");
@@ -541,7 +541,7 @@ public class UserServiceImpl implements UserService {
         emailDto.setText(htmlBody);
         emailDto.setEmailType(EmailType.FORGET);
         log.info(emailDto.getCode());
-        emailService.sendSimpleMessage(emailDto);
+        emailBusinessService.sendSimpleMessage(emailDto);
     }
 
     @Override
@@ -551,7 +551,7 @@ public class UserServiceImpl implements UserService {
                 + "<p>Your verification code is:<p>"
                 + "<h2>" + verifyCode + "</h2>"
                 + "<p>Please filled in the code into your App, it's only valid in "
-                + "<red>" + EmailServiceImpl.VERIFICATION_CODE_VALID_SECONDS + "</red> seconds.</p>";
+                + "<red>" + EmailBusinessServiceImpl.VERIFICATION_CODE_VALID_SECONDS + "</red> seconds.</p>";
         EmailDto emailDto = new EmailDto();
         emailDto.setTo(email);
         emailDto.setSubject("NovlNovl - Link Email Address Verification");
@@ -559,7 +559,7 @@ public class UserServiceImpl implements UserService {
         emailDto.setText(htmlBody);
         emailDto.setEmailType(EmailType.LINK);
         log.info(emailDto.getCode());
-        emailService.sendSimpleMessage(emailDto);
+        emailBusinessService.sendSimpleMessage(emailDto);
     }
 
     @Override
