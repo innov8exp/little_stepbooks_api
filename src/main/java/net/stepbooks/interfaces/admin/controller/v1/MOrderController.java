@@ -65,7 +65,9 @@ public class MOrderController {
     private final VirtualGoodsRedeemService virtualGoodsRedeemService;
     private final OrderExportService orderExportService;
 
-    private static final int END_DAY_HOUR = 24;
+    private static final int END_DAY_HOUR = 23;
+    private static final int END_DAY_MINUTE = 59;
+    private static final int END_DAY_SECOND = 59;
 
     private OrderService correctOrderService(Order order) {
         if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
@@ -121,7 +123,7 @@ public class MOrderController {
 
         LocalDateTime endDateTime = null;
         if (endDate != null) {
-            endDateTime = endDate.atTime(END_DAY_HOUR, 0, 0);
+            endDateTime = endDate.atTime(END_DAY_HOUR, END_DAY_MINUTE, END_DAY_SECOND);
         }
 
         IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username, state,
