@@ -131,6 +131,12 @@ public class MOrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @GetMapping("/daily-export")
+    public ResponseEntity<?> dailyExport() {
+        orderExportService.dailyExport();
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/export")
     @Operation(summary = "根据查询条件导出订单")
     public ResponseEntity<byte[]> exportOrders(@RequestParam(required = false) String orderCode,

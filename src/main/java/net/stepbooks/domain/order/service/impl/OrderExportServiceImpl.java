@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.delivery.entity.Delivery;
@@ -26,7 +24,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,7 +52,8 @@ public class OrderExportServiceImpl implements OrderExportService {
      * 每天下午3:05分运行
      */
     @Scheduled(cron = "${stepbooks.order-export-cron}")
-    public void dailyExport() throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
+    @Override
+    public void dailyExport() {
 
         log.info("dailyOrderExport start");
 
@@ -66,25 +64,30 @@ public class OrderExportServiceImpl implements OrderExportService {
         List<OrderExportDto> data = export(null, null, null, threePmYesterday, threePmToday);
 
         if (data != null && data.size() > 0) {
-            // 将数据写入 CSV 文件
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream))) {
+            try {
+                // 将数据写入 CSV 文件
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream))) {
 
-                CustomBeanToCSVMappingStrategy<OrderExportDto> mappingStrategy = new CustomBeanToCSVMappingStrategy<>();
-                mappingStrategy.setType(OrderExportDto.class);
+                    CustomBeanToCSVMappingStrategy<OrderExportDto> mappingStrategy = new CustomBeanToCSVMappingStrategy<>();
+                    mappingStrategy.setType(OrderExportDto.class);
 
-                StatefulBeanToCsv<OrderExportDto> beanToCsv = new StatefulBeanToCsvBuilder<OrderExportDto>(writer)
-                        .withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER)
-                        .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-                        .withMappingStrategy(mappingStrategy)
-                        .build();
-                beanToCsv.write(data);
+                    StatefulBeanToCsv<OrderExportDto> beanToCsv = new StatefulBeanToCsvBuilder<OrderExportDto>(writer)
+                            .withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER)
+                            .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+                            .withMappingStrategy(mappingStrategy)
+                            .build();
+                    beanToCsv.write(data);
+                }
+
+                String filename = "Order_stepbooks_" + today + "_auto.csv";
+
+                emailService.sendEmailWithAttachment(appConfig.getAdminEmail(),
+                        "步印订单每日汇总(" + today + ")", "请查收附件", outputStream.toByteArray(), filename);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
 
-            String filename = "Order_stepbooks_" + today + "_auto.csv";
-
-            emailService.sendEmailWithAttachment(appConfig.getAdminEmail(),
-                    "步印订单每日汇总(" + today + ")", "请查收附件", outputStream.toByteArray(), filename);
         } else {
             emailService.sendSimpleEmail(appConfig.getAdminEmail(),
                     "步印订单每日汇总(" + today + ") - 本日无订单", "");
