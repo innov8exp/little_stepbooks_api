@@ -1,9 +1,12 @@
 package net.stepbooks.domain.points.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import net.stepbooks.domain.points.enums.PointsEventType;
 import net.stepbooks.infrastructure.model.BaseEntity;
+
+import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -21,5 +24,11 @@ public class PointsRule extends BaseEntity {
     private String exclusiveTypes;
     private int points;
     private String reason;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate activityStartDay;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate activityEndDay;
 
 }
