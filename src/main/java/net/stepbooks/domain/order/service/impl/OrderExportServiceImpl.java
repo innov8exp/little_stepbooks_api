@@ -20,6 +20,8 @@ import net.stepbooks.infrastructure.config.AppConfig;
 import net.stepbooks.infrastructure.util.csv.CustomBeanToCSVMappingStrategy;
 import net.stepbooks.interfaces.admin.dto.OrderExportDto;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -48,14 +51,13 @@ public class OrderExportServiceImpl implements OrderExportService {
 
     private static final int THREE_PM_HOUR = 15;
 
-    /**
-     * 每天下午3:05分运行
-     */
-    @Scheduled(cron = "${stepbooks.order-export-cron}")
-    @Override
-    public void dailyExport() {
+    private final RedissonClient redissonClient;
 
-        log.info("dailyOrderExport start");
+    private static final int THREE = 3;
+
+    private static final int SLEEP_TIME = 10000;
+
+    private void dailyExportImpl() {
 
         LocalDate today = LocalDate.now();
         LocalTime threePm = LocalTime.of(THREE_PM_HOUR, 0);
@@ -93,6 +95,36 @@ public class OrderExportServiceImpl implements OrderExportService {
                     "步印订单每日汇总(" + today + ") - 本日无订单", "");
         }
 
+        try {
+            Thread.sleep(SLEEP_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 每天下午3:05分运行
+     */
+    @Scheduled(cron = "${stepbooks.order-export-cron}")
+    @Override
+    public void dailyExport() {
+        RLock lock = redissonClient.getLock("OrderJob");
+        try {
+            // 尝试获取锁,超时时间为3秒
+            if (lock.tryLock(THREE, TimeUnit.SECONDS)) {
+                // 执行任务的逻辑
+                log.debug("DailyExport Job start ...");
+                dailyExportImpl();
+            } else {
+                // 无法获取锁,说明任务正在被其他节点执行
+                log.info("DailyExport Job already in progress");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // 无论如何都要释放锁
+            lock.unlock();
+        }
     }
 
     @Override
