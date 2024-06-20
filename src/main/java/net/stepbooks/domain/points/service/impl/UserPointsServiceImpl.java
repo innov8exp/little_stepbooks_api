@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.points.entity.PointsRule;
 import net.stepbooks.domain.points.entity.UserPoints;
 import net.stepbooks.domain.points.entity.UserPointsLog;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoints>
@@ -55,8 +57,63 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
         return userPoints;
     }
 
+    /**
+     * 活动签到，如果不在活动期间，或者活动期间已经签到，则返回空
+     *
+     * @param userId
+     * @return
+     */
+    private PointsDto activityCheckin(String userId) {
+
+        PointsRule pointsRule = pointsRuleService.getRuleByType(PointsEventType.ACTIVITY_CHECK_IN);
+        if (pointsRule == null
+                || pointsRule.getPoints() <= 0) {
+            //没有活动签到
+            return null;
+        }
+        LocalDate today = LocalDate.now();
+        LocalDate activityStartDay = pointsRule.getActivityStartDay();
+        if (activityStartDay != null && today.isBefore(activityStartDay)) {
+            //没到开始时间
+            return null;
+        }
+
+        LocalDate activityEndDay = pointsRule.getActivityEndDay();
+        if (activityEndDay != null && today.isAfter(activityEndDay)) {
+            //活动已结束
+            return null;
+        }
+
+        //检查用户在活动期间是否已经拿过积分了
+        LambdaQueryWrapper<UserPointsLog> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(UserPointsLog::getEventType, PointsEventType.ACTIVITY_CHECK_IN);
+        wrapper.eq(UserPointsLog::getUserId, userId);
+        if (activityStartDay != null) {
+            wrapper.ge(UserPointsLog::getCreatedAt, activityStartDay);
+        }
+        if (activityEndDay != null) {
+            wrapper.le(UserPointsLog::getCreatedAt, activityEndDay);
+        }
+        if (userPointsLogService.exists(wrapper)) {
+            //用户已经在活动期间签到过
+            log.info("user {} got activity points already", userId);
+            return null;
+        }
+
+        log.info("add activity points for user {}", userId);
+
+        return addPointsImpl(userId, pointsRule);
+    }
+
     @Override
     public PointsDto dailyCheckin(String userId, int continuesDay) {
+
+        PointsDto activityPointsDto = activityCheckin(userId);
+
+        if (activityPointsDto != null) {
+            //优先尝试活动签到，如果活动签到成功，那么就不再进行每日签到
+            return activityPointsDto;
+        }
 
         PointsRule pointsRule = null;
         if (continuesDay >= AppConstants.THIRTY_DAYS) {
@@ -77,6 +134,11 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
             return null;
         }
 
+        return addPointsImpl(userId, pointsRule);
+    }
+
+    private PointsDto addPointsImpl(String userId, PointsRule pointsRule) {
+
         int pointsChange = pointsRule.getPoints();
         String reason = pointsRule.getReason();
 
@@ -88,7 +150,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
         pointsDto.setReason(reason);
 
         UserPointsLog userPointsLog = new UserPointsLog();
-        userPointsLog.setEventType(PointsEventType.DAILY_CHECK_IN);
+        userPointsLog.setEventType(pointsRule.getEventType());
         userPointsLog.setUserId(userId);
         userPointsLog.setPointsChange(pointsChange);
         userPointsLog.setReason(reason);
@@ -97,7 +159,6 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
 
         UserPoints userPoints = calculate(userId, thisYearsNewYear, nextYearsNewYear);
         pointsDto.setTotalAmount(userPoints.getPoints());
-
         return pointsDto;
     }
 
