@@ -17,11 +17,12 @@ import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.infrastructure.AppConstants;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.config.AppConfig;
+import net.stepbooks.infrastructure.util.RedisDistributedLocker;
+import net.stepbooks.infrastructure.util.RedisStore;
 import net.stepbooks.infrastructure.util.csv.CustomBeanToCSVMappingStrategy;
+import net.stepbooks.interfaces.KeyConstants;
 import net.stepbooks.interfaces.admin.dto.OrderExportDto;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -51,11 +51,9 @@ public class OrderExportServiceImpl implements OrderExportService {
 
     private static final int THREE_PM_HOUR = 15;
 
-    private final RedissonClient redissonClient;
+    private final RedisDistributedLocker redisDistributedLocker;
 
-    private static final int THREE = 3;
-
-    private static final int SLEEP_TIME = 10000;
+    private final RedisStore redisStore;
 
     private void dailyExportImpl() {
 
@@ -95,11 +93,6 @@ public class OrderExportServiceImpl implements OrderExportService {
                     "步印订单每日汇总(" + today + ") - 本日无订单", "");
         }
 
-        try {
-            Thread.sleep(SLEEP_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -108,22 +101,21 @@ public class OrderExportServiceImpl implements OrderExportService {
     @Scheduled(cron = "${stepbooks.order-export-cron}")
     @Override
     public void dailyExport() {
-        RLock lock = redissonClient.getLock("OrderJob");
+        boolean res = redisDistributedLocker.tryLock("DailyExport");
+        if (!res) {
+            log.info("DailyExport Job already in progress");
+            return;
+        }
         try {
-            // 尝试获取锁,超时时间为3秒
-            if (lock.tryLock(THREE, TimeUnit.SECONDS)) {
-                // 执行任务的逻辑
-                log.debug("DailyExport Job start ...");
+            log.debug("DailyExport Job start ...");
+            if (!redisStore.exists(KeyConstants.FLAG_ORDER_EXPORT)) {
+                redisStore.setWithTwoMinutesExpiration(KeyConstants.FLAG_ORDER_EXPORT, true);
                 dailyExportImpl();
             } else {
-                // 无法获取锁,说明任务正在被其他节点执行
-                log.info("DailyExport Job already in progress");
+                log.info("DailyExport execute too frequently");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         } finally {
-            // 无论如何都要释放锁
-            lock.unlock();
+            redisDistributedLocker.unlock("DailyExport");
         }
     }
 
