@@ -59,6 +59,7 @@ public class OrderJob implements Job {
             log.debug("OrderJob start ...");
             if (!redisStore.exists(KeyConstants.FLAG_ORDER_JOB)) {
                 redisStore.setWithTwoMinutesExpiration(KeyConstants.FLAG_ORDER_JOB, true);
+                log.debug("OrderJob impl ...");
                 executeImpl();
             } else {
                 log.info("OrderJob execute too frequently");

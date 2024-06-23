@@ -110,6 +110,7 @@ public class OrderExportServiceImpl implements OrderExportService {
             log.debug("DailyExport Job start ...");
             if (!redisStore.exists(KeyConstants.FLAG_ORDER_EXPORT)) {
                 redisStore.setWithTwoMinutesExpiration(KeyConstants.FLAG_ORDER_EXPORT, true);
+                log.debug("DailyExport impl ...");
                 dailyExportImpl();
             } else {
                 log.info("DailyExport execute too frequently");

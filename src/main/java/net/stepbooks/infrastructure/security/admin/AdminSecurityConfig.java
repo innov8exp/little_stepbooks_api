@@ -43,7 +43,9 @@ public class AdminSecurityConfig {
                         .accessDeniedHandler(restAccessDeniedHandler))
                 .authorizeHttpRequests((requests) -> requests.requestMatchers(
                                 mvc.pattern("/admin/auth/login"),
+                                mvc.pattern("/admin/auth/login"),
                                 mvc.pattern("/admin/auth/refresh"),
+                                mvc.pattern("/admin/v1/orders/daily-export"),
                                 mvc.pattern("/admin/auth/logout"))
                         .permitAll()
                         .anyRequest()

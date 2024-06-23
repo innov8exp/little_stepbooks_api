@@ -28,6 +28,7 @@ import net.stepbooks.domain.payment.vo.WechatPayPrePayRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundResponse;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.infrastructure.enums.PaymentType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,6 +86,7 @@ public class WechatPaymentServiceImpl extends ServiceImpl<PaymentMapper, Payment
     public Payment getByOrder(String orderId) {
         LambdaQueryWrapper<Payment> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Payment::getOrderId, orderId);
+        wrapper.eq(Payment::getPaymentType, PaymentType.ORDER_PAYMENT);
         Payment payment = getOne(wrapper);
         return payment;
     }
