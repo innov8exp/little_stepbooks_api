@@ -1,6 +1,5 @@
 package net.stepbooks.domain.email.service.impl;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +30,7 @@ public class EmailServiceImpl implements EmailService {
         message.setSubject(subject);
         message.setText(text);
         mailSender.send(message);
+        log.info("sendSimpleEmail end");
     }
 
     @Override
@@ -48,8 +48,10 @@ public class EmailServiceImpl implements EmailService {
             ByteArrayResource attachmentResource = new ByteArrayResource(attachment);
             helper.addAttachment(attachmentName, attachmentResource);
             mailSender.send(mimeMessage);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             log.error(e.toString(), e);
+        } finally {
+            log.info("sendEmailWithAttachment end");
         }
     }
 }
