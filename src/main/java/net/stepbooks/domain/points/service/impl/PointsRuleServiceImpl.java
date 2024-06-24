@@ -19,6 +19,7 @@ public class PointsRuleServiceImpl extends ServiceImpl<PointsRuleMapper, PointsR
     public PointsRule getRuleByType(PointsEventType type) {
         LambdaQueryWrapper<PointsRule> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(PointsRule::getEventType, type);
+        wrapper.eq(PointsRule::isActive, true);
         PointsRule rule = getOne(wrapper);
         return rule;
     }

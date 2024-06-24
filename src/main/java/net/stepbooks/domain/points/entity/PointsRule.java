@@ -25,6 +25,8 @@ public class PointsRule extends BaseEntity {
     private int points;
     private String reason;
 
+    private boolean active;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate activityStartDay;
 
