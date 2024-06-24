@@ -116,14 +116,14 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
         }
 
         PointsRule pointsRule = null;
-        if (continuesDay >= AppConstants.THIRTY_DAYS) {
-            pointsRule = pointsRuleService.getRuleByType(PointsEventType.CHECK_IN_30_DAY);
+        if (continuesDay >= AppConstants.SIX_DAYS) {
+            pointsRule = pointsRuleService.getRuleByType(PointsEventType.CHECK_IN_6_DAY);
             if (pointsRule == null || pointsRule.getPoints() <= 0) {
-                pointsRule = pointsRuleService.getRuleByType(PointsEventType.CHECK_IN_7_DAY);
+                pointsRule = pointsRuleService.getRuleByType(PointsEventType.CHECK_IN_3_DAY);
 
             }
-        } else if (continuesDay >= AppConstants.SEVEN_DAYS) {
-            pointsRule = pointsRuleService.getRuleByType(PointsEventType.CHECK_IN_7_DAY);
+        } else if (continuesDay >= AppConstants.THREE_DAYS) {
+            pointsRule = pointsRuleService.getRuleByType(PointsEventType.CHECK_IN_3_DAY);
         }
 
         if (pointsRule == null || pointsRule.getPoints() <= 0) {
