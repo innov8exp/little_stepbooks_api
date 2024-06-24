@@ -12,7 +12,7 @@ public final class AppConstants {
      */
     public static final int TO_ADD_MONTH = 240;
 
-    public static final int SIX_DAYS = 6;
+    public static final int SEVEN_DAYS = 7;
     public static final int THREE_DAYS = 3;
 
     public static final String MIXED_ORDER_STATE_MACHINE_ID = "mixedOrderStateMachine";
