@@ -55,6 +55,8 @@ public class OrderExportServiceImpl implements OrderExportService {
 
     private final RedisStore redisStore;
 
+    private final String jobName = "DailyExport";
+
     private void dailyExportImpl() {
 
         LocalDate today = LocalDate.now();
@@ -101,22 +103,22 @@ public class OrderExportServiceImpl implements OrderExportService {
     @Scheduled(cron = "${stepbooks.order-export-cron}")
     @Override
     public void dailyExport() {
-        boolean res = redisDistributedLocker.tryLock("DailyExport");
+        boolean res = redisDistributedLocker.tryLock(jobName);
         if (!res) {
-            log.info("DailyExport Job already in progress");
+            log.info("{} Job already in progress", jobName);
             return;
         }
         try {
-            log.debug("DailyExport Job start ...");
+            log.info("{} Job start ...", jobName);
             if (!redisStore.exists(KeyConstants.FLAG_ORDER_EXPORT)) {
                 redisStore.setWithTwoMinutesExpiration(KeyConstants.FLAG_ORDER_EXPORT, true);
-                log.debug("DailyExport impl ...");
+                log.info("{} impl ...", jobName);
                 dailyExportImpl();
             } else {
-                log.info("DailyExport execute too frequently");
+                log.info("{} execute too frequently", jobName);
             }
         } finally {
-            redisDistributedLocker.unlock("DailyExport");
+            redisDistributedLocker.unlock(jobName);
         }
     }
 
