@@ -3,6 +3,7 @@ package net.stepbooks.domain.goods.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.stepbooks.infrastructure.AppConstants;
 import net.stepbooks.infrastructure.enums.PublishStatus;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
@@ -23,7 +24,7 @@ public class PhysicalGoodsEntity extends BaseEntity {
     }
 
     public String wdtSpuNo() {
-        return getId();
+        return AppConstants.WDT_SPU_NO_PREFIX + getId();
     }
 
     public String wdtSkuId() {
@@ -31,7 +32,7 @@ public class PhysicalGoodsEntity extends BaseEntity {
     }
 
     public String wdtSkuNo() {
-        return getId();
+        return AppConstants.WDT_SKU_NO_PREFIX + getId();
     }
 
 }

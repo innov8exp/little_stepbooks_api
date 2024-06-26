@@ -120,6 +120,7 @@ public class WdtServiceImpl implements WdtService {
         params.put("api_goods_info", apiGoodsInfoJson);
         try {
             String response = client.execute("api_goodsspec_push.php", params);
+            log.info("api_goodsspec_push.php response={}", response);
             WdtGoodsSpecPushBasicResponse goodsSpecPushResponse = JsonUtils.fromJson(response,
                     WdtGoodsSpecPushBasicResponse.class);
             if (goodsSpecPushResponse.success()) {
