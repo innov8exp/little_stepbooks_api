@@ -18,4 +18,20 @@ public class PhysicalGoodsEntity extends BaseEntity {
     private String coverUrl;
     private PublishStatus status;
 
+    public String wdtSpuId() {
+        return getId();
+    }
+
+    public String wdtSpuNo() {
+        return getId();
+    }
+
+    public String wdtSkuId() {
+        return getId();
+    }
+
+    public String wdtSkuNo() {
+        return getId();
+    }
+
 }
