@@ -9,4 +9,9 @@ public interface WdtService {
      */
     void goodsSpecPush(boolean updateAll);
 
+    /**
+     * 同步交易
+     */
+    void tradePush();
+
 }

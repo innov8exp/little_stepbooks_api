@@ -20,10 +20,17 @@ public class MWdtController {
 
     private final WdtService wdtService;
 
-    @PostMapping("/sync")
+    @PostMapping("/sync/goods")
     @Operation(summary = "同步货品信息")
     public ResponseEntity<?> goodsSpecPush(@RequestParam boolean updateAll) {
         wdtService.goodsSpecPush(updateAll);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/sync/trade")
+    @Operation(summary = "同步订单信息")
+    public ResponseEntity<?> tradePush() {
+        wdtService.tradePush();
         return ResponseEntity.ok().build();
     }
 

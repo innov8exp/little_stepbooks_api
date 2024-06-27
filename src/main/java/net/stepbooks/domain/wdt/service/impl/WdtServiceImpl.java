@@ -202,6 +202,12 @@ public class WdtServiceImpl implements WdtService {
         goodsSpecPushImpl();
     }
 
+    @Override
+    public void tradePush() {
+        log.info("Trade push start ...");
+        tradePushImpl();
+    }
+
     private static int retryTimes = 0;
 
     private static final int MAX_RETRY_TIMES = 10;
@@ -383,14 +389,14 @@ public class WdtServiceImpl implements WdtService {
                 redisStore.setWithTwoMinutesExpiration(KeyConstants.FLAG_WDT_SYNC, true);
 
                 try {
-                    log.info("Wdt goods spec push start ...");
+                    log.info("Goods spec push start ...");
                     goodsSpecPushImpl();
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
 
                 try {
-                    log.info("Wdt trade push start ...");
+                    log.info("Trade push start ...");
                     tradePushImpl();
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
