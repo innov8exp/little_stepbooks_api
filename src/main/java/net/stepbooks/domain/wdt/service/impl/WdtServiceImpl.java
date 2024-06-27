@@ -45,7 +45,7 @@ public class WdtServiceImpl implements WdtService {
 
     private final RedisStore redisStore;
 
-    private final String jobName = "WdtGoodsSpecPush";
+    private final String jobName = "WdtPush";
 
     /**
      * 启动后3分钟第一次执行
@@ -65,6 +65,8 @@ public class WdtServiceImpl implements WdtService {
     private final long maxPageSize = 1900L;
 
     protected void goodsSpecPushImpl() {
+
+        log.info("Wdt goods spec push start ...");
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -140,8 +142,12 @@ public class WdtServiceImpl implements WdtService {
         goodsSpecPushImpl();
     }
 
+    public void tradePushImpl() {
+        log.info("Wdt trade push start ...");
+    }
+
     @Scheduled(initialDelay = initialDelay, fixedDelay = fixedDelay)
-    public void goodsSpecPush() {
+    public void wdtPush() {
         boolean res = redisDistributedLocker.tryLock(jobName);
         if (!res) {
             log.info("{} Job already in progress", jobName);
@@ -151,13 +157,22 @@ public class WdtServiceImpl implements WdtService {
             log.info("{} Job start ...", jobName);
             if (!redisStore.exists(KeyConstants.FLAG_WDT_SYNC)) {
                 redisStore.setWithTwoMinutesExpiration(KeyConstants.FLAG_WDT_SYNC, true);
-                log.info("{} impl ...", jobName);
-                goodsSpecPushImpl();
+
+                try {
+                    goodsSpecPushImpl();
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+
+                try {
+                    tradePushImpl();
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+
             } else {
                 log.info("{} execute too frequently", jobName);
             }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
         } finally {
             redisDistributedLocker.unlock(jobName);
         }

@@ -3,6 +3,7 @@ package net.stepbooks.domain.order.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 import net.stepbooks.domain.order.enums.OrderState;
+import net.stepbooks.domain.order.enums.WdtSyncStatus;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
@@ -33,4 +34,5 @@ public class Order extends BaseEntity {
     private RefundType refundType;
     private OrderState state;
     private Boolean redeemed;
+    private WdtSyncStatus wdtSyncStatus;
 }

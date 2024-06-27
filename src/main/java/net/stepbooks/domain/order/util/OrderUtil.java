@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderState;
+import net.stepbooks.domain.order.enums.WdtSyncStatus;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.util.RandomNumberUtils;
@@ -39,6 +40,7 @@ public class OrderUtil {
                 .paymentStatus(PaymentStatus.UNPAID)
                 .state(OrderState.INIT)
                 .paymentTimeoutDuration(ORDER_PAYMENT_TIMEOUT)
+                .wdtSyncStatus(WdtSyncStatus.INIT)
                 .build();
     }
 
