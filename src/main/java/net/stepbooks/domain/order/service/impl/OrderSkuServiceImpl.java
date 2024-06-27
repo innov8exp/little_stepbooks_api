@@ -53,6 +53,7 @@ public class OrderSkuServiceImpl extends ServiceImpl<OrderSkuMapper, OrderSku>
             String spuId = orderSku.getSpuId();
 
             OrderSkuDto orderSkuDto = new OrderSkuDto();
+            orderSkuDto.setId(orderSku.getId());
             orderSkuDto.setOrderId(orderId);
             orderSkuDto.setQuantity(orderSku.getQuantity());
 

@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 @Data
 public class OrderSkuDto {
 
+    private String id;
+
     private String orderId;
 
     private String spuId;
