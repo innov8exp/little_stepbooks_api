@@ -19,8 +19,6 @@ import net.stepbooks.domain.order.mapper.OrderMapper;
 import net.stepbooks.domain.order.service.OrderSkuService;
 import net.stepbooks.domain.product.service.SkuPhysicalGoodsService;
 import net.stepbooks.domain.wdt.service.WdtService;
-import net.stepbooks.infrastructure.AppConstants;
-import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.JsonUtils;
@@ -28,6 +26,7 @@ import net.stepbooks.infrastructure.util.RedisDistributedLocker;
 import net.stepbooks.infrastructure.util.RedisStore;
 import net.stepbooks.interfaces.KeyConstants;
 import net.stepbooks.interfaces.admin.dto.OrderSkuDto;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -125,22 +124,6 @@ public class WdtServiceImpl implements WdtService {
      */
     private final int wdtInitStockNo = 99999;
 
-    private String wdtSpuId(String physicalGoodsId) {
-        return physicalGoodsId;
-    }
-
-    private String wdtSkuId(String physicalGoodsId) {
-        return physicalGoodsId;
-    }
-
-    private String wdtSpuNo(String physicalGoodsId) {
-        return AppConstants.WDT_SPU_NO_PREFIX + physicalGoodsId;
-    }
-
-    private String wdtSkuNo(String physicalGoodsId) {
-        return AppConstants.WDT_SKU_NO_PREFIX + physicalGoodsId;
-    }
-
     protected void goodsSpecPushImpl() {
 
         LocalDateTime now = LocalDateTime.now();
@@ -155,6 +138,7 @@ public class WdtServiceImpl implements WdtService {
 
         LocalDateTime lastModifyAt = redisStore.get(KeyConstants.LAST_MODIFY_AT_WDT_SYNC, LocalDateTime.class);
         LambdaQueryWrapper<PhysicalGoodsEntity> wrapper = Wrappers.lambdaQuery();
+        wrapper.isNotNull(PhysicalGoodsEntity::getWdtGoodsNo);
         if (lastModifyAt != null) {
             wrapper.gt(PhysicalGoodsEntity::getModifiedAt, lastModifyAt);
         }
@@ -176,11 +160,11 @@ public class WdtServiceImpl implements WdtService {
         for (int i = 0; i < toSyncList.size(); i++) {
             PhysicalGoodsEntity physicalGoodsEntity = toSyncList.get(i);
             goodsList[i] = new HashMap<>();
-            String physicalGoodsId = physicalGoodsEntity.getId();
-            goodsList[i].put("goods_id", wdtSpuId(physicalGoodsId));
-            goodsList[i].put("spec_id", wdtSkuId(physicalGoodsId));
-            goodsList[i].put("goods_no", wdtSpuNo(physicalGoodsId));
-            goodsList[i].put("spec_no", wdtSkuNo(physicalGoodsId));
+            String wdtGoodsNo = physicalGoodsEntity.getWdtGoodsNo();
+            goodsList[i].put("goods_id", wdtGoodsNo);
+            goodsList[i].put("spec_id", wdtGoodsNo);
+            goodsList[i].put("goods_no", wdtGoodsNo);
+            goodsList[i].put("spec_no", wdtGoodsNo);
             goodsList[i].put("goods_name", physicalGoodsEntity.getName());
             goodsList[i].put("pic_url", physicalGoodsEntity.getCoverUrl());
             goodsList[i].put("status", "1");
@@ -260,7 +244,7 @@ public class WdtServiceImpl implements WdtService {
         Page<Order> page = Page.of(1, maxTradeSize);
         LambdaQueryWrapper<Order> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Order::getWdtSyncStatus, WdtSyncStatus.INIT);
-        wrapper.eq(Order::getPaymentStatus, PaymentStatus.PAID);
+        //wrapper.eq(Order::getPaymentStatus, PaymentStatus.PAID);
         IPage<Order> orders = orderMapper.selectPage(page, wrapper);
         List<Order> noNeedOrders = new ArrayList<>();
         List<Order> toSyncOrders = new ArrayList<>();
@@ -301,22 +285,24 @@ public class WdtServiceImpl implements WdtService {
                         log.warn("order {} has more than 1 physical goods!", order.getId());
                     } else if (goodsList.size() == 1) {
                         PhysicalGoodsEntity physicalGoods = goodsList.get(0);
-                        String physicalGoodsId = physicalGoods.getId();
-                        Map<String, Object> wdtOrder = new HashMap<>();
-                        wdtOrder.put("oid", oid);
-                        wdtOrder.put("num", quantity);
-                        wdtOrder.put("price", skuPrice);
-                        wdtOrder.put("status", wdtTradeStatusPaid);
-                        wdtOrder.put("refund_status", 0);
-                        wdtOrder.put("goods_id", wdtSpuId(physicalGoodsId));
-                        wdtOrder.put("spec_id", wdtSkuId(physicalGoodsId));
-                        wdtOrder.put("goods_no", wdtSpuNo(physicalGoodsId));
-                        wdtOrder.put("spec_no", wdtSkuNo(physicalGoodsId));
-                        wdtOrder.put("goods_name", physicalGoods.getName());
-                        wdtOrder.put("discount", 0);         //子订单折扣
-                        wdtOrder.put("adjust_amount", 0);    //手工调整,特别注意:正的表示加价,负的表示减价
-                        wdtOrder.put("share_discount", 0);
-                        wdtOrderList.add(wdtOrder);
+                        String wdtGoodsNo = physicalGoods.getWdtGoodsNo();
+                        if (ObjectUtils.isNotEmpty(wdtGoodsNo)) {
+                            Map<String, Object> wdtOrder = new HashMap<>();
+                            wdtOrder.put("oid", oid);
+                            wdtOrder.put("num", quantity);
+                            wdtOrder.put("price", skuPrice);
+                            wdtOrder.put("status", wdtTradeStatusPaid);
+                            wdtOrder.put("refund_status", 0);
+                            wdtOrder.put("goods_id", wdtGoodsNo);
+                            wdtOrder.put("spec_id", wdtGoodsNo);
+                            wdtOrder.put("goods_no", wdtGoodsNo);
+                            wdtOrder.put("spec_no", wdtGoodsNo);
+                            wdtOrder.put("goods_name", physicalGoods.getName());
+                            wdtOrder.put("discount", 0);         //子订单折扣
+                            wdtOrder.put("adjust_amount", 0);    //手工调整,特别注意:正的表示加价,负的表示减价
+                            wdtOrder.put("share_discount", 0);
+                            wdtOrderList.add(wdtOrder);
+                        }
                     } else {
                         log.warn("order {} has no physical goods!", order.getId());
                     }

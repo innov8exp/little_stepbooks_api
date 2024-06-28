@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import net.stepbooks.domain.delivery.entity.Delivery;
 import net.stepbooks.domain.order.entity.OrderEventLog;
 import net.stepbooks.domain.order.enums.OrderState;
+import net.stepbooks.domain.order.enums.WdtSyncStatus;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.model.BaseDto;
@@ -30,6 +31,7 @@ public class OrderInfoDto extends BaseDto {
     private Boolean redeemed;
     private ProductNature productNature;
     private PaymentStatus paymentStatus;
+    private WdtSyncStatus wdtSyncStatus;
 
     @Deprecated
     private List<OrderProductDto> products;

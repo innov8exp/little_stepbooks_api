@@ -39,8 +39,4 @@ public final class AppConstants {
 
     public static final int ONE_HUNDRED = 100;
 
-    public static final String WDT_SPU_NO_PREFIX = "P";
-
-    public static final String WDT_SKU_NO_PREFIX = "K";
-
 }
