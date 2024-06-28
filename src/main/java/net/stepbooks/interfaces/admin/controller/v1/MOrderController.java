@@ -128,6 +128,20 @@ public class MOrderController {
 
         IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username, state,
                 startDateTime, endDateTime);
+
+        //补充一下收货人信息
+        for (OrderInfoDto orderInfoDto : orders.getRecords()) {
+            Delivery delivery = deliveryService.getByOrder(orderInfoDto.getId());
+            if (delivery != null) {
+                orderInfoDto.setRecipientName(delivery.getRecipientName());
+                orderInfoDto.setRecipientPhone(delivery.getRecipientPhone());
+                orderInfoDto.setRecipientProvince(delivery.getRecipientProvince());
+                orderInfoDto.setRecipientCity(delivery.getRecipientCity());
+                orderInfoDto.setRecipientDistrict(delivery.getRecipientDistrict());
+                orderInfoDto.setRecipientAddress(delivery.getRecipientAddress());
+            }
+        }
+
         return ResponseEntity.ok(orders);
     }
 

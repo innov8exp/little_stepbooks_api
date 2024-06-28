@@ -23,6 +23,9 @@ public class OrderInfoDto extends BaseDto {
     private String nickname;
     private String recipientName;
     private String recipientPhone;
+    private String recipientProvince;
+    private String recipientCity;
+    private String recipientDistrict;
     private String recipientAddress;
     private String productId;
     private String skuCode;
