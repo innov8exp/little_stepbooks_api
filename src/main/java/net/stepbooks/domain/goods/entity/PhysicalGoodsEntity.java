@@ -16,6 +16,7 @@ public class PhysicalGoodsEntity extends BaseEntity {
     private String description;
     private String coverId;
     private String coverUrl;
+    private String wdtGoodsNo;
     private PublishStatus status;
 
 }
