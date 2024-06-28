@@ -27,3 +27,11 @@ stepbooks:
   mock: 1
   admin-email: dongzhen1002@126.com
   order-export-cron: 0 5 15 * * ?
+
+wdt:
+  app-key: bywh002-test
+  app-secret: 1141bde90
+  sid: apidevnew2
+  base-url: https://sandbox.wangdian.cn/openapi2/
+  shop-no: bywh002-test
+  platform-id: 127

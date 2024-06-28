@@ -35,3 +35,11 @@ wechat:
   merchant:
     pay-notify-url: https://api-stage.stepbooks.net/v1/payments/wechat/pay/callback
     refund-notify-url: https://api-stage.stepbooks.net/v1/payments/wechat/refund/callback
+
+wdt:
+  app-key: bywh002-test
+  app-secret: 1141bde90
+  sid: apidevnew2
+  base-url: https://sandbox.wangdian.cn/openapi2/
+  shop-no: bywh002-test
+  platform-id: 127

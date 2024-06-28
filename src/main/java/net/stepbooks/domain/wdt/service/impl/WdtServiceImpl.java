@@ -28,6 +28,7 @@ import net.stepbooks.infrastructure.util.RedisDistributedLocker;
 import net.stepbooks.infrastructure.util.RedisStore;
 import net.stepbooks.interfaces.KeyConstants;
 import net.stepbooks.interfaces.admin.dto.OrderSkuDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -46,13 +47,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WdtServiceImpl implements WdtService {
 
-    private String appkey = "bywh002-test";
-    private String appsecret = "1141bde90";
-    private String sid = "apidevnew2";
-    private String baseUrl = "https://sandbox.wangdian.cn/openapi2/";
+    @Value("${wdt.app-key}")
+    private String appkey;
 
-    private String shopNo = "bywh002-test";
-    private String platformId = "127";
+    @Value("${wdt.app-secret}")
+    private String appSecret;
+
+    @Value("${wdt.sid}")
+    private String sid;
+
+    @Value("${wdt.base-url}")
+    private String baseUrl;
+
+    @Value("${wdt.shop-no}")
+    private String shopNo;
+
+    @Value("${wdt.platform-id}")
+    private String platformId;
 
     private final PhysicalGoodsService physicalGoodsService;
 
@@ -109,6 +120,11 @@ public class WdtServiceImpl implements WdtService {
      */
     private final int wdtDeliveryTermKdfh = 1;
 
+    /**
+     * 初始库存
+     */
+    private final int wdtInitStockNo = 99999;
+
     private String wdtSpuId(String physicalGoodsId) {
         return physicalGoodsId;
     }
@@ -153,7 +169,7 @@ public class WdtServiceImpl implements WdtService {
 
         List<PhysicalGoodsEntity> toSyncList = physicalGoods.getRecords();
 
-        WdtClient client = new WdtClient(sid, appkey, appsecret, baseUrl);
+        WdtClient client = new WdtClient(sid, appkey, appSecret, baseUrl);
         Map<String, Object> apiGoodsInfo = new HashMap<>();
         Map<String, Object>[] goodsList = new Map[toSyncList.size()];
 
@@ -168,6 +184,7 @@ public class WdtServiceImpl implements WdtService {
             goodsList[i].put("goods_name", physicalGoodsEntity.getName());
             goodsList[i].put("pic_url", physicalGoodsEntity.getCoverUrl());
             goodsList[i].put("status", "1");
+            goodsList[i].put("stock_num", wdtInitStockNo);
             lastModifyAt = physicalGoodsEntity.getModifiedAt();
         }
 
@@ -265,7 +282,7 @@ public class WdtServiceImpl implements WdtService {
             orderMapper.update(updateOrder, updateWrapper);
         }
         if (toSyncOrders.size() > 0) {
-            WdtClient client = new WdtClient(sid, appkey, appsecret, baseUrl);
+            WdtClient client = new WdtClient(sid, appkey, appSecret, baseUrl);
             List<Map<String, Object>> wdtTradeList = new ArrayList<>();
             List<String> toSyncTids = new ArrayList<>();
             for (Order order : toSyncOrders) {
