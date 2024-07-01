@@ -21,4 +21,9 @@ public interface WdtService {
      */
     void retryTradePush(String orderId);
 
+    /**
+     * 同步物流信息
+     */
+    void logisticsSyncQuery();
+
 }

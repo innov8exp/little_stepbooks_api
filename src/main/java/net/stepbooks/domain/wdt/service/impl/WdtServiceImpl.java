@@ -102,7 +102,7 @@ public class WdtServiceImpl implements WdtService {
     /**
      * 一次性最多同步订单数
      */
-    private final long maxTradeSize = 20L;
+    private final long maxTradeSize = 10L;
 
     /**
      * 旺店通的已支付，待发货状态常量
@@ -218,6 +218,11 @@ public class WdtServiceImpl implements WdtService {
         }
     }
 
+    @Override
+    public void logisticsSyncQuery() {
+        log.info("Logistics sync start ...");
+    }
+
     private static int retryTimes = 0;
 
     private static final int MAX_RETRY_TIMES = 10;
@@ -253,6 +258,7 @@ public class WdtServiceImpl implements WdtService {
         Page<Order> page = Page.of(1, maxTradeSize);
         LambdaQueryWrapper<Order> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(Order::getWdtSyncStatus, WdtSyncStatus.INIT);
+        wrapper.orderByDesc(Order::getCreatedAt);
         //wrapper.eq(Order::getPaymentStatus, PaymentStatus.PAID);
         IPage<Order> orders = orderMapper.selectPage(page, wrapper);
         List<Order> noNeedOrders = new ArrayList<>();
