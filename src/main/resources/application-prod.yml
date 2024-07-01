@@ -40,5 +40,5 @@ wdt:
   app-secret: 886f8b1e892dd764c97e226223b1ecce
   sid: bywh002
   base-url: https://api.wangdian.cn/openapi2/
-  shop-no: Dp98xysy
+  shop-no: 25
   platform-id: 127
