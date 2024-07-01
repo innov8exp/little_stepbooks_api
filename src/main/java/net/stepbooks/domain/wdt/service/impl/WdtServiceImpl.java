@@ -9,6 +9,7 @@ import com.wangdian.api.WdtClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.delivery.entity.Delivery;
+import net.stepbooks.domain.delivery.enums.DeliveryStatus;
 import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.goods.entity.PhysicalGoodsEntity;
 import net.stepbooks.domain.goods.service.PhysicalGoodsService;
@@ -267,6 +268,9 @@ public class WdtServiceImpl implements WdtService {
                         delivery.setLogisticsName(trade.getLogisticsName());
                         delivery.setLogisticsType(trade.getLogisticsType());
                         delivery.setConsignTime(trade.getConsignTime());
+                        if (DeliveryStatus.WAITING.equals(delivery.getDeliveryStatus())) {
+                            delivery.setDeliveryStatus(DeliveryStatus.DELIVERING);
+                        }
                         deliveryService.updateById(delivery);
                         recIds.add(trade.getRecId());
                     }
