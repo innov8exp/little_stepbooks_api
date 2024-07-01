@@ -1,10 +1,13 @@
 package net.stepbooks.domain.delivery.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import net.stepbooks.domain.delivery.enums.DeliveryMethod;
 import net.stepbooks.domain.delivery.enums.DeliveryStatus;
 import net.stepbooks.infrastructure.model.BaseEntity;
+
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -28,4 +31,12 @@ public class Delivery extends BaseEntity {
     private String recipientCity;
     private String recipientDistrict;
     private String recipientAddress;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime consignTime;
+    private String logisticsId;
+    private String logisticsType;
+    private String logisticsName;
+    private String logisticsNo;
+
 }

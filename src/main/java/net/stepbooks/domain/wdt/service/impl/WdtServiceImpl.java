@@ -124,6 +124,11 @@ public class WdtServiceImpl implements WdtService {
      */
     private final int wdtInitStockNo = 99999;
 
+    /**
+     * 最大物流信息同步数量
+     */
+    private final String logisticsSyncLimit = "20";
+
     protected void goodsSpecPushImpl() {
 
         LocalDateTime now = LocalDateTime.now();
@@ -218,9 +223,68 @@ public class WdtServiceImpl implements WdtService {
         }
     }
 
+    protected void logisticsSyncAck(List<String> recIds) {
+        WdtClient client = new WdtClient(sid, appkey, appSecret, baseUrl);
+        List<Map<String, Object>> logisticsList = new ArrayList<>();
+
+        for (String recId : recIds) {
+            Map<String, Object> logistics = new HashMap<String, Object>();
+            logistics.put("rec_id", recId);
+            logistics.put("status", 0);
+            logistics.put("message", "同步成功");
+            logisticsList.add(logistics);
+        }
+        String logisticsListJson = JSON.toJSONString(logisticsList);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("logistics_list", logisticsListJson);
+        try {
+            String response = client.execute("logistics_sync_ack.php", params);
+            log.info("logistics_sync_ack response={}", response);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    protected void logisticsSyncQueryImpl() {
+        WdtClient client = new WdtClient(sid, appkey, appSecret, baseUrl);
+        Map<String, String> params = new HashMap<>();
+        params.put("shop_no", shopNo);
+        params.put("limit", logisticsSyncLimit);
+
+        try {
+            String response = client.execute("logistics_sync_query.php", params);
+            log.info("logistics_sync_query response={}", response);
+            WdtLogisticsSyncResponse logisticsSyncResponse = JSON.parseObject(response, WdtLogisticsSyncResponse.class);
+            List<String> recIds = new ArrayList<>();
+            if (logisticsSyncResponse.success() && logisticsSyncResponse.getTrades() != null) {
+                try {
+                    for (WdtTrade trade : logisticsSyncResponse.getTrades()) {
+                        String orderId = trade.getTid();
+                        Delivery delivery = deliveryService.getByOrder(orderId);
+                        delivery.setLogisticsId(trade.getLogisticsId());
+                        delivery.setLogisticsNo(trade.getLogisticsNo());
+                        delivery.setLogisticsName(trade.getLogisticsName());
+                        delivery.setLogisticsType(trade.getLogisticsType());
+                        delivery.setConsignTime(trade.getConsignTime());
+                        deliveryService.updateById(delivery);
+                        recIds.add(trade.getRecId());
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+            logisticsSyncAck(recIds);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+    }
+
     @Override
     public void logisticsSyncQuery() {
         log.info("Logistics sync start ...");
+        logisticsSyncQueryImpl();
     }
 
     private static int retryTimes = 0;
@@ -416,6 +480,13 @@ public class WdtServiceImpl implements WdtService {
                 try {
                     log.info("Trade push start ...");
                     tradePushImpl();
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+
+                try {
+                    log.info("Logistics sync start ...");
+                    logisticsSyncQueryImpl();
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
