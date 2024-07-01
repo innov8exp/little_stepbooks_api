@@ -209,6 +209,15 @@ public class WdtServiceImpl implements WdtService {
         tradePushImpl();
     }
 
+    @Override
+    public void retryTradePush(String orderId) {
+        Order order = orderMapper.selectById(orderId);
+        if (order != null && WdtSyncStatus.REJECTED.equals(order.getWdtSyncStatus())) {
+            order.setWdtSyncStatus(WdtSyncStatus.INIT);
+            orderMapper.updateById(order);
+        }
+    }
+
     private static int retryTimes = 0;
 
     private static final int MAX_RETRY_TIMES = 10;

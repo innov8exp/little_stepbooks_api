@@ -14,4 +14,11 @@ public interface WdtService {
      */
     void tradePush();
 
+    /**
+     * 尝试重新推送订单
+     *
+     * @param orderId
+     */
+    void retryTradePush(String orderId);
+
 }

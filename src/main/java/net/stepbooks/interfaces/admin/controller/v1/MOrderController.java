@@ -23,6 +23,7 @@ import net.stepbooks.domain.order.service.*;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.product.enums.ProductNature;
+import net.stepbooks.domain.wdt.service.WdtService;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
@@ -64,6 +65,7 @@ public class MOrderController {
     private final DeliveryService deliveryService;
     private final VirtualGoodsRedeemService virtualGoodsRedeemService;
     private final OrderExportService orderExportService;
+    private final WdtService wdtService;
 
     private static final int END_DAY_HOUR = 23;
     private static final int END_DAY_MINUTE = 59;
@@ -215,6 +217,8 @@ public class MOrderController {
         Delivery delivery = deliveryService.getOne(Wrappers.<Delivery>lambdaQuery().eq(Delivery::getOrderId, id));
         BeanUtils.copyProperties(deliveryDetail, delivery);
         deliveryService.updateById(delivery);
+        String orderId = delivery.getOrderId();
+        wdtService.retryTradePush(orderId);
         return ResponseEntity.ok().build();
     }
 

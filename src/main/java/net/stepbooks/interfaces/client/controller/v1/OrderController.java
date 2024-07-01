@@ -21,6 +21,7 @@ import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.product.service.SkuService;
 import net.stepbooks.domain.user.entity.User;
+import net.stepbooks.domain.wdt.service.WdtService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
@@ -54,6 +55,7 @@ public class OrderController {
     private final OrderProductService orderProductService;
     private final OrderSkuService orderSkuService;
     private final SkuService skuService;
+    private final WdtService wdtService;
 
     private OrderService correctOrderService(Order order) {
         if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
@@ -188,6 +190,8 @@ public class OrderController {
                 .eq(Delivery::getOrderId, order.getId()));
         BeanUtils.copyProperties(recipient, delivery);
         deliveryService.updateById(delivery);
+        String orderId = delivery.getOrderId();
+        wdtService.retryTradePush(orderId);
         return ResponseEntity.ok().build();
     }
 
