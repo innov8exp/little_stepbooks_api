@@ -229,9 +229,12 @@ public class PhysicalOrderServiceImpl implements OrderService {
         physicalOrderStateMachine.fireEvent(order.getState(), OrderEvent.SHIP_SUCCESS, order);
         Delivery delivery = deliveryService.getOne(Wrappers.<Delivery>lambdaQuery().eq(Delivery::getOrderId, id));
         delivery.setShipperUserId(deliveryInfoDto.getShipperUserId());
-        delivery.setDeliveryCompany(deliveryInfoDto.getDeliveryCompany());
-        delivery.setDeliveryCode(deliveryInfoDto.getDeliveryCode());
         delivery.setDeliveryStatus(DeliveryStatus.DELIVERING);
+
+        delivery.setLogisticsType(deliveryInfoDto.getLogisticsType());
+        delivery.setLogisticsNo(deliveryInfoDto.getLogisticsNo());
+        delivery.setLogisticsName(deliveryInfoDto.getLogisticsName());
+
         deliveryService.updateById(delivery);
     }
 
