@@ -272,6 +272,13 @@ public class WdtServiceImpl implements WdtService {
                             delivery.setDeliveryStatus(DeliveryStatus.DELIVERING);
                         }
                         deliveryService.updateById(delivery);
+
+                        Order order = orderMapper.selectById(orderId);
+                        if (order != null && OrderState.PAID.equals(order.getState())) {
+                            order.setState(OrderState.SHIPPED);
+                            orderMapper.updateById(order);
+                        }
+
                         recIds.add(trade.getRecId());
                     }
                 } catch (Exception e) {
