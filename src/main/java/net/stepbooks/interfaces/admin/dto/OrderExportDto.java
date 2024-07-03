@@ -28,6 +28,10 @@ public class OrderExportDto {
     static final int POS_11 = 11;
     static final int POS_12 = 12;
     static final int POS_13 = 13;
+    static final int POS_14 = 14;
+    static final int POS_15 = 15;
+    static final int POS_16 = 16;
+    static final int POS_17 = 17;
 
     @CsvBindByName(column = "订单号")
     @CsvBindByPosition(position = POS_0)
@@ -84,12 +88,25 @@ public class OrderExportDto {
     private BigDecimal transactionAmount;
 
     @CsvBindByName(column = "交易流水号")
-    @CsvBindByPosition(position = POS_12)
+    @CsvBindByPosition(position = POS_13)
     private String vendorPaymentNo;
 
     @CsvBindByName(column = "交易状态")
-    @CsvBindByPosition(position = POS_13)
+    @CsvBindByPosition(position = POS_14)
     private String transactionStatus;
+
+    @CsvBindByName(column = "发货时间")
+    @CsvBindByPosition(position = POS_15)
+    @CsvDate("yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime consignTime;
+
+    @CsvBindByName(column = "快递公司")
+    @CsvBindByPosition(position = POS_16)
+    private String logisticsName;
+
+    @CsvBindByName(column = "快递单号")
+    @CsvBindByPosition(position = POS_17)
+    private String logisticsNo;
 
     public void fillinStateDesc(OrderState state) {
         if (OrderState.INIT.equals(state)) {

@@ -148,6 +148,10 @@ public class OrderExportServiceImpl implements OrderExportService {
                 orderExportDto.setRecipientCity(delivery.getRecipientCity());
                 orderExportDto.setRecipientDistrict(delivery.getRecipientDistrict());
                 orderExportDto.setRecipientAddress(delivery.getRecipientAddress());
+
+                orderExportDto.setConsignTime(delivery.getConsignTime());
+                orderExportDto.setLogisticsName(delivery.getLogisticsName());
+                orderExportDto.setLogisticsNo("'" + delivery.getLogisticsNo() + "'");
             }
 
             Payment payment = paymentService.getByOrder(orderInfoDto.getId());
