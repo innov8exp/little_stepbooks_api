@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -190,15 +191,16 @@ public class MOrderController {
 
         // 将数据写入 CSV 文件
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream))) {
+        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
 
             CustomBeanToCSVMappingStrategy<OrderExportDto> mappingStrategy = new CustomBeanToCSVMappingStrategy<>();
             mappingStrategy.setType(OrderExportDto.class);
 
             StatefulBeanToCsv<OrderExportDto> beanToCsv = new StatefulBeanToCsvBuilder<OrderExportDto>(writer)
-                    .withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER)
+                    .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
                     .withMappingStrategy(mappingStrategy)
+                    .withApplyQuotesToAll(false)
                     .build();
             beanToCsv.write(data);
         }
