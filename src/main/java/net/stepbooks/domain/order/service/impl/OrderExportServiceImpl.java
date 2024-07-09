@@ -76,9 +76,10 @@ public class OrderExportServiceImpl implements OrderExportService {
                     mappingStrategy.setType(OrderExportDto.class);
 
                     StatefulBeanToCsv<OrderExportDto> beanToCsv = new StatefulBeanToCsvBuilder<OrderExportDto>(writer)
-                            .withQuotechar(CSVWriter.DEFAULT_QUOTE_CHARACTER)
+                            .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
                             .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
                             .withMappingStrategy(mappingStrategy)
+                            .withApplyQuotesToAll(false)
                             .build();
                     beanToCsv.write(data);
                 }
