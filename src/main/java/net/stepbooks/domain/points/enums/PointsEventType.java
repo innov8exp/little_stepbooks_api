@@ -7,5 +7,4 @@ public enum PointsEventType {
     CHECK_IN_7_DAY, //连续7天签到
     BUY_NORMAL_PRODUCT, //购买普通商品
     BUY_PROMOTION_PRODUCT, //购买促销商品
-    FULL_PROMOTION, //全场促销对于非促销商品，如果有全场促销，则根据全场促销获得积分
 }
