@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -69,7 +70,7 @@ public class OrderExportServiceImpl implements OrderExportService {
             try {
                 // 将数据写入 CSV 文件
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream))) {
+                try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8))) {
 
                     CustomBeanToCSVMappingStrategy<OrderExportDto> mappingStrategy = new CustomBeanToCSVMappingStrategy<>();
                     mappingStrategy.setType(OrderExportDto.class);
@@ -151,7 +152,9 @@ public class OrderExportServiceImpl implements OrderExportService {
 
                 orderExportDto.setConsignTime(delivery.getConsignTime());
                 orderExportDto.setLogisticsName(delivery.getLogisticsName());
-                orderExportDto.setLogisticsNo("'" + delivery.getLogisticsNo() + "'");
+                if (delivery.getLogisticsNo() != null) {
+                    orderExportDto.setLogisticsNo("'" + delivery.getLogisticsNo() + "'");
+                }
             }
 
             Payment payment = paymentService.getByOrder(orderInfoDto.getId());
