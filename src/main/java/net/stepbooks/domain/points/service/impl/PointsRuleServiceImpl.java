@@ -64,8 +64,8 @@ public class PointsRuleServiceImpl extends ServiceImpl<PointsRuleMapper, PointsR
             }
         }
 
-        if (fullPointsRule.getPointsPerYuanNormal() > MAX_POINTS_PER_YUAN) {
-            throw new BusinessException(ErrorCode.BAD_REQUEST, "消费1元可兑换积分太多了，请设置小一点");
+        if (fullPointsRule.getPointsPerYuanNormal() != 1) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "正常消费1元兑换积分固定为1积分");
         }
 
         if (fullPointsRule.isPointsPromotion()) {
