@@ -9,6 +9,7 @@ import net.stepbooks.domain.points.entity.PointsRule;
 import net.stepbooks.domain.points.entity.UserPoints;
 import net.stepbooks.domain.points.entity.UserPointsLog;
 import net.stepbooks.domain.points.enums.PointsEventType;
+import net.stepbooks.domain.points.enums.PointsStatus;
 import net.stepbooks.domain.points.mapper.UserPointsMapper;
 import net.stepbooks.domain.points.service.PointsRuleService;
 import net.stepbooks.domain.points.service.UserPointsLogService;
@@ -102,7 +103,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
 
         log.info("add activity points for user {}", userId);
 
-        return addPointsImpl(userId, pointsRule);
+        return addPointsImpl(userId, pointsRule, PointsStatus.CONFIRMED);
     }
 
     @Override
@@ -134,10 +135,20 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
             return null;
         }
 
-        return addPointsImpl(userId, pointsRule);
+        return addPointsImpl(userId, pointsRule, PointsStatus.CONFIRMED);
     }
 
-    private PointsDto addPointsImpl(String userId, PointsRule pointsRule) {
+    @Override
+    public PointsDto orderPaid(String userId, String orderId, String productId, int yuan) {
+        return null;
+    }
+
+    @Override
+    public PointsDto orderSigned(String orderId) {
+        return null;
+    }
+
+    private PointsDto addPointsImpl(String userId, PointsRule pointsRule, PointsStatus status) {
 
         int pointsChange = pointsRule.getPoints();
         String reason = pointsRule.getReason();
@@ -150,6 +161,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
         pointsDto.setReason(reason);
 
         UserPointsLog userPointsLog = new UserPointsLog();
+        userPointsLog.setStatus(status);
         userPointsLog.setEventType(pointsRule.getEventType());
         userPointsLog.setUserId(userId);
         userPointsLog.setPointsChange(pointsChange);

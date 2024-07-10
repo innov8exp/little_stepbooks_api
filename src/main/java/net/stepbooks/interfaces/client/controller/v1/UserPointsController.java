@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.points.entity.UserPoints;
 import net.stepbooks.domain.points.entity.UserPointsLog;
+import net.stepbooks.domain.points.enums.PointsStatus;
 import net.stepbooks.domain.points.service.UserPointsLogService;
 import net.stepbooks.domain.points.service.UserPointsService;
 import net.stepbooks.domain.user.entity.User;
@@ -49,6 +50,7 @@ public class UserPointsController {
         Page<UserPointsLog> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<UserPointsLog> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(UserPointsLog::getUserId, user.getId());
+        wrapper.eq(UserPointsLog::getStatus, PointsStatus.CONFIRMED);
         wrapper.orderByDesc(UserPointsLog::getCreatedAt);
         IPage<UserPointsLog> results = userPointsLogService.page(page, wrapper);
         return ResponseEntity.ok(results);

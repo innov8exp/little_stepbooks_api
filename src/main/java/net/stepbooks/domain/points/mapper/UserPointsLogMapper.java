@@ -15,7 +15,7 @@ public interface UserPointsLogMapper extends BaseMapper<UserPointsLog> {
             "from",
             "step_user_points_log",
             "where",
-            "user_id=#{userId} and expire_at > #{startYear} and expire_at <= #{endYear}"})
+            "status='CONFIRMED' and user_id=#{userId} and expire_at > #{startYear} and expire_at <= #{endYear}"})
     int getTotalAmountByYear(@Param("userId") String userId,
                              @Param("startYear") LocalDate startYear,
                              @Param("endYear") LocalDate endYear);

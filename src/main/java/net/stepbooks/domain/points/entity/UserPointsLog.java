@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import net.stepbooks.domain.points.enums.PointsEventType;
+import net.stepbooks.domain.points.enums.PointsStatus;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 import java.time.LocalDate;
@@ -18,6 +19,10 @@ public class UserPointsLog extends BaseEntity {
 
     private String userId;
     private PointsEventType eventType;
+
+    private String orderId;
+    private PointsStatus status;
+
     private int pointsChange;
 
     private String reason;
