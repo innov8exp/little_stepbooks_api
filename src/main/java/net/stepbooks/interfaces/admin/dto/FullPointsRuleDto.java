@@ -40,10 +40,21 @@ public class FullPointsRuleDto {
     //购买普通商品，每支付1元得到的积分奖励
     private Integer pointsPerYuanNormal;
 
+    //是否支持积分促销
+    private boolean pointsPromotion;
+
     //购买促销商品，每支付1元得到的积分奖励
     private Integer pointsPerYuanPromotion;
 
     //生效商品列表，多个ID以逗号分割，如果是"*"，表示全部商品
     private String spuIds;
+
+    //促销开始日期
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate promotionStartDay;
+
+    //促销结束日期
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate promotionEndDay;
 
 }
