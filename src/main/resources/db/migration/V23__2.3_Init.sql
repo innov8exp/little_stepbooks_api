@@ -37,3 +37,7 @@ CREATE TABLE STEP_USER_POINTS_TASK
     -- 每日任务，每天只能完成一次，特殊任务需要程序逻辑判断保证不重复完成
 );
 
+-- 增加积分规则的生效spu范围，*表示全部spu，否则是以逗号分割的spuId列表
+ALTER TABLE STEP_POINTS_RULE
+    ADD COLUMN spus TEXT;
+
