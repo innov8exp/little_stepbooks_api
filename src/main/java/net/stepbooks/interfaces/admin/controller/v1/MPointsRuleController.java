@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.points.service.PointsRuleService;
 import net.stepbooks.interfaces.admin.dto.FullPointsRuleDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,16 +16,19 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "Admin Authentication")
 public class MPointsRuleController {
 
+    private final PointsRuleService pointsRuleService;
+
     @PutMapping("/set")
     @Operation(summary = "设置日常积分规则")
     public ResponseEntity<?> set(@RequestBody FullPointsRuleDto fullPointsRule) {
+        pointsRuleService.setFullPointsRule(fullPointsRule);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/full")
     @Operation(summary = "获得日常积分规则")
     public ResponseEntity<FullPointsRuleDto> full() {
-        FullPointsRuleDto fullPointsRuleDto = new FullPointsRuleDto();
+        FullPointsRuleDto fullPointsRuleDto = pointsRuleService.getFullPointsRule();
         return ResponseEntity.ok(fullPointsRuleDto);
     }
 }

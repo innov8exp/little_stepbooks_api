@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.stepbooks.domain.product.entity.Product;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -29,11 +31,11 @@ public class FullPointsRuleDto {
     //特殊节日签到积分
     private Integer specialCheckInPoints;
 
-    //特殊节日签到（或促销）开始日期
+    //特殊节日签到开始日期
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate activityStartDay;
 
-    //特殊节日签到（或促销）结束日期
+    //特殊节日签到结束日期
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate activityEndDay;
 
@@ -48,6 +50,9 @@ public class FullPointsRuleDto {
 
     //生效商品列表，多个ID以逗号分割，如果是"*"，表示全部商品
     private String spuIds;
+
+    //商品列表展示信息，设置的时候不用传，冗余数据，展示用
+    private List<Product> spus;
 
     //促销开始日期
     @JsonFormat(pattern = "yyyy-MM-dd")
