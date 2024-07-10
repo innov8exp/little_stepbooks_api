@@ -44,8 +44,11 @@ public class UserPointsController {
     @Operation(summary = "获得当前用户积分变更记录")
     public ResponseEntity<IPage<UserPointsLog>> list(@RequestParam int currentPage,
                                                      @RequestParam int pageSize) {
+
+        User user = contextManager.currentUser();
         Page<UserPointsLog> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<UserPointsLog> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(UserPointsLog::getUserId, user.getId());
         wrapper.orderByDesc(UserPointsLog::getCreatedAt);
         IPage<UserPointsLog> results = userPointsLogService.page(page, wrapper);
         return ResponseEntity.ok(results);
