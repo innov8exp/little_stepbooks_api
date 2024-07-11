@@ -13,6 +13,7 @@ import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.service.OrderActionService;
+import net.stepbooks.domain.points.service.UserPointsService;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.enums.RefundStatus;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,8 @@ public class MixedOrderStateMachineConfig {
     private final OrderActionService orderActionService;
 
     private final VirtualGoodsRedeemService virtualGoodsRedeemService;
+
+    private final UserPointsService userPointsService;
 
     @SuppressWarnings("checkstyle:MethodLength")
     @Bean
@@ -60,6 +63,7 @@ public class MixedOrderStateMachineConfig {
                     if (redeemed) {
                         orderActionService.markRedeemed(context);
                     }
+                    userPointsService.orderPaid(context);
                 });
 
         builder.externalTransition()
@@ -128,6 +132,7 @@ public class MixedOrderStateMachineConfig {
                     if (redeemed) {
                         orderActionService.markRedeemed(context);
                     }
+                    userPointsService.orderSigned(context);
                 });
 
         builder.externalTransition()

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.stepbooks.domain.order.entity.Order;
+import net.stepbooks.domain.order.service.OrderSkuService;
 import net.stepbooks.domain.points.entity.PointsRule;
 import net.stepbooks.domain.points.entity.UserPoints;
 import net.stepbooks.domain.points.entity.UserPointsLog;
@@ -14,12 +16,14 @@ import net.stepbooks.domain.points.mapper.UserPointsMapper;
 import net.stepbooks.domain.points.service.PointsRuleService;
 import net.stepbooks.domain.points.service.UserPointsLogService;
 import net.stepbooks.domain.points.service.UserPointsService;
+import net.stepbooks.domain.product.entity.Sku;
 import net.stepbooks.infrastructure.AppConstants;
 import net.stepbooks.interfaces.client.dto.PointsDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,8 +31,11 @@ import java.time.LocalDate;
 public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoints>
         implements UserPointsService {
 
+    private static final String ALL = "*";
+
     private final UserPointsLogService userPointsLogService;
     private final PointsRuleService pointsRuleService;
+    private final OrderSkuService orderSkuService;
 
     /**
      * 重新计算用户的总积分
@@ -139,19 +146,81 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
     }
 
     @Override
-    public PointsDto orderPaid(String userId, String orderId, String productId, int yuan) {
-        return null;
+    public void orderPaid(Order order) {
+        try {
+            String userId = order.getUserId();
+            String orderId = order.getId();
+
+            LambdaQueryWrapper<UserPointsLog> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(UserPointsLog::getUserId, userId);
+            wrapper.eq(UserPointsLog::getOrderId, orderId);
+
+            if (userPointsLogService.exists(wrapper)) {
+                return;
+            }
+
+            int yuan = order.getPaymentAmount().intValue();
+            if (yuan <= 0) {
+                return;
+            }
+            PointsRule pointsRule = pointsRuleService.getRuleByType(PointsEventType.BUY_PROMOTION_PRODUCT);
+            boolean usePromotionRule = false;
+            if (pointsRule != null && pointsRule.inActivePeriod()) {
+                String spus = pointsRule.getSpus();
+                if (ALL.equals(spus)) {
+                    //全场促销
+                    usePromotionRule = true;
+                } else {
+                    //只针对特殊商品促销
+                    List<Sku> skus = orderSkuService.findSkusByOrderId(orderId);
+                    for (Sku sku : skus) {
+                        if (spus.contains(sku.getSpuId())) {
+                            usePromotionRule = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!usePromotionRule) {
+                //使用正常的消费积分兑换
+                pointsRule = pointsRuleService.getRuleByType(PointsEventType.BUY_NORMAL_PRODUCT);
+            }
+
+            addPointsImpl(userId, pointsRule.getPoints() * yuan,
+                    pointsRule.getReason(), pointsRule.getEventType(), PointsStatus.PENDING);
+
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     @Override
-    public PointsDto orderSigned(String orderId) {
-        return null;
+    public void orderSigned(Order order) {
+        try {
+            LocalDate thisYearsNewYear = LocalDate.now().withMonth(1).withDayOfMonth(1);
+            LocalDate nextYearsNewYear = thisYearsNewYear.plusYears(1);
+
+            LambdaQueryWrapper<UserPointsLog> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(UserPointsLog::getUserId, order.getUserId());
+            wrapper.eq(UserPointsLog::getOrderId, order.getId());
+
+            UserPointsLog userPointsLog = userPointsLogService.getOne(wrapper);
+            userPointsLog.setStatus(PointsStatus.CONFIRMED);
+            userPointsLog.setExpireAt(nextYearsNewYear);
+            userPointsLogService.updateById(userPointsLog);
+            calculate(order.getUserId(), thisYearsNewYear, nextYearsNewYear);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     private PointsDto addPointsImpl(String userId, PointsRule pointsRule, PointsStatus status) {
+        return addPointsImpl(userId, pointsRule.getPoints(),
+                pointsRule.getReason(), pointsRule.getEventType(), status);
+    }
 
-        int pointsChange = pointsRule.getPoints();
-        String reason = pointsRule.getReason();
+    private PointsDto addPointsImpl(String userId, int pointsChange, String reason,
+                                    PointsEventType eventType, PointsStatus status) {
 
         LocalDate thisYearsNewYear = LocalDate.now().withMonth(1).withDayOfMonth(1);
         LocalDate nextYearsNewYear = thisYearsNewYear.plusYears(1);
@@ -162,7 +231,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
 
         UserPointsLog userPointsLog = new UserPointsLog();
         userPointsLog.setStatus(status);
-        userPointsLog.setEventType(pointsRule.getEventType());
+        userPointsLog.setEventType(eventType);
         userPointsLog.setUserId(userId);
         userPointsLog.setPointsChange(pointsChange);
         userPointsLog.setReason(reason);

@@ -35,4 +35,24 @@ public class PointsRule extends BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate activityEndDay;
 
+    /**
+     * 是不是在有效期
+     *
+     * @return
+     */
+    public boolean inActivePeriod() {
+        if (!active) {
+            return false;
+        }
+        LocalDate now = LocalDate.now();
+        if (activityStartDay != null && activityStartDay.isAfter(now)) {
+            return false;
+        }
+
+        if (activityEndDay != null && activityEndDay.isBefore(now)) {
+            return false;
+        }
+        return true;
+    }
+
 }
