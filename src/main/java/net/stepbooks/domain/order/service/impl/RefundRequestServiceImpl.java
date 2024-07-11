@@ -16,6 +16,7 @@ import net.stepbooks.domain.order.mapper.RefundRequestMapper;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.order.service.RefundRequestService;
+import net.stepbooks.domain.points.service.UserPointsService;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.RefundStatus;
@@ -42,6 +43,7 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
     private final OrderService virtualOrderServiceImpl;
     private final OrderService mixedOrderServiceImpl;
     private final OrderOpsService orderOpsService;
+    private final UserPointsService userPointsService;
 
     private OrderService correctOrderService(Order order) {
         if (ProductNature.PHYSICAL.equals(order.getProductNature())) {
@@ -175,6 +177,7 @@ public class RefundRequestServiceImpl extends ServiceImpl<RefundRequestMapper, R
         correctOrderService(order).refundRequest(order.getId(), refundRequest);
         refundRequest.setRefundStatus(RefundStatus.REFUNDED);
         save(refundRequest);
+        userPointsService.orderRefund(order);
     }
 
     @Override

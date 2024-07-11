@@ -203,10 +203,29 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
             LambdaQueryWrapper<UserPointsLog> wrapper = Wrappers.lambdaQuery();
             wrapper.eq(UserPointsLog::getUserId, order.getUserId());
             wrapper.eq(UserPointsLog::getOrderId, order.getId());
+            wrapper.eq(UserPointsLog::getStatus, PointsStatus.PENDING);
 
             UserPointsLog userPointsLog = userPointsLogService.getOne(wrapper);
             userPointsLog.setStatus(PointsStatus.CONFIRMED);
             userPointsLog.setExpireAt(nextYearsNewYear);
+            userPointsLogService.updateById(userPointsLog);
+            calculate(order.getUserId(), thisYearsNewYear, nextYearsNewYear);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void orderRefund(Order order) {
+        try {
+            LocalDate thisYearsNewYear = LocalDate.now().withMonth(1).withDayOfMonth(1);
+            LocalDate nextYearsNewYear = thisYearsNewYear.plusYears(1);
+
+            LambdaQueryWrapper<UserPointsLog> wrapper = Wrappers.lambdaQuery();
+            wrapper.eq(UserPointsLog::getUserId, order.getUserId());
+            wrapper.eq(UserPointsLog::getOrderId, order.getId());
+            UserPointsLog userPointsLog = userPointsLogService.getOne(wrapper);
+            userPointsLog.setStatus(PointsStatus.INVALID);
             userPointsLogService.updateById(userPointsLog);
             calculate(order.getUserId(), thisYearsNewYear, nextYearsNewYear);
         } catch (Exception e) {

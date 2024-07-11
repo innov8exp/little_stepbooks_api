@@ -12,5 +12,7 @@ public interface UserPointsService extends IService<UserPoints> {
 
     void orderSigned(Order order);
 
+    void orderRefund(Order order);
+
     UserPoints getUserPointsByUserId(String userId);
 }
