@@ -38,6 +38,7 @@ public class UserSecurityConfig {
                 .authorizeHttpRequests((requests) -> requests.requestMatchers(
                                 mvc.pattern("/admin/**"),
                                 mvc.pattern("/auth/**"),
+                                mvc.pattern("/v1/points-task/**"),
                                 mvc.pattern("/v1/skus"),
                                 mvc.pattern("/v1/system-config"),
                                 mvc.pattern("/v1/daily-audio/**"),
