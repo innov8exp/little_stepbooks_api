@@ -32,7 +32,7 @@ CREATE TABLE STEP_USER_POINTS_TASK
     completed      BOOLEAN DEFAULT FALSE,                                              -- 是否完成
     completed_date DATE,                                                               -- 完成日期
     created_at     TIMESTAMP,
-    updated_at     TIMESTAMP,
+    modified_at    TIMESTAMP,
     UNIQUE (user_id, task_id, completed_date)
     -- 每日任务，每天只能完成一次，特殊任务需要程序逻辑判断保证不重复完成
 );
