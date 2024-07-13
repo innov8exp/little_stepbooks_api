@@ -62,6 +62,7 @@ public class UserPointsController {
             wrapper.ge(UserPointsLog::getCreatedAt, startDate);
         }
         if (endDate != null) {
+            endDate = endDate.plusDays(1);
             wrapper.le(UserPointsLog::getCreatedAt, endDate);
         }
         wrapper.orderByDesc(UserPointsLog::getCreatedAt);
