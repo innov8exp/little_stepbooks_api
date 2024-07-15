@@ -6,6 +6,9 @@
         left join step_user u
         on o.user_id = u.id
         where payment_method is not null
+        <if test="storeType != null">
+            and o.store_type = #{storeType}
+        </if>
         <if test="orderCode != null">
             and o.order_code = #{orderCode}
         </if>
@@ -27,6 +30,9 @@
         select o.* from step_order o left join step_order_sku_ref osku on o.id = osku.order_id
         left join step_product p on osku.spu_id = p.id
         where o.user_id = #{userId}
+        <if test="storeType != null">
+            and o.store_type = #{storeType}
+        </if>
         <if test="state != null">
             and o.state = #{state}
         </if>

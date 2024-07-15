@@ -17,6 +17,7 @@ import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.infrastructure.AppConstants;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.config.AppConfig;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
 import net.stepbooks.infrastructure.util.RedisStore;
 import net.stepbooks.infrastructure.util.csv.CustomBeanToCSVMappingStrategy;
@@ -64,7 +65,7 @@ public class OrderExportServiceImpl implements OrderExportService {
         LocalTime threePm = LocalTime.of(THREE_PM_HOUR, 0);
         LocalDateTime threePmToday = LocalDateTime.of(today, threePm);
         LocalDateTime threePmYesterday = threePmToday.minusDays(1L);
-        List<OrderExportDto> data = export(null, null, null, threePmYesterday, threePmToday);
+        List<OrderExportDto> data = export(StoreType.REGULAR, null, null, null, threePmYesterday, threePmToday);
 
         if (data != null && data.size() > 0) {
             try {
@@ -125,12 +126,12 @@ public class OrderExportServiceImpl implements OrderExportService {
     }
 
     @Override
-    public List<OrderExportDto> export(String orderCode, String username, String state,
+    public List<OrderExportDto> export(StoreType storeType, String orderCode, String username, String state,
                                        LocalDateTime startDateTime, LocalDateTime endDateTime) {
 
         Page<OrderInfoDto> page = Page.of(1, AppConstants.MAX_PAGE_SIZE);
 
-        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username, state,
+        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(storeType, page, orderCode, username, state,
                 startDateTime, endDateTime);
 
         List<OrderInfoDto> records = orders.getRecords();

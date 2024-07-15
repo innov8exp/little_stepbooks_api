@@ -24,6 +24,7 @@ import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.wdt.service.WdtService;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
@@ -107,6 +108,7 @@ public class MOrderController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "查询订单列表")
     @GetMapping("/search")
     public ResponseEntity<IPage<OrderInfoDto>> getAllOrders(@RequestParam int currentPage,
                                                             @RequestParam int pageSize,
@@ -129,7 +131,7 @@ public class MOrderController {
             endDateTime = endDate.atTime(END_DAY_HOUR, END_DAY_MINUTE, END_DAY_SECOND);
         }
 
-        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(page, orderCode, username, state,
+        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(StoreType.REGULAR, page, orderCode, username, state,
                 startDateTime, endDateTime);
 
         //补充一下收货人信息
@@ -155,14 +157,13 @@ public class MOrderController {
     }
 
     @GetMapping("/export")
-    @Operation(summary = "根据查询条件导出订单")
+    @Operation(summary = "根据查询条件导出订单，如果不传storeType，默认为REGULAR，如需查积分订单，请设置为POINTS")
     public ResponseEntity<byte[]> exportOrders(@RequestParam(required = false) String orderCode,
                                                @RequestParam(required = false) String username,
                                                @RequestParam(required = false) String state,
                                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate)
             throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
-
 
         LocalDateTime startDateTime = null;
         if (startDate != null) {
@@ -174,7 +175,8 @@ public class MOrderController {
             endDateTime = endDate.atTime(END_DAY_HOUR, 0, 0);
         }
 
-        List<OrderExportDto> data = orderExportService.export(orderCode, username, state, startDateTime, endDateTime);
+        List<OrderExportDto> data = orderExportService.export(StoreType.REGULAR, orderCode, username,
+                state, startDateTime, endDateTime);
 
         // 创建 CSV 文件
         String filename = "Order_stepbooks_" + startDate + "-" + endDate;

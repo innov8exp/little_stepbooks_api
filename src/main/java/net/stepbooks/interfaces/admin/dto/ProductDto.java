@@ -3,12 +3,15 @@ package net.stepbooks.interfaces.admin.dto;
 import lombok.Data;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.domain.product.enums.ProductStatus;
+import net.stepbooks.infrastructure.enums.StoreType;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 public class ProductDto {
+
+    private StoreType storeType;
 
     private Integer sortIndex;
 

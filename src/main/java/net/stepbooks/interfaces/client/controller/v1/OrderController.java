@@ -23,6 +23,7 @@ import net.stepbooks.domain.product.service.SkuService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.domain.wdt.service.WdtService;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
@@ -195,15 +196,19 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "获取用户订单列表")
+    @Operation(summary = "获取用户订单列表，如果不传storeType，默认为REGULAR，如需查积分订单，请设置为POINTS")
     @GetMapping("/user")
     public ResponseEntity<IPage<OrderInfoDto>> getUserOrderHistory(@RequestParam int currentPage,
                                                                    @RequestParam int pageSize,
                                                                    @RequestParam(required = false) OrderState state,
-                                                                   @RequestParam(required = false) String keyword) {
+                                                                   @RequestParam(required = false) String keyword,
+                                                                   @RequestParam(required = false) StoreType storeType) {
+        if (storeType == null) {
+            storeType = StoreType.REGULAR;
+        }
         String userId = contextManager.currentUser().getId();
         Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
-        IPage<OrderInfoDto> ordersByCriteria = orderOpsService.findOrdersByUser(page, userId, state, keyword);
+        IPage<OrderInfoDto> ordersByCriteria = orderOpsService.findOrdersByUser(storeType, page, userId, state, keyword);
         return ResponseEntity.ok(ordersByCriteria);
     }
 

@@ -2,6 +2,7 @@ package net.stepbooks.interfaces.admin.controller.v1;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.book.entity.Book;
@@ -9,6 +10,7 @@ import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.domain.product.service.ProductService;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.MProductQueryDto;
@@ -27,6 +29,7 @@ public class MProductController {
     private final ProductService productService;
 
     @PostMapping
+    @Operation(summary = "创建产品，如果不传storeType，默认为REGULAR，如需创建积分商城产品，请设置为POINTS")
     public ResponseEntity<?> createProduct(@RequestBody ProductDto productDto) {
         productService.createProduct(productDto);
         return ResponseEntity.ok().build();
@@ -64,16 +67,22 @@ public class MProductController {
     }
 
     @GetMapping
+    @Operation(summary = "查询产品，如果不传storeType，默认为REGULAR，如需查询积分商城产品，请设置为POINTS")
     public ResponseEntity<IPage<Product>> getPagedProducts(@RequestParam int currentPage,
                                                            @RequestParam int pageSize,
                                                            @RequestParam(required = false) String skuName,
                                                            @RequestParam(required = false) String tag,
-                                                           @RequestParam(required = false) ProductStatus status) {
+                                                           @RequestParam(required = false) ProductStatus status,
+                                                           @RequestParam(required = false) StoreType storeType) {
+        if (storeType == null) {
+            storeType = StoreType.REGULAR;
+        }
         Page<Product> page = Page.of(currentPage, pageSize);
         MProductQueryDto queryDto = MProductQueryDto.builder()
                 .skuName(skuName)
                 .tag(tag)
                 .status(status)
+                .storeType(storeType)
                 .build();
         IPage<Product> products = productService.findProductsInPagingByCriteria(page, queryDto);
         return ResponseEntity.ok(products);

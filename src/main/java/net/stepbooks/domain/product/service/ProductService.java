@@ -7,6 +7,7 @@ import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.classification.entity.Classification;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductStatus;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.interfaces.admin.dto.MProductQueryDto;
 import net.stepbooks.interfaces.admin.dto.ProductDto;
 
@@ -28,15 +29,15 @@ public interface ProductService extends IService<Product> {
 
     List<Product> findProductsByBookId(String bookId);
 
-    IPage<Product> listRecommendProducts(Page<Product> page, Float childMinAge, Float childMaxAge);
+    IPage<Product> listRecommendProducts(StoreType storeType, Page<Product> page, Float childMinAge, Float childMaxAge);
 
-    IPage<Product> listNewProducts(Page<Product> page);
+    IPage<Product> listNewProducts(StoreType storeType, Page<Product> page);
 
-    IPage<Product> searchProducts(Page<Product> page, String tag, String skuName);
+    IPage<Product> searchProducts(StoreType storeType, Page<Product> page, String tag, String skuName);
 
     List<Classification> getProductClassifications(String id);
 
-    IPage<Product> listDefaultRecommendProducts(Page<Product> page);
+    IPage<Product> listDefaultRecommendProducts(StoreType storeType, Page<Product> page);
 
     void deleteById(String id);
 

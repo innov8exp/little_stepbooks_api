@@ -12,11 +12,11 @@ import net.stepbooks.domain.order.service.OrderProductService;
 import net.stepbooks.domain.order.service.RefundRequestService;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductNature;
-import net.stepbooks.domain.product.service.ProductService;
 import net.stepbooks.domain.user.entity.User;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.enums.RefundReason;
 import net.stepbooks.infrastructure.enums.RefundStatus;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.infrastructure.util.ContextManager;
@@ -41,7 +41,6 @@ public class RefundRequestController {
     private final RefundRequestService refundRequestService;
     private final ContextManager contextManager;
     private final OrderOpsService orderOpsService;
-    private final ProductService productService;
     private final OrderProductService orderProductService;
 
     @GetMapping("/reasons")
@@ -66,6 +65,11 @@ public class RefundRequestController {
         if (ProductNature.VIRTUAL.equals(order.getProductNature())) {
             throw new BusinessException(ErrorCode.VIRTUAL_ORDER_NOT_SUPPORT_REFUND);
         }
+
+        if (StoreType.POINTS.equals(order.getStoreType())) {
+            throw new BusinessException(ErrorCode.POINTS_ORDER_NOT_SUPPORT_REFUND);
+        }
+
         boolean existsRefundRequest = refundRequestService.existsRefundRequest(orderCode);
         if (existsRefundRequest) {
             throw new BusinessException(ErrorCode.REFUND_REQUEST_EXISTS);

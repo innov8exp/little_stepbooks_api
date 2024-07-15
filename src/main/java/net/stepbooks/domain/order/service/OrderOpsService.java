@@ -6,6 +6,7 @@ import net.stepbooks.domain.book.entity.Book;
 import net.stepbooks.domain.course.entity.Course;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderState;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
 
 import java.time.LocalDateTime;
@@ -13,10 +14,11 @@ import java.util.List;
 
 public interface OrderOpsService {
 
-    IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderNo,
+    IPage<OrderInfoDto> findOrdersByCriteria(StoreType storeType, Page<OrderInfoDto> page, String orderNo,
                                              String username, String state, LocalDateTime startDate, LocalDateTime endDate);
 
-    IPage<OrderInfoDto> findOrdersByUser(Page<OrderInfoDto> page, String userId, OrderState state, String keyword);
+    IPage<OrderInfoDto> findOrdersByUser(StoreType storeType, Page<OrderInfoDto> page, String userId,
+                                         OrderState state, String keyword);
 
     Order findOrderById(String id);
 

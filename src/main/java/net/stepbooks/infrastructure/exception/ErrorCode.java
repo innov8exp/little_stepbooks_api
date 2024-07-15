@@ -52,6 +52,7 @@ public enum ErrorCode {
     ORDER_STATE_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "The order state is not support refund"),
     REFUND_REQUEST_EXISTS(HttpStatus.BAD_REQUEST.value(), "The order has refund request, please check again."),
     VIRTUAL_ORDER_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "The virtual order is not support refund"),
+    POINTS_ORDER_NOT_SUPPORT_REFUND(HttpStatus.BAD_REQUEST.value(), "积分商城不支持退款"),
     ONLY_SELF_CAN_UPDATE(HttpStatus.FORBIDDEN.value(), "Only self can update"),
     COURSE_NEED_TO_PAY(HttpStatus.FORBIDDEN.value(), "The course need to pay"),
     COURSE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "The course is not found"),

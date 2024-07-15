@@ -3,6 +3,9 @@
 <mapper namespace="net.stepbooks.domain.product.mapper.ProductMapper">
     <select id="findProductsInPagingByCriteria" resultType="net.stepbooks.domain.product.entity.Product">
         select p.* from step_product p where 1=1
+        <if test="storeType != null">
+            AND p.store_type = #{storeType}
+        </if>
         <if test="skuName != null">
             <bind name="pattern" value="'%' + skuName + '%'"/>
             AND p.sku_name ILIKE #{pattern}
@@ -25,6 +28,9 @@
         left join step_product_classification_ref pc on pr.id = pc.product_id
         left join step_classification cl on pc.classification_id = cl.id
         where pr.status = 'ON_SHELF' and COALESCE(ad.ads_type, 'RECOMMEND') = 'RECOMMEND'
+        <if test="storeType != null">
+            and pr.store_type = #{storeType}
+        </if>
         <if test="maxAge != null and minAge != null">
             order by CASE WHEN cl.max_age &lt;= #{maxAge} or cl.min_age &gt;= #{minAge} THEN 1 ELSE 2 END
         </if>
@@ -34,6 +40,9 @@
             resultType="net.stepbooks.domain.product.entity.Product">
         select p.* from step_product p
         where p.status = 'ON_SHELF'
+        <if test="storeType != null">
+            and p.store_type = #{storeType}
+        </if>
         order by p.created_at desc
     </select>
     <select id="findClassificationsByProductId"
@@ -66,7 +75,11 @@
               from step_product pr
                        left join step_advertisement ad
                                  on pr.id = ad.product_id
-              where pr.status = 'ON_SHELF') r
+              where pr.status = 'ON_SHELF'
+                <if test="storeType != null">
+                    and pr.store_type = #{storeType}
+                </if>
+            ) r
         order by r.sort_index asc
     </select>
     <select id="findBookByProductId" resultType="net.stepbooks.domain.book.entity.Book">

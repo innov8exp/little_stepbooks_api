@@ -18,6 +18,7 @@ import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.domain.product.mapper.ProductMapper;
 import net.stepbooks.domain.product.service.*;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.interfaces.admin.dto.MProductQueryDto;
 import net.stepbooks.interfaces.admin.dto.ProductDto;
 import net.stepbooks.interfaces.admin.dto.ProductMediaDto;
@@ -44,7 +45,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Override
     public IPage<Product> findProductsInPagingByCriteria(Page<Product> page, MProductQueryDto queryDto) {
-        return productMapper.findProductsInPagingByCriteria(page, queryDto.getTag(), queryDto.getSkuName(), queryDto.getStatus());
+        return productMapper.findProductsInPagingByCriteria(queryDto.getStoreType(), page, queryDto.getTag(),
+                queryDto.getSkuName(), queryDto.getStatus());
     }
 
     @Override
@@ -189,18 +191,18 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     @Override
-    public IPage<Product> listRecommendProducts(Page<Product> page, Float childMinAge, Float childMaxAge) {
-        return productMapper.findRecommendProductsInPaging(page, childMinAge, childMaxAge);
+    public IPage<Product> listRecommendProducts(StoreType storeType, Page<Product> page, Float childMinAge, Float childMaxAge) {
+        return productMapper.findRecommendProductsInPaging(storeType, page, childMinAge, childMaxAge);
     }
 
     @Override
-    public IPage<Product> listNewProducts(Page<Product> page) {
-        return productMapper.findProductsInPagingOrderByCreateTime(page);
+    public IPage<Product> listNewProducts(StoreType storeType, Page<Product> page) {
+        return productMapper.findProductsInPagingOrderByCreateTime(storeType, page);
     }
 
     @Override
-    public IPage<Product> searchProducts(Page<Product> page, String tag, String skuName) {
-        return productMapper.findProductsInPagingByCriteria(page, tag, skuName, ProductStatus.ON_SHELF);
+    public IPage<Product> searchProducts(StoreType storeType, Page<Product> page, String tag, String skuName) {
+        return productMapper.findProductsInPagingByCriteria(storeType, page, tag, skuName, ProductStatus.ON_SHELF);
     }
 
     @Override
@@ -209,8 +211,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     @Override
-    public IPage<Product> listDefaultRecommendProducts(Page<Product> page) {
-        return productMapper.findDefaultRecommendProductsInPaging(page);
+    public IPage<Product> listDefaultRecommendProducts(StoreType storeType, Page<Product> page) {
+        return productMapper.findDefaultRecommendProductsInPaging(storeType, page);
     }
 
     @Override

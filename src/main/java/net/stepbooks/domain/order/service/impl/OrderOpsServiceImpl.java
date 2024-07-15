@@ -21,6 +21,7 @@ import net.stepbooks.domain.order.service.*;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
@@ -49,14 +50,16 @@ public class OrderOpsServiceImpl implements OrderOpsService {
     private final StateMachine<OrderState, OrderEvent, Order> virtualOrderStateMachine;
 
     @Override
-    public IPage<OrderInfoDto> findOrdersByCriteria(Page<OrderInfoDto> page, String orderCode, String username,
-                                                    String state, LocalDateTime startDate, LocalDateTime endDate) {
-        return orderMapper.findByCriteria(page, orderCode, username, state, startDate, endDate);
+    public IPage<OrderInfoDto> findOrdersByCriteria(StoreType storeType, Page<OrderInfoDto> page, String orderCode,
+                                                    String username, String state,
+                                                    LocalDateTime startDate, LocalDateTime endDate) {
+        return orderMapper.findByCriteria(storeType, page, orderCode, username, state, startDate, endDate);
     }
 
     @Override
-    public IPage<OrderInfoDto> findOrdersByUser(Page<OrderInfoDto> page, String userId, OrderState state, String keyword) {
-        IPage<OrderInfoDto> orderInfoDto = orderMapper.findPageByUser(page, userId, state, keyword);
+    public IPage<OrderInfoDto> findOrdersByUser(StoreType storeType, Page<OrderInfoDto> page,
+                                                String userId, OrderState state, String keyword) {
+        IPage<OrderInfoDto> orderInfoDto = orderMapper.findPageByUser(storeType, page, userId, state, keyword);
         List<OrderInfoDto> enhancedOrders = orderInfoDto.getRecords().stream()
                 .peek(orderInfo -> orderInfo.setSkus(orderSkuService.findOrderSkusByOrderId(orderInfo.getId()))).toList();
         orderInfoDto.setRecords(enhancedOrders);
