@@ -24,8 +24,8 @@ public class PointsTaskServiceImpl extends ServiceImpl<PointsTaskMapper, PointsT
         LambdaQueryWrapper<PointsTask> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(PointsTask::isActive, true);
         wrapper.eq(PointsTask::getType, PointsTaskType.SPECIAL);
-        wrapper.ge(PointsTask::getStartDate, now);
-        wrapper.le(PointsTask::getEndDate, now);
+        wrapper.le(PointsTask::getStartDate, now);
+        wrapper.ge(PointsTask::getEndDate, now);
         return list(wrapper);
     }
 }
