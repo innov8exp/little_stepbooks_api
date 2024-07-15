@@ -8,6 +8,7 @@ import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.enums.RefundType;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 import java.math.BigDecimal;
@@ -19,6 +20,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @TableName("STEP_ORDER")
 public class Order extends BaseEntity {
+
+    private StoreType storeType;
 
     private String orderCode;
     private String userId;

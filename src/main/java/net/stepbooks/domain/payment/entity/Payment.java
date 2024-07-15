@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentType;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 import java.math.BigDecimal;
@@ -13,6 +14,8 @@ import java.math.BigDecimal;
 @Data
 @TableName("STEP_PAYMENT")
 public class Payment extends BaseEntity {
+
+    private StoreType storeType;
 
     private String orderId;
     private String orderCode;

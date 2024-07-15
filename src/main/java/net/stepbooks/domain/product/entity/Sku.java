@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import net.stepbooks.domain.product.enums.ProductStatus;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.model.BaseEntity;
 
 import java.math.BigDecimal;
@@ -15,6 +16,8 @@ import java.math.BigDecimal;
 @Builder
 @TableName("STEP_SKU")
 public class Sku extends BaseEntity {
+
+    private StoreType storeType;
 
     private Integer sortIndex;
 

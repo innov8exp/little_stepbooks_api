@@ -4,7 +4,6 @@
 --  StepBook://local/virtualCategory?id=xxxxx 浏览某个具体虚拟产品大类详情页
 --  StepBook://local/product?id=xxxxx 浏览某个具体的商品详情页
 --  StepBook://local/dailyAudio 试听每日音频
---  StepBook://local/randomProduct 随机浏览商品
 --  建议客户端缓存(action_url,task对象)，以便在任务完成的时候调用完成接口
 
 create TABLE STEP_POINTS_TASK
@@ -45,3 +44,16 @@ ALTER TABLE STEP_POINTS_RULE
 ALTER TABLE STEP_USER_POINTS_LOG
     ADD COLUMN order_id VARCHAR(100), -- 订单ID
     ADD COLUMN status VARCHAR(20); -- 状态 PENDING/CONFIRMED/INVALID
+
+-- 为商城体系增加store_type，以同时支持普通商城和积分商城
+ALTER TABLE STEP_PRODUCT
+    ADD COLUMN store_type VARCHAR(10) CHECK (store_type IN ('REGULAR', 'POINTS')) NOT NULL DEFAULT 'REGULAR';
+
+ALTER TABLE STEP_SKU
+    ADD COLUMN store_type VARCHAR(10) CHECK (store_type IN ('REGULAR', 'POINTS')) NOT NULL DEFAULT 'REGULAR';
+
+ALTER TABLE STEP_ORDER
+    ADD COLUMN store_type VARCHAR(10) CHECK (store_type IN ('REGULAR', 'POINTS')) NOT NULL DEFAULT 'REGULAR';
+
+ALTER TABLE STEP_PAYMENT
+    ADD COLUMN store_type VARCHAR(10) CHECK (store_type IN ('REGULAR', 'POINTS')) NOT NULL DEFAULT 'REGULAR';

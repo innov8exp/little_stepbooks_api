@@ -19,6 +19,7 @@ import net.stepbooks.domain.points.service.UserPointsLogService;
 import net.stepbooks.domain.points.service.UserPointsService;
 import net.stepbooks.domain.product.entity.Sku;
 import net.stepbooks.infrastructure.AppConstants;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.interfaces.client.dto.PointsDto;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
@@ -146,11 +147,23 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
         return addPointsImpl(userId, pointsRule, PointsStatus.CONFIRMED);
     }
 
+    private void paidUsingPoints(Order order) {
+        //如果订单类型是StoreType.POINTS，那么paymentAmount也使用积分
+    }
+
     @Override
     public void orderPaid(Order order) {
         try {
             String userId = order.getUserId();
             String orderId = order.getId();
+
+            if (StoreType.POINTS.equals(order.getStoreType())) {
+                //消费积分
+                paidUsingPoints(order);
+                return;
+            }
+
+            //正常商品，需要根据消费情况返还积分
 
             LambdaQueryWrapper<UserPointsLog> wrapper = Wrappers.lambdaQuery();
             wrapper.eq(UserPointsLog::getUserId, userId);
@@ -207,10 +220,12 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
             wrapper.eq(UserPointsLog::getStatus, PointsStatus.PENDING);
 
             UserPointsLog userPointsLog = userPointsLogService.getOne(wrapper);
-            userPointsLog.setStatus(PointsStatus.CONFIRMED);
-            userPointsLog.setExpireAt(nextYearsNewYear);
-            userPointsLogService.updateById(userPointsLog);
-            calculate(order.getUserId(), thisYearsNewYear, nextYearsNewYear);
+            if (userPointsLog != null) {
+                userPointsLog.setStatus(PointsStatus.CONFIRMED);
+                userPointsLog.setExpireAt(nextYearsNewYear);
+                userPointsLogService.updateById(userPointsLog);
+                calculate(order.getUserId(), thisYearsNewYear, nextYearsNewYear);
+            }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -236,7 +251,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
 
     @Override
     public void taskFinished(String userId, String taskId, PointsTask pointsTask) {
-        addPointsImpl(userId, pointsTask.getPoints(), pointsTask.getSuccessHint(),
+        addPointsImpl(userId, pointsTask.getPoints(), "完成任务\"" + pointsTask.getName() + "\"",
                 PointsEventType.POINTS_TASK, PointsStatus.CONFIRMED);
     }
 
