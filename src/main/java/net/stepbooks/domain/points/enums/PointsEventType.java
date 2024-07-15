@@ -7,4 +7,5 @@ public enum PointsEventType {
     CHECK_IN_7_DAY, //连续7天签到
     BUY_NORMAL_PRODUCT, //购买普通商品
     BUY_PROMOTION_PRODUCT, //购买促销商品
+    POINTS_TASK, //积分任务
 }

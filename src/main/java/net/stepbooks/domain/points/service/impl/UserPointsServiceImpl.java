@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.service.OrderSkuService;
 import net.stepbooks.domain.points.entity.PointsRule;
+import net.stepbooks.domain.points.entity.PointsTask;
 import net.stepbooks.domain.points.entity.UserPoints;
 import net.stepbooks.domain.points.entity.UserPointsLog;
 import net.stepbooks.domain.points.enums.PointsEventType;
@@ -231,6 +232,12 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void taskFinished(String userId, String taskId, PointsTask pointsTask) {
+        addPointsImpl(userId, pointsTask.getPoints(), pointsTask.getSuccessHint(),
+                PointsEventType.POINTS_TASK, PointsStatus.CONFIRMED);
     }
 
     private PointsDto addPointsImpl(String userId, PointsRule pointsRule, PointsStatus status) {

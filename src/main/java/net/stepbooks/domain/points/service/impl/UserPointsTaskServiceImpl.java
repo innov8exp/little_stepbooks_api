@@ -9,8 +9,10 @@ import net.stepbooks.domain.points.entity.UserPointsTask;
 import net.stepbooks.domain.points.enums.PointsTaskType;
 import net.stepbooks.domain.points.mapper.UserPointsTaskMapper;
 import net.stepbooks.domain.points.service.PointsTaskService;
+import net.stepbooks.domain.points.service.UserPointsService;
 import net.stepbooks.domain.points.service.UserPointsTaskService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +25,8 @@ public class UserPointsTaskServiceImpl extends ServiceImpl<UserPointsTaskMapper,
 
     private final PointsTaskService pointsTaskService;
 
+    private final UserPointsService userPointsService;
+
     private void saveUserPointsTask(String userId, String taskId, PointsTask pointsTask) {
         LocalDate now = LocalDate.now();
         UserPointsTask userPointsTask = new UserPointsTask();
@@ -32,8 +36,10 @@ public class UserPointsTaskServiceImpl extends ServiceImpl<UserPointsTaskMapper,
         userPointsTask.setCompleted(true);
         userPointsTask.setCompletedDate(now);
         save(userPointsTask);
+        userPointsService.taskFinished(userId, taskId, pointsTask);
     }
 
+    @Transactional
     @Override
     public void finishTask(String userId, String taskId) {
         PointsTask pointsTask = pointsTaskService.getById(taskId);
