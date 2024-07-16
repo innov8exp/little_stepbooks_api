@@ -73,7 +73,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @Operation(summary = "获取新品SPU", description = "换一批可以传入当前页码和页大小")
+    @Operation(summary = "获取新品SPU，如果不传storeType，默认为REGULAR，如需查询积分商城产品，请设置为POINTS")
     @GetMapping("/new")
     public ResponseEntity<IPage<Product>> getNewProducts(@RequestParam int currentPage,
                                                          @RequestParam int pageSize,

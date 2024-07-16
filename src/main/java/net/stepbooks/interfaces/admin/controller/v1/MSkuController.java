@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.entity.Sku;
 import net.stepbooks.domain.product.enums.ProductStatus;
 import net.stepbooks.domain.product.service.ProductService;
@@ -30,6 +31,8 @@ public class MSkuController {
     @PostMapping()
     @Operation(summary = "创建SKU")
     public ResponseEntity<Sku> create(@RequestBody Sku entity) {
+        Product product = productService.getById(entity.getSpuId());
+        entity.setStoreType(product.getStoreType());
         entity.setStatus(ProductStatus.OFF_SHELF);
         skuService.save(entity);
         productService.reloadDisplayPrice(entity.getSpuId());
@@ -39,6 +42,8 @@ public class MSkuController {
     @PutMapping("/{id}")
     @Operation(summary = "修改SKU")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody Sku entity) {
+        Product product = productService.getById(entity.getSpuId());
+        entity.setStoreType(product.getStoreType());
         entity.setStatus(ProductStatus.OFF_SHELF);
         entity.setId(id);
         skuService.updateById(entity);
