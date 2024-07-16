@@ -108,17 +108,22 @@ public class MOrderController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "查询订单列表")
+    @Operation(summary = "查询订单列表，如果不传storeType，默认为REGULAR，如需查询积分商城产品，请设置为POINTS")
     @GetMapping("/search")
     public ResponseEntity<IPage<OrderInfoDto>> getAllOrders(@RequestParam int currentPage,
                                                             @RequestParam int pageSize,
                                                             @RequestParam(required = false) String orderCode,
-                                                            @RequestParam(required = false) String username,
+                                                            @RequestParam(required = false) StoreType storeType,
                                                             @RequestParam(required = false) String state,
                                                             @RequestParam(required = false)
                                                             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                             @RequestParam(required = false)
                                                             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+
+        if (storeType == null) {
+            storeType = StoreType.REGULAR;
+        }
+
         Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
 
         LocalDateTime startDateTime = null;
@@ -131,7 +136,7 @@ public class MOrderController {
             endDateTime = endDate.atTime(END_DAY_HOUR, END_DAY_MINUTE, END_DAY_SECOND);
         }
 
-        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(StoreType.REGULAR, page, orderCode, username, state,
+        IPage<OrderInfoDto> orders = orderOpsService.findOrdersByCriteria(storeType, page, orderCode, null, state,
                 startDateTime, endDateTime);
 
         //补充一下收货人信息

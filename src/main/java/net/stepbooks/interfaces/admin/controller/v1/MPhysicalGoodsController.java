@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import net.stepbooks.domain.goods.entity.PhysicalGoodsEntity;
 import net.stepbooks.domain.goods.service.PhysicalGoodsService;
 import net.stepbooks.infrastructure.enums.PublishStatus;
+import net.stepbooks.infrastructure.enums.StoreType;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,13 +77,18 @@ public class MPhysicalGoodsController {
     }
 
     @GetMapping
-    @Operation(summary = "物理产品查询")
+    @Operation(summary = "物理产品查询，如果不传storeType，默认为REGULAR，如需查积分订单，请设置为POINTS")
     public ResponseEntity<IPage<PhysicalGoodsEntity>> list(@RequestParam int currentPage,
                                                            @RequestParam int pageSize,
-                                                           @RequestParam(required = false) String name) {
+                                                           @RequestParam(required = false) String name,
+                                                           @RequestParam(required = false) StoreType storeType) {
+        if (storeType == null) {
+            storeType = StoreType.REGULAR;
+        }
         Page<PhysicalGoodsEntity> page = Page.of(currentPage, pageSize);
         LambdaQueryWrapper<PhysicalGoodsEntity> wrapper = Wrappers.lambdaQuery();
         wrapper.like(ObjectUtils.isNotEmpty(name), PhysicalGoodsEntity::getName, name);
+        wrapper.eq(PhysicalGoodsEntity::getStoreType, storeType);
         wrapper.orderByDesc(PhysicalGoodsEntity::getSortIndex);
         IPage<PhysicalGoodsEntity> results = physicalGoodsService.page(page, wrapper);
         return ResponseEntity.ok(results);
