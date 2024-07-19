@@ -8,6 +8,7 @@ import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.enums.WdtSyncStatus;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.model.BaseDto;
 
 import java.math.BigDecimal;
@@ -16,6 +17,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class OrderInfoDto extends BaseDto {
+
+    private StoreType storeType;
 
     private String orderCode;
     private String userId;

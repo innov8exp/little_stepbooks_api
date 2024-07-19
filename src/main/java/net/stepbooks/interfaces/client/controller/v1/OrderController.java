@@ -212,9 +212,6 @@ public class OrderController {
                                                                    @RequestParam(required = false) OrderState state,
                                                                    @RequestParam(required = false) String keyword,
                                                                    @RequestParam(required = false) StoreType storeType) {
-        if (storeType == null) {
-            storeType = StoreType.REGULAR;
-        }
         String userId = contextManager.currentUser().getId();
         Page<OrderInfoDto> page = Page.of(currentPage, pageSize);
         IPage<OrderInfoDto> ordersByCriteria = orderOpsService.findOrdersByUser(storeType, page, userId, state, keyword);
