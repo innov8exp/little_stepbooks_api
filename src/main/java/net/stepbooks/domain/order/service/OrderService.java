@@ -15,6 +15,8 @@ public interface OrderService {
 
     Order createOrder(CreateOrderDto orderDto);
 
+    Order payPointsOrder(CreateOrderDto orderDto);
+
     void cancelTimeoutOrders();
 
     void autoCancelWhenPaymentTimeout(String recordId);

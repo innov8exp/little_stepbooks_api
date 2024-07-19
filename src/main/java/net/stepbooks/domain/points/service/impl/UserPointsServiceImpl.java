@@ -112,7 +112,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
 
         log.info("add activity points for user {}", userId);
 
-        return addPointsImpl(userId, pointsRule, PointsStatus.CONFIRMED);
+        return addPointsImpl(userId, pointsRule, PointsStatus.CONFIRMED, null);
     }
 
     @Override
@@ -144,11 +144,17 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
             return null;
         }
 
-        return addPointsImpl(userId, pointsRule, PointsStatus.CONFIRMED);
+        return addPointsImpl(userId, pointsRule, PointsStatus.CONFIRMED, null);
     }
 
     private void paidUsingPoints(Order order) {
         //如果订单类型是StoreType.POINTS，那么paymentAmount也使用积分
+        String userId = order.getUserId();
+        int points = order.getTotalAmount().intValue();
+
+        addPointsImpl(userId, -points, "购买积分商品",
+                PointsEventType.CONSUME, PointsStatus.CONFIRMED, order.getId());
+
     }
 
     @Override
@@ -201,7 +207,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
             }
 
             addPointsImpl(userId, pointsRule.getPoints() * yuan,
-                    pointsRule.getReason(), pointsRule.getEventType(), PointsStatus.PENDING);
+                    pointsRule.getReason(), pointsRule.getEventType(), PointsStatus.PENDING, order.getId());
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -252,16 +258,16 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
     @Override
     public void taskFinished(String userId, String taskId, PointsTask pointsTask) {
         addPointsImpl(userId, pointsTask.getPoints(), "完成任务\"" + pointsTask.getName() + "\"",
-                PointsEventType.POINTS_TASK, PointsStatus.CONFIRMED);
+                PointsEventType.POINTS_TASK, PointsStatus.CONFIRMED, null);
     }
 
-    private PointsDto addPointsImpl(String userId, PointsRule pointsRule, PointsStatus status) {
+    private PointsDto addPointsImpl(String userId, PointsRule pointsRule, PointsStatus status, String orderId) {
         return addPointsImpl(userId, pointsRule.getPoints(),
-                pointsRule.getReason(), pointsRule.getEventType(), status);
+                pointsRule.getReason(), pointsRule.getEventType(), status, orderId);
     }
 
     private PointsDto addPointsImpl(String userId, int pointsChange, String reason,
-                                    PointsEventType eventType, PointsStatus status) {
+                                    PointsEventType eventType, PointsStatus status, String orderId) {
 
         LocalDate thisYearsNewYear = LocalDate.now().withMonth(1).withDayOfMonth(1);
         LocalDate nextYearsNewYear = thisYearsNewYear.plusYears(1);
@@ -277,6 +283,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
         userPointsLog.setPointsChange(pointsChange);
         userPointsLog.setReason(reason);
         userPointsLog.setExpireAt(nextYearsNewYear);
+        userPointsLog.setOrderId(orderId);
         userPointsLogService.save(userPointsLog);
 
         UserPoints userPoints = calculate(userId, thisYearsNewYear, nextYearsNewYear);

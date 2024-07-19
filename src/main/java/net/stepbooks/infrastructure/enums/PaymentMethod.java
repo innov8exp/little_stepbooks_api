@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum PaymentMethod {
-    WECHAT_PAY("WECHAT_PAY"), ALI_PAY("ALI_PAY");
+    WECHAT_PAY("WECHAT_PAY"), ALI_PAY("ALI_PAY"), POINTS("POINTS");
 
     @EnumValue
     private final String value;

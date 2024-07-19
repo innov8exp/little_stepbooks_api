@@ -31,6 +31,7 @@ public final class AppConstants {
     public static final String PHYSICAL_ORDER_CODE_PREFIX = "S";
     public static final String VIRTUAL_ORDER_CODE_PREFIX = "X";
     public static final String MIXED_ORDER_CODE_PREFIX = "M";
+    public static final String POINTS_ORDER_CODE_PREFIX = "P";
 
     public static final String ORDER_PAYMENT_TIMEOUT_QUEUE = "order-unpaid-timeout-queue";
 

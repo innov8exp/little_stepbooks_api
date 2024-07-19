@@ -116,6 +116,15 @@ public class OrderController {
         return paymentService.prepayWithRequestPayment(payPrePayRequest);
     }
 
+    @Operation(summary = "积分商城下单")
+    @PostMapping("/points-pay")
+    public ResponseEntity<Order> payPointsOrder(@RequestBody PlaceOrderDto placeOrderDto) {
+        User user = contextManager.currentUser();
+        CreateOrderDto orderDto = prepareOrder(placeOrderDto, user);
+        Order order = mixedOrderServiceImpl.payPointsOrder(orderDto);
+        return ResponseEntity.ok(order);
+    }
+
     @Operation(summary = "混合产品下单")
     @PostMapping("/mixed")
     public ResponseEntity<OrderAndPaymentDto> placeMixedOrder(@RequestBody PlaceOrderDto placeOrderDto) {

@@ -166,6 +166,11 @@ public class PhysicalOrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order payPointsOrder(CreateOrderDto orderDto) {
+        return null;
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void cancelTimeoutOrders() {
         orderMapper.selectList(Wrappers.<Order>lambdaQuery().eq(Order::getState, OrderState.PLACED))

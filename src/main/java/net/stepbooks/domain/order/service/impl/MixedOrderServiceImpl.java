@@ -9,6 +9,7 @@ import net.stepbooks.domain.delivery.entity.Delivery;
 import net.stepbooks.domain.delivery.enums.DeliveryMethod;
 import net.stepbooks.domain.delivery.enums.DeliveryStatus;
 import net.stepbooks.domain.delivery.service.DeliveryService;
+import net.stepbooks.domain.goods.service.VirtualGoodsRedeemService;
 import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.entity.OrderSku;
 import net.stepbooks.domain.order.entity.RefundRequest;
@@ -23,11 +24,14 @@ import net.stepbooks.domain.payment.service.PaymentOpsService;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.payment.vo.WechatPayRefundRequest;
 import net.stepbooks.domain.payment.vo.WechatPayRefundResponse;
+import net.stepbooks.domain.points.entity.UserPoints;
+import net.stepbooks.domain.points.service.UserPointsService;
 import net.stepbooks.domain.product.entity.Product;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentType;
 import net.stepbooks.infrastructure.enums.RefundType;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
@@ -55,6 +59,8 @@ public class MixedOrderServiceImpl implements OrderService {
     private final PaymentOpsService paymentOpsService;
     private final PaymentService paymentService;
     private final StateMachine<OrderState, OrderEvent, Order> mixedOrderStateMachine;
+    private final UserPointsService userPointsService;
+    private final VirtualGoodsRedeemService virtualGoodsRedeemService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -98,6 +104,78 @@ public class MixedOrderServiceImpl implements OrderService {
         mixedOrderStateMachine.fireEvent(order.getState(), OrderEvent.PLACE_SUCCESS, order);
         return order;
 
+    }
+
+    private boolean isPointsEnough(Order order) {
+        int totalPoints = order.getTotalAmount().intValue();
+        UserPoints userPoints = userPointsService.getUserPointsByUserId(order.getUserId());
+        if (userPoints != null && userPoints.getPoints() >= totalPoints) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Order payPointsOrder(CreateOrderDto orderDto) {
+        List<SkuDto> skus = orderDto.getSkus();
+        if (ObjectUtils.isEmpty(skus)) {
+            throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
+        }
+
+        // 创建订单
+        String orderCode = OrderUtil.generateOrderNo(POINTS_ORDER_CODE_PREFIX);
+        Order order = OrderUtil.buildPointsOrder(orderDto, skus, orderCode, ProductNature.MIXED);
+        log.info("OrderNo:" + order.getOrderCode());
+        if (!isPointsEnough(order)) {
+            throw new BusinessException(ErrorCode.POINTS_NOT_ENOUGH);
+        }
+        orderMapper.insert(order);
+
+        ArrayList<OrderSku> orderSkus = new ArrayList<>();
+        for (SkuDto sku : skus) {
+            if (sku == null) {
+                throw new BusinessException(ErrorCode.PRODUCT_NOT_EXISTS);
+            }
+            if (sku.getQuantity() == 0) {
+                throw new BusinessException(ErrorCode.ORDER_QUANTITY_IS_ZERO);
+            }
+
+            // 创建订单SKU商品
+            OrderSku orderSku = OrderSku.builder()
+                    .orderId(order.getId())
+                    .spuId(sku.getSpuId())
+                    .skuId(sku.getId())
+                    .quantity(sku.getQuantity())
+                    .build();
+            orderSkus.add(orderSku);
+        }
+        orderSkuService.saveBatch(orderSkus);
+
+        // 创建物流信息
+        Delivery delivery = buildDelivery(order, orderDto);
+        deliveryService.save(delivery);
+
+        // 生成支付信息
+        Payment payment = new Payment();
+        payment.setStoreType(StoreType.POINTS);
+        payment.setPaymentType(PaymentType.ORDER_PAYMENT);
+        payment.setPaymentMethod(PaymentMethod.POINTS);
+        payment.setTransactionAmount(order.getTotalAmount());
+        payment.setOrderId(order.getId());
+        payment.setOrderCode(order.getOrderCode());
+        payment.setUserId(order.getUserId());
+        paymentOpsService.save(payment);
+
+        userPointsService.orderPaid(order);
+
+        boolean redeemed = virtualGoodsRedeemService.redeemAfterOrderPaid(order);
+        if (redeemed) {
+            order.setRedeemed(true);
+            orderMapper.updateById(order);
+        }
+
+        return order;
     }
 
     @Override

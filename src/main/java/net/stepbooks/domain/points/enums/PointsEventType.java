@@ -8,4 +8,5 @@ public enum PointsEventType {
     BUY_NORMAL_PRODUCT, //购买普通商品
     BUY_PROMOTION_PRODUCT, //购买促销商品
     POINTS_TASK, //积分任务
+    CONSUME, //消费积分换取商品
 }

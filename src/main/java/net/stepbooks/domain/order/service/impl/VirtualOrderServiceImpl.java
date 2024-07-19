@@ -112,6 +112,11 @@ public class VirtualOrderServiceImpl implements OrderService {
         return order;
     }
 
+    @Override
+    public Order payPointsOrder(CreateOrderDto orderDto) {
+        return null;
+    }
+
 //    @Override
 //    @Transactional(rollbackFor = Exception.class)
 //    public Order updateOrderState(String id, OrderEvent orderEvent) {

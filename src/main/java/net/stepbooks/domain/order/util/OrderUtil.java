@@ -6,6 +6,7 @@ import net.stepbooks.domain.order.entity.Order;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.enums.WdtSyncStatus;
 import net.stepbooks.domain.product.enums.ProductNature;
+import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
 import net.stepbooks.infrastructure.util.RandomNumberUtils;
 import net.stepbooks.infrastructure.util.RedisLockUtils;
@@ -41,6 +42,39 @@ public class OrderUtil {
                 .state(OrderState.INIT)
                 .paymentTimeoutDuration(ORDER_PAYMENT_TIMEOUT)
                 .wdtSyncStatus(WdtSyncStatus.INIT)
+                .storeType(orderDto.getStoreType())
+                .build();
+    }
+
+    /**
+     * 积分商城的订单，在积分足够的情况下，直接是PAID状态
+     *
+     * @param orderDto
+     * @param skus
+     * @param orderCode
+     * @param productNature
+     * @return
+     */
+    public static Order buildPointsOrder(CreateOrderDto orderDto, List<SkuDto> skus, String orderCode,
+                                         ProductNature productNature) {
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        for (SkuDto sku : skus) {
+            BigDecimal price = sku.getPrice().multiply(new BigDecimal(sku.getQuantity()));
+            totalAmount = totalAmount.add(price);
+        }
+        return Order.builder()
+                .orderCode(orderCode)
+                .userId(orderDto.getUserId())
+                .recipientPhone(orderDto.getRecipientPhone())
+                .totalAmount(totalAmount)
+                .paymentAmount(totalAmount)
+                .paymentMethod(PaymentMethod.POINTS)
+                .productNature(productNature)
+                .paymentStatus(PaymentStatus.PAID)
+                .state(OrderState.PAID)
+                .paymentTimeoutDuration(ORDER_PAYMENT_TIMEOUT)
+                .wdtSyncStatus(WdtSyncStatus.INIT)
+                .storeType(orderDto.getStoreType())
                 .build();
     }
 

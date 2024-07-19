@@ -16,6 +16,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "找不到用户"), //Cannot found the user
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "非法的请求参数"), //The request param is not valid
     AUTH_ERROR(HttpStatus.UNAUTHORIZED.value(), "认证失败"), //authenticated error
+    POINTS_NOT_ENOUGH(HttpStatus.BAD_REQUEST.value(), "积分不够"),
     EMAIL_EXISTS_ERROR(HttpStatus.BAD_REQUEST.value(), "The email has already exist, please input another one."),
     FILETYPE_ERROR(HttpStatus.BAD_REQUEST.value(), "file type validation error"),
     DATABASE_OPERATOR_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "database operator occur error"),
