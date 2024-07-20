@@ -31,7 +31,6 @@ import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentType;
 import net.stepbooks.infrastructure.enums.RefundType;
-import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.exception.BusinessException;
 import net.stepbooks.infrastructure.exception.ErrorCode;
 import net.stepbooks.interfaces.admin.dto.DeliveryInfoDto;
@@ -159,18 +158,6 @@ public class MixedOrderServiceImpl implements OrderService {
         deliveryService.save(delivery);
 
         // 生成支付信息
-        Payment payment = new Payment();
-        payment.setStoreType(StoreType.POINTS);
-        payment.setPaymentType(PaymentType.ORDER_PAYMENT);
-        payment.setPaymentMethod(PaymentMethod.POINTS);
-        payment.setTransactionAmount(order.getTotalAmount());
-        payment.setOrderId(order.getId());
-        payment.setOrderCode(order.getOrderCode());
-        payment.setUserId(order.getUserId());
-        payment.setVendorPaymentNo(NO_PAYMENT_NO);
-        payment.setTransactionStatus(SUCCESS);
-        paymentOpsService.save(payment);
-
         userPointsService.orderPaid(order);
 
         boolean redeemed = virtualGoodsRedeemService.redeemAfterOrderPaid(order);
