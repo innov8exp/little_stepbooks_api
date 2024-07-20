@@ -101,6 +101,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserByWxOpenId(String openId) {
+        return userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getOpenId, openId));
+    }
+
+    @Override
     public User findUserByUsername(String username) {
         User user = userMapper.selectOne(Wrappers.<User>lambdaQuery().eq(User::getUsername, username));
         if (ObjectUtils.isEmpty(user)) {
@@ -245,10 +250,22 @@ public class UserServiceImpl implements UserService {
         String openId = wechatLogin.getOpenId();
         String unionId = wechatLogin.getUnionId();
 
+        if (ObjectUtils.isEmpty(openId) && ObjectUtils.isEmpty(unionId)) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        }
+
         log.debug("openId: {}", openId);
         log.debug("unionId: {}", unionId);
 
         User user = findUserByWxUnionId(unionId);
+
+        if (user == null) {
+            user = findUserByWxOpenId(openId);
+            if (user != null) {
+                user.setUnionId(unionId);
+                userMapper.updateById(user);
+            }
+        }
 
         if (ObjectUtils.isEmpty(user)) {
             User newUser = User.builder()

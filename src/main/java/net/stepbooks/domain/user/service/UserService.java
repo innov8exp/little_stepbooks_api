@@ -18,6 +18,8 @@ public interface UserService {
 
     User findUserByWxUnionId(String unionId);
 
+    User findUserByWxOpenId(String openId);
+
     User findUserByUsername(String username);
 
     void registerWithEmail(User user);
