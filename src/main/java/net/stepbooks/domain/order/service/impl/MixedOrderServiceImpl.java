@@ -61,6 +61,7 @@ public class MixedOrderServiceImpl implements OrderService {
     private final StateMachine<OrderState, OrderEvent, Order> mixedOrderStateMachine;
     private final UserPointsService userPointsService;
     private final VirtualGoodsRedeemService virtualGoodsRedeemService;
+    private static final String NO_PAYMENT_NO = "0";
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -165,6 +166,7 @@ public class MixedOrderServiceImpl implements OrderService {
         payment.setOrderId(order.getId());
         payment.setOrderCode(order.getOrderCode());
         payment.setUserId(order.getUserId());
+        payment.setVendorPaymentNo(NO_PAYMENT_NO);
         paymentOpsService.save(payment);
 
         userPointsService.orderPaid(order);
