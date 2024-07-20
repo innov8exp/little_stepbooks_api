@@ -36,6 +36,8 @@ public interface UserService {
 
     TokenDto loginWithWechat(WechatAuthDto wechatAuthDto);
 
+    TokenDto zmkm(String ud);
+
     TokenDto guestLogin(String deviceId);
 
     TokenDto socialLogin(SocialAuthDto socialAuthDto);

@@ -320,6 +320,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public TokenDto zmkm(String ud) {
+        User user = findUserByWxUnionId(ud);
+        Long authCount = authHistoryMapper.selectCount(Wrappers.<AuthHistory>lambdaQuery()
+                .eq(AuthHistory::getWechatId, ud));
+        return getTokenDto(authCount, user, AuthType.WECHAT);
+    }
+
+    @Override
     public TokenDto guestLogin(String deviceId) {
         List<User> userEntities = userMapper.selectList(Wrappers.<User>lambdaQuery().eq(User::getDeviceId, deviceId)
                 .eq(User::getRole, RoleEnum.GUEST));
