@@ -8,6 +8,7 @@ import net.stepbooks.domain.order.enums.WdtSyncStatus;
 import net.stepbooks.domain.product.enums.ProductNature;
 import net.stepbooks.infrastructure.enums.PaymentMethod;
 import net.stepbooks.infrastructure.enums.PaymentStatus;
+import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.util.RandomNumberUtils;
 import net.stepbooks.infrastructure.util.RedisLockUtils;
 import net.stepbooks.interfaces.client.dto.CreateOrderDto;
@@ -74,7 +75,7 @@ public class OrderUtil {
                 .state(OrderState.PAID)
                 .paymentTimeoutDuration(ORDER_PAYMENT_TIMEOUT)
                 .wdtSyncStatus(WdtSyncStatus.INIT)
-                .storeType(orderDto.getStoreType())
+                .storeType(StoreType.POINTS)
                 .build();
     }
 
