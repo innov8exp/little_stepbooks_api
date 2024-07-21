@@ -11,11 +11,13 @@ import net.stepbooks.domain.delivery.enums.DeliveryStatus;
 import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.goods.service.VirtualGoodsRedeemService;
 import net.stepbooks.domain.order.entity.Order;
+import net.stepbooks.domain.order.entity.OrderEventLog;
 import net.stepbooks.domain.order.entity.OrderSku;
 import net.stepbooks.domain.order.entity.RefundRequest;
 import net.stepbooks.domain.order.enums.OrderEvent;
 import net.stepbooks.domain.order.enums.OrderState;
 import net.stepbooks.domain.order.mapper.OrderMapper;
+import net.stepbooks.domain.order.service.OrderEventLogService;
 import net.stepbooks.domain.order.service.OrderService;
 import net.stepbooks.domain.order.service.OrderSkuService;
 import net.stepbooks.domain.order.util.OrderUtil;
@@ -60,8 +62,7 @@ public class MixedOrderServiceImpl implements OrderService {
     private final StateMachine<OrderState, OrderEvent, Order> mixedOrderStateMachine;
     private final UserPointsService userPointsService;
     private final VirtualGoodsRedeemService virtualGoodsRedeemService;
-    private static final String NO_PAYMENT_NO = "0";
-    private static final String SUCCESS = "SUCCESS";
+    private final OrderEventLogService orderEventLogService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -159,6 +160,16 @@ public class MixedOrderServiceImpl implements OrderService {
 
         // 生成支付信息
         userPointsService.orderPaid(order);
+
+        OrderEventLog eventLog = OrderEventLog.builder()
+                .orderId(order.getId())
+                .orderCode(order.getOrderCode())
+                .fromState(OrderState.INIT)
+                .toState(OrderState.PAID)
+                .eventTime(LocalDateTime.now())
+                .eventType(OrderEvent.PAYMENT_SUCCESS)
+                .build();
+        orderEventLogService.save(eventLog);
 
         boolean redeemed = virtualGoodsRedeemService.redeemAfterOrderPaid(order);
         if (redeemed) {
