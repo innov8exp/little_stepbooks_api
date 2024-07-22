@@ -95,6 +95,13 @@ public class VirtualCategoryServiceImpl extends ServiceImpl<VirtualCategoryMappe
     }
 
     @Override
+    public VirtualCategoryDto getVirtualCategoryById(String categoryId) {
+        VirtualCategoryEntity entity = getById(categoryId);
+        VirtualCategoryDto dto = BaseAssembler.convert(entity, VirtualCategoryDto.class);
+        return dto;
+    }
+
+    @Override
     public VirtualCategoryAdminDto getAdminVirtualCategoryById(String categoryId) {
         VirtualCategoryEntity entity = getById(categoryId);
         VirtualCategoryAdminDto dto = BaseAssembler.convert(entity, VirtualCategoryAdminDto.class);

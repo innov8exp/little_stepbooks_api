@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.stepbooks.domain.goods.entity.VirtualCategoryEntity;
 import net.stepbooks.domain.goods.entity.VirtualGoodsExpirationEntity;
 import net.stepbooks.domain.goods.service.VirtualCategoryService;
 import net.stepbooks.domain.goods.service.VirtualGoodsExpirationService;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Slf4j
@@ -37,14 +39,27 @@ public class VirtualCategoryController {
     }
 
     @GetMapping("/my")
-    @Operation(summary = "获得当前用户购买的虚拟产品大类")
+    @Operation(summary = "获得当前用户购买的虚拟产品大类（不包含子类）")
     public ResponseEntity<List<VirtualCategoryDto>> my() {
         User user = contextManager.currentUser();
         List<VirtualGoodsExpirationEntity> results = virtualGoodsExpirationService.validExpirations(user.getId());
         List<VirtualCategoryDto> virtualCategories = new ArrayList<>();
+        HashSet<String> doneSet = new HashSet<>();
         for (VirtualGoodsExpirationEntity virtualGoodsExpirationEntity : results) {
             String categoryId = virtualGoodsExpirationEntity.getCategoryId();
-            VirtualCategoryDto dto = virtualCategoryService.getFullVirtualCategoryById(categoryId);
+            VirtualCategoryEntity virtualCategoryEntity = virtualCategoryService.getById(categoryId);
+            String parentId = virtualCategoryEntity.getParentId();
+            if (parentId != null) {
+                //有父类的话，直接加父类
+                if (!doneSet.contains(parentId)) {
+                    VirtualCategoryDto dto = virtualCategoryService.getVirtualCategoryById(parentId);
+                    virtualCategories.add(dto);
+                    doneSet.add(parentId);
+                }
+                continue;
+            }
+
+            VirtualCategoryDto dto = virtualCategoryService.getVirtualCategoryById(categoryId);
             virtualCategories.add(dto);
         }
         return ResponseEntity.ok(virtualCategories);

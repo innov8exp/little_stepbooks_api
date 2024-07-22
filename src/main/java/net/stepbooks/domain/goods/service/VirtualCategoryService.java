@@ -15,6 +15,8 @@ public interface VirtualCategoryService extends IService<VirtualCategoryEntity> 
 
     VirtualCategoryDto getFullVirtualCategoryById(String categoryId);
 
+    VirtualCategoryDto getVirtualCategoryById(String categoryId);
+
     VirtualCategoryAdminDto getAdminVirtualCategoryById(String categoryId);
 
     List<VirtualCategoryDto> getAllMediaVirtualCategories(String tag);
