@@ -166,9 +166,14 @@ public class MOrderController {
     public ResponseEntity<byte[]> exportOrders(@RequestParam(required = false) String orderCode,
                                                @RequestParam(required = false) String username,
                                                @RequestParam(required = false) String state,
+                                               @RequestParam(required = false) StoreType storeType,
                                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate)
             throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
+
+        if (storeType == null) {
+            storeType = StoreType.POINTS;
+        }
 
         LocalDateTime startDateTime = null;
         if (startDate != null) {
@@ -180,11 +185,11 @@ public class MOrderController {
             endDateTime = endDate.atTime(END_DAY_HOUR, 0, 0);
         }
 
-        List<OrderExportDto> data = orderExportService.export(StoreType.REGULAR, orderCode, username,
+        List<OrderExportDto> data = orderExportService.export(storeType, orderCode, username,
                 state, startDateTime, endDateTime);
 
         // 创建 CSV 文件
-        String filename = "Order_stepbooks_" + startDate + "-" + endDate;
+        String filename = "Order_stepbooks_" + storeType + "_" + startDate + "-" + endDate;
 
         if (state != null) {
             filename += "_" + state;

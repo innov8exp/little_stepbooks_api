@@ -1,6 +1,8 @@
 package net.stepbooks.domain.order.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
@@ -14,9 +16,14 @@ import net.stepbooks.domain.order.service.OrderExportService;
 import net.stepbooks.domain.order.service.OrderOpsService;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentService;
+import net.stepbooks.domain.points.entity.UserPointsLog;
+import net.stepbooks.domain.points.enums.PointsEventType;
+import net.stepbooks.domain.points.service.UserPointsLogService;
 import net.stepbooks.infrastructure.AppConstants;
 import net.stepbooks.infrastructure.assembler.BaseAssembler;
 import net.stepbooks.infrastructure.config.AppConfig;
+import net.stepbooks.infrastructure.enums.PaymentMethod;
+import net.stepbooks.infrastructure.enums.PaymentType;
 import net.stepbooks.infrastructure.enums.StoreType;
 import net.stepbooks.infrastructure.util.RedisDistributedLocker;
 import net.stepbooks.infrastructure.util.RedisStore;
@@ -29,6 +36,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,6 +56,8 @@ public class OrderExportServiceImpl implements OrderExportService {
     private final PaymentService paymentService;
 
     private final EmailService emailService;
+
+    private final UserPointsLogService userPointsLogService;
 
     private final AppConfig appConfig;
 
@@ -159,14 +169,28 @@ public class OrderExportServiceImpl implements OrderExportService {
                 }
             }
 
-            Payment payment = paymentService.getByOrder(orderInfoDto.getId());
-            if (payment != null) {
-                orderExportDto.fillinPaymentType(payment.getPaymentType());
-                orderExportDto.fillinPaymentMethod(payment.getPaymentMethod());
-                orderExportDto.setPayAt(payment.getCreatedAt());
-                orderExportDto.setTransactionAmount(payment.getTransactionAmount());
-                orderExportDto.setVendorPaymentNo("'" + payment.getVendorPaymentNo() + "'");
-                orderExportDto.setTransactionStatus(payment.getTransactionStatus());
+            if (StoreType.POINTS.equals(storeType)) {
+                LambdaQueryWrapper<UserPointsLog> wrapper = Wrappers.lambdaQuery();
+                wrapper.eq(UserPointsLog::getOrderId, orderInfoDto.getId());
+                wrapper.eq(UserPointsLog::getEventType, PointsEventType.CONSUME);
+
+                UserPointsLog userPointsLog = userPointsLogService.getOne(wrapper);
+                if (userPointsLog != null) {
+                    orderExportDto.fillinPaymentType(PaymentType.ORDER_PAYMENT);
+                    orderExportDto.fillinPaymentMethod(PaymentMethod.POINTS);
+                    orderExportDto.setPayAt(orderInfoDto.getCreatedAt());
+                    orderExportDto.setTransactionAmount(BigDecimal.valueOf(-userPointsLog.getPointsChange()));
+                }
+            } else {
+                Payment payment = paymentService.getByOrder(orderInfoDto.getId());
+                if (payment != null) {
+                    orderExportDto.fillinPaymentType(payment.getPaymentType());
+                    orderExportDto.fillinPaymentMethod(payment.getPaymentMethod());
+                    orderExportDto.setPayAt(payment.getCreatedAt());
+                    orderExportDto.setTransactionAmount(payment.getTransactionAmount());
+                    orderExportDto.setVendorPaymentNo("'" + payment.getVendorPaymentNo() + "'");
+                    orderExportDto.setTransactionStatus(payment.getTransactionStatus());
+                }
             }
 
             data.add(orderExportDto);
