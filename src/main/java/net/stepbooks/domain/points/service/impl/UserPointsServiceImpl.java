@@ -206,8 +206,10 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
                 pointsRule = pointsRuleService.getRuleByType(PointsEventType.BUY_NORMAL_PRODUCT);
             }
 
-            addPointsImpl(userId, pointsRule.getPoints() * yuan,
-                    pointsRule.getReason(), pointsRule.getEventType(), PointsStatus.PENDING, order.getId());
+            if (pointsRule.isActive()) {
+                addPointsImpl(userId, pointsRule.getPoints() * yuan,
+                        pointsRule.getReason(), pointsRule.getEventType(), PointsStatus.PENDING, order.getId());
+            }
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
