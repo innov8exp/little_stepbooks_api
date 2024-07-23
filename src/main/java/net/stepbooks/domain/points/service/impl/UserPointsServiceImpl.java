@@ -43,11 +43,14 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
      * 重新计算用户的总积分
      *
      * @param userId
-     * @param thisYearsNewYear
-     * @param nextYearsNewYear
      * @return
      */
-    private UserPoints calculate(String userId, LocalDate thisYearsNewYear, LocalDate nextYearsNewYear) {
+    @Override
+    public UserPoints reCalculate(String userId) {
+
+        LocalDate thisYearsNewYear = LocalDate.now().withMonth(1).withDayOfMonth(1);
+        LocalDate nextYearsNewYear = thisYearsNewYear.plusYears(1);
+
         UserPoints userPoints = getUserPointsByUserId(userId);
 
         int totalPoints = userPointsLogService.pointsTotal(userId, thisYearsNewYear, nextYearsNewYear);
@@ -232,7 +235,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
                 userPointsLog.setStatus(PointsStatus.CONFIRMED);
                 userPointsLog.setExpireAt(nextYearsNewYear);
                 userPointsLogService.updateById(userPointsLog);
-                calculate(order.getUserId(), thisYearsNewYear, nextYearsNewYear);
+                reCalculate(order.getUserId());
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -242,16 +245,13 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
     @Override
     public void orderRefund(Order order) {
         try {
-            LocalDate thisYearsNewYear = LocalDate.now().withMonth(1).withDayOfMonth(1);
-            LocalDate nextYearsNewYear = thisYearsNewYear.plusYears(1);
-
             LambdaQueryWrapper<UserPointsLog> wrapper = Wrappers.lambdaQuery();
             wrapper.eq(UserPointsLog::getUserId, order.getUserId());
             wrapper.eq(UserPointsLog::getOrderId, order.getId());
             UserPointsLog userPointsLog = userPointsLogService.getOne(wrapper);
             userPointsLog.setStatus(PointsStatus.INVALID);
             userPointsLogService.updateById(userPointsLog);
-            calculate(order.getUserId(), thisYearsNewYear, nextYearsNewYear);
+            reCalculate(order.getUserId());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -288,7 +288,7 @@ public class UserPointsServiceImpl extends ServiceImpl<UserPointsMapper, UserPoi
         userPointsLog.setOrderId(orderId);
         userPointsLogService.save(userPointsLog);
 
-        UserPoints userPoints = calculate(userId, thisYearsNewYear, nextYearsNewYear);
+        UserPoints userPoints = reCalculate(userId);
         pointsDto.setTotalAmount(userPoints.getPoints());
         return pointsDto;
     }

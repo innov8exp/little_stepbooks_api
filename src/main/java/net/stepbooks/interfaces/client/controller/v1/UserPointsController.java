@@ -40,7 +40,8 @@ public class UserPointsController {
     @Operation(summary = "获得当前用户总积分")
     public ResponseEntity<UserPoints> my() {
         User user = contextManager.currentUser();
-        UserPoints userPoints = userPointsService.getUserPointsByUserId(user.getId());
+        //UserPoints userPoints = userPointsService.getUserPointsByUserId(user.getId());
+        UserPoints userPoints = userPointsService.reCalculate(user.getId());
         return ResponseEntity.ok(userPoints);
     }
 

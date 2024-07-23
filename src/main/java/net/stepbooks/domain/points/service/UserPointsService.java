@@ -18,4 +18,6 @@ public interface UserPointsService extends IService<UserPoints> {
     void taskFinished(String userId, String taskId, PointsTask pointsTask);
 
     UserPoints getUserPointsByUserId(String userId);
+
+    UserPoints reCalculate(String userId);
 }
