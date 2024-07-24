@@ -27,7 +27,7 @@ public class PointsTask extends BaseEntity {
 
     private String successHint;
 
-    private int points;
+    private Integer points;
 
     private String actionUrl;
 
