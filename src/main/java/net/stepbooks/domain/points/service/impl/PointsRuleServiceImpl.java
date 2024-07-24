@@ -142,11 +142,13 @@ public class PointsRuleServiceImpl extends ServiceImpl<PointsRuleMapper, PointsR
                     if (!rule.isActive()
                             || !points.equals(rule.getPoints())
                             || !rule.getActivityStartDay().equals(fullPointsRule.getPromotionStartDay())
-                            || !rule.getActivityEndDay().equals(fullPointsRule.getPromotionEndDay())) {
+                            || !rule.getActivityEndDay().equals(fullPointsRule.getPromotionEndDay())
+                            || !rule.getSpus().equals(fullPointsRule.getSpuIds())) {
                         rule.setActive(true);
                         rule.setPoints(points);
                         rule.setActivityStartDay(fullPointsRule.getPromotionStartDay());
                         rule.setActivityEndDay(fullPointsRule.getPromotionEndDay());
+                        rule.setSpus(fullPointsRule.getSpuIds());
                         toBeUpdated.add(rule);
                     }
                 } else if (rule.isActive()) {
