@@ -220,9 +220,9 @@ public class MixedOrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     public void paymentCallback(Order order, Payment payment) {
         log.info("payment callback invoked");
-        mixedOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_SUCCESS, order);
         order.setPaymentAmount(payment.getTransactionAmount());
         order.setPaymentMethod(payment.getPaymentMethod());
+        mixedOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_SUCCESS, order);
         orderMapper.updateById(order);
         payment.setPaymentType(PaymentType.ORDER_PAYMENT);
         payment.setOrderId(order.getId());
