@@ -57,6 +57,11 @@ public class UserPointsTaskServiceImpl extends ServiceImpl<UserPointsTaskMapper,
         }
     }
 
+    @Override
+    public void startTask(String userId, String taskId) {
+
+    }
+
 
     @Override
     public List<UserPointsTask> todayCompleted(String userId) {

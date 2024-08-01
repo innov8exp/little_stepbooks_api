@@ -172,7 +172,7 @@ public class MOrderController {
             throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
 
         if (storeType == null) {
-            storeType = StoreType.POINTS;
+            storeType = StoreType.REGULAR;
         }
 
         LocalDateTime startDateTime = null;
