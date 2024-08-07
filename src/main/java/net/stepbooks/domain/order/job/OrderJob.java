@@ -45,6 +45,12 @@ public class OrderJob implements Job {
             log.error(e.getMessage(), e);
         }
 
+        try {
+            mixedOrderServiceImpl.signEarlierOrders();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
     }
 
     @Override

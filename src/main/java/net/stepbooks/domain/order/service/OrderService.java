@@ -19,6 +19,8 @@ public interface OrderService {
 
     void cancelTimeoutOrders();
 
+    void signEarlierOrders();
+
     void autoCancelWhenPaymentTimeout(String recordId);
 
     // 关闭订单

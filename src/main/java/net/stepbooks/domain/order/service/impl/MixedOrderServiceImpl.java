@@ -64,6 +64,8 @@ public class MixedOrderServiceImpl implements OrderService {
     private final VirtualGoodsRedeemService virtualGoodsRedeemService;
     private final OrderEventLogService orderEventLogService;
 
+    private static final long TEN_DAYS = 10L;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Order createOrder(CreateOrderDto orderDto) {
@@ -193,6 +195,24 @@ public class MixedOrderServiceImpl implements OrderService {
                         mixedOrderStateMachine.fireEvent(order.getState(), OrderEvent.PAYMENT_TIMEOUT, order);
                     }
                 });
+    }
+
+    @Override
+    public void signEarlierOrders() {
+
+        LambdaQueryWrapper<Order> wrapper = Wrappers.lambdaQuery();
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(TEN_DAYS);
+        wrapper.lt(Order::getModifiedAt, dateTime);
+        wrapper.eq(Order::getState, OrderState.SHIPPED);
+        List<Order> orders = orderMapper.selectList(wrapper);
+        for (Order order : orders) {
+            try {
+                log.info("auto sign for order {}", order.getId());
+                mixedOrderStateMachine.fireEvent(order.getState(), OrderEvent.SIGN_SUCCESS, order);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
     }
 
     @Override
