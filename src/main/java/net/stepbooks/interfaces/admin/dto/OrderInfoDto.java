@@ -48,4 +48,16 @@ public class OrderInfoDto extends BaseDto {
 
     private Delivery delivery;
     private List<OrderEventLog> eventLogs;
+
+    public String productName() {
+        String productName = "";
+        for (int i = 0; i < skus.size(); i++) {
+            OrderSkuDto orderSkuDto = skus.get(i);
+            productName = productName + orderSkuDto.getSkuName();
+            if (i != skus.size() - 1) {
+                productName = productName + ",";
+            }
+        }
+        return productName;
+    }
 }

@@ -32,80 +32,85 @@ public class OrderExportDto {
     static final int POS_15 = 15;
     static final int POS_16 = 16;
     static final int POS_17 = 17;
+    static final int POS_18 = 18;
 
     @CsvBindByName(column = "订单号")
     @CsvBindByPosition(position = POS_0)
     private String orderCode;
 
-    @CsvBindByName(column = "订单状态")
+    @CsvBindByName(column = "商品名称")
     @CsvBindByPosition(position = POS_1)
+    private String productName;
+
+    @CsvBindByName(column = "订单状态")
+    @CsvBindByPosition(position = POS_2)
     private String stateDesc;
 
     @CsvBindByName(column = "订单创建时间")
-    @CsvBindByPosition(position = POS_2)
+    @CsvBindByPosition(position = POS_3)
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     @CsvBindByName(column = "收货人/提货人")
-    @CsvBindByPosition(position = POS_3)
+    @CsvBindByPosition(position = POS_4)
     private String recipientName;
 
     @CsvBindByName(column = "收货人手机号/提货人手机号")
-    @CsvBindByPosition(position = POS_4)
+    @CsvBindByPosition(position = POS_5)
     private String recipientPhone;
 
     @CsvBindByName(column = "收货人省份")
-    @CsvBindByPosition(position = POS_5)
+    @CsvBindByPosition(position = POS_6)
     private String recipientProvince;
 
     @CsvBindByName(column = "收货人城市")
-    @CsvBindByPosition(position = POS_6)
+    @CsvBindByPosition(position = POS_7)
     private String recipientCity;
 
     @CsvBindByName(column = "收货人地区")
-    @CsvBindByPosition(position = POS_7)
+    @CsvBindByPosition(position = POS_8)
     private String recipientDistrict;
 
     @CsvBindByName(column = "详细收货地址/提货地址")
-    @CsvBindByPosition(position = POS_8)
+    @CsvBindByPosition(position = POS_9)
     private String recipientAddress;
 
     @CsvBindByName(column = "交易类型")
-    @CsvBindByPosition(position = POS_9)
+    @CsvBindByPosition(position = POS_10)
     private String paymentTypeDesc;
 
     @CsvBindByName(column = "交易方式")
-    @CsvBindByPosition(position = POS_10)
+    @CsvBindByPosition(position = POS_11)
     private String paymentMethodDesc;
 
     @CsvBindByName(column = "交易时间")
-    @CsvBindByPosition(position = POS_11)
+    @CsvBindByPosition(position = POS_12)
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     private LocalDateTime payAt;
 
     @CsvBindByName(column = "交易金额")
-    @CsvBindByPosition(position = POS_12)
+    @CsvBindByPosition(position = POS_13)
     private BigDecimal transactionAmount;
 
     @CsvBindByName(column = "交易流水号")
-    @CsvBindByPosition(position = POS_13)
+    @CsvBindByPosition(position = POS_14)
     private String vendorPaymentNo;
 
     @CsvBindByName(column = "交易状态")
-    @CsvBindByPosition(position = POS_14)
+    @CsvBindByPosition(position = POS_15)
     private String transactionStatus;
 
     @CsvBindByName(column = "发货时间")
-    @CsvBindByPosition(position = POS_15)
+    @CsvBindByPosition(position = POS_16)
     @CsvDate("yyyy-MM-dd HH:mm:ss")
     private LocalDateTime consignTime;
 
     @CsvBindByName(column = "快递公司")
-    @CsvBindByPosition(position = POS_16)
+    @CsvBindByPosition(position = POS_17)
     private String logisticsName;
 
     @CsvBindByName(column = "快递单号")
-    @CsvBindByPosition(position = POS_17)
+    @CsvBindByPosition(position = POS_18)
     private String logisticsNo;
 
     public void fillinStateDesc(OrderState state) {

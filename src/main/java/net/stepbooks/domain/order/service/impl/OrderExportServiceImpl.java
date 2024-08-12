@@ -14,6 +14,7 @@ import net.stepbooks.domain.delivery.service.DeliveryService;
 import net.stepbooks.domain.email.service.EmailService;
 import net.stepbooks.domain.order.service.OrderExportService;
 import net.stepbooks.domain.order.service.OrderOpsService;
+import net.stepbooks.domain.order.service.OrderSkuService;
 import net.stepbooks.domain.payment.entity.Payment;
 import net.stepbooks.domain.payment.service.PaymentService;
 import net.stepbooks.domain.points.entity.UserPointsLog;
@@ -31,6 +32,7 @@ import net.stepbooks.infrastructure.util.csv.CustomBeanToCSVMappingStrategy;
 import net.stepbooks.interfaces.KeyConstants;
 import net.stepbooks.interfaces.admin.dto.OrderExportDto;
 import net.stepbooks.interfaces.admin.dto.OrderInfoDto;
+import net.stepbooks.interfaces.admin.dto.OrderSkuDto;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -58,6 +60,8 @@ public class OrderExportServiceImpl implements OrderExportService {
     private final EmailService emailService;
 
     private final UserPointsLogService userPointsLogService;
+
+    private final OrderSkuService orderSkuService;
 
     private final AppConfig appConfig;
 
@@ -151,7 +155,12 @@ public class OrderExportServiceImpl implements OrderExportService {
         for (OrderInfoDto orderInfoDto : records) {
             OrderExportDto orderExportDto = BaseAssembler.convert(orderInfoDto, OrderExportDto.class);
 
+
+            List<OrderSkuDto> skus = orderSkuService.findOrderSkusByOrderId(orderInfoDto.getId());
+            orderInfoDto.setSkus(skus);
+
             orderExportDto.fillinStateDesc(orderInfoDto.getState());
+            orderExportDto.setProductName(orderInfoDto.productName());
 
             Delivery delivery = deliveryService.getByOrder(orderInfoDto.getId());
             if (delivery != null) {
