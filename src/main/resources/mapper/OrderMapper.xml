@@ -24,7 +24,7 @@
         <if test="endDate != null">
             and o.created_at <![CDATA[ < ]]> #{endDate}
         </if>
-        order by o.modified_at desc
+        order by o.created_at desc
     </select>
     <select id="findPageByUser" resultType="net.stepbooks.interfaces.admin.dto.OrderInfoDto">
         select o.* from step_order o left join step_order_sku_ref osku on o.id = osku.order_id
