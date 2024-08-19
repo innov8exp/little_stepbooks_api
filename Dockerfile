@@ -7,4 +7,4 @@ COPY rds-cert.pem /app/rds-cert.pem
 
 EXPOSE 8081
 
-CMD ["java", "-jar", "-Dspring.profiles.active=${ENV}", "app.jar"]
+CMD ["java", "-Xmx1024m", "-jar", "-Dspring.profiles.active=${ENV}", "app.jar"]
