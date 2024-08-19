@@ -5,7 +5,7 @@
       "name": "stepbook-api",
       "image": "855070278401.dkr.ecr.cn-north-1.amazonaws.com.cn/stepbook-api-repo-prod",
       "cpu": 512,
-      "memory": 2048,
+      "memory": 4096,
       "portMappings": [
         {
           "name": "stepbook-api",
