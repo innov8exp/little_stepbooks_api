@@ -8,11 +8,8 @@ import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @UtilityClass
 public class FileValidateUtil {
@@ -61,24 +58,24 @@ public class FileValidateUtil {
         }
 
         // Check if the file contains any malicious code
-        byte[] bytes = file.getBytes();
-        if (isMalicious(bytes)) {
-            throw new BusinessException(ErrorCode.CONSTRAINT_VALIDATION_ERROR, "The file contains malicious code.");
-        }
+//        byte[] bytes = file.getBytes();
+//        if (isMalicious(bytes)) {
+//            throw new BusinessException(ErrorCode.CONSTRAINT_VALIDATION_ERROR, "The file contains malicious code.");
+//        }
 
     }
 
-    private static boolean isMalicious(byte[] bytes) {
-        try {
-            // Check if the file contains any malicious code
-            String fileContent = new String(bytes, StandardCharsets.UTF_8);
-            Pattern pattern = Pattern.compile("(?i)<(\\s*)(script|meta|link|style)(.*?)>");
-            Matcher matcher = pattern.matcher(fileContent);
-            return matcher.find();
-        } catch (Exception e) {
-            return true;
-        }
-    }
+//    private static boolean isMalicious(byte[] bytes) {
+//        try {
+//            // Check if the file contains any malicious code
+//            String fileContent = new String(bytes, StandardCharsets.UTF_8);
+//            Pattern pattern = Pattern.compile("(?i)<(\\s*)(script|meta|link|style)(.*?)>");
+//            Matcher matcher = pattern.matcher(fileContent);
+//            return matcher.find();
+//        } catch (Exception e) {
+//            return true;
+//        }
+//    }
 
     private static boolean checkFileSize(Long fileLen, Integer fileSize, String fileUnit) {
         double fileSizeCom = switch (fileUnit.toUpperCase()) {
